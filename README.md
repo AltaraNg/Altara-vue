@@ -1,4 +1,4 @@
-# altara-web
+# altara-frontend
 
 ## Project setup
 ```

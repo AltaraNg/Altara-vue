@@ -1,25 +1,56 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Flash from "../utilities/flash";
+import { store } from "../store/store";
+import { routerHistory, writeHistory } from "vue-router-back-button";
 
-const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
-]
+const Login = () =>
+    import ("../views/auth/Login.vue");
+const NotFound = () =>
+    import ("../views/NotFound.vue");
 
-const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+Vue.use(VueRouter);
+Vue.use(routerHistory);
+const router = new VueRouter({
+    hashbang: false,
+    history: true,
+    linkActiveClass: "active",
+    mode: "history",
+    routes: [
+        { path: "/", redirect: { name: "login" } },
+        { path: "/login", component: Login, name: "login" },
+        {
+            path: "/not-found",
+            component: NotFound,
+            meta: { requiresAuth: true }
+        },
+        { path: "*", component: NotFound, meta: { requiresAuth: true } }
+    ]
+});
 
-export default router
+router.mode = "html5";
+router.afterEach(writeHistory);
+router.afterEach(() => (store.state.loader = false));
+router.beforeEach((to, from, next) => {
+    const home = to.path
+        .split("/")
+        .filter(Boolean)[0]
+        .toUpperCase();
+    const token = localStorage.getItem("api_token");
+    const reRoute = path => {
+        Flash.setError("You do not have access to that page!");
+        return next({ name: path });
+    };
+
+    home === "PASSWORD" && token ? reRoute("home") : next();
+
+    if (to.matched.some(route => route.meta.requiresAuth)) {
+        token ? next() : reRoute("login");
+    }
+
+    if (to.matched.some(m => m.meta[home])) {
+        store.getters.auth(home + "Access") ? next() : reRoute("home");
+    }
+    next();
+});
+export default router;

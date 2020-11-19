@@ -150,7 +150,7 @@
       </transition>
 
       <div class="modal fade repayment" id="amortization">
-        <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-dialog modal-x" role="document">
           <div class="modal-content" v-if="showModalContent">
               <div v-if="!newOrder">
             <div class="modal-header py-2">

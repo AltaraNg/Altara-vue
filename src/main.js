@@ -14,7 +14,7 @@ import '../src/assets/css/_mixins.scss'
 import '../src/assets/css/_variables.scss'
 import '../src/assets/css/app.scss'
 // import '../src/assets/css/bootstrap.min.css'
-import '../src/assets/css/now-ui-kit.css'
+// import '../src/assets/css/now-ui-kit.css'
 import "./utilities/globalFunctions.js";
 
 

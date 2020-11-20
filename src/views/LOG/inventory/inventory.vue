@@ -314,14 +314,14 @@ $(`#viewProductTransfer`).modal("toggle");
       
     },
     fetchData() {
-      this.branchId = localStorage.getItem("branch_id");
+      
       this.$scrollToTop();
       this.$LIPS(true);
       let { page, page_size } = this.$data;
       get(
         this.urlToFetchOrders +
           `${!!page ? `?page=${page}` : ""}` +
-          `${!!page_size ? `&pageSize=${page_size}` : ""}`+`&branch=${this.branchId}`
+          `${!!page_size ? `&pageSize=${page_size}` : ""}`
       )
         .then(({ data }) => this.prepareList(data))
         .catch(() => Flash.setError("Error Preparing form"));

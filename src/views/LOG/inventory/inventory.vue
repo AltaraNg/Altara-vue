@@ -1,16 +1,71 @@
 <template>
   <transition name="fade">
     <div id="reminder" class="attendance">
-      <custom-header :title="'Inventory'" />
+      <custom-header :title="'Inventory Overview'" />
+          <div class="row">
+            <div class="col-md">
+              <div class="hCard">
+                <h3 class="mar_0">
+                  Total
+                </h3>
+                <h3 class="mar_0">700 </h3>
+              </div>
+            </div>
+            <div class="col-md">
+              <div class="hCard">
+             <h3 class="mar_0">
+                  Total Worth
+                </h3>
+                <h3 class="mar_0">₦ 20,000,000 </h3>
+              </div>
+            </div> 
+            <div class="col-md ">
+                            <div class="hCard">
 
+              <h3 class="mar_0">
+                  Total Sold
+                </h3>
+                <h3 class="mar_0">420 </h3>
+            </div>
+            </div>
+        </div>  
+        <div class="row">
+            <div class="col-md">
+              <div class="hCard">
+                <h3 class="mar_0">
+                  Total On DIsplay
+                </h3>
+                <h3 class="mar_0">250 </h3>
+              </div>
+            </div>
+            <div class="col-md">
+              <div class="hCard">
+             <h3 class="mar_0">
+                  Total Repossessed 
+                </h3>
+                <h3 class="mar_0">120 </h3>
+              </div>
+            </div> 
+            <div class="col-md ">
+                            <div class="hCard">
+
+              <h3 class="mar_0">
+                  Transfers
+                </h3>
+                <h3 class="mar_0">170 </h3>
+            </div>
+            </div>
+        </div>
       <div class="mt-2 mt-lg-3 row attendance-head">
+
+       
         <div class="col-md-8">
           <InventorySearch v-on:childToParent="searchEvent" :searchColumns="searchColumns" />
         </div>
 
         <div class="col-md-4">
           <router-link :to="{name: 'inventoryCreate'}">
-            <button class="btn btn-primary bg-default myBtn float-right my-2">New Inventory</button>
+            <button class="btn btn-primary bg-default myBtn float-right my-2">+ New Inventory</button>
           </router-link>
         </div>
       </div>
@@ -82,10 +137,10 @@
       <div class="modal fade repayment" id="viewInventory">
         <div class="modal-dialog" role="document">
           <div class="modal-content" v-if="showModalContent">
-            <div class="modal-header py-2">
-              <h4>{{inventoryItem.sku}}</h4>
+            <div class="modal-header1 ">
+              <h4 class="text-white">{{inventoryItem.sku}} Summary</h4>
               <a aria-label="Close" class="close py-1" data-dismiss="modal">
-                <span aria-hidden="true" class="modal-close text-danger">
+                <span aria-hidden="true" class="modal-close text-white">
                   <i class="fas fa-times"></i>
                 </span>
               </a>
@@ -448,5 +503,40 @@ $(`#viewProductTransfer`).modal("toggle");
 }
 .margin_left1 {
   margin-left: 25px;
+}
+.hCard{
+    background: #2975A5;
+    mix-blend-mode: normal;
+    border-radius: 5px;
+    padding: 35px 20px;
+    margin: 20px auto;
+    color:#fff;
+    height: 140px;
+    width: 326px;
+}
+.wCard{
+  background: red;
+    height: 70px;
+    width: 70px;
+}
+.pad_0{
+    padding: 0 !important;
+}
+.pad_0_right{
+    padding-right: 0 !important;
+}
+.mar_0{
+    margin: 0 !important;
+}
+.modal-header1{
+  border-bottom: none;
+    
+    padding-bottom: 0;
+    padding-left: 24px;
+    padding-right: 24px;
+    background: #2975A5;
+display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 </style>

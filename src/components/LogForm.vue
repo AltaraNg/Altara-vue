@@ -13,6 +13,15 @@
                     </select>
                 </div>
                 <div class="col form-group">
+                    <label for="bank" class="form-control-label">Bank</label>
+                    <select class="custom-select w-100" v-model="bank" v-validate="'required'">
+                        <option disabled selected="selected">Bank</option>
+                        <option :value="type.id" :key="type.id" v-for="type in getBanks">
+                            {{type.name}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col form-group">
                     <label for="amount" class="form-control-label">Amount</label>
                     <input class="w-100 custom-select" name="amount" v-model="amountData" v-validate="'required'" type="number" placeholder="Enter Amount"/>
                     <small v-if="errors.first('amount')">{{errors.first('amount')}}</small>
@@ -42,6 +51,7 @@ export default {
             cashLogForm: {},
             amountData:'',
             paymentId:'',
+            bank: '',
             paymentType:[],
             apiUrls: {
                 payment: `/api/payment`,
@@ -55,11 +65,12 @@ export default {
 
     },
     computed:{
-        ...mapGetters(['getPaymentMethods']),
+        ...mapGetters(['getPaymentMethods', 'getBanks']),
     },
     methods:{
         async submitForm() {
             this.cashLogForm.customer_id = this.customerId;
+            this.cashLogForm.bank_id = this.bank;
             this.cashLogForm.amount =this.amountData;
             this.cashLogForm.payment_method_id=this.paymentId,
             this.cashLogForm.model_id = this.orderId;

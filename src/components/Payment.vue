@@ -27,6 +27,10 @@
                     <div class="col d-flex align-items-center justify-content-center">
                         ₦{{payment.amount}}
                     </div>
+                    <div class="col d-flex align-items-center justify-content-center">
+                        {{payment.bank !== null ? payment.bank : "Not Available"}}
+                    </div>
+
                     <div class="col d-flex align-items-center justify-content-center" @click="updateModal(payment)" data-hoverable="true">
                         <p :class="payment.comment? 'green' : 'red'" class="overflow"><i class="fas fa-info-circle"></i></p>
                     </div>

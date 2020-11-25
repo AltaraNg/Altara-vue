@@ -15,19 +15,19 @@
                         <div class="col d-flex align-items-center" style="max-width: 120px"  >
                             <span class="user mx-auto" >{{index+OId}}</span>
                         </div>
-                        <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.amortization, mode.amortization)">
+                        <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.amortization, 'amortization')">
                             {{order.order_number}}
                         </div>
                         <div class="col d-flex align-items-center justify-content-center">
                             {{order.customer_name}}
                         </div>
-                        <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.product, mode.product)">
+                        <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.product, 'product')">
                             {{order.product.name}}
                         </div>
                          <div class="col d-flex align-items-center justify-content-center">
                             {{order.repayment  |  currency('₦')}}
                         </div>
-                         <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.notifications, mode.notifications)">
+                         <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.notifications, 'notification')">
                             {{order.notifications[0]? order.notifications[0].type : 'Not available'}}
                         </div>
 
@@ -79,6 +79,12 @@
 
                             </div>
 
+                            
+
+                            <div v-else-if="modalMode='notification'" class="table-responsive">
+                                done
+
+                            </div>
                             <div v-else class="table-responsive"></div>
 
 
@@ -146,10 +152,8 @@
                     {name: 'date from', model: 'date_from'},
                     {name: 'date to', model: 'date_to'}
                 ],
-                mode: {
-                    amortization: "amortization", notification: "notification", product: "product"
-                },
-                modalMode: null,
+                mode: "",
+               
                 orders: null,
                 response: {},
                 show: false,
@@ -180,10 +184,10 @@
                 this.$LIPS(false);
 
             },
-             viewStuffs(item, mode){
-                this.showModalContent = true;
-                this.modalMode = mode;
-                this.modalItem = item;
+             viewStuffs(item, model){
+                 this.modalItem = item;
+                 this.mode = model;
+                this.showModalContent = true;    
                 return $(`#viewStuffs`).modal('toggle');
             }
         },

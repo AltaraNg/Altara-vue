@@ -67,7 +67,7 @@
           >{{getParent(inventory.supplier_id, suppliers).name}}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
-          >{{inventory.is_active ? 'Available' : 'Sold Out'}}</div>
+          >{{inventory.inventory_status}}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
           >{{inventory.created_at.split(' ')[0]}}</div>
@@ -123,7 +123,7 @@
 
                     <tr>
                       <th>Status</th>
-                      <td>{{ inventoryItem.is_active | status}}</td>
+                      <td>{{ inventoryItem.inventory_status}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -270,6 +270,7 @@ export default {
       ],
       searchColumns: [
         { title: "Product Name", column: "productName" },
+       
       ],
       transferHistory:[],      
       branchId: "",

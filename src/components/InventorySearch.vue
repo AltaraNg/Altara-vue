@@ -5,11 +5,22 @@
                 <div class="col-md-6">
                     <input type="text" class="form-control" v-model="searchQ" @input="searchEvent" @change="searchEvent" />
                 </div>
+                
+                
                 <div class="col-md-6 float-left d-flex justify-content-around align-items-center">
                     <span class="position-relative radio " v-for="object in searchColumns">
                         <input checked  :value="object.column" @change="searchEvent" name="choice" :id="object.column" type="radio" v-model="searchFilter">
                         <label :for="object.column">{{object.title | capitalize}}</label>
                     </span>
+                </div>
+                <div class="col-md-2">
+                    <label for="bank" class="form-control-label">Branch</label>
+                    <select class="custom-select w-100" v-model="branch" v-validate="'required'">
+                        <option disabled selected="selected">Branch</option>
+                        <option :value="type.id" :key="type.id" v-for="type in getBranches">
+                            {{type.name}}
+                        </option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -18,6 +29,7 @@
 
 <script>
     import queryParam from "../utilities/queryParam";
+    import {mapGetters} from "vuex";
 
     export default {
         name:'InventorySearch',
@@ -27,20 +39,24 @@
         data(){
             return {
                 searchQ:'',
-                searchFilter:{}
+                searchFilter:{},
+                branch: null
             }
         },
 
         methods:{
             searchEvent () {
                 let filters = {};
-                let branchID = localStorage.getItem('branch_id');
-                console.log(branchID);
+                let currentBranch = localStorage.getItem('branch_id');
+                               
                 filters[this.searchFilter] = this.searchQ;
-                const filterParam = queryParam({...filters, branch: branchID});
+                const filterParam = queryParam({...filters, branchID: this.branch === null ? currentBranch : this.branch});
                 this.$emit('childToParent', filterParam);
             }
-        }
+        },
+        computed:{
+        ...mapGetters(['getBranches']),
+    },
     }
 </script>
 

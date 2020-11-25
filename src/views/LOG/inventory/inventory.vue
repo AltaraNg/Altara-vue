@@ -58,13 +58,16 @@
             class="col d-flex align-items-center justify-content-center"
             @click="viewInventory(inventory)"
           >{{inventory.product_name}}</div>
-          <div class="col d-flex align-items-center justify-content-center">{{inventory.sku}}</div>
+          <div class="col d-flex align-items-center justify-content-center">{{inventory.inventory_sku}}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
           >{{inventory.price | currency('₦')}}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
           >{{getParent(inventory.supplier_id, suppliers).name}}</div>
+          <div
+            class="col d-flex align-items-center justify-content-center"
+          >{{inventory.is_active ? 'Available' : 'Sold Out'}}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
           >{{inventory.created_at.split(' ')[0]}}</div>
@@ -101,7 +104,7 @@
 
                     <tr>
                       <th>SKU</th>
-                      <td>{{ inventoryItem.sku || "Not Available" }}</td>
+                      <td>{{ inventoryItem.inventory_sku || "Not Available" }}</td>
                     </tr>
 
                     <tr>
@@ -159,7 +162,7 @@
                     <option disabled value>Please select a branch</option>
                     <option
                       :key="option.id"
-                      v-for="option in getBranches"
+                      v-for="option in transferList"
                       v-bind:value="option.id"
                     >{{ option.name }}</option>
                   </select>
@@ -247,6 +250,7 @@ export default {
       page: 1,
       searchFilter: {},
       filters: [],
+      transferList: [],
       inventories: null,
       inventoryItem: null,
       response: {},
@@ -259,6 +263,7 @@ export default {
         "SKU",
         "Price",
         "Supplier",
+        "Status",
         "Date Received",
         "Branch",
         "Transfer",
@@ -275,6 +280,7 @@ export default {
   methods: {
     logTransfer(id, to) {
       this.$LIPS(true);
+      
 
       post("/api/product_transfer", { to_id: to, inventory_id: id })
         .then((res) => {
@@ -293,9 +299,14 @@ export default {
     },
     viewproductTransfer(data) {
                 this.$LIPS(true);
-
-      console.log("viewproductTransfer ", data);
+      
+      
+      
       this.transferItem = data;
+      
+      this.transferList = this.getBranches.filter(branch => {
+        return branch.name !== this.transferItem.branchName
+      });
       this.showProductTransfer = true;
       get(
        `/api/product_transfer?inventoryId=${data.id}`

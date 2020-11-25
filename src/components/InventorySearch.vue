@@ -34,8 +34,10 @@
         methods:{
             searchEvent () {
                 let filters = {};
+                let branchID = localStorage.getItem('branch_id');
+                console.log(branchID);
                 filters[this.searchFilter] = this.searchQ;
-                const filterParam = queryParam({...filters});
+                const filterParam = queryParam({...filters, branch: branchID});
                 this.$emit('childToParent', filterParam);
             }
         }

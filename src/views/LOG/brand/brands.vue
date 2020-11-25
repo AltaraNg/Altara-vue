@@ -212,12 +212,13 @@
                         title: res.message
 
                     });
-                    !this.showModalContent;
+                    
                      return this.$router.push(
                                             {path: '/log/brands'}
                                         )
                 }).catch(() => Flash.setError('Error Adding categories'));
                 this.$LIPS(false);
+                this.showModalContent = false;
             },
 
             next(firstPage = null) {

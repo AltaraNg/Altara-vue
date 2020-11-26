@@ -142,6 +142,28 @@
                                     </option>
                                 </select>
                             </div>
+                            <div class="col form-group">
+                                <label for="amount" class="form-control-label"
+                                    >Bank</label
+                                >
+                                <select
+                                    class="custom-select w-100"
+                                    v-model="salesLogForm.bank_id"
+                                    v-validate="'required'"
+                                    @change="getCalc()"
+                                >
+                                    <option disabled selected="selected"
+                                        >Bank</option
+                                    >
+                                    <option
+                                        :value="type.id"
+                                        :key="type.id"
+                                        v-for="type in getBanks"
+                                    >
+                                        {{ type.name }}
+                                    </option>
+                                </select>
+                            </div>
                             <!-- <div class="col form-group">
                     <label for="amount" class="form-control-label">Down Payment</label>
                     <input class="w-100 custom-select" name="amount" v-model="salesLogForm.down_payment" v-validate="'required'" type="number" placeholder="Enter Amount"/>
@@ -331,7 +353,7 @@ export default {
         await this.getCalculation();
     },
     computed: {
-        ...mapGetters(["getPaymentMethods"])
+        ...mapGetters(["getPaymentMethods", "getBanks"])
     },
     methods: {
         customDate(event) {

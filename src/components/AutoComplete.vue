@@ -16,7 +16,7 @@
                 >
                     {{
                         apiUrl === "/api/inventory"
-                            ? `${item.product_name}   ${item.sku}`
+                            ? `${item.product_name}   ${item.inventory_sku}`
                             : item.name
                     }}
                 </div>
@@ -46,7 +46,7 @@ export default {
     methods: {
         selectItem(data) {
          if (this.apiUrl === "/api/inventory") {
-                 this.inputValue = `${data.product_name}   ${data.sku}`;
+                 this.inputValue = `${data.product_name}   ${data.inventory_sku}`;
             } else {
                 this.inputValue =data.name;
             }

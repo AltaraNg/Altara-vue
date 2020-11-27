@@ -67,7 +67,7 @@
           >{{getParent(inventory.supplier_id, suppliers).name}}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
-          >{{inventory.inventory_status.name}}</div>
+          >{{inventory.inventory_status === null? "null" : inventory.inventory_status.name}}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
           >{{inventory.created_at.split(' ')[0]}}</div>
@@ -86,7 +86,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content" v-if="showModalContent">
             <div class="modal-header py-2">
-              <h4>{{inventoryItem.sku}}</h4>
+              <h4>{{inventoryItem.inventory_sku}} Summary</h4>
               <a aria-label="Close" class="close py-1" data-dismiss="modal">
                 <span aria-hidden="true" class="modal-close text-danger">
                   <i class="fas fa-times"></i>
@@ -123,7 +123,7 @@
 
                     <tr>
                       <th>Status</th>
-                      <td>{{ inventoryItem.inventory_status.name}}</td>
+                      <td>{{ inventoryItem.inventory_status === null? "null" : inventory.inventory_status.name}}</td>
                     </tr>
                   </tbody>
                 </table>

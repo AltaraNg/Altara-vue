@@ -122,7 +122,7 @@
           >{{getParent(inventory.supplier_id, suppliers).name}}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
-          >{{inventory.inventory_status.name}}</div>
+          >{{inventory.inventory_status === null? "null" : inventory.inventory_status.name}}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
           >{{inventory.created_at.split(' ')[0]}}</div>
@@ -178,7 +178,7 @@
 
                     <tr>
                       <th>Status</th>
-                      <td>{{ inventoryItem.inventory_status.name}}</td>
+                      <td>{{ inventoryItem.inventory_status === null? "null" : inventory.inventory_status.name}}</td>
                     </tr>
                   </tbody>
                 </table>

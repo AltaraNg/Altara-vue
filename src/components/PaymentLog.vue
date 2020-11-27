@@ -374,6 +374,7 @@ export default {
                 down_payment: this.fPayment,
                 custom_date: this.salesLogForm.custom_date,
                 repayment: this.rPayment,
+                bank_id: this.salesLogForm.bank_id,
                 product_price: this.pPrice,
                 payment_type_id: this.salesLogForm.payment_type_id.id,
                 payment_method_id: this.salesLogForm.payment_method_id

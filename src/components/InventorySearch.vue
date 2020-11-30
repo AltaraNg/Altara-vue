@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-md-2">
                     <label for="bank" class="form-control-label">Branch</label>
-                    <select class="custom-select w-100" v-model="branch" v-validate="'required'">
+                    <select class="custom-select w-100" v-model="branch" v-validate="'required'" @change="searchEvent">
                         <option disabled selected="selected">Branch</option>
                         <option :value="type.id" :key="type.id" v-for="type in getBranches">
                             {{type.name}}
@@ -50,7 +50,7 @@
                 let currentBranch = localStorage.getItem('branch_id');
                                
                 filters[this.searchFilter] = this.searchQ;
-                const filterParam = queryParam({...filters, branchID: this.branch === null ? currentBranch : this.branch});
+                const filterParam = queryParam({...filters, branch: this.branch === null ? '' : this.branch});
                 this.$emit('childToParent', filterParam);
             }
         },

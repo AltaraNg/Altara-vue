@@ -24,7 +24,7 @@
             <div class="tab-content mt-1 attendance-body">
                  <div class="mb-3 row attendance-item" :key="index" v-for="(order,index) in orders">
                         <div class="col d-flex align-items-center" style="max-width: 120px"  >
-                            <span class="user mx-auto" >{{index+1}}</span>
+                            <span class="user mx-auto" >{{index + OId}}</span>
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order, 'order')">
                             {{order.order_number}}
@@ -173,7 +173,7 @@
                 </div>
             </div>
 
-             <!-- <div v-if="pageParams">
+             <div v-if="pageParams">
                 <base-pagination
                     :page-param="pageParams"
                     :page="page"
@@ -183,7 +183,7 @@
                 >
                 </base-pagination>
 
-            </div> -->
+            </div>
 
 
 
@@ -256,22 +256,19 @@
                 let {page, page_size} = this.$data;
                 get(`${this.urlToFetchOrders}?days=${this.type === null ? this.message.default : this.type}`
                 )
-                    .then(({data}) => {
-                        this.orders = data.data;
-                         this.$LIPS(false);
-                        })
+                   .then(({data}) => this.prepareList(data))
                     .catch(() => Flash.setError('Error Preparing form'));
 
                    
 
 
             },
-            prepareList(response){
+           prepareList(response){
                 let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
-                
+                this.orders = data;
                 this.OId = from;
-                
+                this.$LIPS(false);
 
             },
              viewStuffs(item, model){

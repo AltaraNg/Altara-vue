@@ -2,7 +2,18 @@
     <transition name="fade">
         <div id="reminder" class="attendance">
 
-            <custom-header :title="'Reminder List'"/>
+            <custom-header :title="'Reminder Call List'"/>
+            <div class="mt-2 mt-lg-3 row attendance-head attendance-view">
+                <div class="col-4">
+                    <label>Select Option: </label>
+                    <select name="option" v-model="type" @change="fetchData" class="custom-select">
+                        <option :value="calls.default">Default</option>
+                        <option :value="calls.first_call">First call</option>
+                        <option :value="calls.second_call">Second call</option>
+                        <option :value="calls.third_call">Third call</option>
+                    </select>
+                </div>
+            </div>
             <div class="mt-5 mb-3 attendance-head">
                 <div class="w-100 my-5 mx-0 hr"></div>
                 <div class="row px-4 pt-3 pb-4 text-center">
@@ -13,7 +24,7 @@
             <div class="tab-content mt-1 attendance-body">
                  <div class="mb-3 row attendance-item" :key="index" v-for="(order,index) in orders" @click="viewStuffs(order)">
                         <div class="col d-flex align-items-center" style="max-width: 120px"  >
-                            <span class="user mx-auto" >{{index+OId}}</span>
+                            <span class="user mx-auto" >{{index+1}}</span>
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" >
                             {{order.order_number}}
@@ -124,7 +135,7 @@
                 </div>
             </div>
 
-             <div v-if="pageParams">
+             <!-- <div v-if="pageParams">
                 <base-pagination
                     :page-param="pageParams"
                     :page="page"
@@ -134,7 +145,7 @@
                 >
                 </base-pagination>
 
-            </div>
+            </div> -->
 
 
 
@@ -180,6 +191,7 @@
                     {name: 'date from', model: 'date_from'},
                     {name: 'date to', model: 'date_to'}
                 ],
+                type: null,
 
                 modalMode: null,
                 form: {},
@@ -189,6 +201,14 @@
                 showModalContent:false,
                 headings:
                     ['Order Number', 'Customer name', 'Phone Number', 'Product', 'Repayment', 'Call Count', ]
+                ,
+                calls: {
+                    default: 7,
+                    first_call: 28,
+                    second_call: 35,
+                    third_call: 42
+
+                }
             }
         },
 
@@ -198,17 +218,22 @@
                 this.$scrollToTop();
                 this.$LIPS(true);
                 let {page, page_size} = this.$data;
-                get(`${this.urlToFetchOrders}${!!page ? `?page=${page}` : ''}${!!page_size ? `&pageSize=${page_size}` : ''}`
+                get(`${this.urlToFetchOrders}?days=${this.type === null ? this.calls.default : this.type}`
                 )
-                    .then(({data}) => this.prepareList(data))
+                    .then(({data}) => {
+                        this.orders = data.data;
+                        this.$LIPS(false);
+                        
+                    })
                     .catch(() => Flash.setError('Error Preparing form'));
 
 
             },
+           
             prepareList(response){
                 let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
-                this.orders = data;
+                
                 this.OId = from;
                 this.$LIPS(false);
 

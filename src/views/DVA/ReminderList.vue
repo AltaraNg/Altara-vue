@@ -2,7 +2,18 @@
     <transition name="fade">
         <div id="reminder" class="attendance">
 
-            <custom-header :title="'Reminder List'"/>
+            <custom-header :title="'Reminder Message List'"/>
+            <div class="mt-2 mt-lg-3 row attendance-head attendance-view">
+                <div class="col-4">
+                    <label>Select Option: </label>
+                    <select name="option" v-model="type" @change="fetchData" class="custom-select">
+                        <option :value="message.default">Default</option>
+                        <option :value="message.first_message">First message</option>
+                        <option :value="message.second_message">Second message</option>
+                        <option :value="message.third_message">Third message</option>
+                    </select>
+                </div>
+            </div>
             <div class="mt-5 mb-3 attendance-head">
                 <div class="w-100 my-5 mx-0 hr"></div>
                 <div class="row px-4 pt-3 pb-4 text-center">
@@ -13,18 +24,18 @@
             <div class="tab-content mt-1 attendance-body">
                  <div class="mb-3 row attendance-item" :key="index" v-for="(order,index) in orders">
                         <div class="col d-flex align-items-center" style="max-width: 120px"  >
-                            <span class="user mx-auto" >{{index+OId}}</span>
+                            <span class="user mx-auto" >{{index+1}}</span>
                         </div>
-                        <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.amortization, 'amortization')">
+                        <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order, 'order')">
                             {{order.order_number}}
                         </div>
                         <div class="col d-flex align-items-center justify-content-center">
                             {{order.customer_name}}
                         </div>
-                        <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.product, 'product')">
+                        <div class="col d-flex align-items-center justify-content-center" >
                             {{order.product.name}}
                         </div>
-                         <div class="col d-flex align-items-center justify-content-center">
+                         <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.amortization, 'amortization')">
                             {{order.repayment  |  currency('₦')}}
                         </div>
                          <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.notifications, 'notification')">
@@ -41,8 +52,10 @@
             <div class="modal fade repayment" id="viewStuffs">
                 <div class="modal-dialog " role="document">
                     <div class="modal-content" v-if="showModalContent">
+
+                        <div v-if="mode==='order'">
                         <div class="modal-header py-2">
-                            <h4></h4>
+                            <h4>Order Summary</h4>
                             <a aria-label="Close" class="close py-1" data-dismiss="modal">
                         <span aria-hidden="true" class="modal-close text-danger">
 
@@ -51,41 +64,103 @@
                             </a>
                         </div>
                         <div class="modal-body px-5">
-                            <div class="table-responsive" v-if="modalMode='product'">
+                            <div class="table-responsive" >
                                 <table class="table table-bordered table-striped">
                                     <tbody>
                                     <tr>
-                                        <th>Name</th>
-                                        <td>{{ modalItem.name || "Not Available" }}</td>
+                                        <th>Oder Number</th>
+                                        <td>{{ modalItem.order_number || "Not Available" }}</td>
                                     </tr>
                                     <tr >
-                                        <th>Status</th>
+                                        <th>Order Date</th>
                                         <td>{{ modalItem.price}}</td>
                                     </tr>
 
                                     <tr>
-                                        <th>Date</th>
-                                        <td>{{modalItem.product_type }}</td>
+                                        <th>Product</th>
+                                        <td>{{modalItem.product.name }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Time</th>
-                                        <td>{{modalItem.created_at ? modalItem.created_at.split(" ")[1] : "Not Available" }}</td>
+                                        <th>Business Type</th>
+                                        <td>{{modalItem.business_type }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Repayment</th>
+                                        <td>{{modalItem.repayment | currency('₦')}}</td>
+                                    </tr>
+                                     <tr>
+                                        <th>Downpayment</th>
+                                        <td>{{modalItem.down_payment | currency('₦')}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Total Amount to Pay</th>
+                                        <td>{{modalItem.product_price | currency('₦')}}</td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
 
-                            <div v-else-if="modalMode='amortization'" class="table-responsive">
+                            
 
+
+                        </div>
+                        <div class="modal-footer justify-content-center">
+
+                        </div>
+
+                    </div>
+                    <div v-else-if="mode==='amortization'" class="table-responsive">
+                        
+
+                    </div>
+                    <div v-else-if="mode==='notification'" class="table-responsive">
+                        <div class="modal-header py-2">
+                            <h4>Notification Summary</h4>
+                            <a aria-label="Close" class="close py-1" data-dismiss="modal">
+                        <span aria-hidden="true" class="modal-close text-danger">
+
+                            <i class="fas fa-times"></i>
+                        </span>
+                            </a>
+                        </div>
+                        <div class="modal-body px-5">
+                            <div class="table-responsive" >
+                                <table class="table table-bordered table-striped">
+                                    <tbody>
+                                    <tr>
+                                        <th>Oder Number</th>
+                                        <td>{{ modalItem.order_number || "Not Available" }}</td>
+                                    </tr>
+                                    <tr >
+                                        <th>Order Date</th>
+                                        <td>{{ modalItem.price}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Product</th>
+                                        <td>{{modalItem.product.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Business Type</th>
+                                        <td>{{modalItem.business_type }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Repayment</th>
+                                        <td>{{modalItem.repayment | currency('₦')}}</td>
+                                    </tr>
+                                     <tr>
+                                        <th>Downpayment</th>
+                                        <td>{{modalItem.down_payment | currency('₦')}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Total Amount to Pay</th>
+                                        <td>{{modalItem.product_price | currency('₦')}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
 
                             
-
-                            <div v-else-if="modalMode='notification'" class="table-responsive">
-                                done
-
-                            </div>
-                            <div v-else class="table-responsive"></div>
 
 
                         </div>
@@ -93,10 +168,12 @@
 
                         </div>
                     </div>
+                    <div v-else class="table-responsive"></div>
+                    </div>
                 </div>
             </div>
 
-             <div v-if="pageParams">
+             <!-- <div v-if="pageParams">
                 <base-pagination
                     :page-param="pageParams"
                     :page="page"
@@ -106,7 +183,7 @@
                 >
                 </base-pagination>
 
-            </div>
+            </div> -->
 
 
 
@@ -153,8 +230,16 @@
                     {name: 'date to', model: 'date_to'}
                 ],
                 mode: "",
+                 message: {
+                    default: 7,
+                    first_message: 7,
+                    second_message: 14,
+                    third_message: 21
+
+                },
                
                 orders: null,
+                type: null,
                 response: {},
                 show: false,
                 showModalContent:false,
@@ -169,19 +254,24 @@
                 this.$scrollToTop();
                 this.$LIPS(true);
                 let {page, page_size} = this.$data;
-                get(`${this.urlToFetchOrders}${!!page ? `?page=${page}` : ''}${!!page_size ? `&pageSize=${page_size}` : ''}`
+                get(`${this.urlToFetchOrders}?days=${this.type === null ? this.message.default : this.type}`
                 )
-                    .then(({data}) => this.prepareList(data))
+                    .then(({data}) => {
+                        this.orders = data.data;
+                         this.$LIPS(false);
+                        })
                     .catch(() => Flash.setError('Error Preparing form'));
+
+                   
 
 
             },
             prepareList(response){
                 let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
-                this.orders = data;
+                
                 this.OId = from;
-                this.$LIPS(false);
+                
 
             },
              viewStuffs(item, model){

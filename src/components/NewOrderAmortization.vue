@@ -78,6 +78,7 @@
                   </tbody>
                 </table>
                 </div>
+               
                 <h5 class="mt-5 mb-0">Payment Summary</h5>
                 <table class="table table-bordered">
                   <tbody class="text-center">
@@ -107,12 +108,14 @@
                     </tr>
                   </tbody>
                 </table>
+                 <div v-if="standAlone === false">
                 <LogForm
                   :amortizationData="amortizationData"
                   :customerId="customer.id"
                   :orderId="order.id"
                   @done="this.done"
                 />
+                </div>
               </div>
             </div>
             <div
@@ -150,6 +153,10 @@ export default {
         paymentFormType: {
             type: String,
             default: 'add'
+        },
+        standAlone: {
+          type: Boolean,
+          default: false
         }
     },
     data(){

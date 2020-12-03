@@ -81,7 +81,7 @@
                                         <td>{{index+1}}</td>
                                         <td>{{notification.type}}</td>
                                         <td>{{notification.data.feedback}}</td>
-                                        <td>{{notification.created_at.split(' ')[0]}}</td>
+                                        <td>{{convertDate(notification.created_at)}}</td>
                                     </tr>
 
                                     </tbody>
@@ -260,6 +260,11 @@
                                         )
                     }
                 })
+            },
+             convertDate(date){
+                let utcDate = new Date(date).toUTCString();
+                return utcDate;
+
             }
         },
         created(){

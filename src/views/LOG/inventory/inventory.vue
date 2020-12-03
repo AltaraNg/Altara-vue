@@ -131,10 +131,28 @@
           >{{getParent(inventory.branch_id, getBranches).name}}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
-            @click="viewproductTransfer({...inventory,branchName:getParent(inventory.branch_id, getBranches).name})"
+            
+            v-if="inventory.inventory_status !== null"
           >
+          <div 
+          v-if="inventory.inventory_status.status === 'Available'"  
+          class="col d-flex align-items-center justify-content-center"  
+          @click="viewproductTransfer({...inventory,branchName:getParent(inventory.branch_id, getBranches).name})" >
             <i class="fas fa-exchange-alt"></i>
           </div>
+          <div v-else  class="col d-flex align-items-center justify-content-center"   >
+           <i class="fa fa-ban" aria-hidden="true"></i>
+          </div>
+
+            
+          </div>
+          <div
+            class="col d-flex align-items-center justify-content-center"            
+            v-else
+          >
+            <i class="fa fa-ban" aria-hidden="true"></i>
+          </div>
+
         </div>
       </div>
       <div class="modal fade repayment" id="viewInventory">

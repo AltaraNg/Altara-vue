@@ -11,6 +11,9 @@
                         <option :value="message.first_message">First message</option>
                         <option :value="message.second_message">Second message</option>
                         <option :value="message.third_message">Third message</option>
+                        <option :value="message.first_call">First call</option>
+                        <option :value="message.second_call">Second call</option>
+                        <option :value="message.third_call">Third call</option>
                     </select>
                 </div>
             </div>
@@ -19,12 +22,15 @@
                 <div class="row px-4 pt-3 pb-4 text-center">
                     <div class="col light-heading" style="max-width: 120px">S/N</div>
                     <div class="col light-heading" v-for="header in headings">{{header}}</div>
+                    <div class="col light-heading" v-if="modeType==='call'">Feedback</div>
+                    <div class="col light-heading" v-if="modeType==='call'">Promise Date</div>
                 </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
                  <div class="mb-3 row attendance-item" :key="index" v-for="(order,index) in orders">
                         <div class="col d-flex align-items-center" style="max-width: 120px"  >
-                            <span class="user mx-auto" >{{index + OId}}</span>
+                            <span class="user mx-auto" v-if="modeType==='call'" @click="save(order)">{{index + OId}}</span>
+                            <span class="user mx-auto" v-else>{{index + OId}}</span>
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order, 'order')">
                             {{order.order_number}}
@@ -40,6 +46,12 @@
                         </div>
                          <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.notifications, 'notification')">
                             {{order.notifications[0]? order.notifications[0].type : 'Not available'}}
+                        </div>
+                        <div class="col d-flex align-items-center justify-content-center" v-if="modeType==='call'">
+                            <input type="text" name="feedback"  class="form-control" v-model="order.feedback">
+                        </div>
+                        <div class="col d-flex align-items-center justify-content-center" v-if="modeType==='call'">
+                            <input type="date" name="date" v-model="order.promise_date" class="form-control"/>
                         </div>
 
 
@@ -189,13 +201,14 @@
 </template>
 <script>
     import Vue from 'vue';
-    import {get} from '../../utilities/api';
+    import {get, post} from '../../utilities/api';
     import Flash from "../../utilities/flash";
     import {mapGetters, mapActions} from "vuex";
     import CustomHeader from '../../components/customHeader';
     import BasePagination from '../../components/Pagination/BasePagination';
     import Vue2Filters from 'vue2-filters';
     import NewOrderAmortization from "../../components/NewOrderAmortization"
+import OrderWithPromiseCall from '../../utilities/reminder';
 
 
 
@@ -226,14 +239,19 @@
                     {name: 'date from', model: 'date_from'},
                     {name: 'date to', model: 'date_to'}
                 ],
-                mode: "",
+                mode: '',
+                modeType: '',
                  message: {
                     default: 7,
                     first_message: 7,
                     second_message: 14,
-                    third_message: 21
+                    third_message: 21,
+                    first_call: 28,
+                    second_call: 35,
+                    third_call: 42
 
                 },
+                promise_date: null,
                
                 orders: null,
                 type: null,
@@ -250,6 +268,7 @@
 
                 this.$scrollToTop();
                 this.$LIPS(true);
+                this.type === this.message.first_call || this.type === this.message.second_call || this.type === this.message.third_call ? this.modeType = 'call' : this.modeType = 'message';
                 let {page, page_size} = this.$data;
                 get(`${this.urlToFetchOrders}?days=${this.type === null ? this.message.default : this.type}`
                 )
@@ -285,6 +304,30 @@
                 let utcDate = new Date(date).toUTCString();
                 return utcDate;
 
+            },
+             save(order){
+                 this.$LIPS(true);
+                 let type = Object.keys(this.message).find(key => this.message[key] === this.type);
+                let data = {
+                    "feedback": order.feedback,
+                    "order_id": order.id,
+                    "type": type,
+                    "status": "called",
+                    "promise_date": order.promise_date === true? null : order.promise_date
+                    };
+
+                post(this.urlToFetchOrders, data).then(({data}) => {
+                    if(data.status === 'success'){
+                        this.$swal({
+                                                              icon: 'success',
+                                            title: "Feedback saved successfully"
+
+                                        });
+                                        this.$LIPS(false);
+                                        return this.$router.go();
+                                        
+                    }
+                })
             }
         },
         created(){

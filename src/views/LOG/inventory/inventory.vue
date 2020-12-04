@@ -135,7 +135,7 @@
             v-if="inventory.inventory_status !== null"
           >
           <div 
-          v-if="inventory.inventory_status.status === 'Available'"  
+          v-if="inventory.inventory_status.status === 'Available' || inventory.inventory_status.status === 'Repossessed'"  
           class="col d-flex align-items-center justify-content-center"  
           @click="viewproductTransfer({...inventory,branchName:getParent(inventory.branch_id, getBranches).name})" >
             <i class="fas fa-exchange-alt"></i>
@@ -196,7 +196,7 @@
 
                     <tr>
                       <th>Status</th>
-                      <td>{{ inventoryItem.inventory_status === null? "null" : inventory.inventory_status.status}}</td>
+                      <td>{{ inventoryItem.inventory_status === null? "null" : inventoryItem.inventory_status.status}}</td>
                     </tr>
                   </tbody>
                 </table>

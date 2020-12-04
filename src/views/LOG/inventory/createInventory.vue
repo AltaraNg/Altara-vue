@@ -101,7 +101,7 @@
                     <div class="my-4 clearfix p-5 row bg-white shadow-sm card-radius">
                         <div class="form-group col-md-2">
                             <label>Inventory SKU: </label>
-                            <p>{{form.sku || 25}}</p>
+                            <p>{{form.inventory_sku || 25}}</p>
                         </div>
                         <div class="form-group col-md-2">
                             <label>Product Name: </label>
@@ -113,14 +113,22 @@
                             <input id="price" type="number" v-model="form.price" name="price" class="custom-select w-50">
                         </div>
                         <div class="form-group col-md-2">
+                            <label>Status: </label>
+                            <p>
+                                <select v-model="form.inventory_status_id" class="custom-select w-75">
+                                    <option :value="3">Damaged</option>
+                                    <option :value="4">Repossessed</option>
+                                </select>
+                            </p>
+                        </div>
+                        <div class="form-group col-md-2">
                             <label>Supplier Name: </label>
                             <p>{{form.supplier_name | capitalize}}</p>
                         </div>
 
                         <div class="form-group col-md-2">
                             <label>Branch: </label>
-                            <p>{{form.branch_name || 25}}</p>
-                            <small class="small">transfer product</small>
+                            <p>{{form.branch_name || 25}}</p>                            
                         </div>
                         <div class="form-group col-md-2">
                             <input type="submit" value="Submit" class="btn bg-default w-100">

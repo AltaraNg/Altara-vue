@@ -35,7 +35,7 @@
                         <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order, 'order')">
                             {{order.order_number}}
                         </div>
-                        <div class="col d-flex align-items-center justify-content-center">
+                        <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.customer, 'customer')">
                             {{order.customer_name}}
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" >
@@ -174,7 +174,54 @@
 
                         </div>
                     </div>
-                    <div v-else class="table-responsive"></div>
+                    <div v-else-if="mode === 'customer'">
+                        <div class="modal-header py-2">
+                            <h4>Customer Details</h4>
+                            <a aria-label="Close" class="close py-1" data-dismiss="modal">
+                        <span aria-hidden="true" class="modal-close text-danger">
+
+                            <i class="fas fa-times"></i>
+                        </span>
+                            </a>
+                        </div>
+                        <div class="modal-body px-5">
+                            <div class="table-responsive" >
+                                <table class="table table-bordered table-striped">
+                                    <tbody>
+                                    <tr>
+                                        <th>Customer Name</th>
+                                        <td>{{ `${modalItem.first_name} ${modalItem.last_name}` || "Not Available" }}</td>
+                                    </tr>
+                                    <tr >
+                                        <th>Customer Number</th>
+                                        <td>{{ modalItem.telephone}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Registered By</th>
+                                        <td>{{modalItem.employee_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date Registered</th>
+                                        <td>{{modalItem.date_of_registration}}</td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th>Occupation</th>
+                                        <td>{{modalItem.occupation}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            
+
+
+                        </div>
+                        <div class="modal-footer justify-content-center">
+
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -235,6 +282,7 @@ import OrderWithPromiseCall from '../../utilities/reminder';
                 date_to: null,
                 page: 1,
                 pageParams: null,
+                 page_size: 10,
                 filters: [
                     {name: 'date from', model: 'date_from'},
                     {name: 'date to', model: 'date_to'}
@@ -270,7 +318,8 @@ import OrderWithPromiseCall from '../../utilities/reminder';
                 this.$LIPS(true);
                 this.type === this.message.first_call || this.type === this.message.second_call || this.type === this.message.third_call ? this.modeType = 'call' : this.modeType = 'message';
                 let {page, page_size} = this.$data;
-                get(`${this.urlToFetchOrders}?days=${this.type === null ? this.message.default : this.type}`
+                get(`${this.urlToFetchOrders}?days=${this.type === null ? this.message.default : this.type}`+`${!!page ? `&page=${page}` : ""}` +
+          `${!!page_size ? `&pageSize=${page_size}` : ""}`
                 )
                    .then(({data}) => this.prepareList(data))
                     .catch(() => Flash.setError('Error Preparing form'));
@@ -305,6 +354,19 @@ import OrderWithPromiseCall from '../../utilities/reminder';
                 return utcDate;
 
             },
+            next(firstPage = null) {
+                if (this.pageParams.next_page_url) {
+                    this.page = firstPage ? firstPage : parseInt(this.page) + 1;
+                    this.fetchData();
+                    }
+                },
+
+            prev(lastPage = null) {
+                if (this.pageParams.prev_page_url) {
+                    this.page = lastPage ? lastPage : parseInt(this.page) - 1;
+                    this.fetchData();
+                    }
+                },
              save(order){
                  this.$LIPS(true);
                  let type = Object.keys(this.message).find(key => this.message[key] === this.type);

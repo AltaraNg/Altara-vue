@@ -56,10 +56,7 @@
                         url: 'reminder-list', title: 'Reminder list', url_c: 'View Reminder List',
                         desc: 'View Reminder List!',
                     },
-                    {
-                        url: 'call-list', title: 'Call list', url_c: 'View Call List',
-                        desc: 'View Call List!',
-                    }
+                    
                     // TODO:: cleanup
                 ]
             }

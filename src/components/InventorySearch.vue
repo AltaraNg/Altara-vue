@@ -15,7 +15,11 @@
         <div
           class="col-md-6 float-left d-flex justify-content-around align-items-center"
         >
-          <span class="position-relative radio" v-for="object in searchColumns">
+          <span
+            class="position-relative radio"
+            :key="searchColumns[object]"
+            v-for="object in searchColumns"
+          >
             <input
               checked
               :value="object.column"
@@ -83,7 +87,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .searchBar {
   background-color: #fff;
   border-radius: 7px;

@@ -38,10 +38,10 @@ const OrderList = () =>
     import ("../views/DVA/AllOrderList.vue");
 const AllOverdue = () =>
     import ("../views/DVA/AllOverduePayment");
-const ReminderList = () => 
-    import("../views/DVA/ReminderList.vue");
-const CallList = () => 
-    import("../views/DVA/CallList.vue");
+const ReminderList = () =>
+    import ("../views/DVA/ReminderList.vue");
+const CallList = () =>
+    import ("../views/DVA/CallList.vue");
 const Reminder = () =>
     import ("../views/DVA/reminder/reminder.vue");
 const Profile = () =>
@@ -88,6 +88,8 @@ const LOGHome = () =>
     import ("../views/LOG/HomePage.vue");
 const Inventory = () =>
     import ("../views/LOG/inventory/inventory.vue");
+const InventoryDashboard = () =>
+    import ("../views/LOG/inventory/inventoryDashboard.vue");
 const InventoryCreate = () =>
     import ("../views/LOG/inventory/createInventory.vue");
 const SuppliersForm = () =>
@@ -446,6 +448,7 @@ const router = new VueRouter({
             children: [
                 { path: "home", component: LOGHome, name: "LOGHome" },
                 { path: "inventory", component: Inventory, name: "inventory" },
+                { path: "inventorydashboard", component: InventoryDashboard, name: "inventoryDashboard" },
                 {
                     path: "inventory/create",
                     component: InventoryCreate,

@@ -83,7 +83,6 @@
           <div
             class="col d-flex align-items-center justify-content-center"
             v-if="inventory.inventory_status !== null"
-            
           >
             <div
               v-if="

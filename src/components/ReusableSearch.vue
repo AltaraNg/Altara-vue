@@ -80,12 +80,7 @@ export default {
   },
   data() {
     return {
-      searchQuery: {
-        search: "",
-        branch: "",
-        fromDate: "",
-        toDate: "",
-      },
+      searchQuery: {},
       searchFilter: {},
       elements: [],
     };
@@ -115,8 +110,12 @@ export default {
     },
     searchEvent() {
       const data = Object.assign(...this.selectedFilters.map((v) => v));
+      const defaultData = this.searchQuery;
+      if (defaultData.branch === "all") {
+        delete defaultData.branch;
+      }
       const filterParam = queryParam({
-        ...this.searchQuery,
+        ...defaultData,
         ...data,
       });
       this.$emit("childToParent", filterParam);

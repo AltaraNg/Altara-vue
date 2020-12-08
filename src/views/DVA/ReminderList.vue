@@ -45,7 +45,7 @@
                             {{order.repayment - calcDebt(order.amortization) | currency('₦')}} | {{order.repayment  |  currency('₦')}} 
                         </div>
                          <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.notifications, 'notification')">
-                            {{order.notifications[0]? order.notifications[0].type : 'Not available'}}
+                            {{order.notifications[0]? order.notifications.length : 'Not available'}}
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" v-if="modeType==='call'">
                             <input type="text" name="feedback"  class="form-control" v-model="order.feedback">
@@ -307,7 +307,7 @@ import OrderWithPromiseCall from '../../utilities/reminder';
                 show: false,
                 showModalContent:false,
                 headings:
-                    ['Order Number', 'Order Customer name', 'Product', 'Paid | Repayment', 'Reminder History']
+                    ['Order Number', 'Order Customer name', 'Product', 'Paid | Repayment', 'Reminder Count']
             }
         },
 

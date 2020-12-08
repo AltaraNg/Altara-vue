@@ -41,7 +41,7 @@
                         <div class="col d-flex align-items-center justify-content-center" >
                             {{order.product.name}}
                         </div>
-                         <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order, 'amortization')">
+                         <div class="col d-flex align-items-center justify-content-center overflow-auto" @click="viewStuffs(order, 'amortization')">
                             {{order.repayment - calcDebt(order.amortization) | currency('₦')}} | {{order.repayment  |  currency('₦')}} 
                         </div>
                          <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.notifications, 'notification')">
@@ -386,7 +386,9 @@ import OrderWithPromiseCall from '../../utilities/reminder';
 
                                         });
                                         this.$LIPS(false);
-                                        return this.$router.go();
+                                        order.feedback = "";
+                                        order.promise_date = "";
+                                        this.fetchData();
                                         
                     }
                 })

@@ -466,7 +466,7 @@ export default {
         total,
         prev_page_url,
       } = response.data;
-      console.log('yes',response);
+     
       this.pageParams = Object.assign({}, this.pageParams, {
         current_page,
         first_page_url,
@@ -481,7 +481,7 @@ export default {
       });
       this.inventories = response.data.products ? response.data.products : response.data.data.products;
       this.summary =  response.data.summary ? response.data.summary : response.data.data.summary;
-      console.log("opopopp", this.inventories);
+     
       this.OId = from;
       this.$LIPS(false);
     },

@@ -114,10 +114,18 @@
             {{ inventory.brand }}
           </div>
           <div class="col d-flex align-items-center justify-content-center">
-            {{ inventory.retail_price | currency("₦") }}
+            {{
+              inventory.inventories
+                .map((v) => v.price)
+                .reduce((sum, val) => sum + val, 0) | currency("₦")
+            }}
           </div>
           <div class="col d-flex align-items-center justify-content-center">
-            {{ inventory.inventories.length }}
+            {{
+              inventory.inventories.filter(
+                (data) => data.inventory_status === "Available"
+              ).length
+            }}
           </div>
         </div>
       </div>
@@ -194,14 +202,29 @@
                 <div
                   class="col d-flex align-items-center justify-content-center"
                   @click="
-                    viewproductTransfer({
-                      ...inventory,
-                      branchName: getParent(inventory.branch_id, getBranches)
-                        .name,
-                    })
+                    inventory.sold_date != ''
+                      ? ''
+                      : viewproductTransfer({
+                          ...inventory,
+                          branchName: getParent(
+                            inventory.branch_id,
+                            getBranches
+                          ).name,
+                        })
                   "
                 >
-                  <i class="fas fa-exchange-alt"></i>
+                  <i v-if="inventory.sold_date != ''" class="fas fa-ban"></i>
+                  <i v-else class="fas fa-exchange-alt"></i>
+                </div>
+                <div
+                  class="col d-flex align-items-center justify-content-center"
+                >
+                  <button
+                    class="text-center btn bg-default"
+                    @click="edit(inventory.id)"
+                  >
+                    Edit
+                  </button>
                 </div>
               </div>
             </div>
@@ -358,7 +381,7 @@ export default {
         "Product Type",
         "Product Category",
         "Product Brand",
-        "Retail Price",
+        "Total Worth",
         "Total Available",
       ],
       headings0: [
@@ -370,6 +393,7 @@ export default {
         "Date Received",
         "Branch",
         "Transfer",
+        "Edit",
       ],
       searchColumns: [
         { title: "Product Name", test: "", column: "productName" },

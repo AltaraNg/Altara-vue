@@ -83,12 +83,6 @@
           <div
             class="col d-flex align-items-center justify-content-center"
             v-if="inventory.inventory_status !== null"
-            @click="
-              viewproductTransfer({
-                ...inventory,
-                branchName: getParent(inventory.branch_id, getBranches).name,
-              })
-            "
           >
             <div
               v-if="
@@ -181,7 +175,7 @@
                         {{
                           inventoryItem.inventory_status === null
                             ? "null"
-                            : inventory.inventory_status.status
+                            : inventoryItem.inventory_status.status
                         }}
                       </td>
                     </tr>

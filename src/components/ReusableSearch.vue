@@ -93,8 +93,17 @@ export default {
     searchEvent() {
       this.$LIPS(true);
       get(this.url + queryParam(this.searchQuery)).then(response => {
-        this.$emit("childToParent", response.data);
+        if(this.searchQuery.days !== undefined){
+          this.$emit("childToParent", {
+            data: response.data.data,
+            days: this.searchQuery.days
+          });
+        }
+        else{
+          this.$emit("childToParent", response.data);        
+        }
         this.searchQuery = {};
+        
         }).catch(err => {
           Flash.setError('Unable to fetch');
         })

@@ -323,7 +323,7 @@ import ResueableSearch from '../../components/ReusableSearch.vue';
 
                 this.$scrollToTop();
                 this.$LIPS(true);
-                this.type === this.message.first_call || this.type === this.message.second_call || this.type === this.message.third_call ? this.modeType = 'call' : this.modeType = 'message';
+               
                 let {page, page_size} = this.$data;
                 get(`${this.urlToFetchOrders}?days=${this.type === null ? this.message.default : this.type}`+`${!!page ? `&page=${page}` : ""}` +
           `${!!page_size ? `&pageSize=${page_size}` : ""}`
@@ -336,7 +336,9 @@ import ResueableSearch from '../../components/ReusableSearch.vue';
 
             },
            prepareList(response){
-               console.log('here', response.data);
+               console.log('here', response.days);
+               this.type = response.days;
+               response.days === this.message.first_call || response.days === this.message.second_call || response.days === this.message.third_call ? this.modeType = 'call' : this.modeType = 'message';
                 let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
                 this.orders = data;
@@ -396,6 +398,7 @@ import ResueableSearch from '../../components/ReusableSearch.vue';
                                         this.$LIPS(false);
                                         order.feedback = "";
                                         order.promise_date = "";
+                                        this.modeType = 'call';
                                         this.fetchData();
                                         
                     }

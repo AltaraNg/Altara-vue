@@ -3,10 +3,14 @@
         <div id="reminder" class="attendance">
 
             <custom-header :title="'Reminder Message List'"/>
-            <div class="mt-2 mt-lg-3 row attendance-head attendance-view">
-                <div class="col-4">
-                    <label>Select Option: </label>
-                    <select name="option" v-model="type" @change="fetchData" class="custom-select">
+            
+            <resueable-search :url="urlToFetchOrders" @childToParent="prepareList">
+                <template #default= "{ searchQuery }">
+                <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Reminder Type:  </label>
+                    </div>
+                    <select name="option" v-model="searchQuery.days"  class="custom-select">
                         <option :value="message.default">Default</option>
                         <option :value="message.first_message">First message</option>
                         <option :value="message.second_message">Second message</option>
@@ -16,7 +20,8 @@
                         <option :value="message.third_call">Third call</option>
                     </select>
                 </div>
-            </div>
+                </template>
+            </resueable-search>
             <div class="mt-5 mb-3 attendance-head">
                 <div class="w-100 my-5 mx-0 hr"></div>
                 <div class="row px-4 pt-3 pb-4 text-center">
@@ -252,10 +257,12 @@
     import Flash from "../../utilities/flash";
     import {mapGetters, mapActions} from "vuex";
     import CustomHeader from '../../components/customHeader';
+    import ReusableSearch from '../../components/ReusableSearch';
     import BasePagination from '../../components/Pagination/BasePagination';
     import Vue2Filters from 'vue2-filters';
     import NewOrderAmortization from "../../components/NewOrderAmortization"
 import OrderWithPromiseCall from '../../utilities/reminder';
+import ResueableSearch from '../../components/ReusableSearch.vue';
 
 
 
@@ -268,7 +275,7 @@ import OrderWithPromiseCall from '../../utilities/reminder';
             urlToFetchOrders: {default: '/api/repayment_reminder'}
         },
 
-        components: {CustomHeader, BasePagination, NewOrderAmortization },
+        components: {CustomHeader, BasePagination, NewOrderAmortization, ResueableSearch },
 
         computed: {...mapGetters(['getBranches'])},
 
@@ -316,7 +323,7 @@ import OrderWithPromiseCall from '../../utilities/reminder';
 
                 this.$scrollToTop();
                 this.$LIPS(true);
-                this.type === this.message.first_call || this.type === this.message.second_call || this.type === this.message.third_call ? this.modeType = 'call' : this.modeType = 'message';
+               
                 let {page, page_size} = this.$data;
                 get(`${this.urlToFetchOrders}?days=${this.type === null ? this.message.default : this.type}`+`${!!page ? `&page=${page}` : ""}` +
           `${!!page_size ? `&pageSize=${page_size}` : ""}`
@@ -329,6 +336,9 @@ import OrderWithPromiseCall from '../../utilities/reminder';
 
             },
            prepareList(response){
+               console.log('here', response.days);
+               this.type = response.days;
+               response.days === this.message.first_call || response.days === this.message.second_call || response.days === this.message.third_call ? this.modeType = 'call' : this.modeType = 'message';
                 let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
                 this.orders = data;
@@ -388,6 +398,7 @@ import OrderWithPromiseCall from '../../utilities/reminder';
                                         this.$LIPS(false);
                                         order.feedback = "";
                                         order.promise_date = "";
+                                        this.modeType = 'call';
                                         this.fetchData();
                                         
                     }

@@ -1,29 +1,16 @@
 <template>
   <div class="searchBar-x">
-    <div class="row form-group my-5 mx-5">
-      <!-- <div class="col-md w-100">
-        <label for="search" class="form-control-label">Search Input</label>
-        <input
-          type="text"
-          class="form-control w-100"
-          placeholder="Enter key word  ..."
-          v-model="searchQuery.search"
-        />
-      </div> -->
-      <div v-for="(stack, index) in stacks" :key="index" class="col-md">
-        <label for="toDate" class="form-control-label">
-          {{ stack.title }}
-        </label>
-        <input class="form-control w-100" type="text" v-model="stack.value" />
-        <!-- end of checkboxes -->
-      </div>
+    <div class="row form-group my-5 mx-5">      
+      <slot :searchQuery="searchQuery"></slot>
       <div class="col-md">
+        <div>
         <label for="branch" class="form-control-label">Branch</label>
+        </div>
         <select
           name="branch"
           id="branch"
           v-model="searchQuery.branch"
-          class="text-capitalize font-weight-bold h5"
+          class="custom-select"
         >
           <option value="all" selected="selected">All</option>
           <option
@@ -71,6 +58,7 @@
 import DatePicker from "vue2-datepicker";
 import { mapGetters } from "vuex";
 import "vue2-datepicker/index.css";
+import Flash from "../utilities/flash";
 import { get, post, put } from "../utilities/api";
 import queryParam from "../utilities/queryParam";
 
@@ -80,25 +68,19 @@ export default {
   },
   data() {
     return {
-      searchQuery: {},
+      searchQuery: {        
+      },
       searchFilter: {},
       elements: [],
     };
   },
   props: {
-    stacks: {},
-  },
-  computed: {
-    selectedFilters: function () {
-      let filters = [];
-      let checkedFiters = this.stacks.filter((obj) => obj.value);
-      checkedFiters.forEach((element) => {
-        filters.push({
-          [element.column]: element.value,
-        });
-      });
-      return filters;
+    url: {
+      type: String,
+      required: true
     },
+  },
+  computed: {   
     ...mapGetters(["getBranches"]),
   },
 
@@ -109,16 +91,24 @@ export default {
       });
     },
     searchEvent() {
-      const data = Object.assign(...this.selectedFilters.map((v) => v));
-      const defaultData = this.searchQuery;
-      if (defaultData.branch === "all") {
-        delete defaultData.branch;
-      }
-      const filterParam = queryParam({
-        ...defaultData,
-        ...data,
-      });
-      this.$emit("childToParent", filterParam);
+      this.$LIPS(true);
+      get(this.url + queryParam(this.searchQuery)).then(response => {
+        if(this.searchQuery.days !== undefined){
+          this.$emit("childToParent", {
+            data: response.data.data,
+            days: this.searchQuery.days
+          });
+        }
+        else{
+          this.$emit("childToParent", response.data);        
+        }
+        this.searchQuery = {};
+        
+        }).catch(err => {
+          Flash.setError('Unable to fetch');
+        })
+      
+      
     },
   },
   created() {

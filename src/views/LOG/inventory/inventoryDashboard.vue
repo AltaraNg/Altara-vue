@@ -45,9 +45,18 @@
       <div class="mt-2 mt-lg-3 row attendance-head">
         <div class="col-md-10">
           <resueable-search
-            v-on:childToParent="searchEvent"
-            :stacks="searchColumns"
-          ></resueable-search>
+            @childToParent="prepareList"
+            :url="urlToFetchOrders"
+          >
+           <template #default= "{ searchQuery }">
+                <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Product Name:  </label>
+                    </div>
+                    <input type="text" v-model="searchQuery.productName" class="form-control">
+                </div>
+                </template>
+          </resueable-search>
         </div>
 
         <div class="col-md">
@@ -325,6 +334,7 @@ import Vue2Filters from "vue2-filters";
 import CustomHeader from "../../../components/customHeader";
 import BasePagination from "../../../components/Pagination/BasePagination";
 import InventorySearch from "../../../components/InventorySearch";
+import renewalVue from '../../FSL/renewal/renewal.vue';
 Vue.use(Vue2Filters);
 export default {
   props: {
@@ -456,6 +466,7 @@ export default {
         total,
         prev_page_url,
       } = response.data;
+     
       this.pageParams = Object.assign({}, this.pageParams, {
         current_page,
         first_page_url,
@@ -468,9 +479,9 @@ export default {
         total,
         prev_page_url,
       });
-      this.inventories = response.data.products;
-      this.summary = response.data.summary;
-      console.log("opopopp", this.inventories);
+      this.inventories = response.data.products ? response.data.products : response.data.data.products;
+      this.summary =  response.data.summary ? response.data.summary : response.data.data.summary;
+     
       this.OId = from;
       this.$LIPS(false);
     },

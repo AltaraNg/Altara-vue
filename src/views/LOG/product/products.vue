@@ -5,13 +5,38 @@
             <custom-header :title="'Products List'"/>
 
             <div class="mt-2 mt-lg-3 row attendance-head ">
-                <div class="col-md-8">
-                    <InventorySearch v-on:childToParent="searchEvent" :searchColumns="searchColumns" />
+                <div class="col-md-10">
+                    <resueable-search
+                        @childToParent="prepareList"
+                        :url="urlToFetchOrders"
+                    >
+                        <template #default= "{ searchQuery }">
+                            <div class="col-md">
+                                <div>
+                                    <label class="form-control-label">Name:  </label>                                    
+                                </div>
+                                <input type="text" v-model="searchQuery.name" class="form-control">
+                            </div>
+                 <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Brand:  </label>
+                    </div>
+                    <input type="text" v-model="searchQuery.brand" class="form-control">
                 </div>
+                <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Category:  </label>
+                    </div>
+                    <input type="text" v-model="searchQuery.category" class="form-control">
+                </div>
+            </template>
+          </resueable-search>
+                </div>
+                
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <router-link :to="{name: 'productCreate'}">
-                        <button class="btn btn-primary bg-default mt-0 myBtn float-right my-2">New Product</button>
+                        <button class="btn btn-primary bg-default mt-0 myBtn float-right my-2"><i class="fa fa-plus" aria-hidden="true"></i></button>
                     </router-link>
                 </div>
             </div>
@@ -136,6 +161,7 @@
     import CustomHeader from '../../../components/customHeader';
     import BasePagination from '../../../components/Pagination/BasePagination'
     import InventorySearch from "../../../components/InventorySearch";
+    import ResueableSearch from '../../../components/ReusableSearch.vue';
     Vue.use(Vue2Filters);
     export default {
         props: {
@@ -144,7 +170,7 @@
             urlToFetchOrders: {default: '/api/product'}
         },
 
-        components: {CustomHeader, BasePagination,InventorySearch },
+        components: {CustomHeader, BasePagination, ResueableSearch },
 
         computed: {...mapGetters(['getBranches'])},
 

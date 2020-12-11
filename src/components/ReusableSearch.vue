@@ -118,11 +118,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-select {
-  width: 187px;
-  height: 34px;
-}
-
 .searchBar-x {
   background-color: #fff;
   border-radius: 7px;

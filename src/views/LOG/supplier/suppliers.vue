@@ -2,6 +2,7 @@
   <transition name="fade">
     <div id="reminder" class="attendance">
       <custom-header :title="'Suppliers List'" />
+      
 
       <div class="mt-2 mt-lg-3 row attendance-head">
         <div class="col-md-8">
@@ -10,19 +11,29 @@
             :searchColumns="searchColumns"
           /> -->
           <resueable-search
-            v-on:childToParent="searchEvent"
-            :stacks="searchColumns"
-          ></resueable-search>
+             @childToParent="prepareList"
+            :url="urlToFetchOrders"
+          >
+          <template #default= "{ searchQuery }">
+                <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Name:  </label>
+                    </div>
+                    <input type="text" v-model="searchQuery.name" class="form-control">
+                </div>                
+            </template>
+          </resueable-search>
           <!-- <payment-filter  :disabled="false"></payment-filter> -->
         </div>
 
         <div class="col-md-4">
           <router-link :to="{ name: 'suppliersCreate' }">
             <button class="btn btn-primary bg-default myBtn float-right my-2">
-              New Supplier
+              <i class="fa fa-plus" aria-hidden="true"></i>
             </button>
           </router-link>
         </div>
+        
       </div>
 
       <div class="mt-5 mb-3 attendance-head">

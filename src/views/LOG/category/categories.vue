@@ -5,13 +5,24 @@
             <custom-header :title="'Categories List'"/>
 
             <div class="mt-2 mt-lg-3 row attendance-head ">
-                <!-- <div class="col-md-8">
-                    <InventorySearch v-on:childToParent="searchEvent" :searchColumns="searchColumns" />
-                </div> -->
-                
+                <div class="col-md-8">
+                 <resueable-search
+                    @childToParent="prepareList"
+                    :url="urlToFetchOrders"
+                 >
+                    <template #default= "{ searchQuery }">
+                        <div class="col-md">
+                            <div>
+                                <label class="form-control-label">Name:  </label>
+                            </div>
+                            <input type="text" v-model="searchQuery.name" class="form-control">
+                        </div>     
+                    </template>
+                </resueable-search>
+                </div>                
                 <div class="col-md-4">
                     <router-link :to="{name: 'categoryCreate'}">
-                    <button class="btn btn-primary bg-default mt-0 myBtn ">New Category</button>
+                    <button class="btn btn-primary bg-default mt-0 myBtn float-right"><i class="fa fa-plus" aria-hidden="true"></i></button>
                 </router-link>
                 </div>
             </div>
@@ -114,6 +125,7 @@
     import CustomHeader from '../../../components/customHeader';
     import BasePagination from '../../../components/Pagination/BasePagination'
     import InventorySearch from "../../../components/InventorySearch";
+    import ResueableSearch from '../../../components/ReusableSearch.vue';
 
     export default {
         props: {
@@ -122,7 +134,7 @@
             urlToFetchOrders: {default: '/api/category'}
         },
 
-        components: {CustomHeader, BasePagination,InventorySearch },
+        components: {CustomHeader, BasePagination,InventorySearch, ResueableSearch },
 
         computed: {...mapGetters(['getBranches'])},
 

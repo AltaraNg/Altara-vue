@@ -8,12 +8,24 @@
 
             <div class="mt-2 mt-lg-3 row attendance-head ">
                 <div class="col-md-8">
-                    <InventorySearch v-on:childToParent="searchEvent" :searchColumns="searchColumns" />
+                     <resueable-search
+            @childToParent="prepareList"
+            :url="urlToFetchOrders"
+          >
+            <template #default= "{ searchQuery }">
+                <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Name:  </label>
+                    </div>
+                    <input type="text" v-model="searchQuery.name" class="form-control">
+                </div>                
+            </template>
+          </resueable-search>
                 </div>
 
                 <div class="col-md-4 ">
                     <router-link :to="{name: 'BrandCreate'}">
-                        <button class="btn btn-primary bg-default mt-0 myBtn float-right my-2">New Brand</button>
+                        <button class="btn btn-primary bg-default mt-0 myBtn float-right my-2"><i class="fa fa-plus" aria-hidden="true"></i></button>
                     </router-link>
                 </div>
             </div>
@@ -133,6 +145,7 @@
     import CustomHeader from '../../../components/customHeader';
     import BasePagination from '../../../components/Pagination/BasePagination'
     import InventorySearch from "../../../components/InventorySearch";
+    import ResueableSearch from '../../../components/ReusableSearch.vue';
 
     export default {
         props: {
@@ -141,7 +154,7 @@
             urlToFetchOrders: {default: '/api/brand'}
         },
 
-        components: {CustomHeader, BasePagination ,InventorySearch},
+        components: {CustomHeader, BasePagination ,ResueableSearch},
 
         computed: {...mapGetters(['getBranches'])},
 
@@ -206,19 +219,21 @@
                 let data = {
                     categories: form
                 };
+                
                 patch(`/api/brand/${this.brandItem.id}/categories`, data).then((res) => {
                     this.$swal({
                         icon: 'success',
                         title: res.message
 
                     });
-                    
-                     return this.$router.push(
-                                            {path: '/log/brands'}
-                                        )
-                }).catch(() => Flash.setError('Error Adding categories'));
-                this.$LIPS(false);
-                this.showModalContent = false;
+                      
+                }).catch(() => Flash.setError('Error Adding categories')).finally(() => {
+                    this.$LIPS(false);
+                    this.showModalContent = false;
+
+                });
+                 
+                
             },
 
             next(firstPage = null) {

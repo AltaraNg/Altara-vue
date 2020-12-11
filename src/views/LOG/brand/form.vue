@@ -44,39 +44,7 @@
                 </form>
             </div>
 
-            <div class="modal fade repayment" id="addCategory">
-                <div class="modal-dialog " role="document">
-                    <div class="modal-content" v-if="showModalContent">
-                        <div class="modal-header py-2">
-                            <h4>Add Category</h4>
-                            <a aria-label="Close" class="close py-1" data-dismiss="modal">
-                        <span aria-hidden="true" class="modal-close text-danger">
-
-                            <i class="fas fa-times"></i>
-                        </span>
-                            </a>
-                        </div>
-                        <div class="modal-body px-5">
-                            <div class="form-group col-md-6 col-12 float-left px-0 px-md-3 " >
-
-                                <div v-for="category in categories" class="checkbox">
-                                    <input :id="category.name" :value="category.id" :name="category.name" type="checkbox" v-model="form.categories"
-                                           v-validate="'required'">
-                                    <label :for="category.name">{{category.name}}</label>
-
-
-                                </div>
-                                <small v-if="errors.first('status')">{{ errors.first('status') }}</small>
-                            </div>
-                        </div>
-                        <div class="modal-footer justify-content-center">
-
-                            <button  class="text-center btn bg-default" @click="addFinish()">Done</button>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
 
         </div>
     </transition>
@@ -154,6 +122,7 @@
                 let data = {
                     categories: this.form.categories
                 };
+                
                 patch(`/api/brand/${this.$route.params.id}/categories`, data).then((res) => {
                     this.$swal({
                         icon: 'success',

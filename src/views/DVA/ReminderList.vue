@@ -2,8 +2,9 @@
     <transition name="fade">
         <div id="reminder" class="attendance">
 
-            <custom-header :title="'Reminder Message List'"/>
-            
+            <custom-header :title="'Reminder List'"/>
+
+            <div class="mt-2 mt-lg-3 row attendance-head ">
             <resueable-search :url="urlToFetchOrders" @childToParent="prepareList">
                 <template #default= "{ searchQuery }">
                 <div class="col-md">
@@ -22,6 +23,7 @@
                 </div>
                 </template>
             </resueable-search>
+            </div>
             <div class="mt-5 mb-3 attendance-head">
                 <div class="w-100 my-5 mx-0 hr"></div>
                 <div class="row px-4 pt-3 pb-4 text-center">
@@ -261,8 +263,8 @@
     import BasePagination from '../../components/Pagination/BasePagination';
     import Vue2Filters from 'vue2-filters';
     import NewOrderAmortization from "../../components/NewOrderAmortization"
-import OrderWithPromiseCall from '../../utilities/reminder';
-import ResueableSearch from '../../components/ReusableSearch.vue';
+    import OrderWithPromiseCall from '../../utilities/reminder';
+    import ResueableSearch from '../../components/ReusableSearch.vue';
 
 
 

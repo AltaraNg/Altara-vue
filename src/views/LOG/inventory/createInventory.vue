@@ -112,10 +112,12 @@
 
                             <input id="price" type="number" v-model="form.price" name="price" class="custom-select w-50">
                         </div>
-                        <div class="form-group col-md-2">
+                        <div class="form-group col-md-2" v-if="checkAdmin() === true">
                             <label>Status: </label>
                             <p>
                                 <select v-model="form.inventory_status_id" class="custom-select w-75">
+                                    <option :value="1">Available</option>
+                                    <option :value="2">Sold</option>
                                     <option :value="3">Damaged</option>
                                     <option :value="4">Repossessed</option>
                                 </select>
@@ -172,7 +174,8 @@
                 store: '/api/inventory',
                 url: '/api/product',
                 method: 'POST',
-                headings: ['S/N','Product Name', 'Received by', 'Supplier', 'Branch', 'Price']
+                headings: ['S/N','Product Name', 'Received by', 'Supplier', 'Branch', 'Price'],
+                admin: [1, 2, 8, 9]
             }
         },
         beforeRouteEnter(to, from, next) {
@@ -333,6 +336,10 @@
                         } else this.$networkErr()
                     } else this.$networkErr('form');
                 })
+            },
+            checkAdmin(){
+                let role = this.getAuthUserDetails.roleId;                ;
+                return this.admin.includes(role);
             }
         },
 

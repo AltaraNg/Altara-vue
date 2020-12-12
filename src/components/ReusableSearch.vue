@@ -2,7 +2,7 @@
   <div class="searchBar-x">
     <div class="row form-group my-5 mx-5">      
       <slot :searchQuery="searchQuery"></slot>
-      <div class="col-md">
+      <div class="col-md" v-if="showBranch === true">
         <div>
         <label for="branch" class="form-control-label">Branch</label>
         </div>
@@ -78,6 +78,11 @@ export default {
     url: {
       type: String,
       required: true
+    },
+    showBranch: {
+      type: Boolean,
+      required: false,
+      default: true
     },
   },
   computed: {   

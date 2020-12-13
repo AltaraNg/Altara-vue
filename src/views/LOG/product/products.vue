@@ -9,6 +9,7 @@
                     <resueable-search
                         @childToParent="prepareList"
                         :url="urlToFetchOrders"
+                        :showBranch="false"
                     >
                         <template #default= "{ searchQuery }">
                             <div class="col-md">

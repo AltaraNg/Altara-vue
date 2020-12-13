@@ -9,9 +9,9 @@
             <div class="mt-2 mt-lg-3 row attendance-head ">
                 <div class="col-md-8">
                      <resueable-search
-            @childToParent="prepareList"
-            :url="urlToFetchOrders"
-          >
+                      @childToParent="prepareList"
+                      :url="urlToFetchOrders"
+                      :showBranch="false">
             <template #default= "{ searchQuery }">
                 <div class="col-md">
                     <div>

@@ -458,6 +458,7 @@ export default {
     },
 
     edit(item) {
+      this.$LIPS(true);
       this.showModalContent = false;
       $(`#viewInventory`).modal("toggle");
 

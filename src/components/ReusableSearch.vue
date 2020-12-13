@@ -2,7 +2,7 @@
   <div class="searchBar-x">
     <div class="row form-group my-5 mx-5">      
       <slot :searchQuery="searchQuery"></slot>
-      <div class="col-md">
+      <div class="col-md" v-if="showBranch === true">
         <div>
         <label for="branch" class="form-control-label">Branch</label>
         </div>
@@ -48,7 +48,13 @@
         class="btn btn-primary bg-default myBtn float-right my-2"
         @click="searchEvent"
       >
-        Search
+        <i class="fa fa-search" aria-hidden="true"></i>
+      </button>
+       <button
+        class="btn btn-primary bg-default myBtn float-right my-2"
+        @click="clearQuery"
+      >
+        <i class="fa fa-trash" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -79,6 +85,11 @@ export default {
       type: String,
       required: true
     },
+    showBranch: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
   },
   computed: {   
     ...mapGetters(["getBranches"]),
@@ -102,7 +113,7 @@ export default {
         else{
           this.$emit("childToParent", response.data);        
         }
-        this.searchQuery = {};
+        
         
         }).catch(err => {
           Flash.setError('Unable to fetch');
@@ -110,6 +121,9 @@ export default {
       
       
     },
+    clearQuery(){
+      this.searchQuery = {};
+    }
   },
   created() {
     this.$prepareBranches();

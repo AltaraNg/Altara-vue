@@ -48,14 +48,18 @@
             @childToParent="prepareList"
             :url="urlToFetchOrders"
           >
-           <template #default= "{ searchQuery }">
-                <div class="col-md">
-                    <div>
-                    <label class="form-control-label">Product Name:  </label>
-                    </div>
-                    <input type="text" v-model="searchQuery.productName" class="form-control">
+            <template #default="{ searchQuery }">
+              <div class="col-md">
+                <div>
+                  <label class="form-control-label">Product Name: </label>
                 </div>
-                </template>
+                <input
+                  type="text"
+                  v-model="searchQuery.productName"
+                  class="form-control"
+                />
+              </div>
+            </template>
           </resueable-search>
         </div>
 
@@ -122,8 +126,10 @@
           </div>
           <div class="col d-flex align-items-center justify-content-center">
             {{
-              inventory.inventories.filter(
-                (data) => data.inventory_status === "Available"
+              inventory.inventories.filter((data) =>
+                !data.inventory_status
+                  ? null
+                  : data.inventory_status.status === "Available"
               ).length
             }}
           </div>
@@ -146,166 +152,13 @@
               </div>
             </div>
             <div class="modal-body">
-              <div
-                class="mb-3 row attendance-item"
-                :key="index"
-                v-for="(inventory, index) in inventoryItem"
-              >
-                <div
-                  class="col d-flex align-items-center"
-                  style="max-width: 120px"
-                >
-                  <span class="avatar-t mx-auto" style="max-width: 10px">{{
-                    index + 1
-                  }}</span>
-                </div>
-                <div
-                  class="col d-flex align-items-center justify-content-center"
-                  @click="viewInventory(inventory)"
-                >
-                  {{ inventory.product_name }}
-                </div>
-                <div
-                  class="col d-flex align-items-center justify-content-center"
-                >
-                  {{ inventory.inventory_sku }}
-                </div>
-                <div
-                  class="col d-flex align-items-center justify-content-center"
-                >
-                  {{ inventory.price | currency("₦") }}
-                </div>
-                <div
-                  class="col d-flex align-items-center justify-content-center"
-                >
-                  {{ getParent(inventory.supplier_id, suppliers).name }}
-                </div>
-                <div
-                  class="col d-flex align-items-center justify-content-center"
-                >
-                  {{
-                    inventory.inventory_status === null
-                      ? "N/A"
-                      : inventory.inventory_status.status
-                  }}
-                </div>
-                <div
-                  class="col d-flex align-items-center justify-content-center"
-                >
-                  {{ inventory.created_at.split("T")[0] }}
-                </div>
-                <div
-                  class="col d-flex align-items-center justify-content-center"
-                >
-                  {{ getParent(inventory.branch_id, getBranches).name }}
-                </div>
-                <div
-                  class="col d-flex align-items-center justify-content-center"
-                  @click="
-                    inventory.sold_date != ''
-                      ? ''
-                      : viewproductTransfer({
-                          ...inventory,
-                          branchName: getParent(
-                            inventory.branch_id,
-                            getBranches
-                          ).name,
-                        })
-                  "
-                >
-                  <i v-if="inventory.sold_date != ''" class="fas fa-ban"></i>
-                  <i v-else class="fas fa-exchange-alt"></i>
-                </div>
-                <div
-                  class="col d-flex align-items-center justify-content-center"
-                >
-                  <button
-                    class="text-center btn bg-default"
-                    @click="edit(inventory.id)"
-                  >
-                    Edit
-                  </button>
-                </div>
+              <div :key="index" v-for="(inventory, index) in inventoryItem">
+                <editComponent
+                  v-bind:inventory="inventory"
+                  v-bind:index="index"
+                  @childToParent="edit"
+                ></editComponent>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal fade repayment" id="viewProductTransfer">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content" v-if="showProductTransfer">
-            <div class="modal-header py-2">
-              <h4>Product Transfer.</h4>
-              <a aria-label="Close" class="close py-1" data-dismiss="modal">
-                <span aria-hidden="true" class="modal-close text-danger">
-                  <i class="fas fa-times"></i>
-                </span>
-              </a>
-            </div>
-            <div class="modal-body px-5">
-              Transfer ({{ transferItem.product_name || "Not Available" }})
-              <div class="mb-3 row attendance-item">
-                <div
-                  class="col d-flex align-items-center"
-                  style="max-width: 120px"
-                >
-                  From: {{ transferItem.branchName || "Not Available" }}
-                </div>
-                <div
-                  class="col d-flex align-items-center justify-content-center"
-                >
-                  <i class="fas fa-arrow-right"></i>
-                </div>
-                <div
-                  class="col d-flex align-items-center justify-content-center"
-                >
-                  To:
-                  <select v-model="toId" class="form-control option2">
-                    <option disabled value>Please select a branch</option>
-                    <option
-                      :key="option.id"
-                      v-for="option in transferList"
-                      v-bind:value="option.id"
-                    >
-                      {{ option.name }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-              <h4>Transfer History.</h4>
-              <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                  <tbody>
-                    <tr>
-                      <th>From</th>
-                      <th>To</th>
-                      <th>Date Of Transfer</th>
-                      <th>Transferor</th>
-                    </tr>
-                    <h4 v-if="transferHistory.length < 1" class="text-center">
-                      No history available.
-                    </h4>
-                    <tr v-for="transfer in transferHistory">
-                      <td>{{ transfer.from || "Not Available" }}</td>
-                      <td>{{ transfer.to || "Not Available" }}</td>
-                      <td>
-                        {{
-                          transfer.created_at.split(" ")[0] || "Not Available"
-                        }}
-                      </td>
-                      <td>{{ transfer.user || "Not Available" }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div class="modal-footer justify-content-center">
-              <button
-                class="text-center btn bg-default"
-                @click="logTransfer(transferItem.id, toId)"
-              >
-                Transfer
-              </button>
             </div>
           </div>
         </div>
@@ -326,7 +179,7 @@
 </template>
 <script>
 import Vue from "vue";
-import { get, post } from "../../../utilities/api";
+import { get, post, put } from "../../../utilities/api";
 import Flash from "../../../utilities/flash";
 import ResueableSearch from "../../../components/ReusableSearch";
 import { mapActions, mapGetters } from "vuex";
@@ -334,7 +187,8 @@ import Vue2Filters from "vue2-filters";
 import CustomHeader from "../../../components/customHeader";
 import BasePagination from "../../../components/Pagination/BasePagination";
 import InventorySearch from "../../../components/InventorySearch";
-import renewalVue from '../../FSL/renewal/renewal.vue';
+import renewalVue from "../../FSL/renewal/renewal.vue";
+import editComponent from "./editComponent";
 Vue.use(Vue2Filters);
 export default {
   props: {
@@ -348,6 +202,7 @@ export default {
     BasePagination,
     InventorySearch,
     ResueableSearch,
+    editComponent,
   },
 
   computed: { ...mapGetters(["getAuthUserDetails", "getBranches"]) },
@@ -400,6 +255,8 @@ export default {
       ],
       transferHistory: [],
       branchId: "",
+      editable: false,
+      form: {},
     };
   },
 
@@ -466,7 +323,7 @@ export default {
         total,
         prev_page_url,
       } = response.data;
-     
+
       this.pageParams = Object.assign({}, this.pageParams, {
         current_page,
         first_page_url,
@@ -479,9 +336,13 @@ export default {
         total,
         prev_page_url,
       });
-      this.inventories = response.data.products ? response.data.products : response.data.data.products;
-      this.summary =  response.data.summary ? response.data.summary : response.data.data.summary;
-     
+      this.inventories = response.data.products
+        ? response.data.products
+        : response.data.data.products;
+      this.summary = response.data.summary
+        ? response.data.summary
+        : response.data.data.summary;
+
       this.OId = from;
       this.$LIPS(false);
     },
@@ -514,10 +375,25 @@ export default {
     },
 
     edit(item) {
-      this.showModalContent = false;
-      $(`#viewInventory`).modal("toggle");
-
-      return this.$router.push({ name: "inventoryEdit", params: { id: item } });
+      console.log("polefdc ", item);
+      if (this.$network()) {
+        this.$LIPS(true);
+        put(`/api/inventory/${item.id}`, { price: item.price })
+          .then((data) => {
+            this.$LIPS(false);
+            this.$swal({
+              icon: "success",
+              title: "Inventory Updated Successfully",
+            });
+          })
+          .catch((e) => {
+            this.$LIPS(false);
+            this.$swal({
+              icon: "error",
+              title: "Inventory Updated Failed",
+            });
+          });
+      } else this.$networkErr();
     },
 
     searchEvent(data) {

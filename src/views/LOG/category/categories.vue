@@ -10,6 +10,7 @@
                     @childToParent="prepareList"
                     :url="urlToFetchOrders"
                     :showBranch="false"
+                    :showDate="false"
                  >
                     <template #default= "{ searchQuery }">
                         <div class="col-md">

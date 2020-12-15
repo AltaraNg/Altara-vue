@@ -22,7 +22,7 @@
           </option>
         </select>
       </div>
-      <div class="col-md">
+      <div class="col-md" v-if="showDate === true">
         <label for="fromDate" class="form-control-label">From Date</label>
 
         <date-picker
@@ -32,7 +32,7 @@
           placeholder="Date"
         ></date-picker>
       </div>
-      <div class="col-md">
+      <div class="col-md" v-if="showDate === true">
         <label for="toDate" class="form-control-label">To Date</label>
 
         <date-picker
@@ -90,6 +90,12 @@ export default {
       required: false,
       default: true
     },
+     showDate: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
+    
   },
   computed: {   
     ...mapGetters(["getBranches"]),
@@ -123,6 +129,7 @@ export default {
     },
     clearQuery(){
       this.searchQuery = {};
+      this.searchEvent();
     }
   },
   created() {

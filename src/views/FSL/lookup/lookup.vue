@@ -37,11 +37,8 @@
                   </span>
                 </div>
                 <div
-                  class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
-                >{{order.order.order_date}}</div>
-                <div
                   class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
-                >{{order.order.id}}</div>
+                >{{formatDate(order.order.id)}}</div>
                 <div
                   class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
                 >{{order.order.store_product.product_name}}</div>
@@ -88,7 +85,7 @@
 
                 <div
                   class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
-                >{{order.amortization[0].created_at.split(' ')[0]}}</div>
+                >{{formatDate(order.amortization[0].created_at)}}</div>
                 <div
                   class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
                 >{{order.order_number}}</div>
@@ -621,6 +618,14 @@ export default {
     deletePayment(index) {
       this.paymentForm.payments.splice(index, 1);
       this.reNumber();
+    },
+    formatDate(date){
+      if (date !== null){
+        let d = new Date(date);
+        return d.toDateString();
+      }
+      
+      
     },
 
     reNumber() {

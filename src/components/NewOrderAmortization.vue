@@ -165,7 +165,7 @@ import Flash from "../utilities/flash";
 import { mapGetters } from "vuex";
 import Auth from "../utilities/auth";
 import LogForm from "./LogForm";
-import { get, put } from "../utilities/api";
+import { get, patch, put } from "../utilities/api";
 
 export default {
     name: 'NewOrderAmortization',
@@ -247,7 +247,7 @@ this.$emit("childToParent", res.data);
             "actual_amount":this.actual_amount
           }
           
-          put(`/api/amortization/${this.ammo_item.id}/update`, data).then(res => {
+          put(`/api/amortization/${this.ammo_item.id}`, data).then(res => {
             this.$swal({
               icon: 'success',
               title: 'Payment Updated Successfully'

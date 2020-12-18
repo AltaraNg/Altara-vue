@@ -73,6 +73,7 @@
                       <th>Actual Amount Paid</th>
                       <td
                         v-for="armo in amortizationData"
+                        @click="updateAmmo(armo)"
                       >{{$formatCurrency(armo.actual_amount)}}</td>
                     </tr>
                   </tbody>
@@ -129,13 +130,42 @@
                 style="text-align: right"
               >close dialogue</a>
             </div>
+
+            <div class="modal fade repayment" id="viewEdit">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content" v-if="showModal">
+            <div class="modal-header py-2">
+              <h4>edit payment</h4>
+              <a aria-label="Close" class="close py-1" data-dismiss="modal">
+                <span aria-hidden="true" class="modal-close text-danger">
+                  <i class="fas fa-times"></i>
+                </span>
+              </a>
+            </div>
+            <div class="modal-body px-5">
+              <input name="ammo" class="custom-select" v-model="actual_amount" :placeholder="ammo_item.actual_amount"/>
+              
+            </div>
+            <div class="modal-footer justify-content-center">
+              <button
+                class="text-center btn bg-default"
+                @click="save"
+                
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 </div>
 </template>
 <script>
+import Flash from "../utilities/flash";
 import { mapGetters } from "vuex";
 import Auth from "../utilities/auth";
 import LogForm from "./LogForm";
-import { get, post } from "../utilities/api";
+import { get, put } from "../utilities/api";
 
 export default {
     name: 'NewOrderAmortization',
@@ -161,7 +191,10 @@ export default {
     },
     data(){
         return {
+          actual_amount: null,
+          ammo_item: null,
           newOrderItem:{},
+          showModal: false,
             canEditPayment: true,
             isReadOnly: false,
 
@@ -202,6 +235,34 @@ this.$emit("childToParent", res.data);
         },
         testo(){
           console.log('testop');
+        },
+        updateAmmo(armo){
+          this.showModal = true;
+          this.ammo_item = armo;
+          return $(`#viewEdit`).modal("toggle");
+        },
+        save(){
+          this.$LIPS(true);
+          let data = {
+            "actual_amount":this.actual_amount
+          }
+          
+          put(`/api/amortization/${this.ammo_item.id}/update`, data).then(res => {
+            this.$swal({
+              icon: 'success',
+              title: 'Payment Updated Successfully'
+              });
+              console.log(res.data);
+              this.$LIPS(false); 
+
+          }).catch(err => {
+            Flash.setError("Unable to update payment")
+          }).finally(() => {
+             return $(`#viewEdit`).modal("toggle");
+             
+          })
+         
+
         }
 
     },

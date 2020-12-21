@@ -308,6 +308,7 @@
 import { get, post } from "../utilities/api";
 import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
+import calculate from "../utilities/calculator";
 
 export default {
     props: { customerId: null },
@@ -469,40 +470,13 @@ export default {
                             data0.repayment_duration_id.id
                 )[0];
 
-                const margin = data["margin"];
-                const interest = data["interest"];
-                const plan = data0.payment_type_id.percent;
-                let mPrice = this.selectedProduct.price;
-
-                mPrice = mPrice * margin + Number(mPrice);
-
-                const dPrice = mPrice * (plan / 100);
-                const rPrice = mPrice - dPrice;
-
-                const afInt = rPrice * (interest / 100);
-                const trInt = (rPrice / 12 + afInt) * 12;
-
-                // const pInt = afInt + dPrice + rPrice;
-                const pInt = trInt + dPrice;
-                const aTax = pInt + 0.05 * pInt;
-
-                const upFront = aTax * (plan / 100);
-                const rePay = aTax - upFront;
-                const mRepay = rePay / 12;
-
-                const downP = Math.floor(upFront / 100) * 100;
-                const period = data.repayment_duration_id;
-
-                const totalP =
-                    Math.floor(upFront / 100) * 100 +
-                    Math.floor(mRepay / 100) * 100 * 12;
-                const rPay = totalP - downP;
+                const { total, actualDownpayment, actualRepayment } = calculate(this.selectedProduct.price, data0, data);
 
                 this.repaymentCircle = data0.repayment_cycle_id.value;
                 this.rDuration = data0.repayment_duration_id.value;
-                this.fPayment = downP;
-                this.rPayment = rPay;
-                this.pPrice = totalP;
+                this.fPayment = actualDownpayment;
+                this.rPayment = actualRepayment;
+                this.pPrice = total;
                 this.test1 = false;
 
                 // $(`#amortizationPreview`).modal("toggle");

@@ -109,6 +109,9 @@ export default {
     },
     searchEvent() {
       this.$LIPS(true);
+      if(this.searchQuery.branch === 'all'){
+        this.searchQuery.branch = '';
+      }
       get(this.url + queryParam(this.searchQuery)).then(response => {
         if(this.searchQuery.days !== undefined){
           this.$emit("childToParent", {

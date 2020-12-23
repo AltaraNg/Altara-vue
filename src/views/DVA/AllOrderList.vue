@@ -3,7 +3,8 @@
         <div id="reminder" class="attendance">
 
             <custom-header :title="'Order List'"/>
-
+            <switch-component :options="options" @selected="handleSwitch"/>
+            <div v-if="mode === 'old'">
             <div class="mt-2 mt-lg-3 row attendance-head attendance-view">
                 <div class="col-4 col-lg" v-for="{name:filter,model} in filters">
                     <div class="row">
@@ -43,6 +44,7 @@
             </div>
 
             <order v-if="show" :start-index="orders.from" :pre-loaded-order="response" :mode="'normal-list'"/>
+            
 
             <div class="mt-1 attendance-body" v-if="show && orders.current_page">
                 <div class="mb-5 px-0 row align-items-center">
@@ -94,6 +96,8 @@
                     </div>
                 </div>
             </div>
+            </div>
+            <new-orders v-if="mode === 'new' " ></new-orders>
         </div>
     </transition>
 </template>
@@ -101,6 +105,8 @@
     import {get} from '../../utilities/api';
     import Flash from "../../utilities/flash";
     import Order from "../../components/Orders";
+    import NewOrders from "../../components/NewOrders"
+    import SwitchComponent from '../../components/SwitchComponent';
     import {mapGetters, mapActions} from "vuex";
     import CustomHeader from '../../components/customHeader';
 
@@ -111,13 +117,24 @@
             urlToFetchOrders: {default: '/api/reminder/create'}
         },
 
-        components: {CustomHeader, Order},
+        components: {CustomHeader, Order, NewOrders, SwitchComponent},
 
         computed: {...mapGetters(['getBranches'])},
 
         data() {
             return {
                 branch_id: '',
+                 options: [
+                    {
+                        name: "Old records",
+                        url: "/api/reminder/create"
+                    },
+                    {
+                        name: "New records",
+                        url: "/api/new_order"
+                    }
+                ],
+                mode: null,
                 page_size: 10,
                 date_from: null,
                 date_to: null,
@@ -170,6 +187,16 @@
                 this.$LIPS(false);
                 this.show = true;
             },
+            handleSwitch(option){
+                this.$LIPS(true);
+                if (option.name === "New records"){
+                    this.mode = 'new';
+                }
+                else{
+                    this.mode = 'old';
+                    this.$LIPS(false);
+                }
+            },
 
             ...mapActions('ModalAccess', [
                 'addCustomerOptionsModalsToDom',
@@ -182,6 +209,7 @@
             this.addCustomerOptionsModalsToDom();
             this.$prepareBranches();
             this.fetchData();
+            this.mode = 'old';
         },
 
         destroyed() {

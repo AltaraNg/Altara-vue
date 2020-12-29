@@ -40,8 +40,7 @@ const AllOverdue = () =>
     import ("../views/DVA/AllOverduePayment");
 const ReminderList = () =>
     import ("../views/DVA/ReminderList.vue");
-const CallList = () =>
-    import ("../views/DVA/CallList.vue");
+
 const Reminder = () =>
     import ("../views/DVA/reminder/reminder.vue");
 const Profile = () =>
@@ -256,11 +255,7 @@ const router = new VueRouter({
                     component: ReminderList,
                     name: "reminder-list"
                 },
-                {
-                    path: "call-list",
-                    component: CallList,
-                    name: "call-list"
-                },
+                
                 {
                     path: "reminder/call",
                     component: Reminder,

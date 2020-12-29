@@ -36,9 +36,12 @@
                     <!-- <img src="../../../../svg/download.svg" /> -->
                   </span>
                 </div>
+                 <div
+                  class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
+                >{{formatDate(order.order.order_date)}}</div>
                 <div
                   class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
-                >{{formatDate(order.order.id)}}</div>
+                >{{order.order.id}}</div>
                 <div
                   class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
                 >{{order.order.store_product.product_name}}</div>
@@ -163,6 +166,7 @@
             <div class="modal-body">
               <div class="table-responsive">
                 <h5 class="mt-3 mb-0">Order Information</h5>
+                
                 <table class="table table-bordered">
                   <tbody>
                     <tr class="table-separator">
@@ -186,6 +190,7 @@
                 </table>
 
                 <h5 class="mt-5 mb-0">Amortization Schedule</h5>
+                <div class="amor-table">
                 <table class="table table-bordered">
                   <tbody class="text-center">
                     <tr>
@@ -216,6 +221,7 @@
                       <th>Actual Amount Paid</th>
                       <td
                         v-for="payment in activeOrder.actualAmountsPaid"
+                        @click="updateAmmo(armo)"
                       >{{$formatCurrency(payment)}}</td>
                     </tr>
                     <tr class="table-separator">
@@ -234,6 +240,7 @@
                     </tr>
                   </tbody>
                 </table>
+                </div>
 
                 <h5 class="mt-5 mb-0">Payment Summary</h5>
                 <table class="table table-bordered">
@@ -397,21 +404,50 @@
               >close dialogue</a>
             </div>
             </div>
-             <div v-else>
-          <new-order-amortization
-          :order="order"
-          :customer="customer"
-          :paymentForm="paymentForm"
-          :paymentFormType="paymentFormType"
-          @addPayment="addPaymentForm"
-          @deletePayment="deletePayment"
-          @preparePayments="preparePayments"
-          v-on:childToParent="newOrderItem"
-          ></new-order-amortization>
-      </div>
+            <div v-else>
+              <new-order-amortization
+                :order="order"
+                :customer="customer"
+                :paymentForm="paymentForm"
+                :paymentFormType="paymentFormType"
+                @addPayment="addPaymentForm"
+                @deletePayment="deletePayment"
+                @preparePayments="preparePayments"
+                v-on:childToParent="newOrderItem"
+                ></new-order-amortization>
+            </div>
+            </div>
+
+            <div class="modal fade repayment" id="viewEdit">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content" v-if="showModal">
+            <div class="modal-header py-2">
+              <h4>edit payment</h4>
+              <a aria-label="Close" class="close py-1" data-dismiss="modal">
+                <span aria-hidden="true" class="modal-close text-danger">
+                  <i class="fas fa-times"></i>
+                </span>
+              </a>
+            </div>
+            <div class="modal-body px-5">
+              <input name="ammo" class="custom-select" v-model="actual_amount" :placeholder="ammo_item.actual_amount"/>
+              
+            </div>
+            <div class="modal-footer justify-content-center">
+              <button
+                class="text-center btn bg-default"
+                @click="save"
+                
+              >
+                Save
+              </button>
+            </div>
           </div>
+        </div>
+            
 
         </div>
+      </div>
       </div>
 
 
@@ -462,7 +498,10 @@ export default {
         id: Auth.state.user_id,
       },
       show: false,
+      showModal: false,
       showModalContent: false,
+      ammo_item: {},
+      actual_amount: null,
       activeOrder: null,
       headers: [
         "Date",
@@ -659,6 +698,34 @@ export default {
         ? this.savePayments()
         : Flash.setError("You have not added any payment.");
     },
+    updateAmmo(armo){
+          this.showModal = true;
+          this.ammo_item = armo;
+          return $(`#viewEdit`).modal("toggle");
+        },
+        save(){
+          this.$LIPS(true);
+          let data = {
+            "actual_amount":this.actual_amount
+          }
+          
+          put(`/api/amortization/${this.ammo_item.id}`, data).then(res => {
+            this.$swal({
+              icon: 'success',
+              title: 'Payment Updated Successfully'
+              });
+              console.log(res.data);
+              this.$LIPS(false); 
+
+          }).catch(err => {
+            Flash.setError("Unable to update payment")
+          }).finally(() => {
+             return $(`#viewEdit`).modal("toggle");
+             
+          })
+         
+
+        },
 
     savePayments() {
       if (!this.canAddPayment) return;
@@ -722,6 +789,9 @@ export default {
             console.log('testing data ',value);
             this.updateView(value);
         },
+        
+
+
   },
 
   computed: {
@@ -769,5 +839,9 @@ export default {
 <style scoped>
 .attendance-item {
   cursor: auto;
+}
+.amor-table{
+    width: 752px;
+    overflow: scroll;
 }
 </style>

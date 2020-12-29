@@ -284,7 +284,7 @@
             urlToFetchOrders: {default: '/api/repayment_reminder'}
         },
 
-        components: {CustomHeader, BasePagination, NewOrderAmortization, ResueableSearch, SwitchComponent },
+        components: {CustomHeader, BasePagination, NewOrderAmortization, ResueableSearch },
 
         computed: {...mapGetters(['getBranches'])},
 

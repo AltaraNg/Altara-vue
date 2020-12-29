@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="mt-5 mb-3 attendance-head">
+        <div class=" mb-3 attendance-head">
              <resueable-search :url="url" @childToParent="prepareList" :showBranch="true" :showDate="true">
              </resueable-search>
                 <div class="w-100 my-5 mx-0 hr"></div>
@@ -292,6 +292,13 @@ import {mapGetters, mapActions} from "vuex";
                     this.fetchData();
                     }
                 },
+
+             convertDate(date){
+                let utcDate = new Date(date).toUTCString();
+                return utcDate;
+
+            },
+            
         },
         created() {            
             this.$prepareBranches();

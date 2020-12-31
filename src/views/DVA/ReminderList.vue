@@ -15,13 +15,8 @@
                     <label class="form-control-label">Reminder Type:  </label>
                     </div>
                     <select name="option" v-model="searchQuery.days"  class="custom-select">
-                        <option :value="message.default">Default</option>
-                        <option :value="message.first_message">First message</option>
-                        <option :value="message.second_message">Second message</option>
-                        <option :value="message.third_message">Third message</option>
-                        <option :value="message.first_call">First call</option>
-                        <option :value="message.second_call">Second call</option>
-                        <option :value="message.third_call">Third call</option>
+                        <option disabled>--select--</option>
+                        <option :value="option.value" v-for="option in message">{{option.name}}</option>                       
                     </select>
                 </div>
                 </template>
@@ -34,14 +29,17 @@
                 <div class="row px-4 pt-3 pb-4 text-center">
                     <div class="col light-heading" style="max-width: 120px">S/N</div>
                     <div class="col light-heading" v-for="header in headings">{{header}}</div>
-                    <div class="col light-heading" v-if="modeType==='call'">Feedback</div>
+                     <div class="col light-heading" v-if="modeType==='collection'">Visited?</div>
+                    <div class="col light-heading" v-if="modeType==='call' || modeType === 'collection'">Feedback</div>
                     <div class="col light-heading" v-if="modeType==='call'">Promise Date</div>
+                   
+                    
                 </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
                  <div class="mb-3 row attendance-item" :key="index" v-for="(order,index) in orders">
                         <div class="col d-flex align-items-center" style="max-width: 120px"  >
-                            <span class="user mx-auto" v-if="modeType==='call'" @click="save(order)">{{index + OId}}</span>
+                            <span class="user mx-auto" v-if="modeType==='call' || modeType === 'collection'" @click="save(order)">{{index + OId}}</span>
                             <span class="user mx-auto" v-else>{{index + OId}}</span>
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order, 'order')">
@@ -59,11 +57,27 @@
                          <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.notifications, 'notification')">
                             {{order.notifications[0]? order.notifications.length : 'Not available'}}
                         </div>
-                        <div class="col d-flex align-items-center justify-content-center" v-if="modeType==='call'">
-                            <input type="text" name="feedback"  class="form-control" v-model="order.feedback">
+                         <div class="col d-flex align-items-center justify-content-center" v-if="modeType==='collection'">
+                            <span>
+                                <span class="radio w-50 pr-3 mb-0 float-left">
+                                    <input type="radio" :value="true" v-model="order.is_visited" :id="`present${index}`" :name="`isPresent${index}`" class="form-check-input">
+                                    <label :for="`present${index}`">yes</label>
+                                </span>
+                                <span class="radio w-50 pl-3 mb-0 float-left">
+                                    <input type="radio" :value="false" v-model="order.is_visited" :id="`absent${index}`" 
+                            :name="`isPresent${index}`" class="form-check-input">
+                                    <label :for="`absent${index}`" >no</label>
+                                </span>
+                            </span>
+                        </div>
+
+
+
+                        <div class="col d-flex align-items-center justify-content-center" v-if="modeType==='call' || modeType === 'collection'">
+                            <input type="text" name="feedback"  class="form-control" v-model="order.feedback" required>
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" v-if="modeType==='call'">
-                            <input type="date" name="date" v-model="order.promise_date" class="form-control"/>
+                            <input type="date" name="date" v-model="order.promise_date" class="form-control" required/>
                         </div>
 
 
@@ -74,7 +88,7 @@
 
             </div>
             <div class="modal fade repayment" id="viewStuffs">
-                <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-dialog modal-xl" role="document">
                     <div class="modal-content " v-if="showModalContent">
 
                         <div v-if="mode==='order'">
@@ -171,8 +185,8 @@
                                         <tr v-for="(object, index) in modalItem">
                                             <td>{{index+1}}</td>
                                             <td>{{convertDate(object.created_at)}}</td>
-                                            <td>{{object.type == "App\\Notifications\\SmsReminderSent"? "SMS" : "Call"}}</td>
-                                            <td>{{object.type == "App\\Notifications\\SmsReminderSent"? object.data.message : object.data.feedback}}</td>
+                                            <td>{{object.type === "App\\Notifications\\SmsReminderSent"? "SMS" : object.type === "App\\Notifications\\CallReminder" ? "Call" : "Collection"}}</td>
+                                            <td>{{object.type === "App\\Notifications\\SmsReminderSent"? object.data.message : object.data.feedback}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -281,7 +295,7 @@
         props: {
             //TODO::verify if its necessary to make this a prop
             withBranchFilter: {default: true},
-            urlToFetchOrders: {default: '/api/repayment_reminder'}
+            
         },
 
         components: {CustomHeader, BasePagination, NewOrderAmortization, ResueableSearch },
@@ -290,6 +304,7 @@
 
         data() {
             return {
+                urlToFetchOrders: '/api/repayment_reminder',
                 branch_id: '',
                 modalItem: null,
                 page_size: 10,
@@ -305,16 +320,7 @@
                 ],
                 mode: '',
                 modeType: '',
-                 message: {
-                    default: 7,
-                    first_message: 7,
-                    second_message: 14,
-                    third_message: 21,
-                    first_call: 28,
-                    second_call: 35,
-                    third_call: 42
-
-                },
+                message: {},
                 promise_date: null,
                
                 orders: null,
@@ -334,7 +340,7 @@
                 this.$LIPS(true);
                
                 let {page, page_size} = this.$data;
-                get(`${this.urlToFetchOrders}?days=${this.type === null ? this.message.default : this.type}`+`${!!page ? `&page=${page}` : ""}` +
+                get(`${this.urlToFetchOrders}?days=${this.type === null ? 7 : this.type}`+`${!!page ? `&page=${page}` : ""}` +
           `${!!page_size ? `&pageSize=${page_size}` : ""}`
                 )
                    .then(({data}) => this.prepareList(data))
@@ -345,9 +351,15 @@
 
             },
            prepareList(response){
-               console.log('here', response.days);
-               this.type = response.days;
-               response.days === this.message.first_call || response.days === this.message.second_call || response.days === this.message.third_call ? this.modeType = 'call' : this.modeType = 'message';
+               response.days === undefined ? this.type =7 : this.type = response.days;
+                if(this.type === 7 || this.type === 14 || this.type === 21){
+                    this.modeType = 'message';
+                }else if(this.type === 28 || this.type === 35 || this.type === 42){
+                    this.modeType = 'call';
+                }
+                else{
+                    this.modeType = 'collection'
+                }
                 let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
                 this.orders = data;
@@ -379,6 +391,11 @@
                     this.fetchData();
                     }
                 },
+            
+            async getReminderValues(){
+                let values = await get('/api/reminder_value');
+                this.message = values.data.data.data;
+            },
 
             prev(lastPage = null) {
                 if (this.pageParams.prev_page_url) {
@@ -388,15 +405,27 @@
                 },
              save(order){
                  this.$LIPS(true);
-                 let type = Object.keys(this.message).find(key => this.message[key] === this.type);
-                let data = {
+                 let type = this.message.find(item => item.value === this.type);
+                 let data = {};
+                 if(this.modeType === 'call'){
+                    data = {
                     "feedback": order.feedback,
                     "order_id": order.id,
-                    "type": type,
+                    "type": type.name,
                     "status": "called",
                     "promise_date": order.promise_date === true? null : order.promise_date
                     };
 
+                 }else{
+                    data = {
+                    "feedback": order.feedback,
+                    "order_id": order.id,
+                    "type": type.name,
+                    "visited": order.is_visited,                  
+                    };
+                    this.urlToFetchOrders = '/api/collection'
+                 }
+                
                 post(this.urlToFetchOrders, data).then(({data}) => {
                     if(data.status === 'success'){
                         this.$swal({
@@ -407,8 +436,10 @@
                                         this.$LIPS(false);
                                         order.feedback = "";
                                         order.promise_date = "";
-                                        this.modeType = 'call';
+                                        order.is_visited = ""; 
+                                        this.urlToFetchOrders = '/api/repayment_reminder'                                      
                                         this.fetchData();
+                                        this.modeType = 'call';
                                         
                     }
                 }).catch(({response:r}) => {
@@ -425,6 +456,7 @@
         },
         created(){
 
+            this.getReminderValues();         
            this.fetchData();
         }
 

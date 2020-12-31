@@ -2,7 +2,19 @@
     <div>
         <div class=" mb-3 attendance-head">
              <resueable-search :url="url" @childToParent="prepareList" :showBranch="true" :showDate="true">
-             </resueable-search>
+                 <template #default= "{ searchQuery }">          
+                    <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Business Type:  </label>
+                    </div>
+                   <select name="category" id="category" class="custom-select" v-model="searchQuery.businessType">
+                        <option :value="type.id" v-for="type in businessTypes">
+                            {{type.name}}
+                        </option>
+                    </select>
+                </div>
+                </template>
+            </resueable-search>
                 <div class="w-100 my-5 mx-0 hr"></div>
                 <div class="row px-4 pt-3 pb-4 text-center">
                     <div class="col light-heading" style="max-width: 120px">S/N</div>
@@ -34,7 +46,7 @@
         </div>
 
          <div class="modal fade repayment" id="viewStuffs">
-                <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-dialog modal-xl" role="document">
                     <div class="modal-content " v-if="showModalContent">
 
                         <div v-if="mode==='order'">
@@ -131,7 +143,7 @@
                                         <tr v-for="(object, index) in modalItem">
                                             <td>{{index+1}}</td>
                                             <td>{{convertDate(object.created_at)}}</td>
-                                            <td>{{object.type == "App\\Notifications\\SmsReminderSent"? "SMS" : "Call"}}</td>
+                                            <td>{{object.type === "App\\Notifications\\SmsReminderSent"? "SMS" : object.type === "App\\Notifications\\CallReminder" ? "Call" : "Collection"}}</td>                                            
                                             <td>{{object.type == "App\\Notifications\\SmsReminderSent"? object.data.message : object.data.feedback}}</td>
                                         </tr>
                                     </tbody>
@@ -238,7 +250,8 @@ import {mapGetters, mapActions} from "vuex";
                 showModalContent: false,
                 mode: null,
                 modalItem: null,
-                page: 1
+                page: 1,
+                businessTypes: []
 
             
             }
@@ -268,10 +281,14 @@ import {mapGetters, mapActions} from "vuex";
             },
              calcDebt(amortization){
                 // I assumed that all repayments are uniform and are not varied
-                let res = amortization.filter(amor => {
+                if(amortization[0] !== undefined){
+                    let res = amortization.filter(amor => {
                     return amor.actual_amount === 0
                 });
                 return res.length * amortization[0].expected_amount;
+                }
+                return
+                
             },
              viewStuffs(item, model){
                  this.modalItem = item;
@@ -298,11 +315,16 @@ import {mapGetters, mapActions} from "vuex";
                 return utcDate;
 
             },
+            async getBusinessTypes(){
+                let types = await get('/api/business_type');
+                this.businessTypes = types.data.data.data;
+            }
             
         },
         created() {            
             this.$prepareBranches();
             this.fetchData();
+            this.getBusinessTypes();
         },
 
         

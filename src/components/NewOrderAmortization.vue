@@ -278,7 +278,7 @@ this.$emit("childToParent", res.data);
 </script>
 <style scoped>
 .amor-table{
-    width: 752px;
+    width: 1092px;
     overflow: scroll;
 }
 .green{

@@ -150,7 +150,7 @@
       </transition>
 
       <div class="modal fade repayment" id="amortization">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-xl" role="document">
           <div class="modal-content" v-if="showModalContent">
               <div v-if="!newOrder">
             <div class="modal-header py-2">
@@ -841,7 +841,7 @@ export default {
   cursor: auto;
 }
 .amor-table{
-    width: 752px;
+    width: 1092px;
     overflow: scroll;
 }
 </style>

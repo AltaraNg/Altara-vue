@@ -29,18 +29,18 @@
                 <div class="row px-4 pt-3 pb-4 text-center">
                     <div class="col light-heading" style="max-width: 120px">S/N</div>
                     <div class="col light-heading" v-for="header in headings">{{header}}</div>
-                     <div class="col light-heading" v-if="modeType==='collection'">Visited?</div>
-                    <div class="col light-heading" v-if="modeType==='call' || modeType === 'collection'">Feedback</div>
-                    <div class="col light-heading" v-if="modeType==='call'">Promise Date</div>
+                     <div class="col light-heading" v-if="evalMode==='collection' || evalMode === 'recovery'">Visited?</div>
+                    <div class="col light-heading" v-if="evalMode==='call' || evalMode === 'collection' || evalMode === 'recovery'">Feedback</div>
+                    <div class="col light-heading" v-if="evalMode==='call'">Promise Date</div>
                    
                     
                 </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
                  <div class="mb-3 row attendance-item" :key="index" v-for="(order,index) in orders">
-                        <div class="col d-flex align-items-center" style="max-width: 120px"  >
-                            <span class="user mx-auto" v-if="modeType==='call' || modeType === 'collection'" @click="save(order)">{{index + OId}}</span>
-                            <span class="user mx-auto" v-else>{{index + OId}}</span>
+                        <div class="col d-flex align-items-center"  style="max-width: 120px"  >
+                            <span class="user mx-auto" :class="{'isProcessed': order.isProcessed}" v-if="evalMode==='call' || evalMode === 'collection' || evalMode === 'recovery'" @click="save(order)">{{index + OId}}</span>
+                            <span class="user mx-auto" :class="{'isProcessed': order.isProcessed}" v-else>{{index + OId}}</span>
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order, 'order')">
                             {{order.order_number}}
@@ -55,16 +55,16 @@
                             {{order.repayment - calcDebt(order.amortization) | currency('₦')}} | {{order.repayment  |  currency('₦')}} 
                         </div>
                          <div class="col d-flex align-items-center justify-content-center" @click="viewStuffs(order.notifications, 'notification')">
-                            {{order.notifications[0]? order.notifications.length : 'Not available'}}
+                            {{order.notifications[0]? order.notifications.length : 'N/A'}}
                         </div>
-                         <div class="col d-flex align-items-center justify-content-center" v-if="modeType==='collection'">
+                         <div class="col d-flex align-items-center justify-content-center" v-if="evalMode==='collection' || evalMode === 'recovery'">
                             <span>
                                 <span class="radio w-50 pr-3 mb-0 float-left">
-                                    <input type="radio" :value="true" v-model="order.is_visited" :id="`present${index}`" :name="`isPresent${index}`" class="form-check-input">
+                                    <input type="radio" :value="true" v-model="order.is_visited" :id="`present${index}`" :name="`isPresent${index}` " :disabled="order.isProcessed" class="form-check-input">
                                     <label :for="`present${index}`">yes</label>
                                 </span>
                                 <span class="radio w-50 pl-3 mb-0 float-left">
-                                    <input type="radio" :value="false" v-model="order.is_visited" :id="`absent${index}`" 
+                                    <input type="radio" :value="false" v-model="order.is_visited" :id="`absent${index}`" :disabled="order.isProcessed" 
                             :name="`isPresent${index}`" class="form-check-input">
                                     <label :for="`absent${index}`" >no</label>
                                 </span>
@@ -73,11 +73,11 @@
 
 
 
-                        <div class="col d-flex align-items-center justify-content-center" v-if="modeType==='call' || modeType === 'collection'">
-                            <input type="text" name="feedback"  class="form-control" v-model="order.feedback" required>
+                        <div class="col d-flex align-items-center justify-content-center" v-if="evalMode==='call' || evalMode === 'collection' || evalMode === 'recovery'">
+                            <input type="text" name="feedback"  class="form-control" v-model="order.feedback" required :disabled="order.isProcessed">
                         </div>
-                        <div class="col d-flex align-items-center justify-content-center" v-if="modeType==='call'">
-                            <input type="date" name="date" v-model="order.promise_date" class="form-control" required/>
+                        <div class="col d-flex align-items-center justify-content-center" v-if="evalMode==='call'">
+                            <input type="date" name="date" v-model="order.promise_date" class="form-control" required :disabled="order.isProcessed"/>
                         </div>
 
 
@@ -320,8 +320,9 @@
                 ],
                 mode: '',
                 modeType: '',
-                message: {},
+                message: [],
                 promise_date: null,
+                evalMode: null,
                
                 orders: null,
                 type: null,
@@ -329,7 +330,8 @@
                 show: false,
                 showModalContent:false,
                 headings:
-                    ['Order Number', 'Order Customer name', 'Product', 'Paid | Repayment', 'Reminder Count']
+                    ['Order Number', 'Order Customer name', 'Product', 'Paid | Repayment', 'Reminder Count'],
+                disabledOrders: [],
             }
         },
 
@@ -352,14 +354,17 @@
             },
            prepareList(response){
                response.days === undefined ? this.type =7 : this.type = response.days;
-                if(this.type === 7 || this.type === 14 || this.type === 21){
-                    this.modeType = 'message';
-                }else if(this.type === 28 || this.type === 35 || this.type === 42){
-                    this.modeType = 'call';
-                }
-                else{
-                    this.modeType = 'collection'
-                }
+               this.modeType = this.message.find((item) => {
+                   return item.value === this.type
+               }).name;
+                // if(this.type === 7 || this.type === 14 || this.type === 21){
+                //     this.modeType = 'message';
+                // }else if(this.type === 28 || this.type === 35 || this.type === 42){
+                //     this.modeType = 'call';
+                // }
+                // else{
+                //     this.modeType = 'collection'
+                // }
                 let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
                 this.orders = data;
@@ -397,6 +402,10 @@
                 this.message = values.data.data.data;
             },
 
+            excemptFunc(element){
+                element.isProcessed = true;
+            },
+
             prev(lastPage = null) {
                 if (this.pageParams.prev_page_url) {
                     this.page = lastPage ? lastPage : parseInt(this.page) - 1;
@@ -404,10 +413,11 @@
                     }
                 },
              save(order){
+                 if(!order.isProcessed){
                  this.$LIPS(true);
                  let type = this.message.find(item => item.value === this.type);
                  let data = {};
-                 if(this.modeType === 'call'){
+                 if(this.evalMode === 'call'){
                     data = {
                     "feedback": order.feedback,
                     "order_id": order.id,
@@ -452,13 +462,41 @@
                                 this.$scrollToTop();
                                 this.$LIPS(false);
                             });
+                 }
             }
         },
         created(){
 
             this.getReminderValues();         
            this.fetchData();
+        },
+        watch: {
+            modeType: function(modeType){
+                this.disabledOrders = [];
+                if (this.modeType === 'first_message' || this.modeType === 'second_message' || this.modeType === 'third_message'){
+                    this.evalMode = 'message';
+                }
+                else if(this.modeType === 'first_call' || this.modeType === 'second_call' || this.modeType === 'third_call'){
+                    this.evalMode = 'call';
+                }
+                else if(this.modeType === 'first_collection' || this.modeType === 'second_collection' || this.modeType === 'third_collection'){
+                    this.evalMode = 'collection';
+                }
+                else if(this.modeType === 'recovery'){
+                    this.evalMode = this.modeType;
+                }
+
+                this.orders.forEach(order => {
+                    if (order.notifications.some(note => {
+                        return note.data.type === modeType;
+                    }) === true){
+                        this.excemptFunc(order);
+                    }
+                });
+
+            }
         }
+
 
     }
 </script>
@@ -469,5 +507,8 @@
         flex-direction: row;
         align-items: flex-end;
         justify-content: flex-end;
+    }
+    .isProcessed{
+        background: green;
     }
 </style>

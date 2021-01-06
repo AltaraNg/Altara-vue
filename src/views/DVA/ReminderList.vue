@@ -185,7 +185,7 @@
                                         <tr v-for="(object, index) in modalItem">
                                             <td>{{index+1}}</td>
                                             <td>{{convertDate(object.created_at)}}</td>
-                                            <td>{{object.type === "App\\Notifications\\SmsReminderSent"? "SMS" : object.type === "App\\Notifications\\CallReminder" ? "Call" : "Collection"}}</td>
+                                            <td>{{object.data.type}}</td>
                                             <td>{{object.type === "App\\Notifications\\SmsReminderSent"? object.data.message : object.data.feedback}}</td>
                                         </tr>
                                     </tbody>
@@ -319,7 +319,7 @@
                     {name: 'date to', model: 'date_to'}
                 ],
                 mode: '',
-                modeType: '',
+                modeType: 'first_message',
                 message: [],
                 promise_date: null,
                 evalMode: null,
@@ -336,13 +336,13 @@
         },
 
         methods: {
-             fetchData() {
+             async fetchData() {
 
                 this.$scrollToTop();
                 this.$LIPS(true);
                
                 let {page, page_size} = this.$data;
-                get(`${this.urlToFetchOrders}?days=${this.type === null ? 7 : this.type}`+`${!!page ? `&page=${page}` : ""}` +
+                await get(`${this.urlToFetchOrders}?days=${this.type === null ? 7 : this.type}`+`${!!page ? `&page=${page}` : ""}` +
           `${!!page_size ? `&pageSize=${page_size}` : ""}`
                 )
                    .then(({data}) => this.prepareList(data))
@@ -353,22 +353,22 @@
 
             },
            prepareList(response){
-               response.days === undefined ? this.type =7 : this.type = response.days;
-               this.modeType = this.message.find((item) => {
-                   return item.value === this.type
-               }).name;
-                // if(this.type === 7 || this.type === 14 || this.type === 21){
-                //     this.modeType = 'message';
-                // }else if(this.type === 28 || this.type === 35 || this.type === 42){
-                //     this.modeType = 'call';
-                // }
-                // else{
-                //     this.modeType = 'collection'
-                // }
+               
+            //    response.days === undefined ? this.type =7 : this.type = response.days;
+            //    this.modeType = this.message.find((item) => {
+            //        return item.value === this.type
+            //    }).name;  
+                if(response.days !== undefined){
+                    this.modeType = this.message.find((item) => {
+                        return item.value === response.days
+                        }).name;
+                    this.type = response.days; 
+                }              
                 let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
                 this.orders = data;
                 this.OId = from;
+                this.classAdd(this.modeType);
                 this.$LIPS(false);
 
             },
@@ -400,6 +400,9 @@
             async getReminderValues(){
                 let values = await get('/api/reminder_value');
                 this.message = values.data.data.data;
+                this.message.sort((a,b) => {
+                   return (a.id < b.id) ? -1 : 1
+                });
             },
 
             excemptFunc(element){
@@ -449,7 +452,8 @@
                                         order.is_visited = ""; 
                                         this.urlToFetchOrders = '/api/repayment_reminder'                                      
                                         this.fetchData();
-                                        this.modeType = 'call';
+                                        
+                                        
                                         
                     }
                 }).catch(({response:r}) => {
@@ -463,6 +467,16 @@
                                 this.$LIPS(false);
                             });
                  }
+            },
+            classAdd(modeType){
+                console.log('I am working');
+                 this.orders.forEach(order => {
+                    if (order.notifications.some(note => {
+                        return note.data.type === modeType;
+                    }) === true){
+                        this.excemptFunc(order);
+                    }
+                });
             }
         },
         created(){
@@ -482,17 +496,11 @@
                 else if(this.modeType === 'first_collection' || this.modeType === 'second_collection' || this.modeType === 'third_collection'){
                     this.evalMode = 'collection';
                 }
-                else if(this.modeType === 'recovery'){
-                    this.evalMode = this.modeType;
+                else if(this.modeType === 'first_recovery' || this.modeType === 'second_recovery' || this.modeType === 'third_recovery'){
+                    this.evalMode = 'recovery';
                 }
 
-                this.orders.forEach(order => {
-                    if (order.notifications.some(note => {
-                        return note.data.type === modeType;
-                    }) === true){
-                        this.excemptFunc(order);
-                    }
-                });
+                this.classAdd(modeType);
 
             }
         }

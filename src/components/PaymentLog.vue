@@ -8,9 +8,10 @@
                         @submit.prevent="previewAmortization"
                     >
                         <div class="form-group align-self-left text-capitalize">
-                            <label for="amount" class="form-control-label"
-                                >Product Name</label
-                            >
+                            <label for="amount" class="form-control-label w-100"
+                                >Product Name
+                                <span :class="{'renewal': eligible}" v-if="eligible">Entitled to renewal discount!!!</span>
+                                </label>
                             <AutoComplete
                                 v-on:childToParent="selectedItem"
                                 :apiUrl="apiUrls.getProduct"
@@ -311,7 +312,7 @@ import AutoComplete from "./AutoComplete.vue";
 import calculate from "../utilities/calculator";
 
 export default {
-    props: { customerId: null },
+    props: { customerId: null, customer: null },
     components: { AutoComplete },
     data() {
         return {
@@ -334,7 +335,9 @@ export default {
                 previewAmortization: `/api/amortization/preview`,
                 createOrder: `/api/new_order`,
                 getCalculation: `/api/price_calculator`,
-                getProduct: `/api/inventory`
+                getProduct: `/api/inventory`,
+                discounts: `/api/discount`,
+               
             },
             inputValue: "",
             selectedProduct: {},
@@ -343,15 +346,22 @@ export default {
             rPayment: "",
             repaymentCircle: "",
             rDuration: "",
-            customDateToggle: false
+            customDateToggle: false,
+            discounts: null,
+            eligible: false,
+            
         };
     },
     async mounted() {
+        this.checkIfDiscountElig();
         await this.getRepaymentDuration();
         await this.getRepaymentCycles();
         await this.getDownPaymentRates();
         await this.getBusinessTypes();
         await this.getCalculation();
+        await this.getDiscounts();
+        
+       
     },
     computed: {
         ...mapGetters(["getPaymentMethods", "getBanks"])
@@ -364,6 +374,10 @@ export default {
         },
         async logSale() {
             this.salesLogForm.customer_id = this.customerId;
+            let renewal = '';
+            this.eligible? renewal = this.discounts.find(item => {
+                return item.name === 'renewal';
+            }).id : renewal = '';
             const data = {
                 customer_id: this.customerId,
                 inventory_id: this.selectedProduct.id,
@@ -378,8 +392,12 @@ export default {
                 bank_id: this.salesLogForm.bank_id,
                 product_price: this.pPrice,
                 payment_type_id: this.salesLogForm.payment_type_id.id,
-                payment_method_id: this.salesLogForm.payment_method_id
+                payment_method_id: this.salesLogForm.payment_method_id,
+                
             };
+            if(this.eligible){
+                data.discount = [renewal]
+            }
             this.$validator.validateAll().then(result => {
                 if (result) {
                     this.$LIPS(true);
@@ -574,7 +592,39 @@ export default {
             } catch (err) {
                 this.$displayErrorMessage(err);
             }
-        }
+        },
+        async getDiscounts(){
+            try{
+                const fetchDiscounts = await get(
+                    this.apiUrls.discounts
+                );
+                this.discounts = fetchDiscounts.data.data.data;
+            }catch(err){
+                this.$displayErrorMessage(err);
+            }
+        },
+
+        checkIfDiscountElig(){
+            if (this.customer.new_orders.length > 0){
+                let arrLength = this.customer.new_orders.length;
+                if(this.calcDebt(this.customer.new_orders[arrLength - 1].amortization) === 0){
+                    this.eligible = true;
+                }
+
+            }
+        },
+        calcDebt(amortization){
+                // I assumed that all repayments are uniform and are not varied
+                if(amortization[0] !== undefined){
+                    let res = amortization.filter(amor => {
+                    return amor.actual_amount === 0
+                });
+                return res.length * amortization[0].expected_amount;
+                }
+                return
+                
+            },
+       
     }
 };
 </script>
@@ -615,5 +665,10 @@ export default {
 .payment-table{
     width: 1092px;
     overflow: scroll;
+}
+.renewal{   
+    color: forestgreen;
+    display: block;
+    float: right;
 }
 </style>

@@ -379,7 +379,7 @@
                 return $(`#viewStuffs`).modal('toggle');
             },
             calcDebt(amortization){
-                // I assumed that all repayments are uniform and are not varied
+                // * Assumed equal distribution of amortization
                 let res = amortization.filter(amor => {
                     return amor.actual_amount === 0
                 });

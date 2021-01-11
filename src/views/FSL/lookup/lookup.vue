@@ -142,7 +142,7 @@
             :order-id="customer.orders[0].order.id"
             @done="this.done"
           /> -->
-          <PaymentLog :customerId="customer.id" @done="this.done" v-if="logger === 'payment'" />
+          <PaymentLog :customerId="customer.id" @done="this.done" v-if="logger === 'payment'" :customer="customer" />
           <div class="mt-5 mb-3 attendance-head">
             <div class="w-100 my-5 mx-0 hr"></div>
           </div>

@@ -60,24 +60,29 @@
                          <div class="col d-flex align-items-center justify-content-center" v-if="evalMode==='collection' || evalMode === 'recovery'">
                             <span>
                                 <span class="radio w-50 pr-3 mb-0 float-left">
-                                    <input type="radio" :value="true" v-model="order.is_visited" :id="`present${index}`" :name="`isPresent${index}` " :disabled="order.isProcessed" class="form-check-input">
-                                    <label :for="`present${index}`">yes</label>
+                                    <input type="radio" :value="true" v-model="order.is_visited" :id="`present${index}`" v-if="!order.isProcessed" :name="`isPresent${index}` " :disabled="order.isProcessed" class="form-check-input">
+                                    <label :for="`present${index}`" v-if="!order.isProcessed">yes</label>
+                                     <input type="radio" :value="true" v-model="order.visited" :id="`present${index}`" v-if="order.isProcessed" :name="`isPresent${index}` " :disabled="order.isProcessed" class="form-check-input">
+                                    <label :for="`present${index}`" v-if="order.isProcessed">yes</label>
                                 </span>
                                 <span class="radio w-50 pl-3 mb-0 float-left">
-                                    <input type="radio" :value="false" v-model="order.is_visited" :id="`absent${index}`" :disabled="order.isProcessed" 
+                                    <input type="radio" :value="false" v-model="order.is_visited" v-if="!order.isProcessed" :id="`absent${index}`" :disabled="order.isProcessed" 
                             :name="`isPresent${index}`" class="form-check-input">
-                                    <label :for="`absent${index}`" >no</label>
+                                    <label :for="`absent${index}`" v-if="!order.isProcessed" >no</label>
+                                    <input type="radio" :value="false" v-model="order.visited" v-if="order.isProcessed" :id="`absent${index}`" :disabled="order.isProcessed" 
+                            :name="`isPresent${index}`" class="form-check-input">
+                                    <label :for="`absent${index}`" v-if="order.isProcessed" >no</label>
                                 </span>
                             </span>
                         </div>
 
 
 
-                        <div class="col d-flex align-items-center justify-content-center" v-if="evalMode==='call' || evalMode === 'collection' || evalMode === 'recovery'">
-                            <input type="text" name="feedback"  class="form-control" v-model="order.feedback" required :disabled="order.isProcessed">
+                        <div class="col d-flex align-items-center justify-content-center"  v-if="evalMode==='call' || evalMode === 'collection' || evalMode === 'recovery'">
+                            <input type="text" name="feedback"  class="form-control"  v-model="order.feedback" required :disabled="order.isProcessed">
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" v-if="evalMode==='call'">
-                            <input type="date" name="date" v-model="order.promise_date" class="form-control" required :disabled="order.isProcessed"/>
+                            <input type="date" name="date" v-model="order.promise_date" :class="{'formError' : order.error}" class="form-control" required :disabled="order.isProcessed"/>
                         </div>
 
 
@@ -305,6 +310,7 @@
         data() {
             return {
                 urlToFetchOrders: '/api/repayment_reminder',
+                formErrors: [],
                 branch_id: '',
                 modalItem: null,
                 page_size: 10,
@@ -338,7 +344,7 @@
         methods: {
              async fetchData() {
 
-                this.$scrollToTop();
+                // this.$scrollToTop();
                 this.$LIPS(true);
                
                 let {page, page_size} = this.$data;
@@ -407,6 +413,7 @@
 
             excemptFunc(element){
                 element.isProcessed = true;
+
             },
 
             prev(lastPage = null) {
@@ -421,6 +428,12 @@
                  let type = this.message.find(item => item.value === this.type);
                  let data = {};
                  if(this.evalMode === 'call'){
+                     console.log(order.feedback);
+                     if(order.feedback === undefined || order.promise_date === undefined){
+                        console.log(this.orders.find(item => {
+                             return item.id === order.id
+                         }).error = true)
+                     }
                     data = {
                     "feedback": order.feedback,
                     "order_id": order.id,
@@ -446,36 +459,43 @@
                                             title: "Feedback saved successfully"
 
                                         });
-                                        this.$LIPS(false);
+                                        
                                         order.feedback = "";
                                         order.promise_date = "";
                                         order.is_visited = ""; 
                                         this.urlToFetchOrders = '/api/repayment_reminder'                                      
                                         this.fetchData();
-                                        
-                                        
+                                        this.$LIPS(false);                
                                         
                     }
                 }).catch(({response:r}) => {
                                     let {data, status} = r;
                                     if (status === 422) {
                                         this.error = data.errors ? data.errors : data;
-                                        this.$networkErr('form');
+                                        
                                     }
-                                }).finally(() => {
-                                this.$scrollToTop();
+                                }).finally(() => {                                
                                 this.$LIPS(false);
                             });
                  }
             },
             classAdd(modeType){
-                console.log('I am working');
+                
                  this.orders.forEach(order => {
                     if (order.notifications.some(note => {
                         return note.data.type === modeType;
                     }) === true){
                         this.excemptFunc(order);
                     }
+                    if(order.notifications.some(note => {
+                        return note.data.type === modeType && note.data.visited 
+                    }) === true){
+                        order.visited = true;
+                    }
+                    else{
+                        order.visited =false;
+                    }
+                    
                 });
             }
         },
@@ -518,5 +538,8 @@
     }
     .isProcessed{
         background: green;
+    }
+    .formError{
+        border: crimson solid;
     }
 </style>

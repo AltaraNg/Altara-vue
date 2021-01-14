@@ -242,8 +242,7 @@ export default {
       headings0: [
         "Product Name",
         "SKU",
-        "Price",
-        "Supplier",
+        "Price",        
         "Status",
         "Date Received",
         "Branch",

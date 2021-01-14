@@ -29,9 +29,7 @@
           {{ inventory.price | currency("₦") }}
         </b>
       </div>
-      <div class="col d-flex align-items-center justify-content-center">
-        {{ getParent(inventory.supplier_id, suppliers).name }}
-      </div>
+      
       <div class="col d-flex align-items-center justify-content-center">
         {{
           inventory.inventory_status === null
@@ -173,14 +171,16 @@ export default {
       form: {},
       showProductTransfer: false,
       transferHistory: [],
+      toId: null,
     };
   },
 
   methods: {
     getParent(id, array) {
+      if(array.length > 0){
       return array.find((item) => {
         return item.id === id;
-      });
+      });}
     },
     edit(item) {
       this.inEditMode = !this.inEditMode;

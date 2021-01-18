@@ -135,7 +135,7 @@
           </div>
         </div>
       </div>
-      <div class="modal fade repayment" id="viewInventory">
+      <div class="modal fade hide repayment" id="viewInventory">
         <div class="modal-dialog modal-xl" role="document">
           <div class="modal-content" v-if="showModalContent">
             <div class="modal-header1">

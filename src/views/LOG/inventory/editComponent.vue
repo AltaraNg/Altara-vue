@@ -64,7 +64,7 @@
       </div>
     </div>
 
-    <div class="modal fade repayment" id="viewProductTransfer">
+    <div class="modal fade hide repayment" id="viewProductTransfer">
       <div class="modal-dialog" role="document">
         <div class="modal-content" v-if="showProductTransfer">
           <div class="modal-header py-2">

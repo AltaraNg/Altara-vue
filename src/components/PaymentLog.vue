@@ -291,6 +291,7 @@ import { get, post } from "../utilities/api";
 import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
 import calculate from "../utilities/calculator";
+import Flash from "../utilities/flash";
 
 export default {
     props: { customerId: null, customer: null },
@@ -352,6 +353,8 @@ export default {
             this.salesLogForm.repayment_cycle_id.name === "custom"
                 ? (this.customDateToggle = true)
                 : (this.customDateToggle = false);
+
+            this.getCalc();
         },
         async logSale() {
             this.salesLogForm.customer_id = this.customerId;
@@ -570,6 +573,9 @@ export default {
                     this.apiUrls.businessTypes
                 );
                 this.businessTypes = fetchBusinessTypes.data.data.data;
+                this.businessTypes = this.businessTypes.filter(item => {
+                  return item.name.includes("Altara Credit")
+                });
             } catch (err) {
                 this.$displayErrorMessage(err);
             }

@@ -574,7 +574,7 @@ export default {
                 );
                 this.businessTypes = fetchBusinessTypes.data.data.data;
                 this.businessTypes = this.businessTypes.filter(item => {
-                  return item.name === "Altara Credit Cash Loan" || item.name === "Altara Credit Products"
+                  return item.name.includes("Altara Credit")
                 });
             } catch (err) {
                 this.$displayErrorMessage(err);

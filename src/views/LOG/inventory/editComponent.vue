@@ -29,9 +29,7 @@
           {{ inventory.price | currency("₦") }}
         </b>
       </div>
-      <div class="col d-flex align-items-center justify-content-center">
-        {{ getParent(inventory.supplier_id, suppliers).name }}
-      </div>
+      
       <div class="col d-flex align-items-center justify-content-center">
         {{
           inventory.inventory_status === null
@@ -66,7 +64,7 @@
       </div>
     </div>
 
-    <div class="modal fade repayment" id="viewProductTransfer">
+    <div class="modal fade hide repayment" id="viewProductTransfer">
       <div class="modal-dialog" role="document">
         <div class="modal-content" v-if="showProductTransfer">
           <div class="modal-header py-2">
@@ -173,14 +171,34 @@ export default {
       form: {},
       showProductTransfer: false,
       transferHistory: [],
+      toId: null,
     };
   },
 
   methods: {
+    logTransfer(id, to) {
+      this.$LIPS(true);
+
+      post("/api/product_transfer", { to_id: to, inventory_id: id })
+        .then((res) => {
+          this.$LIPS(false);
+          this.$swal({
+            icon: "success",
+            title: "Transfer Successfully Logged",
+          });
+          $(`#viewProductTransfer`).modal("toggle");
+          this.fetchData();
+        })
+        .catch(() => {
+          this.$LIPS(false);
+          Flash.setError("Error submitting form");
+        });
+    },
     getParent(id, array) {
+      if(array.length > 0){
       return array.find((item) => {
         return item.id === id;
-      });
+      });}
     },
     edit(item) {
       this.inEditMode = !this.inEditMode;

@@ -176,6 +176,24 @@ export default {
   },
 
   methods: {
+    logTransfer(id, to) {
+      this.$LIPS(true);
+
+      post("/api/product_transfer", { to_id: to, inventory_id: id })
+        .then((res) => {
+          this.$LIPS(false);
+          this.$swal({
+            icon: "success",
+            title: "Transfer Successfully Logged",
+          });
+          $(`#viewProductTransfer`).modal("toggle");
+          this.fetchData();
+        })
+        .catch(() => {
+          this.$LIPS(false);
+          Flash.setError("Error submitting form");
+        });
+    },
     getParent(id, array) {
       if(array.length > 0){
       return array.find((item) => {

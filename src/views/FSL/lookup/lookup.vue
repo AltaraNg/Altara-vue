@@ -100,7 +100,7 @@
                 >{{$formatCurrency(order.product_price)}}</div>
                 <div
                   class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
-                >{{'  '}}</div>
+                >{{'N/A'}}</div>
                 <div
                   class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
                 >{{$formatCurrency(order.down_payment)}}</div>
@@ -109,13 +109,13 @@
                   class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
                 >
                   <button
-                    :class="'pending'"
+                    :class="calcDebt(order.amortization) === 0 ? 'approved' : 'pending'"
                     @click="displayAmortization(order)"
                     class="btn status my-sm-2"
                   >
                     View Plan
                     <i
-                      :class="'fa-hourglass-half'"
+                      :class="calcDebt(order.amortization) === 0 ? 'fa-check-circle' : 'fa-hourglass-half'"
                       class="fas ml-3"
                       style="font-size: 1.4rem"
                     ></i>
@@ -556,6 +556,14 @@ export default {
           Flash.setError("Error Fetching customer detail");
         });
     },
+
+    calcDebt(amortization){
+                // * Assumed equal distribution of amortization
+                let res = amortization.filter(amor => {
+                    return amor.actual_amount === 0
+                });
+                return res.length * amortization[0].expected_amount;
+            },
 
 
     displayAmortization(order) {

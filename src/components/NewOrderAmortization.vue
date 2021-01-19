@@ -110,12 +110,14 @@
                   </tbody>
                 </table>
                  <div v-if="standAlone === false">
+                   <div v-if="completed === false">
                 <LogForm
                   :amortizationData="amortizationData"
                   :customerId="customer.id"
                   :orderId="order.id"
                   @done="this.done"
                 />
+                </div>
                 </div>
               </div>
             </div>
@@ -192,6 +194,7 @@ export default {
     data(){
         return {
           actual_amount: null,
+          completed: null,
           ammo_item: null,
           newOrderItem:{},
           showModal: false,
@@ -263,12 +266,26 @@ this.$emit("childToParent", res.data);
           })
          
 
-        }
+        },
+        calcDebt(amortization){
+                // * Assumed equal distribution of amortization
+                let res = amortization.filter(amor => {
+                    return amor.actual_amount === 0
+                });
+                return res.length * amortization[0].expected_amount;
+            },
+
+    },
+    created(){
+      this.calcDebt(this.order.amortization) === 0 ? this.completed = true : this.completed = false;
+    },
+    updated(){
+      this.calcDebt(this.order.amortization) === 0 ? this.completed = true : this.completed = false;
 
     },
     watch: {
        order:function () {
-         console.log('poil',this.customer);
+         
           this.amortizationData=this.order.amortization;
         }
     },

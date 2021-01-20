@@ -19,6 +19,15 @@
                         <option :value="option.value" v-for="option in message">{{option.name}}</option>                       
                     </select>
                 </div>
+                <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Business Type:  </label>
+                    </div>
+                    <select name="option" v-model="searchQuery.businessType"  class="custom-select">
+                        <option disabled>--select--</option>
+                        <option :value="option.id" v-for="option in businessTypes">{{option.name}}</option>                       
+                    </select>
+                </div>
                 </template>
             </resueable-search>
             
@@ -260,9 +269,8 @@
              <div v-if="pageParams">
                 <base-pagination
                     :page-param="pageParams"
-                    :page="page"
                     @fetchData="fetchData"
-                    @next="next()"
+                    
                     @prev="prev()"
                 >
                 </base-pagination>
@@ -312,14 +320,13 @@
                 urlToFetchOrders: '/api/repayment_reminder',
                 formErrors: [],
                 branch_id: '',
-                modalItem: null,
-                page_size: 10,
+                modalItem: null,    
                  OId: null,
                 date_from: null,
                 date_to: null,
                 page: 1,
-                pageParams: null,
-                 page_size: 10,
+                pageParams: {},
+                 limit: 10,
                 filters: [
                     {name: 'date from', model: 'date_from'},
                     {name: 'date to', model: 'date_to'}
@@ -329,6 +336,7 @@
                 message: [],
                 promise_date: null,
                 evalMode: null,
+                businessTypes: [],
                
                 orders: null,
                 type: null,
@@ -347,9 +355,9 @@
                 // this.$scrollToTop();
                 this.$LIPS(true);
                
-                let {page, page_size} = this.$data;
-                await get(`${this.urlToFetchOrders}?days=${this.type === null ? 7 : this.type}`+`${!!page ? `&page=${page}` : ""}` +
-          `${!!page_size ? `&pageSize=${page_size}` : ""}`
+                let {page, limit} = this.$data;
+                await get(`${this.urlToFetchOrders}?days=${this.type === null ? 7 : this.type}`+`${!!this.pageParams.page ? `&page=${this.pageParams.page}` : ""}` +
+          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
                 )
                    .then(({data}) => this.prepareList(data))
                     .catch(() => Flash.setError('Error Preparing form'));
@@ -398,7 +406,10 @@
             },
             next(firstPage = null) {
                 if (this.pageParams.next_page_url) {
-                    this.page = firstPage ? firstPage : parseInt(this.page) + 1;
+                    console.log(this.pageParams.page)
+                    this.pageParams.page = firstPage ? firstPage : parseInt(this.pageParams.page) + 1;
+                    console.log(this.pageParams.page)
+
                     this.fetchData();
                     }
                 },
@@ -409,6 +420,12 @@
                 this.message.sort((a,b) => {
                    return (a.id < b.id) ? -1 : 1
                 });
+            },
+
+             async getBusinessType(){
+                let values = await get('/api/business_type');
+                this.businessTypes = values.data.data.data;
+                
             },
 
             excemptFunc(element){
@@ -501,7 +518,8 @@
         },
         created(){
 
-            this.getReminderValues();         
+            this.getReminderValues();
+           this.getBusinessType();         
            this.fetchData();
         },
         watch: {

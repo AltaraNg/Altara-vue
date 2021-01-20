@@ -13,13 +13,12 @@
             <div class="col d-flex justify-content-center align-items-center">
                 <div class="mr-5">
                     <span class="d-inline light-heading mr-2">set current Page</span>
-                    <input class="d-inline form-control " type="number" v-model="page"
-                           style="max-width: 50px;" @keyup.enter="fetchData(page)">
+                    <input class="d-inline form-control " type="number" v-model="pageParam.page" style="max-width: 50px;" @keyup.enter="fetchData(pageParam.page)">
                 </div>
                 <div class="ml-5">
                     <span class="d-inline light-heading mr-2">set page-size</span>
-                    <input class="d-inline form-control" type="number" v-model="pageParam.page_size"
-                           style="max-width: 50px;" @keyup.enter="fetchData(pageParam.page_size)">
+                    <input class="d-inline form-control" type="number" v-model="pageParam.limit"
+                           style="max-width: 50px;" @keyup.enter="fetchData(pageParam.limit)">
                 </div>
             </div>
 
@@ -59,24 +58,30 @@
                         type: Object,
                         required: true
                     },
-                    page:{
-                        type: Number,
-                        required: false
-                    }
-
+                    
                 },
 
                 methods: {
-                    next(page) {
-                        this.$emit('next', page)
-                    },
-                    prev(page) {
-                        this.$emit('prev', page)
-                    },
+                    next(firstPage = null) {
+                        if (this.pageParam.next_page_url) {
+                            this.pageParam.page = firstPage ? firstPage : parseInt(this.pageParam.page) + 1;
+                            this.fetchData();
+                        }
+                     },
+                   prev(lastPage = null) {
+      if (this.pageParam.prev_page_url) {
+        this.pageParam.page = lastPage ? lastPage : parseInt(this.pageParam.page) - 1;
+        this.fetchData();
+      }
+    },
                     fetchData(data){
                         this.$emit('fetchData', data)
                     }
-                                   }
+                                   },
+
+                created(){
+                    this.pageParam.page = 1;
+                }
             }
         </script>
 <

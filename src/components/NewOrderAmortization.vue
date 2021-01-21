@@ -85,7 +85,7 @@
                   <tbody class="text-center">
                     <tr class="table-separator">
                       <td class="text-left">Discount Detail (%)</td>
-                      <th>{{order.discount | capitalize}}</th>
+                      <th>{{order.discount[0] ? order.discount[0].name : 'Null' | capitalize}}</th>
                       <td>Total Before Discount</td>
                       <th>{{$formatCurrency($roundDownAmt(order.product_price))}}</th>
                       <td>Total Paid (+discount)</td>

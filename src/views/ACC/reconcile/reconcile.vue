@@ -43,7 +43,7 @@
           </li>
         </ul>
       </div>
-      <payment-filter :list-to-order="listToOrder" @filter="setFilter"></payment-filter>
+      <!-- <payment-filter :list-to-order="listToOrder" @filter="setFilter"></payment-filter> -->
 
       <div class="mt-5 mb-3 attendance-head" v-if="details.headings">
         <div class="row px-4 pt-3 pb-4 text-center">

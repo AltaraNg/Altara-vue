@@ -211,7 +211,6 @@ export default {
         }
     },
     methods: {  done() {
-      console.log('tester mm');
       this.show = false;
 
       this.$LIPS(true);
@@ -236,9 +235,7 @@ this.$emit("childToParent", res.data);
         preparePayments(){
             this.$emit('preparePayments');
         },
-        testo(){
-          console.log('testop');
-        },
+        
         updateAmmo(armo){
           this.showModal = true;
           this.ammo_item = armo;
@@ -255,7 +252,6 @@ this.$emit("childToParent", res.data);
               icon: 'success',
               title: 'Payment Updated Successfully'
               });
-              console.log(res.data);
               this.$LIPS(false); 
 
           }).catch(err => {

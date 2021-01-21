@@ -379,7 +379,6 @@ export default {
         .then((res) => {
           this.transferHistory = res.data.data.data;
           this.$LIPS(false);
-          console.log("hello world", res);
 
           $(`#viewProductTransfer`).modal("toggle");
         })

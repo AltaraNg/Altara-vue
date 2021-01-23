@@ -240,6 +240,13 @@ import {mapGetters, mapActions} from "vuex";
     export default {
         components: {NewOrderAmortization, ResueableSearch, BasePagination},
         computed: {...mapGetters(['getBranches'])},
+        props: {
+            renewal : {
+                type: Boolean,
+                required: false,
+                default: false
+            }
+        },
         data(){
             return {
                 headings:  ['Order Number', 'Order Summary', 'Customer Info Summary', 'Repayment Summary', 'Reminder History'],

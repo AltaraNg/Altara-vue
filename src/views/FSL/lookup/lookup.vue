@@ -79,7 +79,7 @@
                 >
                   <span class="user mx-auto">{{customer.orders.length + index + 1}}</span>
                   <span v-if="$route.meta.customSMS">
-                    <CustomSMSButton :order="order" :customer="customer" :key="order.amortization[0].new_order_id" />
+                    <CustomSMSButton :order="order" :customer="customer" :key="order.amortization[0]? order.amortization[0].new_order_id : index" />
                   </span>
                   <span>
                     <!-- <img src="../../../../svg/download.svg" /> -->
@@ -87,8 +87,8 @@
                 </div>
 
                 <div
-                  class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
-                >{{formatDate(order.amortization[0].created_at)}}</div>
+                  class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center" 
+                >{{formatDate(order.order_date)}}</div>
                 <div
                   class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
                 >{{order.order_number}}</div>
@@ -559,10 +559,13 @@ export default {
 
     calcDebt(amortization){
                 // * Assumed equal distribution of amortization
-                let res = amortization.filter(amor => {
+                if(amortization[0] !== undefined){
+                  let res = amortization.filter(amor => {
                     return amor.actual_amount === 0
                 });
                 return res.length * amortization[0].expected_amount;
+                }
+                
             },
 
 
@@ -570,12 +573,18 @@ export default {
         if(order.status){
             this.newOrder = true;
             this.order = order;
+            if(order.amortization.length === 0){
+          alert('No amortization to view')
+          return
+        }
         }
         else{
             this.newOrder = false;
             this.activeOrder = order;
             this.paymentForm = { payments: [] };
         }
+
+        
 
       this.showModalContent = true;
       return $(`#amortization`).modal("toggle");

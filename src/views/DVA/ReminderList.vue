@@ -269,9 +269,8 @@
              <div v-if="pageParams">
                 <base-pagination
                     :page-param="pageParams"
-                    @fetchData="fetchData"
+                    @fetchData="fetchData"                    
                     
-                    @prev="prev()"
                 >
                 </base-pagination>
 

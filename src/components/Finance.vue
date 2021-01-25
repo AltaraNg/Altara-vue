@@ -1,7 +1,32 @@
 <template>
   <div>
-    <div class="tab-content mt-1 attendance-body">
-      <div v-if="tab === 'Showroom Payment' && paymentList.length !== 0">
+    <div class="mb-3 attendance-head">
+     <resueable-search :url="url" @childToParent="prepareList" :showBranch="true" :showDate="true">
+                 <template #default= "{ searchQuery }">          
+                    <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Payment Type:  </label>
+                    </div>
+                   <select name="category" id="category" class="custom-select" v-model="searchQuery.method">
+                        <option :value="type.id" v-for="type in getPaymentMethods">
+                            {{type.name}}
+                        </option>
+                    </select>
+                </div>
+                </template>
+            </resueable-search>
+    </div>
+    <div class="mt-5 mb-3 attendance-head" v-if="details.headings">
+        <div class="row px-4 pt-3 pb-4 text-center">
+          <div
+            class="col light-heading"
+            :key="index"
+            v-for="(header, index) in details.headings"
+          >{{ header }}</div>
+        </div>
+      </div>
+    <div class="tab-content mt-1 attendance-body">      
+      <div v-if="tab === 'Showroom Payment'">
         <div class="mb-3 row attendance-item" :key="index" v-for="(payment, index) in renderedList">
           <div class="col d-flex align-items-center" style="max-width: 120px">
             <span class="user mx-auto" :class="!payment.comment ? 'Current' : 'Successful'">
@@ -31,6 +56,9 @@
               {{index + OId}}
             </span>
           </div>
+          <div
+            class="col d-flex align-items-center justify-content-center"
+          >{{ payment.branch }}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
           >{{ payment.payment_method }}</div>
@@ -118,18 +146,11 @@
             </div>
         </div>
     </div>
-    <nav
-      v-if="tab !== 'Log Payment' && !$_.isEmpty(responseData)"
-      class="col d-flex justify-content-end align-items-center pr-0"
-    >
+    <nav>
         <div v-if="pageParams">
             <base-pagination
-
-                :page-param="pageParams"
-                :page="page"
-                @fetchData="fetchData()"
-                @next="next()"
-                @prev="prev()"
+                :page-param="pageParams"                
+                @fetchData="fetchList(list)"               
             >
             </base-pagination>
 
@@ -145,12 +166,14 @@ import { get, patch, put } from "../utilities/api";
 
 import Flash from "../utilities/flash";
 import BasePagination from "../components/Pagination/BasePagination";
+ import ResueableSearch from '../components/ReusableSearch.vue';
+
 import Vue2Filters from 'vue2-filters'
 
 Vue.use(Vue2Filters)
 
 export default {
-  components: { BasePagination },
+  components: { BasePagination, ResueableSearch },
   props: {
     list: { default: null },
     tab: { default: null },
@@ -158,8 +181,13 @@ export default {
   },
 
   watch: {
-    list: function(list) {
-      this.fetchList(list);
+    tab: function(tab) {
+      if(tab === 'Showroom Payment'){
+        this.url = "/api/payment"
+           }else{
+             this.url = "/api/payment-reconcile"
+           }
+           this.fetchList(tab);
     },
     filterBy: function(filterBy) {
       this.defaultList =
@@ -199,7 +227,8 @@ export default {
       OId: 0,
       defaultList: [],
       page: 1,
-        pageParams: null,
+      url: null,
+      pageParams: {},
       responseData: {},
       paymentItem: {},
       showModalContent: false,
@@ -216,7 +245,38 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["auth", "getAuthUserDetails", "getBranches"])
+     details() {
+      let list = 1;
+      const tabs = ["Showroom Payment", "Reconcile"];
+      const headings2 = [
+        "index",
+        "Customer ID",
+        "Payment Purpose",
+        "Payment Type",
+        "Amount Paid",
+        "Comment"
+      ];
+      const headings1 = [
+        "index",
+        "Branch",
+        "Type",
+        "Logged",
+        "Showroom",
+        "Banked",
+        "Variance",
+        "Status",
+        "Statement",
+        "Comment"
+      ];
+      const headings =
+        this.tab === "Showroom Payment"
+          ? headings2
+          : this.tab === "Reconcile"
+          ? headings1
+          : "";
+      return { tabs, headings, list };
+    },
+    ...mapGetters(["auth", "getAuthUserDetails", "getBranches", 'getPaymentMethods'])
   },
 
   methods: {
@@ -225,42 +285,34 @@ export default {
       this.amountInBank.length === 0 ? (this.variance = 0) : this.variance;
     },
 
-    fetchList(list) {
-      this.$LIPS(true);
-      list === "Showroom Payment"
-        ? this.getPaymentList()
-        : list === "Reconcile"
-        ? this.getPaymentReconciliationList()
-        : this.$LIPS(false);
-    },
+     fetchList(list) {
+                this.$LIPS(true);
+                list === 'Showroom Payment' ? this.getPaymentList() :
+                    list === 'Reconcile' ? this.getPaymentReconciliationList() : this.$LIPS(false);
+            },
+    prepareList(response){
+      let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
+      this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
+      this.renderedList = data;
+      this.OId = from;
+      this.$LIPS(false);
+            },
 
     async getPaymentList() {
       try {
-        const fetchPaymentList = await get(`/api/payment?page=${this.page}`);
-        this.paymentList = fetchPaymentList.data.data.data;
-        this.responseData = fetchPaymentList.data.data;
-        this.pageParams = this.responseData;
-        this.OId = this.responseData.from;
-        this.$LIPS(false);
-        this.renderedList = this.paymentList;
+        const fetchPaymentList = await get(`${this.url}`+`${!!this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
+          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`);
+        this.prepareList(fetchPaymentList.data);       
       } catch (err) {
         this.$displayErrorMessage(err);
       }
     },
 
     async getPaymentReconciliationList() {
-      this.branchId = localStorage.getItem("branch_id");
       try {
-        const fetchPaymentReconciliation = await get(`/api/payment-reconcile`);
-        this.paymentReconciliationList =
-          fetchPaymentReconciliation.data.data.data;
-        this.responseData = fetchPaymentReconciliation.data.data;
-        this.renderedList = this.paymentReconciliationList;
-        this.OId = this.responseData.from;
-        // this.totalCashAtHand = this.paymentReconciliationList
-        //     .map(item => item.cash_at_hand)
-        //     .reduce((a, b) => a + b);
-        this.$LIPS(false);
+        const fetchPaymentReconciliation = await get(`${this.url}`+`${!!this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
+          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`);
+        this.prepareList(fetchPaymentReconciliation.data);       
       } catch (err) {
         this.$displayErrorMessage(err);
       }
@@ -325,7 +377,9 @@ export default {
   },
 
   mounted() {
-    this.fetchList(this.list);
+        this.url = "/api/payment"
+    
+    this.fetchList(this.tab);
   },
 
   created() {

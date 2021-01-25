@@ -406,9 +406,7 @@
             },
             next(firstPage = null) {
                 if (this.pageParams.next_page_url) {
-                    console.log(this.pageParams.page)
                     this.pageParams.page = firstPage ? firstPage : parseInt(this.pageParams.page) + 1;
-                    console.log(this.pageParams.page)
 
                     this.fetchData();
                     }
@@ -445,11 +443,11 @@
                  let type = this.message.find(item => item.value === this.type);
                  let data = {};
                  if(this.evalMode === 'call'){
-                     console.log(order.feedback);
+                     
                      if(order.feedback === undefined || order.promise_date === undefined){
-                        console.log(this.orders.find(item => {
+                        this.orders.find(item => {
                              return item.id === order.id
-                         }).error = true)
+                         }).error = true
                      }
                     data = {
                     "feedback": order.feedback,

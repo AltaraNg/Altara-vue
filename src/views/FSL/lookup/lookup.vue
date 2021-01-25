@@ -722,7 +722,7 @@ export default {
               icon: 'success',
               title: 'Payment Updated Successfully'
               });
-              console.log(res.data);
+              
               this.$LIPS(false); 
 
           }).catch(err => {
@@ -794,7 +794,6 @@ export default {
 
     getOrderStatusClass: (orderStatus) => getOrderStatusClass(orderStatus),
      newOrderItem(value) {
-            console.log('testing data ',value);
             this.updateView(value);
         },
         

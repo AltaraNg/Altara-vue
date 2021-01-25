@@ -85,7 +85,7 @@
                   <tbody class="text-center">
                     <tr class="table-separator">
                       <td class="text-left">Discount Detail (%)</td>
-                      <th>{{order.discount | capitalize}}</th>
+                      <th>{{order.discount[0] ? order.discount[0].name : 'Null' | capitalize}}</th>
                       <td>Total Before Discount</td>
                       <th>{{$formatCurrency($roundDownAmt(order.product_price))}}</th>
                       <td>Total Paid (+discount)</td>
@@ -211,7 +211,6 @@ export default {
         }
     },
     methods: {  done() {
-      console.log('tester mm');
       this.show = false;
 
       this.$LIPS(true);
@@ -236,9 +235,7 @@ this.$emit("childToParent", res.data);
         preparePayments(){
             this.$emit('preparePayments');
         },
-        testo(){
-          console.log('testop');
-        },
+        
         updateAmmo(armo){
           this.showModal = true;
           this.ammo_item = armo;
@@ -255,7 +252,6 @@ this.$emit("childToParent", res.data);
               icon: 'success',
               title: 'Payment Updated Successfully'
               });
-              console.log(res.data);
               this.$LIPS(false); 
 
           }).catch(err => {

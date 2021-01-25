@@ -13,6 +13,16 @@
                         </option>
                     </select>
                 </div>
+                <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Bank:  </label>
+                    </div>
+                   <select name="bank" id="bank" class="custom-select" v-model="searchQuery.bank">
+                        <option :value="type.id" v-for="type in getBanks">
+                            {{type.name}}
+                        </option>
+                    </select>
+                </div>
                 </template>
             </resueable-search>
     </div>
@@ -28,7 +38,7 @@
     <div class="tab-content mt-1 attendance-body">      
       <div v-if="tab === 'Showroom Payment'">
         <div class="mb-3 row attendance-item" :key="index" v-for="(payment, index) in renderedList">
-          <div class="col d-flex align-items-center" style="max-width: 120px">
+          <div class="col d-flex align-items-center justify-content-center" style="max-width: 120px">
             <span class="user mx-auto" :class="!payment.comment ? 'Current' : 'Successful'">
               {{index + OId}}
             </span>
@@ -276,7 +286,7 @@ export default {
           : "";
       return { tabs, headings, list };
     },
-    ...mapGetters(["auth", "getAuthUserDetails", "getBranches", 'getPaymentMethods'])
+    ...mapGetters(["auth", "getAuthUserDetails", "getBranches", 'getPaymentMethods', 'getBanks'])
   },
 
   methods: {

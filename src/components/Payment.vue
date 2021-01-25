@@ -16,6 +16,16 @@
                         </option>
                     </select>
                 </div>
+                 <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Bank:  </label>
+                    </div>
+                   <select name="bank" id="bank" class="custom-select" v-model="searchQuery.bank">
+                        <option :value="type.id" v-for="type in getBanks">
+                            {{type.name}}
+                        </option>
+                    </select>
+                </div>
                 </template>
             </resueable-search>
         </div>
@@ -311,7 +321,7 @@
                 const headings = this.tab === "View Payments" ? headings1 : this.tab === "Reconcile" ? headings2 : '';
                 return {tabs, headings, list};
             },
-            ...mapGetters(['auth', 'getAuthUserDetails', 'getPaymentMethods'])
+            ...mapGetters(['auth', 'getAuthUserDetails', 'getPaymentMethods', 'getBanks'])
         },
 
         methods: {

@@ -184,7 +184,6 @@ export default {
     },
     edit(item) {
       this.inEditMode = !this.inEditMode;
-      console.log("this.inEditMode ", this.inEditMode, this.inventory.price);
       if (!this.inEditMode) {
         this.$emit("childToParent", {
           price: this.inventory.price,
@@ -205,7 +204,6 @@ export default {
         .then((res) => {
           this.transferHistory = res.data.data.data;
           this.$LIPS(false);
-          console.log("hello world", res);
 
           $(`#viewProductTransfer`).modal("toggle");
         })

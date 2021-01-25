@@ -214,10 +214,7 @@
             <div v-if="pageParams">
                 <base-pagination
                     :page-param="pageParams"
-                    :page="page"
-                    @fetchData="fetchData"
-                    @next="next()"
-                    @prev="prev()"
+                    @fetchData="fetchData"                  
                 >
                 </base-pagination>
 
@@ -245,7 +242,7 @@ import {mapGetters, mapActions} from "vuex";
                 headings:  ['Order Number', 'Order Summary', 'Customer Info Summary', 'Repayment Summary', 'Reminder History'],
                 orders: null,
                 url: '/api/new_order',
-                pageParams: null,
+                pageParams: {},
                 OId: 0,
                 showModalContent: false,
                 mode: null,
@@ -262,9 +259,8 @@ import {mapGetters, mapActions} from "vuex";
                 this.$LIPS(true);
                 let { page, page_size } = this.$data;
                 get(
-                    this.url +
-                    `${!!page ? `?page=${page}` : ""}` +
-                    `${!!page_size ? `&pageSize=${page_size}` : ""}`
+                    this.url +`${!!this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
+          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
                     )
                    .then(({ data }) => this.prepareList(data))
                     .catch(() => Flash.setError("Error Preparing form"));

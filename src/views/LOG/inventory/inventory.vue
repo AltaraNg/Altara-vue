@@ -75,7 +75,7 @@
             }}
           </div>
           <div class="col d-flex align-items-center justify-content-center">
-            {{ inventory.created_at.split(" ")[0] }}
+            {{ convertDate(inventory.created_at) }}
           </div>
           <div class="col d-flex align-items-center justify-content-center">
             {{ getParent(inventory.branch_id, getBranches).name }}
@@ -276,11 +276,8 @@
 
       <div v-if="pageParams">
         <base-pagination
-          :page-param="pageParams"
-          :page="page"
-          @fetchData="fetchData()"
-          @next="next()"
-          @prev="prev()"
+          :page-param="pageParams"          
+          @fetchData="fetchData()"          
         ></base-pagination>
       </div>
     </div>
@@ -314,7 +311,7 @@ export default {
       OId: null,
       showModalContent: false,
       showProductTransfer: false,
-      pageParams: null,
+      pageParams: {},
       page_size: 10,
       products: [],
       suppliers: [],
@@ -387,13 +384,12 @@ export default {
         });
     },
     fetchData() {
-      this.$scrollToTop();
+      
       this.$LIPS(true);
       let { page, page_size } = this.$data;
       get(
-        this.urlToFetchOrders +
-          `${!!page ? `?page=${page}` : ""}` +
-          `${!!page_size ? `&pageSize=${page_size}` : ""}`
+        this.urlToFetchOrders +`${!!this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
+          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
       )
         .then(({ data }) => this.prepareList(data))
         .catch(() => Flash.setError("Error Preparing form"));
@@ -442,6 +438,12 @@ export default {
         this.fetchData();
       }
     },
+
+    convertDate(date){
+                let utcDate = new Date(date).toUTCString();
+                return utcDate;
+
+            },
 
     prev(lastPage = null) {
       if (this.pageParams.prev_page_url) {

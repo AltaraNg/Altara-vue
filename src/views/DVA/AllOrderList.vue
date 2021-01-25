@@ -158,8 +158,7 @@
                 let {page, page_size, date_from, date_to, branch_id} = this.$data;
                 get(this.urlToFetchOrders +
                     `${!!page ? `?page=${page}` : ''}` +
-                    `${!!date_to ? `&dateTo=${date_to}` : ''}` +
-                    `${!!page_size ? `&pageSize=${page_size}` : ''}` +
+                    `${!!date_to ? `&dateTo=${date_to}` : ''}` +                   
                     `${!!branch_id ? `&branchId=${branch_id}` : ''}` +
                     `${!!date_from ? `&dateFrom=${date_from}` : ''}`)
                     .then(({data}) => this.prepareForm(data))

@@ -75,10 +75,11 @@
           <div
             class="col d-flex align-items-center justify-content-center"
           >{{ payment.total| currency('₦')}}</div>
-          <div class="col d-flex align-items-center justify-content-center">{{ payment.deposited | currency('₦') }}</div>
+          
           <div
             class="col d-flex align-items-center justify-content-center"
           >{{ payment.cash_at_hand | currency('₦') }}</div>
+          <div class="col d-flex align-items-center justify-content-center">{{ payment.deposited | currency('₦') }}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
           >{{ varianceCalc(payment.cash_at_hand, payment.deposited) | currency('₦') }}</div>

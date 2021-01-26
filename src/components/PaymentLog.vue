@@ -137,7 +137,7 @@
                                     <option
                                         :value="type.id"
                                         :key="type.id"
-                                        v-for="type in getPaymentMethods"
+                                        v-for="type in getPaymentMethods.filter(element => element.name !== 'direct-debit')"
                                     >
                                         {{ type.name }}
                                     </option>

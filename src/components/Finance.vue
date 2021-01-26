@@ -82,7 +82,7 @@
           <div class="col d-flex align-items-center justify-content-center">{{ payment.deposited | currency('₦') }}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
-          >{{ varianceCalc(payment.cash_at_hand, payment.deposited) | currency('₦') }}</div>
+          >{{ varianceCalc(payment.deposited, payment.cash_at_hand) | currency('₦') }}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
             @click="updateModal(payment)"

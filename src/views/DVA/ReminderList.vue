@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
-                 <div class="mb-3 row attendance-item" :key="index" v-for="(order,index) in orders">
+                 <div class="mb-3 row attendance-item" :key="order.id" v-for="(order,index) in orders">
                         <div class="col d-flex align-items-center"  style="max-width: 120px"  >
                             <span class="user mx-auto" :class="{'isProcessed': order.isProcessed}" v-if="evalMode==='call' || evalMode === 'collection' || evalMode === 'recovery'" @click="save(order)">{{index + OId}}</span>
                             <span class="user mx-auto" :class="{'isProcessed': order.isProcessed}" v-else>{{index + OId}}</span>
@@ -88,7 +88,8 @@
 
 
                         <div class="col d-flex align-items-center justify-content-center"  v-if="evalMode==='call' || evalMode === 'collection' || evalMode === 'recovery'">
-                            <input type="text" name="feedback"  class="form-control"  v-model="order.feedback" required :disabled="order.isProcessed">
+                            <input type="text" name="feedback"  class="form-control"  v-model="order.feedback" v-validate="'required'" :disabled="order.isProcessed" key="feedback-input">
+                            
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" v-if="evalMode==='call'">
                             <input type="date" name="date" v-model="order.promise_date" :class="{'formError' : order.error}" class="form-control" required :disabled="order.isProcessed"/>
@@ -345,6 +346,7 @@
                 headings:
                     ['Order Number', 'Order Customer name', 'Product', 'Paid | Repayment', 'Reminder Count'],
                 disabledOrders: [],
+                error: {}
             }
         },
 
@@ -438,6 +440,12 @@
                 },
              save(order){
                  if(!order.isProcessed){
+                     order.id = 1;
+                     this.$validator.validate().then(valid => {
+                         if(!valid){
+                             order.id++
+                         }
+                     })
                  this.$LIPS(true);
                  let type = this.message.find(item => item.value === this.type);
                  let data = {};
@@ -486,6 +494,7 @@
                                     let {data, status} = r;
                                     if (status === 422) {
                                         this.error = data.errors ? data.errors : data;
+                                       
                                         
                                     }
                                 }).finally(() => {                                

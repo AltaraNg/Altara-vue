@@ -92,7 +92,7 @@
           </div>
           <div class="col d-flex align-items-center justify-content-center">
             <span v-if="payment.finance">{{payment.finance.bank_statement | currency('₦')}}</span>
-            <input v-else v-model="payment.bankStatement" type="number" class="form-control" rows="1" />
+            <input v-else v-model="payment.bankStatement" type="number" class="form-control" rows="1" :disabled="payment.deposited === null" />
           </div>
           <div class="col d-flex align-items-center justify-content-center">
             <b v-if="payment.finance"
@@ -100,7 +100,7 @@
               class="overflow green text-center">
              <i class="fas fa-info-circle"></i>
             </b>
-            <input v-else v-model="payment.accountantComment" type="text" class="form-control" rows="1" />
+            <input v-else v-model="payment.accountantComment" type="text" class="form-control" rows="1" :disabled="payment.deposited === null" />
           </div>
         </div>
       </div>
@@ -329,8 +329,8 @@ export default {
     },
 
     async updateReconciledPayment(data) {
+      if(data.deposited !== null){
       if (!data.bankStatement || !data.accountantComment) {
-        console.log('opopopo',data)
         return this.errHandler("Please enter all required values.");
       }
       let payload = {
@@ -355,7 +355,7 @@ export default {
       } catch (err) {
         this.$LIPS(false);
         this.$displayErrorMessage(err);
-      }
+      }}
     },
     varianceCalc(a, b) {
       if (!isNaN(a - b)) return a - b;

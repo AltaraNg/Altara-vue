@@ -69,16 +69,16 @@
                          <div class="col d-flex align-items-center justify-content-center" v-if="evalMode==='collection' || evalMode === 'recovery'">
                             <span>
                                 <span class="radio w-50 pr-3 mb-0 float-left">
-                                    <input type="radio" :value="true" v-model="order.is_visited" :id="`present${index}`" v-if="!order.isProcessed" :name="`isPresent${index}` " :disabled="order.isProcessed" class="form-check-input">
+                                    <input type="radio" :value="true" v-model="order.is_visited" :id="`present${index}`" v-if="!order.isProcessed" v-validate="'required'" :name="`isPresent${index}` " :disabled="order.isProcessed" class="form-check-input">
                                     <label :for="`present${index}`" v-if="!order.isProcessed">yes</label>
-                                     <input type="radio" :value="true" v-model="order.visited" :id="`present${index}`" v-if="order.isProcessed" :name="`isPresent${index}` " :disabled="order.isProcessed" class="form-check-input">
+                                     <input type="radio" :value="true" v-model="order.visited" :id="`present${index}`" v-if="order.isProcessed" v-validate="'required'" :name="`isPresent${index}` " :disabled="order.isProcessed" class="form-check-input">
                                     <label :for="`present${index}`" v-if="order.isProcessed">yes</label>
                                 </span>
                                 <span class="radio w-50 pl-3 mb-0 float-left">
-                                    <input type="radio" :value="false" v-model="order.is_visited" v-if="!order.isProcessed" :id="`absent${index}`" :disabled="order.isProcessed" 
+                                    <input type="radio" :value="false" v-model="order.is_visited" v-if="!order.isProcessed" :id="`absent${index}`" v-validate="'required'" :disabled="order.isProcessed" 
                             :name="`isPresent${index}`" class="form-check-input">
                                     <label :for="`absent${index}`" v-if="!order.isProcessed" >no</label>
-                                    <input type="radio" :value="false" v-model="order.visited" v-if="order.isProcessed" :id="`absent${index}`" :disabled="order.isProcessed" 
+                                    <input type="radio" :value="false" v-model="order.visited" v-if="order.isProcessed" :id="`absent${index}`" v-validate="'required'" :disabled="order.isProcessed" 
                             :name="`isPresent${index}`" class="form-check-input">
                                     <label :for="`absent${index}`" v-if="order.isProcessed" >no</label>
                                 </span>
@@ -88,10 +88,11 @@
 
 
                         <div class="col d-flex align-items-center justify-content-center"  v-if="evalMode==='call' || evalMode === 'collection' || evalMode === 'recovery'">
-                            <input type="text" name="feedback"  class="form-control"  v-model="order.feedback" required :disabled="order.isProcessed">
+                            <input type="text" :name="'feedback_'+index"  class="form-control"  v-model="order.feedback" v-validate="'required'" :disabled="order.isProcessed" >
+                            
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" v-if="evalMode==='call'">
-                            <input type="date" name="date" v-model="order.promise_date" :class="{'formError' : order.error}" class="form-control" required :disabled="order.isProcessed"/>
+                            <input type="date" name="date" v-model="order.promise_date" class="form-control" required :disabled="order.isProcessed" v-validate="'required'"/>
                         </div>
 
 
@@ -331,7 +332,7 @@
                     {name: 'date to', model: 'date_to'}
                 ],
                 mode: '',
-                modeType: 'first_message',
+                modeType: 'first_sms',
                 message: [],
                 promise_date: null,
                 evalMode: null,
@@ -345,6 +346,7 @@
                 headings:
                     ['Order Number', 'Order Customer name', 'Product', 'Paid | Repayment', 'Reminder Count'],
                 disabledOrders: [],
+                error: {}
             }
         },
 
@@ -366,17 +368,13 @@
 
             },
            prepareList(response){
-               
-            //    response.days === undefined ? this.type =7 : this.type = response.days;
-            //    this.modeType = this.message.find((item) => {
-            //        return item.value === this.type
-            //    }).name;  
                 if(response.days !== undefined){
                     this.modeType = this.message.find((item) => {
                         return item.value === response.days
                         }).name;
                     this.type = response.days; 
-                }              
+                }
+                           
                 let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
                 this.orders = data;
@@ -438,6 +436,12 @@
                 },
              save(order){
                  if(!order.isProcessed){
+                     
+                     this.$validator.validate().then(valid => {
+                         if(valid){
+                             
+                         }
+                     })
                  this.$LIPS(true);
                  let type = this.message.find(item => item.value === this.type);
                  let data = {};
@@ -486,6 +490,7 @@
                                     let {data, status} = r;
                                     if (status === 422) {
                                         this.error = data.errors ? data.errors : data;
+                                       
                                         
                                     }
                                 }).finally(() => {                                
@@ -517,21 +522,24 @@
 
             this.getReminderValues();
            this.getBusinessType();         
-           this.fetchData();
+           this.fetchData();   
+        },
+        mounted(){
+           
         },
         watch: {
             modeType: function(modeType){
                 this.disabledOrders = [];
-                if (this.modeType === 'first_message' || this.modeType === 'second_message' || this.modeType === 'third_message'){
+                if (modeType === 'first_sms' || modeType === 'second_sms' || modeType === 'third_sms'){
                     this.evalMode = 'message';
                 }
-                else if(this.modeType === 'first_call' || this.modeType === 'second_call' || this.modeType === 'third_call'){
+                else if(modeType === 'first_call' || modeType === 'second_call' || modeType === 'third_call'){
                     this.evalMode = 'call';
                 }
-                else if(this.modeType === 'first_collection' || this.modeType === 'second_collection' || this.modeType === 'third_collection'){
+                else if(modeType === 'first_collection' || modeType === 'second_collection' || modeType === 'third_collection'){
                     this.evalMode = 'collection';
                 }
-                else if(this.modeType === 'first_recovery' || this.modeType === 'second_recovery' || this.modeType === 'third_recovery'){
+                else if(modeType === 'first_recovery' || modeType === 'second_recovery' || modeType === 'third_recovery'){
                     this.evalMode = 'recovery';
                 }
 

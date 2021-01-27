@@ -22,7 +22,7 @@ Vue.config.productionTip = false
 Object.defineProperty(Vue.prototype, '$_', { value: _ });
 VuexRouterSync.sync(store, router);
 Vue.use(VeeValidate, {
-    events: "input|blur",
+    events: "",
     classes: true,
     classNames: { invalid: "is-invalid" }
 });

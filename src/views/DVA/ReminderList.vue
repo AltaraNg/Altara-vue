@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
-                 <div class="mb-3 row attendance-item"  v-for="(order,index) in orders">
+                 <div class="mb-3 row attendance-item" :key="index" v-for="(order,index) in orders">
                         <div class="col d-flex align-items-center"  style="max-width: 120px"  >
                             <span class="user mx-auto" :class="{'isProcessed': order.isProcessed}" v-if="evalMode==='call' || evalMode === 'collection' || evalMode === 'recovery'" @click="save(order)">{{index + OId}}</span>
                             <span class="user mx-auto" :class="{'isProcessed': order.isProcessed}" v-else>{{index + OId}}</span>

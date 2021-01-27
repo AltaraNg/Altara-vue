@@ -82,7 +82,7 @@
           <div class="col d-flex align-items-center justify-content-center">{{ payment.deposited | currency('₦') }}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
-          >{{ varianceCalc(payment.deposited, payment.cash_at_hand) | currency('₦') }}</div>
+          >{{ varianceCalc(payment) | currency('₦') }}</div>
           <div
             class="col d-flex align-items-center justify-content-center"
             @click="updateModal(payment)"
@@ -358,8 +358,8 @@ export default {
         this.$displayErrorMessage(err);
       }}
     },
-    varianceCalc(a, b) {
-      if (!isNaN(a - b)) return a - b;
+    varianceCalc(payment) {
+      return payment.total - (payment.cash_at_hand + payment.deposited);
     },
 
     errHandler(param) {

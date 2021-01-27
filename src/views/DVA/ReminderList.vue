@@ -368,7 +368,6 @@
 
             },
            prepareList(response){
-               console.log(response.days)
                 if(response.days !== undefined){
                     this.modeType = this.message.find((item) => {
                         return item.value === response.days
@@ -380,7 +379,6 @@
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
                 this.orders = data;
                 this.OId = from;
-                console.log(this.modeType)
                 this.classAdd(this.modeType);
                 this.$LIPS(false);
 
@@ -516,7 +514,6 @@
                     else{
                         order.visited =false;
                     }
-                    console.log("I am working")
                     
                 });
             }

@@ -374,7 +374,7 @@ export default {
                 custom_date: this.salesLogForm.custom_date,
                 repayment: this.rPayment,
                 bank_id: this.salesLogForm.bank_id,
-                product_price: this.pPrice,
+                product_price: this.$formatMoney(this.pPrice),
                 payment_type_id: this.salesLogForm.payment_type_id.id,
                 payment_method_id: this.salesLogForm.payment_method_id,
                 
@@ -412,11 +412,11 @@ export default {
         repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
         business_type_id: this.salesLogForm.business_type_id,
         branch_id: localStorage.getItem("branch_id"),
-        down_payment: this.fPayment,
+        down_payment: this.$formatMoney(this.fPayment),
         custom_date: this.salesLogForm.custom_date,
-        repayment: this.rPayment,
+        repayment: this.$formatMoney(this.rPayment),
         bank_id: this.salesLogForm.bank_id,
-        product_price: this.pPrice,
+        product_price: this.$formatMoney(this.pPrice),
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.salesLogForm.payment_method_id,
       };

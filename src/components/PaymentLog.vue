@@ -20,7 +20,7 @@
                         <div class="row">
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
-                                    >Repayment Cycle</label
+                                    >Repaymnt. Cyc</label
                                 >
                                 <select
                                     class="custom-select w-100"
@@ -57,7 +57,7 @@
                             </div>
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
-                                    >Repayment Duration</label
+                                    >Repaymnt. Dur</label
                                 >
                                 <select
                                     @change="getCalc()"
@@ -66,7 +66,7 @@
                                     v-validate="'required'"
                                 >
                                     <option disabled selected="selected">
-                                        Repayment Duration
+                                        Repaymnt. Dur
                                     </option>
                                     <option
                                         :value="type"
@@ -79,7 +79,31 @@
                             </div>
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
-                                    >Downpayment Rates</label
+                                    >Sales Cat.</label
+                                >
+                                <select                                    
+                                    class="custom-select w-100"
+                                    v-model="salesLogForm.sales_category_id"
+                                    v-validate="'required'"
+                                >
+                                    <option disabled selected="selected">
+                                        Sales Cat.
+                                    </option>
+                                    <option  selected="selected" value="">
+                                        None
+                                    </option>
+                                    <option
+                                        :value="type.id"
+                                        :key="type.id"
+                                        v-for="type in salesCategories"
+                                    >
+                                        {{ type.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col form-group">
+                                <label for="amount" class="form-control-label"
+                                    >Dpayment Rates</label
                                 >
                                 <select
                                     class="custom-select w-100"
@@ -88,7 +112,7 @@
                                     @change="getCalc()"
                                 >
                                     <option disabled selected="selected">
-                                        Downpayment Rates
+                                        Dpayment Rates
                                     </option>
                                     <option
                                         :value="type"
@@ -101,7 +125,7 @@
                             </div>
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
-                                    >Business Type</label
+                                    >Bus. Type</label
                                 >
                                 <select
                                     class="custom-select w-100"
@@ -110,7 +134,7 @@
                                     @change="getCalc()"
                                 >
                                     <option disabled selected="selected"
-                                        >Business Type</option
+                                        >Bus. Type</option
                                     >
                                     <option
                                         :value="type.id"
@@ -307,6 +331,7 @@ export default {
             businessTypes: [],
             amortization: [],
             calculation: [],
+            salesCategories: [],
             test0: true,
             test1: true,
             apiUrls: {
@@ -319,6 +344,7 @@ export default {
                 getCalculation: `/api/price_calculator`,
                 getProduct: `/api/inventory`,
                 discounts: `/api/discount`,
+                salesCategoryUrl: `/api/sales_category`
                
             },
             inputValue: "",
@@ -337,11 +363,13 @@ export default {
     async mounted() {
         this.checkIfDiscountElig();
         await this.getRepaymentDuration();
+        await this.getSalesCategory();
         await this.getRepaymentCycles();
         await this.getDownPaymentRates();
         await this.getBusinessTypes();
         await this.getCalculation();
         await this.getDiscounts();
+        
         
        
     },
@@ -566,6 +594,16 @@ export default {
             } catch (err) {
                 this.$displayErrorMessage(err);
             }
+        },
+        async getSalesCategory(){
+          try{
+            const fetchSalesCategory = await get(
+              this.apiUrls.salesCategoryUrl
+            );
+            this.salesCategories = fetchSalesCategory.data.data.data;
+          }catch (err){
+            this.$displayErrorMessage(err);
+          }
         },
         async getBusinessTypes() {
             try {

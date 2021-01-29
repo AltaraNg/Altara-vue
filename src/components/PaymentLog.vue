@@ -79,6 +79,30 @@
                             </div>
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
+                                    >Sales Category</label
+                                >
+                                <select                                    
+                                    class="custom-select w-100"
+                                    v-model="salesLogForm.sales_category_id"
+                                    v-validate="'required'"
+                                >
+                                    <option disabled selected="selected">
+                                        Sales Category
+                                    </option>
+                                    <option  selected="selected" value="">
+                                        None
+                                    </option>
+                                    <option
+                                        :value="type.id"
+                                        :key="type.id"
+                                        v-for="type in salesCategories"
+                                    >
+                                        {{ type.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col form-group">
+                                <label for="amount" class="form-control-label"
                                     >Downpayment Rates</label
                                 >
                                 <select
@@ -307,6 +331,7 @@ export default {
             businessTypes: [],
             amortization: [],
             calculation: [],
+            salesCategories: [],
             test0: true,
             test1: true,
             apiUrls: {
@@ -319,6 +344,7 @@ export default {
                 getCalculation: `/api/price_calculator`,
                 getProduct: `/api/inventory`,
                 discounts: `/api/discount`,
+                salesCategoryUrl: `/api/sales_category`
                
             },
             inputValue: "",
@@ -337,11 +363,13 @@ export default {
     async mounted() {
         this.checkIfDiscountElig();
         await this.getRepaymentDuration();
+        await this.getSalesCategory();
         await this.getRepaymentCycles();
         await this.getDownPaymentRates();
         await this.getBusinessTypes();
         await this.getCalculation();
         await this.getDiscounts();
+        
         
        
     },
@@ -566,6 +594,16 @@ export default {
             } catch (err) {
                 this.$displayErrorMessage(err);
             }
+        },
+        async getSalesCategory(){
+          try{
+            const fetchSalesCategory = await get(
+              this.apiUrls.salesCategoryUrl
+            );
+            this.salesCategories = fetchSalesCategory.data.data.data;
+          }catch (err){
+            this.$displayErrorMessage(err);
+          }
         },
         async getBusinessTypes() {
             try {

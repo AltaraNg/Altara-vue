@@ -20,7 +20,7 @@
                         <div class="row">
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
-                                    >Repaymnt. Cyc</label
+                                    >Repaymntent Cycle</label
                                 >
                                 <select
                                     class="custom-select w-100"
@@ -57,7 +57,7 @@
                             </div>
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
-                                    >Repaymnt. Dur</label
+                                    >Repayment Duration</label
                                 >
                                 <select
                                     @change="getCalc()"
@@ -66,7 +66,7 @@
                                     v-validate="'required'"
                                 >
                                     <option disabled selected="selected">
-                                        Repaymnt. Dur
+                                        Repayment Duration
                                     </option>
                                     <option
                                         :value="type"
@@ -79,7 +79,7 @@
                             </div>
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
-                                    >Sales Cat.</label
+                                    >Sales Category</label
                                 >
                                 <select                                    
                                     class="custom-select w-100"
@@ -87,7 +87,7 @@
                                     v-validate="'required'"
                                 >
                                     <option disabled selected="selected">
-                                        Sales Cat.
+                                        Sales Category
                                     </option>
                                     <option  selected="selected" value="">
                                         None
@@ -103,7 +103,7 @@
                             </div>
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
-                                    >Dpayment Rates</label
+                                    >Downpayment Rates</label
                                 >
                                 <select
                                     class="custom-select w-100"
@@ -112,7 +112,7 @@
                                     @change="getCalc()"
                                 >
                                     <option disabled selected="selected">
-                                        Dpayment Rates
+                                        Downpayment Rates
                                     </option>
                                     <option
                                         :value="type"
@@ -125,7 +125,7 @@
                             </div>
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
-                                    >Bus. Type</label
+                                    >Business Type</label
                                 >
                                 <select
                                     class="custom-select w-100"
@@ -134,7 +134,7 @@
                                     @change="getCalc()"
                                 >
                                     <option disabled selected="selected"
-                                        >Bus. Type</option
+                                        >Business Type</option
                                     >
                                     <option
                                         :value="type.id"

@@ -20,7 +20,7 @@
                         <div class="row">
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
-                                    >Repaymntent Cycle</label
+                                    >Repayment Cycle</label
                                 >
                                 <select
                                     class="custom-select w-100"

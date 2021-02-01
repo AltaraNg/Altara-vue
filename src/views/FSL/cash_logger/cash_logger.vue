@@ -17,16 +17,13 @@
                     </li>
                 </ul>
             </div>
-            <payment-filter :list-to-order="listToOrder" @filter="setFilter" :disabled="true"></payment-filter>
+            <!-- <payment-filter :list-to-order="listToOrder" @filter="setFilter" :disabled="true"></payment-filter> -->
             <!--            <div class="w-25 mt-5 mb-3 attendance-head" v-if="listToOrder === 'Reconcile'">-->
             <!--                <date-picker class="w-100"  valueType="format" placeholder="Date" v-model="date"></date-picker>-->
             <!--            </div>-->
+             
 
-            <div class="mt-5 mb-3 attendance-head" v-if="details.headings">
-                <div class="row px-4 pt-3 pb-4 text-center">
-                    <div class="col light-heading" :key="index" v-for="(header,index) in details.headings">{{header}}</div>
-                </div>
-            </div>
+           
 
 
             <Payment :list="listToOrder" :tab="listToOrder" :filter-by="filterObject"/>
@@ -41,6 +38,8 @@
     // import 'vue2-datepicker/index.css';
     import Flash from '../../../utilities/flash';
     import PaymentFilter from "../../../components/PaymentFilter";
+ 
+
 
     export default {
         components: {Lookup,Payment, PaymentFilter},

@@ -79,6 +79,30 @@
                             </div>
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
+                                    >Sales Category</label
+                                >
+                                <select                                    
+                                    class="custom-select w-100"
+                                    v-model="salesLogForm.sales_category_id"
+                                    v-validate="'required'"
+                                >
+                                    <option disabled selected="selected">
+                                        Sales Category
+                                    </option>
+                                    <option  selected="selected" value="">
+                                        None
+                                    </option>
+                                    <option
+                                        :value="type.id"
+                                        :key="type.id"
+                                        v-for="type in salesCategories"
+                                    >
+                                        {{ type.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col form-group">
+                                <label for="amount" class="form-control-label"
                                     >Downpayment Rates</label
                                 >
                                 <select
@@ -137,7 +161,7 @@
                                     <option
                                         :value="type.id"
                                         :key="type.id"
-                                        v-for="type in getPaymentMethods"
+                                        v-for="type in getPaymentMethods.filter(element => element.name !== 'direct-debit')"
                                     >
                                         {{ type.name }}
                                     </option>
@@ -307,6 +331,7 @@ export default {
             businessTypes: [],
             amortization: [],
             calculation: [],
+            salesCategories: [],
             test0: true,
             test1: true,
             apiUrls: {
@@ -319,6 +344,7 @@ export default {
                 getCalculation: `/api/price_calculator`,
                 getProduct: `/api/inventory`,
                 discounts: `/api/discount`,
+                salesCategoryUrl: `/api/sales_category`
                
             },
             inputValue: "",
@@ -337,11 +363,13 @@ export default {
     async mounted() {
         this.checkIfDiscountElig();
         await this.getRepaymentDuration();
+        await this.getSalesCategory();
         await this.getRepaymentCycles();
         await this.getDownPaymentRates();
         await this.getBusinessTypes();
         await this.getCalculation();
         await this.getDiscounts();
+        
         
        
     },
@@ -374,7 +402,7 @@ export default {
                 custom_date: this.salesLogForm.custom_date,
                 repayment: this.rPayment,
                 bank_id: this.salesLogForm.bank_id,
-                product_price: this.pPrice,
+                product_price: this.$formatMoney(this.pPrice),
                 payment_type_id: this.salesLogForm.payment_type_id.id,
                 payment_method_id: this.salesLogForm.payment_method_id,
                 
@@ -412,11 +440,11 @@ export default {
         repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
         business_type_id: this.salesLogForm.business_type_id,
         branch_id: localStorage.getItem("branch_id"),
-        down_payment: this.fPayment,
+        down_payment: this.$formatMoney(this.fPayment),
         custom_date: this.salesLogForm.custom_date,
-        repayment: this.rPayment,
+        repayment: this.$formatMoney(this.rPayment),
         bank_id: this.salesLogForm.bank_id,
-        product_price: this.pPrice,
+        product_price: this.$formatMoney(this.pPrice),
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.salesLogForm.payment_method_id,
       };
@@ -566,6 +594,16 @@ export default {
             } catch (err) {
                 this.$displayErrorMessage(err);
             }
+        },
+        async getSalesCategory(){
+          try{
+            const fetchSalesCategory = await get(
+              this.apiUrls.salesCategoryUrl
+            );
+            this.salesCategories = fetchSalesCategory.data.data.data;
+          }catch (err){
+            this.$displayErrorMessage(err);
+          }
         },
         async getBusinessTypes() {
             try {

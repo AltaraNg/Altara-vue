@@ -242,13 +242,18 @@ import {mapGetters, mapActions} from "vuex";
                 type: Boolean,
                 required: false,
                 default: false
-            }
+            },
+             url: {
+                 type: String,
+                 required: false,
+                 default: '/api/new_order'
+             },
         },
         data(){
             return {
                 headings:  ['Order Number', 'Order Summary', 'Customer Info Summary', 'Repayment Summary', 'Reminder History'],
                 orders: null,
-                url: '/api/new_order',
+               
                 pageParams: {},
                 OId: 0,
                 showModalContent: false,

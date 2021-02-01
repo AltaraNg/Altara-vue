@@ -29,7 +29,7 @@
             <Orders :list="listToOrder" :tab="listToOrder" :mode="mode()"/>
 
         </div>
-        <new-orders v-if="orderMode === 'new' " ></new-orders>
+        <new-orders v-if="orderMode === 'new' " :url="options[1].url" ></new-orders>
         </div>
     </transition>
 </template>
@@ -53,7 +53,7 @@
                     },
                     {
                         name: "New records",
-                        url: "/api/new_order"
+                        url: "/new-order-renewal-list"
                     }
                 ],
                 orderMode: 'old'

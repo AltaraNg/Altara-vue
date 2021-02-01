@@ -81,7 +81,8 @@
                                 <label for="amount" class="form-control-label"
                                     >Sales Category</label
                                 >
-                                <select                                    
+                                <select
+                                    @change="findOwner(salesLogForm.sales_category_id)"                                    
                                     class="custom-select w-100"
                                     v-model="salesLogForm.sales_category_id"
                                     v-validate="'required'"
@@ -649,6 +650,10 @@ export default {
                 return
                 
             },
+
+            findOwner(id){
+              console.log(id);
+            }
        
     }
 };

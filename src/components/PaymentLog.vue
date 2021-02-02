@@ -441,6 +441,9 @@ export default {
                 product_price: this.$formatMoney(this.pPrice),
                 payment_type_id: this.salesLogForm.payment_type_id.id,
                 payment_method_id: this.salesLogForm.payment_method_id,
+                sales_category_id: this.salesLogForm.sales_category_id,
+                owner_id: this.salesLogForm.owner_id,
+                serial_number: this.salesLogForm.serial_number
                 
             };
             if(this.eligible){
@@ -483,6 +486,9 @@ export default {
         product_price: this.$formatMoney(this.pPrice),
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.salesLogForm.payment_method_id,
+        sales_category_id: this.salesLogForm.sales_category_id,
+        owner_id: this.salesLogForm.owner_id,
+        serial_number: this.salesLogForm.serial_number
       };
       this.$validator.validateAll().then((result) => {
         if (result) {

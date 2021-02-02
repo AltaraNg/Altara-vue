@@ -7,7 +7,8 @@
                         class="card-body"
                         @submit.prevent="previewAmortization"
                     >
-                        <div class="form-group align-self-left text-capitalize">
+                    <div class="row">
+                        <div class="form-group align-self-left text-capitalize col" >
                             <label for="amount" class="form-control-label w-100"
                                 >Product Name
                                 <span :class="{'renewal': eligible}" v-if="eligible">Entitled to renewal discount!!!</span>
@@ -17,6 +18,63 @@
                                 :apiUrl="apiUrls.getProduct"
                             />
                         </div>
+
+                        <div class="col form-group">
+                          <label for="amount" class="form-control-label w-100">Serial number (Optional)</label>
+                          <input v-model="salesLogForm.serial_number" name="serial number" class="custom-select w-100"/>
+                        </div>
+
+                        <div class="col form-group">
+                                <label for="amount" class="form-control-label"
+                                    >Sales Category</label
+                                >
+                                <select
+                                    @change="getUsers(salesLogForm.sales_category_id)"                                    
+                                    class="custom-select w-100"
+                                    v-model="salesLogForm.sales_category_id"
+                                    v-validate="'required'"
+                                >
+                                    <option disabled selected="selected">
+                                        Sales Category
+                                    </option>
+                                    <option  selected="selected" value="">
+                                        None
+                                    </option>
+                                    <option
+                                        :value="type.id"
+                                        :key="type.id"
+                                        v-for="type in salesCategories"
+                                    >
+                                        {{ type.name }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col form-group" v-if="users.length > 0">
+                                <label for="amount" class="form-control-label"
+                                    >Owner</label
+                                >
+                                <select                                                                      
+                                    class="custom-select w-100"
+                                    v-model="salesLogForm.owner_id"
+                                    v-validate="'required'"
+                                >
+                                    <option disabled selected="selected">
+                                        Owner
+                                    </option>
+                                    <option  selected="selected" value="">
+                                        None
+                                    </option>
+                                    <option
+                                        :value="user.id"
+                                        :key="user.id"
+                                        v-for="user in users"
+                                    >
+                                        {{ user.full_name }}
+                                    </option>
+                                </select>
+                            </div>
+                    </div>
                         <div class="row">
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
@@ -77,30 +135,7 @@
                                     </option>
                                 </select>
                             </div>
-                            <div class="col form-group">
-                                <label for="amount" class="form-control-label"
-                                    >Sales Category</label
-                                >
-                                <select                                    
-                                    class="custom-select w-100"
-                                    v-model="salesLogForm.sales_category_id"
-                                    v-validate="'required'"
-                                >
-                                    <option disabled selected="selected">
-                                        Sales Category
-                                    </option>
-                                    <option  selected="selected" value="">
-                                        None
-                                    </option>
-                                    <option
-                                        :value="type.id"
-                                        :key="type.id"
-                                        v-for="type in salesCategories"
-                                    >
-                                        {{ type.name }}
-                                    </option>
-                                </select>
-                            </div>
+                            
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
                                     >Downpayment Rates</label
@@ -323,6 +358,7 @@ export default {
     data() {
         return {
             error: {},
+            users: [],
             product: "",
             salesLogForm: {},
             repaymentDuration: [],
@@ -605,6 +641,23 @@ export default {
             this.$displayErrorMessage(err);
           }
         },
+
+        async getUsers(salesCat){
+        this.$LIPS(true);
+          
+          await get(`/api/sales-category/${salesCat}/roles`).then(res => {
+            this.users = this.mergeArrays(res.data.data);
+          });
+          
+          this.$LIPS(false);
+        },
+        mergeArrays(parent){
+          let result = [];
+          parent.forEach(elem => {
+            result = result.concat(elem.users);
+          })
+          return result;
+        },
         async getBusinessTypes() {
             try {
                 const fetchBusinessTypes = await get(
@@ -649,6 +702,8 @@ export default {
                 return
                 
             },
+
+            
        
     }
 };

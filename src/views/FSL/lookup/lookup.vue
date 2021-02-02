@@ -142,6 +142,12 @@
             :order-id="customer.orders[0].order.id"
             @done="this.done"
           /> -->
+
+          <CreditWorthy
+                        :customerId="customer.id"
+                        @done="this.done"
+                        v-if="logger === 'credit'"
+                    />
           <PaymentLog :customerId="customer.id" @done="this.done" v-if="logger === 'payment'" :customer="customer" />
           <div class="mt-5 mb-3 attendance-head">
             <div class="w-100 my-5 mx-0 hr"></div>
@@ -472,6 +478,7 @@ import {
 } from "../../../components/order/orderStatusCssClass";
 import LogForm from "../../../components/LogForm";
 import PaymentLog from "../../../components/PaymentLog";
+import CreditWorthy from "../../../components/CreditWorthy";
 
 export default {
   components: {
@@ -481,7 +488,8 @@ export default {
     AutocompleteSearch,
     LogForm,
     PaymentLog,
-    NewOrderAmortization
+    NewOrderAmortization,
+    CreditWorthy
 
   },
   props: { logger: null },

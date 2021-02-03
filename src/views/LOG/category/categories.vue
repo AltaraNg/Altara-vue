@@ -102,11 +102,9 @@
         <div v-if="pageParams">
             <base-pagination
 
-                :page-param="pageParams"
-                :page="page"
+                :page-param="pageParams"               
                 @fetchData="fetchData()"
-                @next="next()"
-                @prev="prev()"
+               
             >
             </base-pagination>
 
@@ -145,7 +143,7 @@
                 branch_id: '',
                 OId: null,
                 showModalContent: false,
-                pageParams: null,
+                pageParams: {},
                 page_size: 10,
                 date_from: null,
                 date_to: null,
@@ -171,9 +169,8 @@
                 this.$scrollToTop();
                 this.$LIPS(true);
                 let {page, page_size} = this.$data;
-                get(this.urlToFetchOrders +
-                    `${!!page ? `?page=${page}` : ''}` +
-                    `${!!page_size ? `&pageSize=${page_size}` : ''}`
+                 get(`${this.urlToFetchOrders}${!!this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
+          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
                 )
                     .then(({data}) => this.prepareList(data))
                     .catch(() => Flash.setError('Error Preparing form'));

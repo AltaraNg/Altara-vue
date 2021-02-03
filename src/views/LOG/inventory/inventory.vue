@@ -30,8 +30,8 @@
                     <label class="form-control-label">Status:  </label>
                     </div>
                     <select name="status" id="status" class="custom-select" v-model="searchQuery.status">
-                        <option :value="item.name" v-for="item in status" :key="item.id">
-                            {{item.name}}
+                        <option :value="item.id" v-for="item in status" :key="item.id">
+                            {{item.status}}
                         </option>
                     </select>
                 </div>              
@@ -346,14 +346,7 @@ export default {
         "Branch",
         "Transfer",
       ], 
-      status: [
-        {id: 1, name: 'Repossessed'},
-        {id: 2, name: 'Available'},
-        {id: 3, name: 'Sold'},
-        {id: 4, name: 'Damaged'}
-
-
-      ],     
+      status: [],     
       searchColumns: [{ title: "Product Name", column: "productName" }],
       transferHistory: [],
       branchId: "",
@@ -500,6 +493,9 @@ export default {
     });
     get("/api/product").then((res) => {
       this.products = res.data.data.data;
+    });
+    get("/api/inventory_status").then((res) => {
+      this.status = res.data.data.data;
     });
 
     this.$prepareBranches();

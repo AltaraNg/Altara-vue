@@ -449,12 +449,7 @@ const router = new VueRouter({
                     name: "ShowRoom Dashboard",
                     meta: { mode: "create" }
                 },
-                {
-                    path: "credit-worthy",
-                    component: CreditWorthy,
-                    name: "credit-worthy",
-                    meta: { mode: "create" }
-                },
+                
 
             ]
         },

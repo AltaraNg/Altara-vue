@@ -8,9 +8,10 @@
 
 <script>
 import Lookup from "../lookup/lookup";
+import CreditWorthy from "../../../components/CreditWorthy";
 import Flash from "../../../utilities/flash";
 export default {
-    components: { Lookup },
+    components: { Lookup, CreditWorthy },
     data() {
         return {};
     },

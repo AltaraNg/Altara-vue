@@ -20,6 +20,7 @@
                       <td>Name</td>
                       <td>Order Id</td>
                       <td>Product</td>
+                      <td>Serial No</td>
                       <th>Branch</th>
                       <th>Status</th>
                     </tr>
@@ -27,6 +28,7 @@
                       <td class="font-weight-bold">{{`${customer.first_name} ${customer.last_name}`}}</td>
                       <th>{{order.order_number}}</th>
                       <th>{{order.product.name}}</th>
+                      <th>{{order.serial_number}}</th>
                       <td class="font-weight-bold">{{order.branch}}</td>
                       <td class="font-wight-bold td-back">ok</td>
                       <!-- <td

@@ -3,34 +3,41 @@
     <div id="reminder" class="attendance">
       <custom-header :title="'Inventory Overview'" />
 
-      <div class="mt-2 mt-lg-3 row attendance-head attendance-view">
-        <div class="col-4 col-lg" v-for="{ name: filter, model } in filters">
-          <div>
-            <div class="light-heading mb-1">
-              <span class="d-none d-sm-inline">Select</span>
-              {{ filter | capitalize }}
-            </div>
+      <div class="mt-5 mb-3 attendance-head ">
+        <div class="col-md-8">
+                     <resueable-search
+                      @childToParent="prepareList"
+                      :url="urlToFetchOrders"
+                      
+                      :showDate="false"
+                      >
+            <template #default= "{ searchQuery }">
+                <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Name:  </label>
+                    </div>
+                    <input type="text" v-model="searchQuery.productName" class="form-control">
+                </div> 
+                <div class="col-md">
+                    <div>
+                    <label class="form-control-label">SKU:  </label>
+                    </div>
+                    <input type="text" v-model="searchQuery.sku" class="form-control">
+                </div> 
 
-            <div class="w-50" v-if="filter === 'state'">
-              <select
-                class="custom-select"
-                v-model="$data[model]"
-                @keyup.enter="fetchData()"
-              >
-                <option disabled selected value>
-                  {{ filter | capitalize }}
-                </option>
-                <option :value="id" v-for="{ name, id } in getStates">
-                  {{ name | capitalize }}
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!--                <div class="col-6 col-sm p-0 flex-row-bottom">-->
-        <!--                    <button @click="fetchData()" class="btn btn-primary bg-default mt-0 myBtn">Apply Filter</button>-->
-        <!--                </div>-->
+                <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Status:  </label>
+                    </div>
+                    <select name="status" id="status" class="custom-select" v-model="searchQuery.status">
+                        <option :value="item.name" v-for="item in status" :key="item.id">
+                            {{item.name}}
+                        </option>
+                    </select>
+                </div>              
+            </template>
+          </resueable-search>
+                </div>
       </div>
 
       <div class="mt-5 mb-3 attendance-head">
@@ -293,6 +300,7 @@ import Vue2Filters from "vue2-filters";
 import CustomHeader from "../../../components/customHeader";
 import BasePagination from "../../../components/Pagination/BasePagination";
 import InventorySearch from "../../../components/InventorySearch";
+import ResueableSearch from '../../../components/ReusableSearch.vue';
 Vue.use(Vue2Filters);
 export default {
   props: {
@@ -301,7 +309,7 @@ export default {
     urlToFetchOrders: { default: "/api/inventory" },
   },
 
-  components: { CustomHeader, BasePagination, InventorySearch },
+  components: { CustomHeader, BasePagination, InventorySearch, ResueableSearch },
 
   computed: { ...mapGetters(["getAuthUserDetails", "getBranches"]) },
 
@@ -337,7 +345,15 @@ export default {
         "Date Received",
         "Branch",
         "Transfer",
-      ],
+      ], 
+      status: [
+        {id: 1, name: 'Repossessed'},
+        {id: 2, name: 'Available'},
+        {id: 3, name: 'Sold'},
+        {id: 4, name: 'Damaged'}
+
+
+      ],     
       searchColumns: [{ title: "Product Name", column: "productName" }],
       transferHistory: [],
       branchId: "",

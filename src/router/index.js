@@ -123,7 +123,7 @@ const ShowRoomDashboard = () =>
     import ("../views/FSL/dashboard/Dashboard.vue");
 
     const CreditWorthy = () =>
-    import ("../views/FSL/credit_worthy/credit_worthy.vue");
+    import ("../views/AltaraLoan/credit_worthy/credit_worthy.vue");
 const AltaraLoan = () =>
     import ('../views/AltaraLoan/index.vue');
 const AltaraLoanHome = () =>

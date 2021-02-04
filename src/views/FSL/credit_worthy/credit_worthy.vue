@@ -1,7 +1,7 @@
 <template>
     <transition name="fade">
         <div>
-            <Lookup :logger="'credit'" />
+            <credit-worthy> </credit-worthy>
         </div>
     </transition>
 </template>

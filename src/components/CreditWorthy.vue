@@ -184,9 +184,7 @@ import "vue-form-wizard/dist/vue-form-wizard.min.css";
 //component code
 
 export default {
-    props: {
-        customerId: null
-    },
+    
     components: {
         FormWizard,
         TabContent

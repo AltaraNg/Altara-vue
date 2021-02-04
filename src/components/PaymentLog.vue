@@ -712,7 +712,6 @@ export default {
             },
 
             toggleSerial(){
-              console.log('I am working')
               this.serial === true ? this.serial =false : this.serial =true
             }
 

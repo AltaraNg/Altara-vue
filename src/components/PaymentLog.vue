@@ -11,6 +11,7 @@
                         <div class="form-group align-self-left text-capitalize col" >
                             <label for="amount" class="form-control-label w-100"
                                 >Product Name
+                                <span class="serial" @click="toggleSerial()">{{ serial === true ? 'Remove' : 'Add'}} serial number</span>
                                 <span :class="{'renewal': eligible}" v-if="eligible">Entitled to renewal discount!!!</span>
                                 </label>
                             <AutoComplete
@@ -19,7 +20,7 @@
                             />
                         </div>
 
-                        <div class="col form-group">
+                        <div class="col form-group" v-if="serial">
                           <label for="amount" class="form-control-label w-100">Serial number (Optional)</label>
                           <input v-model="salesLogForm.serial_number" name="serial number" class="custom-select w-100"/>
                         </div>
@@ -50,7 +51,7 @@
                                 </select>
                             </div>
 
-                            <div class="col form-group" v-if="users.length > 0">
+                            <div class="col form-group" >
                                 <label for="amount" class="form-control-label"
                                     >Owner</label
                                 >
@@ -393,6 +394,7 @@ export default {
             customDateToggle: false,
             discounts: null,
             eligible: false,
+            serial: false
             
         };
     },
@@ -709,6 +711,11 @@ export default {
                 
             },
 
+            toggleSerial(){
+              console.log('I am working')
+              this.serial === true ? this.serial =false : this.serial =true
+            }
+
             
        
     }
@@ -756,5 +763,11 @@ export default {
     color: forestgreen;
     display: block;
     float: right;
+}
+.serial{
+  font-size: 8px;
+  display: block;
+    float: right;
+    text-decoration: underline;
 }
 </style>

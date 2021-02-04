@@ -84,12 +84,7 @@ export default {
           url_c: "View Dashboard for showroom",
           desc: "View Dashboard"
         },
-        {
-                    url: "credit-worthy",
-                    title: "Credit Worthy",
-                    url_c: "Check credit worthiness",
-                    desc: "Credit Worthy"
-                }
+       
 
       ]
     };

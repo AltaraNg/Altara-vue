@@ -27,12 +27,12 @@ export default {
           url_c: "View Inventory!",
           desc: "For inventory and management",
         },
-        {
-          url: "inventorydashboard",
-          title: "Inventory Dashboard",
-          url_c: "View Inventory Dashboard",
-          desc: "For inventory and management",
-        },
+        // {
+        //   url: "inventorydashboard",
+        //   title: "Inventory Dashboard",
+        //   url_c: "View Inventory Dashboard",
+        //   desc: "For inventory and management",
+        // },
         {
           url: "suppliers",
           title: "Manage Suppliers",

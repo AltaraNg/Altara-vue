@@ -19,6 +19,15 @@
                         <option :value="option.value" v-for="option in message">{{option.name}}</option>                       
                     </select>
                 </div>
+                <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Business Type:  </label>
+                    </div>
+                    <select name="option" v-model="searchQuery.businessType"  class="custom-select">
+                        <option disabled>--select--</option>
+                        <option :value="option.id" v-for="option in businessTypes">{{option.name}}</option>                       
+                    </select>
+                </div>
                 </template>
             </resueable-search>
             
@@ -60,16 +69,16 @@
                          <div class="col d-flex align-items-center justify-content-center" v-if="evalMode==='collection' || evalMode === 'recovery'">
                             <span>
                                 <span class="radio w-50 pr-3 mb-0 float-left">
-                                    <input type="radio" :value="true" v-model="order.is_visited" :id="`present${index}`" v-if="!order.isProcessed" :name="`isPresent${index}` " :disabled="order.isProcessed" class="form-check-input">
+                                    <input type="radio" :value="true" v-model="order.is_visited" :id="`present${index}`" v-if="!order.isProcessed" v-validate="'required'" :name="`isPresent${index}` " :disabled="order.isProcessed" class="form-check-input">
                                     <label :for="`present${index}`" v-if="!order.isProcessed">yes</label>
-                                     <input type="radio" :value="true" v-model="order.visited" :id="`present${index}`" v-if="order.isProcessed" :name="`isPresent${index}` " :disabled="order.isProcessed" class="form-check-input">
+                                     <input type="radio" :value="true" v-model="order.visited" :id="`present${index}`" v-if="order.isProcessed" v-validate="'required'" :name="`isPresent${index}` " :disabled="order.isProcessed" class="form-check-input">
                                     <label :for="`present${index}`" v-if="order.isProcessed">yes</label>
                                 </span>
                                 <span class="radio w-50 pl-3 mb-0 float-left">
-                                    <input type="radio" :value="false" v-model="order.is_visited" v-if="!order.isProcessed" :id="`absent${index}`" :disabled="order.isProcessed" 
+                                    <input type="radio" :value="false" v-model="order.is_visited" v-if="!order.isProcessed" :id="`absent${index}`" v-validate="'required'" :disabled="order.isProcessed" 
                             :name="`isPresent${index}`" class="form-check-input">
                                     <label :for="`absent${index}`" v-if="!order.isProcessed" >no</label>
-                                    <input type="radio" :value="false" v-model="order.visited" v-if="order.isProcessed" :id="`absent${index}`" :disabled="order.isProcessed" 
+                                    <input type="radio" :value="false" v-model="order.visited" v-if="order.isProcessed" :id="`absent${index}`" v-validate="'required'" :disabled="order.isProcessed" 
                             :name="`isPresent${index}`" class="form-check-input">
                                     <label :for="`absent${index}`" v-if="order.isProcessed" >no</label>
                                 </span>
@@ -79,10 +88,11 @@
 
 
                         <div class="col d-flex align-items-center justify-content-center"  v-if="evalMode==='call' || evalMode === 'collection' || evalMode === 'recovery'">
-                            <input type="text" name="feedback"  class="form-control"  v-model="order.feedback" required :disabled="order.isProcessed">
+                            <input type="text" :name="'feedback_'+index"  class="form-control"  v-model="order.feedback" v-validate="'required'" :disabled="order.isProcessed" >
+                            
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" v-if="evalMode==='call'">
-                            <input type="date" name="date" v-model="order.promise_date" :class="{'formError' : order.error}" class="form-control" required :disabled="order.isProcessed"/>
+                            <input type="date" name="date" v-model="order.promise_date" class="form-control" required :disabled="order.isProcessed" v-validate="'required'"/>
                         </div>
 
 
@@ -260,10 +270,8 @@
              <div v-if="pageParams">
                 <base-pagination
                     :page-param="pageParams"
-                    :page="page"
-                    @fetchData="fetchData"
-                    @next="next()"
-                    @prev="prev()"
+                    @fetchData="fetchData"                    
+                    
                 >
                 </base-pagination>
 
@@ -312,23 +320,23 @@
                 urlToFetchOrders: '/api/repayment_reminder',
                 formErrors: [],
                 branch_id: '',
-                modalItem: null,
-                page_size: 10,
+                modalItem: null,    
                  OId: null,
                 date_from: null,
                 date_to: null,
                 page: 1,
-                pageParams: null,
-                 page_size: 10,
+                pageParams: {},
+                 limit: 10,
                 filters: [
                     {name: 'date from', model: 'date_from'},
                     {name: 'date to', model: 'date_to'}
                 ],
                 mode: '',
-                modeType: 'first_message',
+                modeType: 'first_sms',
                 message: [],
                 promise_date: null,
                 evalMode: null,
+                businessTypes: [],
                
                 orders: null,
                 type: null,
@@ -338,6 +346,7 @@
                 headings:
                     ['Order Number', 'Order Customer name', 'Product', 'Paid | Repayment', 'Reminder Count'],
                 disabledOrders: [],
+                error: {}
             }
         },
 
@@ -347,9 +356,9 @@
                 // this.$scrollToTop();
                 this.$LIPS(true);
                
-                let {page, page_size} = this.$data;
-                await get(`${this.urlToFetchOrders}?days=${this.type === null ? 7 : this.type}`+`${!!page ? `&page=${page}` : ""}` +
-          `${!!page_size ? `&pageSize=${page_size}` : ""}`
+                let {page, limit} = this.$data;
+                await get(`${this.urlToFetchOrders}?days=${this.type === null ? 7 : this.type}`+`${!!this.pageParams.page ? `&page=${this.pageParams.page}` : ""}` +
+          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
                 )
                    .then(({data}) => this.prepareList(data))
                     .catch(() => Flash.setError('Error Preparing form'));
@@ -359,17 +368,13 @@
 
             },
            prepareList(response){
-               
-            //    response.days === undefined ? this.type =7 : this.type = response.days;
-            //    this.modeType = this.message.find((item) => {
-            //        return item.value === this.type
-            //    }).name;  
                 if(response.days !== undefined){
                     this.modeType = this.message.find((item) => {
                         return item.value === response.days
                         }).name;
                     this.type = response.days; 
-                }              
+                }
+                           
                 let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
                 this.orders = data;
@@ -398,7 +403,8 @@
             },
             next(firstPage = null) {
                 if (this.pageParams.next_page_url) {
-                    this.page = firstPage ? firstPage : parseInt(this.page) + 1;
+                    this.pageParams.page = firstPage ? firstPage : parseInt(this.pageParams.page) + 1;
+
                     this.fetchData();
                     }
                 },
@@ -409,6 +415,12 @@
                 this.message.sort((a,b) => {
                    return (a.id < b.id) ? -1 : 1
                 });
+            },
+
+             async getBusinessType(){
+                let values = await get('/api/business_type');
+                this.businessTypes = values.data.data.data;
+                
             },
 
             excemptFunc(element){
@@ -424,15 +436,21 @@
                 },
              save(order){
                  if(!order.isProcessed){
+                     
+                     this.$validator.validate().then(valid => {
+                         if(valid){
+                             
+                         }
+                     })
                  this.$LIPS(true);
                  let type = this.message.find(item => item.value === this.type);
                  let data = {};
                  if(this.evalMode === 'call'){
-                     console.log(order.feedback);
+                     
                      if(order.feedback === undefined || order.promise_date === undefined){
-                        console.log(this.orders.find(item => {
+                        this.orders.find(item => {
                              return item.id === order.id
-                         }).error = true)
+                         }).error = true
                      }
                     data = {
                     "feedback": order.feedback,
@@ -472,6 +490,7 @@
                                     let {data, status} = r;
                                     if (status === 422) {
                                         this.error = data.errors ? data.errors : data;
+                                       
                                         
                                     }
                                 }).finally(() => {                                
@@ -501,22 +520,26 @@
         },
         created(){
 
-            this.getReminderValues();         
-           this.fetchData();
+            this.getReminderValues();
+           this.getBusinessType();         
+           this.fetchData();   
+        },
+        mounted(){
+           
         },
         watch: {
             modeType: function(modeType){
                 this.disabledOrders = [];
-                if (this.modeType === 'first_message' || this.modeType === 'second_message' || this.modeType === 'third_message'){
+                if (modeType === 'first_sms' || modeType === 'second_sms' || modeType === 'third_sms'){
                     this.evalMode = 'message';
                 }
-                else if(this.modeType === 'first_call' || this.modeType === 'second_call' || this.modeType === 'third_call'){
+                else if(modeType === 'first_call' || modeType === 'second_call' || modeType === 'third_call'){
                     this.evalMode = 'call';
                 }
-                else if(this.modeType === 'first_collection' || this.modeType === 'second_collection' || this.modeType === 'third_collection'){
+                else if(modeType === 'first_collection' || modeType === 'second_collection' || modeType === 'third_collection'){
                     this.evalMode = 'collection';
                 }
-                else if(this.modeType === 'first_recovery' || this.modeType === 'second_recovery' || this.modeType === 'third_recovery'){
+                else if(modeType === 'first_recovery' || modeType === 'second_recovery' || modeType === 'third_recovery'){
                     this.evalMode = 'recovery';
                 }
 

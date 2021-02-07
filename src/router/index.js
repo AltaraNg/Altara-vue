@@ -122,6 +122,13 @@ const Reconcile = () =>
 const ShowRoomDashboard = () =>
     import ("../views/FSL/dashboard/Dashboard.vue");
 
+    const CreditWorthy = () =>
+    import ("../views/AltaraLoan/credit_worthy/credit_worthy.vue");
+const AltaraLoan = () =>
+    import ('../views/AltaraLoan/index.vue');
+const AltaraLoanHome = () =>
+    import ('../views/AltaraLoan/HomePage.vue');
+
 Vue.use(VueRouter);
 Vue.use(routerHistory);
 const router = new VueRouter({
@@ -350,6 +357,30 @@ const router = new VueRouter({
             ]
         },
         {
+            path: '/cashloan',
+            component: AltaraLoan,
+            meta: { requiresAuth: true, CASHLOAN: true },
+            children: [
+                { path: '/', redirect: { name: 'AltaraLoanHome' } },
+                { path: 'home', component: AltaraLoanHome, name: 'AltaraLoanHome' },
+                { path: 'lookup', component: CustomerLookup, name: 'customer-lookup-cashloan', meta: { customSMS: true } },
+                { path: 'direct-debit-sales', component: DirectDebitSales, name: 'direct-debit-sales-cashloan', meta: { customSMS: true } },
+                {
+                    path: 'direct-debit-overdue',
+                    component: AllOverdue,
+                    name: 'direct-debit-overdue-cashloan',
+                    meta: { mode: 'direct-debit' }
+                },
+                {
+                    path: "credit-worthy",
+                    component: CreditWorthy,
+                    name: "credit-worthy",
+                    meta: { mode: "create" }
+                },
+            ]
+        },
+
+        {
             path: "/fsl",
             component: FSL,
             meta: { requiresAuth: true, FSL: true },
@@ -418,6 +449,7 @@ const router = new VueRouter({
                     name: "ShowRoom Dashboard",
                     meta: { mode: "create" }
                 },
+                
 
             ]
         },

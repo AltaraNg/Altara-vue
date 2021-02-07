@@ -54,6 +54,7 @@ export const store = new Vuex.Store({
         CAGAccess: [...admin, 30],
         ACCAccess: [...admin, 26, 31],
         ALTARAPAYAccess: [...admin, 33],
+        CASHLOANAccess: [...admin, 42],
         months: [
             { id: '01', name: "January" },
             { id: '02', name: "February" },

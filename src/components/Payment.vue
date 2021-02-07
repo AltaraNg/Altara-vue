@@ -3,7 +3,40 @@
         <div v-if="tab === 'Log Payment'">
             <Lookup :logger="'cash'"/>
         </div>
+        <div class="mb-3 attendance-head">
+         <resueable-search :url="url" @childToParent="prepareList" :showBranch="true" :showDate="true" v-if="tab === 'View Payments' || tab === 'Reconcile'">
+                 <template #default= "{ searchQuery }">          
+                    <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Payment Type:  </label>
+                    </div>
+                   <select name="category" id="category" class="custom-select" v-model="searchQuery.method">
+                        <option :value="type.id" v-for="type in getPaymentMethods">
+                            {{type.name}}
+                        </option>
+                    </select>
+                </div>
+                 <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Bank:  </label>
+                    </div>
+                   <select name="bank" id="bank" class="custom-select" v-model="searchQuery.bank">
+                        <option :value="type.id" v-for="type in getBanks">
+                            {{type.name}}
+                        </option>
+                    </select>
+                </div>
+                </template>
+            </resueable-search>
+        </div>
+        <div class="mt-5 mb-3 attendance-head" v-if="tab === 'View Payments' || tab === 'Reconcile'">
+                <div class="row px-4 pt-3 pb-4 text-center">
+                    <div class="col light-heading" :key="index" v-for="(header,index) in details.headings">{{header}}</div>
+                </div>
+            </div>
         <div class="tab-content mt-1 attendance-body">
+             
+
             <div v-if="tab === 'View Payments'">
                 <div class="mb-3 row attendance-item" :key="index" v-for="(payment,index) in renderedList">
                     <div class="col d-flex align-items-center" style="max-width: 120px">
@@ -169,16 +202,12 @@
                 </div>
             </div>
         </div>
-        <nav v-if="tab !== 'Log Payment' && !$_.isEmpty(responseData)" class="col d-flex justify-content-end align-items-center pr-0">
+        <nav v-if="tab !== 'Log Payment'">
 
             <div v-if="pageParams">
                 <base-pagination
-
                     :page-param="pageParams"
-                    :page="page"
-                    @fetchData="fetchData()"
-                    @next="next()"
-                    @prev="prev()"
+                    @fetchData="fetchList(list)"                   
                 >
                 </base-pagination>
 
@@ -195,17 +224,25 @@
     import Lookup from "../views/FSL/lookup/lookup";
     import Flash from "../utilities/flash";
     import Vue2Filters from 'vue2-filters'
+ import ResueableSearch from '../components/ReusableSearch.vue';
+
     import BasePagination from "../components/Pagination/BasePagination"
 
     Vue.use(Vue2Filters);
 
     export default {
-        components: {Lookup, BasePagination},
+        components: {Lookup, BasePagination, ResueableSearch},
         props: {list: {default: null},tab:{default: null}, filterBy: { default: null }},
 
         watch: {
-            list: function (list) {
-                this.fetchList(list);
+            tab: function (tab) {
+                if(tab === 'View Payments'){
+                    this.url = "/api/payment"
+                }else{
+                    this.url = "/api/payment-reconcile"
+                }
+                this.fetchList(tab);
+               
             },
             filterBy: function(filterBy) {
                 this.defaultList =
@@ -256,9 +293,10 @@
                 page: 1,
                 responseData:{},
                 paymentItem:{},
+                url: null,
                 showModalContent: false,
                 paymentList:[],
-                pageParams: null,
+                pageParams: {},
                 paymentReconciliationList:[],
                 totalCashAtHand:0,
                 variance:'',
@@ -275,7 +313,15 @@
         },
 
         computed: {
-            ...mapGetters(['auth', 'getAuthUserDetails'])
+             details() {
+                let list = 1;
+                const tabs = ["Log Payment","View Payments", "Reconcile"];
+                const headings2 = ['index','Type','Date', 'Cash In Hand', 'Total', 'Amount Bank','Variance','Comment', 'Status'];
+                const headings1 = ['index','Customer ID', 'Date of Payment', 'Time of Payment','Payment Purpose','Payment Type','Amount Paid', 'Bank','Comment'];
+                const headings = this.tab === "View Payments" ? headings1 : this.tab === "Reconcile" ? headings2 : '';
+                return {tabs, headings, list};
+            },
+            ...mapGetters(['auth', 'getAuthUserDetails', 'getPaymentMethods', 'getBanks'])
         },
 
         methods: {
@@ -290,17 +336,21 @@
                 list === 'View Payments' ? this.getPaymentList() :
                     list === 'Reconcile' ? this.getPaymentReconciliationList() : this.$LIPS(false);
             },
+            prepareList(response){
+                 let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
+                this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
+                this.renderedList = data;
+                this.OId = from;
+                this.$LIPS(false);
+            },
 
             async getPaymentList(){
                 try{
                     this.branchId = localStorage.getItem("branch_id");
-                    const fetchPaymentList = await get(`/api/payment?page=${this.page}&branch=${this.branchId}`);
-                    this.paymentList = fetchPaymentList.data.data.data;
-                    this.responseData = fetchPaymentList.data.data;
-                    this.pageParams = this.responseData;
-                    this.renderedList = this.paymentList;
-                    this.OId = this.responseData.from;
-                    this.$LIPS(false);
+                    const fetchPaymentList = await get(`${this.url}?branch=${this.branchId}`+`${!!this.pageParams.page ? `&page=${this.pageParams.page}` : ""}` +
+          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`);
+                    this.prepareList(fetchPaymentList.data);
+                    
                 }
                 catch(err){
                     this.$displayErrorMessage(err);
@@ -310,20 +360,15 @@
             async getPaymentReconciliationList(){
                 this.branchId = localStorage.getItem('branch_id');
                 let yesterday = new Date(Date.now() - 864e5).toISOString();
-                let previous = new Date('feb 1, 2019').toISOString(); //used an arbitrary date needed by the api
+                let previous = new Date('feb 1, 2019').toISOString(); // ** used an arbitrary date needed by the api
                 let from = previous.slice(0, 10);
                 let to = yesterday.slice(0, 10);
 
                 try{
-                    const fetchPaymentReconciliation = await get(`/api/payment-reconcile?branch=${this.branchId}&to=${to}&from=${from}`);
-                    this.paymentReconciliationList = fetchPaymentReconciliation.data.data.data;
-                    this.responseData = fetchPaymentReconciliation.data.data;
-                    this.renderedList = this.paymentReconciliationList;
-                    this.OId =this.responseData.from;
-
-                    this.totalCashAtHand =this.paymentReconciliationList.map(item=>item.total).reduce((a,b)=>a+b);
-
-
+                    const fetchPaymentReconciliation = await get(`${this.url}?branch=${this.branchId}&to=${to}&from=${from}`+`${!!this.pageParams.page ? `&page=${this.pageParams.page}` : ""}` +
+          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`);
+                    this.prepareList(fetchPaymentReconciliation.data);                    
+                    this.totalCashAtHand =this.renderedList.map(item=>item.total).reduce((a,b)=>a+b);
                     this.$LIPS(false);
                 }
                 catch(err){
@@ -344,7 +389,6 @@
                 try{
                     const reconcilePayment = await put(`/api/payment-reconcile/${item.id}`, data);
                     if (reconcilePayment){
-                        // this.getPaymentReconciliationList();
                         this.$swal({
                             icon: 'success',
                             title: 'Reconciliation done successfully'

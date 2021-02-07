@@ -291,7 +291,6 @@ export default {
         .then((res) => {
           this.transferHistory = res.data.data.data;
           this.$LIPS(false);
-          console.log("hello world", res);
 
           $(`#viewProductTransfer`).modal("toggle");
         })
@@ -367,14 +366,12 @@ export default {
     },
 
     viewInventory(inventory) {
-      console.log("police ", inventory);
       this.showModalContent = true;
       this.inventoryItem = inventory;
       return $(`#viewInventory`).modal("toggle");
     },
 
     edit(item) {
-      console.log("polefdc ", item);
       if (this.$network()) {
         this.$LIPS(true);
         put(`/api/inventory/${item.id}`, { price: item.price })

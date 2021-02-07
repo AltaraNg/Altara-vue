@@ -20,6 +20,7 @@
                       <td>Name</td>
                       <td>Order Id</td>
                       <td>Product</td>
+                      <td>Serial No</td>
                       <th>Branch</th>
                       <th>Status</th>
                     </tr>
@@ -27,6 +28,7 @@
                       <td class="font-weight-bold">{{`${customer.first_name} ${customer.last_name}`}}</td>
                       <th>{{order.order_number}}</th>
                       <th>{{order.product.name}}</th>
+                      <th>{{order.serial_number}}</th>
                       <td class="font-weight-bold">{{order.branch}}</td>
                       <td class="font-wight-bold td-back">ok</td>
                       <!-- <td
@@ -85,7 +87,7 @@
                   <tbody class="text-center">
                     <tr class="table-separator">
                       <td class="text-left">Discount Detail (%)</td>
-                      <th>{{order.discount | capitalize}}</th>
+                      <th>{{order.discount[0] ? order.discount[0].name : 'Null' | capitalize}}</th>
                       <td>Total Before Discount</td>
                       <th>{{$formatCurrency($roundDownAmt(order.product_price))}}</th>
                       <td>Total Paid (+discount)</td>
@@ -110,12 +112,14 @@
                   </tbody>
                 </table>
                  <div v-if="standAlone === false">
+                   <div v-if="completed === false">
                 <LogForm
                   :amortizationData="amortizationData"
                   :customerId="customer.id"
                   :orderId="order.id"
                   @done="this.done"
                 />
+                </div>
                 </div>
               </div>
             </div>
@@ -192,6 +196,7 @@ export default {
     data(){
         return {
           actual_amount: null,
+          completed: null,
           ammo_item: null,
           newOrderItem:{},
           showModal: false,
@@ -208,7 +213,6 @@ export default {
         }
     },
     methods: {  done() {
-      console.log('tester mm');
       this.show = false;
 
       this.$LIPS(true);
@@ -233,9 +237,7 @@ this.$emit("childToParent", res.data);
         preparePayments(){
             this.$emit('preparePayments');
         },
-        testo(){
-          console.log('testop');
-        },
+        
         updateAmmo(armo){
           this.showModal = true;
           this.ammo_item = armo;
@@ -252,7 +254,6 @@ this.$emit("childToParent", res.data);
               icon: 'success',
               title: 'Payment Updated Successfully'
               });
-              console.log(res.data);
               this.$LIPS(false); 
 
           }).catch(err => {
@@ -263,12 +264,26 @@ this.$emit("childToParent", res.data);
           })
          
 
-        }
+        },
+        calcDebt(amortization){
+                // * Assumed equal distribution of amortization
+                let res = amortization.filter(amor => {
+                    return amor.actual_amount === 0
+                });
+                return res.length * amortization[0].expected_amount;
+            },
+
+    },
+    created(){
+      this.calcDebt(this.order.amortization) === 0 ? this.completed = true : this.completed = false;
+    },
+    updated(){
+      this.calcDebt(this.order.amortization) === 0 ? this.completed = true : this.completed = false;
 
     },
     watch: {
        order:function () {
-         console.log('poil',this.customer);
+         
           this.amortizationData=this.order.amortization;
         }
     },

@@ -7,9 +7,11 @@
                         class="card-body"
                         @submit.prevent="previewAmortization"
                     >
-                        <div class="form-group align-self-left text-capitalize">
+                    <div class="row">
+                        <div class="form-group align-self-left text-capitalize col" >
                             <label for="amount" class="form-control-label w-100"
                                 >Product Name
+                                <span class="serial" @click="toggleSerial()">{{ serial === true ? 'Remove' : 'Add'}} serial number</span>
                                 <span :class="{'renewal': eligible}" v-if="eligible">Entitled to renewal discount!!!</span>
                                 </label>
                             <AutoComplete
@@ -17,6 +19,60 @@
                                 :apiUrl="apiUrls.getProduct"
                             />
                         </div>
+
+                        <div class="col form-group" v-if="serial">
+                          <label for="amount" class="form-control-label w-100">Serial number (Optional)</label>
+                          <input v-model="salesLogForm.serial_number"  name="serial number" class="custom-select w-100"/>
+                        </div>
+
+                        <div class="col form-group">
+                                <label for="amount" class="form-control-label"
+                                    >Sales Category</label
+                                >
+                                <select
+                                    @change="getUsers(salesLogForm.sales_category_id)"                                    
+                                    class="custom-select w-100"
+                                    v-model="salesLogForm.sales_category_id"
+                                    v-validate="'required'"
+                                >
+                                    <option disabled selected="selected">
+                                        Sales Category
+                                    </option>                                    
+                                    <option
+                                        :value="type.id"
+                                        :key="type.id"
+                                        v-for="type in salesCategories"
+                                    >
+                                        {{ type.name }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col form-group" >
+                                <label for="amount" class="form-control-label"
+                                    >Owner</label
+                                >
+                                <select                                                                      
+                                    class="custom-select w-100"
+                                    v-model="salesLogForm.owner_id"
+                                    v-validate="'required'"
+                                >
+                                    <option disabled selected="selected">
+                                        Owner
+                                    </option>
+                                    <option  selected="selected" value="">
+                                        None
+                                    </option>
+                                    <option
+                                        :value="user.id"
+                                        :key="user.id"
+                                        v-for="user in users"
+                                    >
+                                        {{ user.full_name }}
+                                    </option>
+                                </select>
+                            </div>
+                    </div>
                         <div class="row">
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
@@ -77,6 +133,7 @@
                                     </option>
                                 </select>
                             </div>
+                            
                             <div class="col form-group">
                                 <label for="amount" class="form-control-label"
                                     >Downpayment Rates</label
@@ -137,7 +194,7 @@
                                     <option
                                         :value="type.id"
                                         :key="type.id"
-                                        v-for="type in getPaymentMethods"
+                                        v-for="type in getPaymentMethods.filter(element => element.name !== 'direct-debit')"
                                     >
                                         {{ type.name }}
                                     </option>
@@ -299,6 +356,7 @@ export default {
     data() {
         return {
             error: {},
+            users: [],
             product: "",
             salesLogForm: {},
             repaymentDuration: [],
@@ -307,6 +365,7 @@ export default {
             businessTypes: [],
             amortization: [],
             calculation: [],
+            salesCategories: [],
             test0: true,
             test1: true,
             apiUrls: {
@@ -319,6 +378,7 @@ export default {
                 getCalculation: `/api/price_calculator`,
                 getProduct: `/api/inventory`,
                 discounts: `/api/discount`,
+                salesCategoryUrl: `/api/sales_category`
                
             },
             inputValue: "",
@@ -331,17 +391,20 @@ export default {
             customDateToggle: false,
             discounts: null,
             eligible: false,
+            serial: false
             
         };
     },
     async mounted() {
         this.checkIfDiscountElig();
         await this.getRepaymentDuration();
+        await this.getSalesCategory();
         await this.getRepaymentCycles();
         await this.getDownPaymentRates();
         await this.getBusinessTypes();
         await this.getCalculation();
         await this.getDiscounts();
+        
         
        
     },
@@ -374,9 +437,12 @@ export default {
                 custom_date: this.salesLogForm.custom_date,
                 repayment: this.rPayment,
                 bank_id: this.salesLogForm.bank_id,
-                product_price: this.pPrice,
+                product_price: this.$formatMoney(this.pPrice),
                 payment_type_id: this.salesLogForm.payment_type_id.id,
                 payment_method_id: this.salesLogForm.payment_method_id,
+                sales_category_id: this.salesLogForm.sales_category_id,
+                owner_id: this.salesLogForm.owner_id,
+                serial_number: this.salesLogForm.serial_number
                 
             };
             if(this.eligible){
@@ -398,7 +464,7 @@ export default {
             })
             .catch(() => {
               this.$LIPS(false);
-              Flash.setError("Error submitting form");
+              Flash.setError("Error: " + err.message);
             });
         } else this.$networkErr("form");
       });
@@ -412,14 +478,18 @@ export default {
         repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
         business_type_id: this.salesLogForm.business_type_id,
         branch_id: localStorage.getItem("branch_id"),
-        down_payment: this.fPayment,
+        down_payment: this.$formatMoney(this.fPayment),
         custom_date: this.salesLogForm.custom_date,
-        repayment: this.rPayment,
+        repayment: this.$formatMoney(this.rPayment),
         bank_id: this.salesLogForm.bank_id,
-        product_price: this.pPrice,
+        product_price: this.$formatMoney(this.pPrice),
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.salesLogForm.payment_method_id,
+        sales_category_id: this.salesLogForm.sales_category_id,
+        owner_id: this.salesLogForm.owner_id,
+        
       };
+      this.salesLogForm.serial_number !== null? data.serial_number = this.salesLogForm.serial_number : '';
       this.$validator.validateAll().then((result) => {
         if (result) {
           this.$LIPS(true);
@@ -429,16 +499,14 @@ export default {
               this.amortization = res.data.data;
               $(`#amortizationPreview`).modal("toggle");
             })
-            .catch(() => {
+            .catch((err) => {
               this.$LIPS(false);
-              Flash.setError("Error submitting form");
+              Flash.setError("Error: " + err.message);
             });
         } else this.$networkErr("form");
       });
     },
-    async submitForm() {
-      //   $(`#amortizationPreview`).modal("toggle");
-    },
+    
     async getRepaymentDuration() {
       try {
         const fetchRepaymentDuration = await get(
@@ -450,8 +518,7 @@ export default {
       }
     },
     getCalc() {
-      // this.$validator.validateAll().then(result => {
-      //     if (result) {
+     
       try {
         this.salesLogForm.customer_id = this.customerId;
         const data0 = {
@@ -567,6 +634,33 @@ export default {
                 this.$displayErrorMessage(err);
             }
         },
+        async getSalesCategory(){
+          try{
+            const fetchSalesCategory = await get(
+              this.apiUrls.salesCategoryUrl
+            );
+            this.salesCategories = fetchSalesCategory.data.data.data;
+          }catch (err){
+            this.$displayErrorMessage(err);
+          }
+        },
+
+        async getUsers(salesCat){
+        this.$LIPS(true);
+          
+          await get(`/api/sales-category/${salesCat}/roles`).then(res => {
+            this.users = this.mergeArrays(res.data.data);
+          });
+          
+          this.$LIPS(false);
+        },
+        mergeArrays(parent){
+          let result = [];
+          parent.forEach(elem => {
+            result = result.concat(elem.users);
+          })
+          return result;
+        },
         async getBusinessTypes() {
             try {
                 const fetchBusinessTypes = await get(
@@ -611,6 +705,12 @@ export default {
                 return
                 
             },
+
+            toggleSerial(){
+              this.serial === true ? this.serial =false : this.serial =true
+            }
+
+            
        
     }
 };
@@ -657,5 +757,11 @@ export default {
     color: forestgreen;
     display: block;
     float: right;
+}
+.serial{
+  font-size: 8px;
+  display: block;
+    float: right;
+    text-decoration: underline;
 }
 </style>

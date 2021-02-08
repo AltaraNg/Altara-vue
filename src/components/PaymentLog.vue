@@ -11,6 +11,7 @@
                         <div class="form-group align-self-left text-capitalize col" >
                             <label for="amount" class="form-control-label w-100"
                                 >Product Name
+                                <span class="serial" @click="toggleSerial()">{{ serial === true ? 'Remove' : 'Add'}} serial number</span>
                                 <span :class="{'renewal': eligible}" v-if="eligible">Entitled to renewal discount!!!</span>
                                 </label>
                             <AutoComplete
@@ -19,9 +20,9 @@
                             />
                         </div>
 
-                        <div class="col form-group">
+                        <div class="col form-group" v-if="serial">
                           <label for="amount" class="form-control-label w-100">Serial number (Optional)</label>
-                          <input v-model="salesLogForm.serial_number" name="serial number" class="custom-select w-100"/>
+                          <input v-model="salesLogForm.serial_number"  name="serial number" class="custom-select w-100"/>
                         </div>
 
                         <div class="col form-group">
@@ -36,10 +37,7 @@
                                 >
                                     <option disabled selected="selected">
                                         Sales Category
-                                    </option>
-                                    <option  selected="selected" value="">
-                                        None
-                                    </option>
+                                    </option>                                    
                                     <option
                                         :value="type.id"
                                         :key="type.id"
@@ -50,7 +48,7 @@
                                 </select>
                             </div>
 
-                            <div class="col form-group" v-if="users.length > 0">
+                            <div class="col form-group" >
                                 <label for="amount" class="form-control-label"
                                     >Owner</label
                                 >
@@ -393,6 +391,7 @@ export default {
             customDateToggle: false,
             discounts: null,
             eligible: false,
+            serial: false
             
         };
     },
@@ -465,7 +464,7 @@ export default {
             })
             .catch(() => {
               this.$LIPS(false);
-              Flash.setError("Error submitting form");
+              Flash.setError("Error: " + err.message);
             });
         } else this.$networkErr("form");
       });
@@ -488,8 +487,9 @@ export default {
         payment_method_id: this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
         owner_id: this.salesLogForm.owner_id,
-        serial_number: this.salesLogForm.serial_number
+        
       };
+      this.salesLogForm.serial_number !== null? data.serial_number = this.salesLogForm.serial_number : '';
       this.$validator.validateAll().then((result) => {
         if (result) {
           this.$LIPS(true);
@@ -499,16 +499,14 @@ export default {
               this.amortization = res.data.data;
               $(`#amortizationPreview`).modal("toggle");
             })
-            .catch(() => {
+            .catch((err) => {
               this.$LIPS(false);
-              Flash.setError("Error submitting form");
+              Flash.setError("Error: " + err.message);
             });
         } else this.$networkErr("form");
       });
     },
-    async submitForm() {
-      //   $(`#amortizationPreview`).modal("toggle");
-    },
+    
     async getRepaymentDuration() {
       try {
         const fetchRepaymentDuration = await get(
@@ -520,8 +518,7 @@ export default {
       }
     },
     getCalc() {
-      // this.$validator.validateAll().then(result => {
-      //     if (result) {
+     
       try {
         this.salesLogForm.customer_id = this.customerId;
         const data0 = {
@@ -709,6 +706,10 @@ export default {
                 
             },
 
+            toggleSerial(){
+              this.serial === true ? this.serial =false : this.serial =true
+            }
+
             
        
     }
@@ -756,5 +757,11 @@ export default {
     color: forestgreen;
     display: block;
     float: right;
+}
+.serial{
+  font-size: 8px;
+  display: block;
+    float: right;
+    text-decoration: underline;
 }
 </style>

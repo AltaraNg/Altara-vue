@@ -1,16 +1,15 @@
 <template>
     <transition name="fade">
         <div>
-            <Lookup :logger="'credit'" />
+            <credit-worthy> </credit-worthy>
         </div>
     </transition>
 </template>
 
 <script>
-import Lookup from "../lookup/lookup";
-import Flash from "../../../utilities/flash";
+import CreditWorthy from "../../../components/CreditWorthy";
 export default {
-    components: { Lookup },
+    components: {CreditWorthy },
     data() {
         return {};
     },

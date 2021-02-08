@@ -449,6 +449,15 @@ const router = new VueRouter({
                     name: "ShowRoom Dashboard",
                     meta: { mode: "create" }
                 },
+
+                {
+                    path: "customer/create",
+                    component: CustomerForm,
+                    meta: { mode: "register" }
+                },
+
+
+
                 
 
             ]

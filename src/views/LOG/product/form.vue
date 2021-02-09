@@ -224,12 +224,15 @@
         },
         computed: {
             productName (){
-                let brand, category, feature;
+                let brand, category, feature, brand_name, category_name;
                 if(this.form.brand_id && this.form.category_id) {
-                    brand = this.brands.find(item => item.id === this.form.brand_id).name;
-                    category = this.categories.find(item => item.id === this.form.category_id).name;
+                    brand = this.brands.find(item => item.id === this.form.brand_id);
+                    brand !== undefined ? brand_name= brand.name : brand_name = '';
+                    category = this.categories.find(item => item.id === this.form.category_id);
+                    category !== undefined ? category_name= category.name : category_name = '';
+
                     feature = this.form.feature;
-                    return `${feature} ${brand} ${category}`;
+                    return `${feature} ${brand_name} ${category_name}`;
                 }else return 'Product Name';
             }
         }

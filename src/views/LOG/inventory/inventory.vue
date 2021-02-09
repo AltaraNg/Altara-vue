@@ -410,7 +410,10 @@ export default {
           `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
       )
         .then(({ data }) => this.prepareList(data))
-        .catch(() => Flash.setError("Error Preparing form"));
+        .catch(() => Flash.setError("Error Preparing form"))
+        .finally(() => {
+          this.$LIPS(false);
+        });
     },
 
     prepareList(response) {
@@ -445,9 +448,16 @@ export default {
     },
 
     getParent(id, array) {
-      return array.find((item) => {
+      if(array === null){
+        array = []
+      }
+      let res =  array.find((item) => {
         return item.id === id;
       });
+      if(res === undefined){
+        return {}
+      }
+      return res;
     },
 
     next(firstPage = null) {

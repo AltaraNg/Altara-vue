@@ -228,7 +228,10 @@
           `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
                 )
                     .then(({data}) => this.prepareList(data))
-                    .catch(() => Flash.setError('Error Preparing form'));
+                    .catch(() => Flash.setError('Error Preparing form'))
+                    .finally(() => {
+                        this.$LIPS(false);
+                    });
 
 
             },
@@ -254,19 +257,7 @@
 
             },
 
-            next(firstPage = null) {
-                if (this.pageParams.next_page_url) {
-                    this.page = firstPage ? firstPage : parseInt(this.page) + 1;
-                    this.fetchData();
-                }
-            },
-
-            prev(lastPage = null) {
-                if (this.pageParams.prev_page_url) {
-                    this.page = lastPage ? lastPage : parseInt(this.page) - 1;
-                    this.fetchData();
-                }
-            },
+            
 
             viewProduct(product){
                 this.showModalContent = true;

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class=" mb-3 attendance-head">
-             <resueable-search :url="url" @childToParent="prepareList" :showBranch="true" :showDate="true">
+             <resueable-search :url="renewal ? url + '?renewalList=true' : url" @childToParent="prepareList" :showBranch="true" :showDate="true">
                  <template #default= "{ searchQuery }">          
                     <div class="col-md">
                     <div>
@@ -64,10 +64,10 @@
                      </select>
                  </div>
                  <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center" data-hoverable="true"   v-if="renewal">
-                    <input type="date" v-model="order.renewal_date" class="form-control">
+                    <input type="date" v-model="order.renewal_date" class="form-control" :disabled="order.renewal_status !== 'callback' ">
                  </div>
                  <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center" data-hoverable="true"   v-if="renewal">
-                     <input type="text" v-model="order.feedback" class="form-control">
+                     <input type="text" v-model="order.feedback" class="form-control" >
                  </div>
                  
           
@@ -298,15 +298,29 @@ import Index from '../views/ACC/index.vue';
         },
         methods: {
             fetchData() {
-                this.$scrollToTop();
                 this.$LIPS(true);
-                let { page, page_size } = this.$data;
+                if(this.renewal === true){
+                     get(
+                    this.url + `?renewalList=true` + `${!!this.pageParams.page ? `&page=${this.pageParams.page}` : ""}` +
+          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
+                    )
+                   .then(({ data }) => this.prepareList(data))
+                    .catch(() => Flash.setError("Error Preparing form"))
+                    .finally(()=> {
+                        this.$LIPS(false);
+                    });
+                }
+                else{
                 get(
                     this.url +`${!!this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
           `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
                     )
                    .then(({ data }) => this.prepareList(data))
-                    .catch(() => Flash.setError("Error Preparing form"));
+                    .catch(() => Flash.setError("Error Preparing form"))
+                    .finally(() => {
+                        this.$LIPS(false);
+                    });
+                }
                 },
 
             
@@ -335,19 +349,7 @@ import Index from '../views/ACC/index.vue';
                 this.showModalContent = true;    
                 return $(`#viewStuffs`).modal('toggle');
             },
-            next(firstPage = null) {
-                if (this.pageParams.next_page_url) {
-                    this.page = firstPage ? firstPage : parseInt(this.page) + 1;
-                    this.fetchData();
-                    }
-                },
-
-            prev(lastPage = null) {
-                if (this.pageParams.prev_page_url) {
-                    this.page = lastPage ? lastPage : parseInt(this.page) - 1;
-                    this.fetchData();
-                    }
-                },
+           
 
              convertDate(date){
                 let utcDate = new Date(date).toUTCString();
@@ -374,12 +376,16 @@ import Index from '../views/ACC/index.vue';
                     date: order.renewal_date
                 }
                 post('/api/new-order-renewal', data).then(res => {
-                   if (res.status === 'success') {                                        
+                    console.log(res);
+                   if (res.data.status === 'success') {                                        
                                         this.$swal({
                                             icon: 'success',
                                             title: ''
 
                                         });}
+                    order.feedback = '';
+                    order.renewal_status = '';
+                    order.renewal_date = '';
                 }).catch(err => {
                     console.log(err);
                 }).finally(() => {

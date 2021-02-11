@@ -53,7 +53,7 @@
                     },
                     {
                         name: "New records",
-                        url: "/api/new_order?renewalList=true"
+                        url: "/api/new_order"
                     }
                 ],
                 orderMode: 'old'

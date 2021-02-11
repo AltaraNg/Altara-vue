@@ -256,6 +256,7 @@
 <script>
 import Vue from 'vue';
 import {get, post} from '../utilities/api';
+import queryParam from '../utilities/queryParam';
 import {mapGetters, mapActions} from "vuex";
  import Vue2Filters from 'vue2-filters';
  import NewOrderAmortization from './NewOrderAmortization';
@@ -299,10 +300,14 @@ import Index from '../views/ACC/index.vue';
         methods: {
             fetchData() {
                 this.$LIPS(true);
+                let param = {
+                    renewalList: 'true',
+                    page: this.pageParams.page,
+                    limit: this.pageParams.limit
+                }
                 if(this.renewal === true){
                      get(
-                    this.url + `?renewalList=true` + `${!!this.pageParams.page ? `&page=${this.pageParams.page}` : ""}` +
-          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
+                    this.url + queryParam(param)
                     )
                    .then(({ data }) => this.prepareList(data))
                     .catch(() => Flash.setError("Error Preparing form"))
@@ -311,9 +316,9 @@ import Index from '../views/ACC/index.vue';
                     });
                 }
                 else{
+                    delete param.renewalList;
                 get(
-                    this.url +`${!!this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
-          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
+                    this.url + queryParam(param)
                     )
                    .then(({ data }) => this.prepareList(data))
                     .catch(() => Flash.setError("Error Preparing form"))

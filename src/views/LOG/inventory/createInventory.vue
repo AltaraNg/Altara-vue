@@ -216,12 +216,14 @@
                     this.store = `/api/inventory/${this.$route.params.id}`;
                     this.method = 'PUT';
 
-                    this.form.product_name = this.products.find(item => {
+                    let product = this.products.find(item => {
                         return item.id === this.form.product_id;
-                    }).name;
-                    this.form.supplier_name = this.suppliers.find(item => {
+                    });
+                    product !== undefined?this.form.product_name = product.name : '';
+                    let supplier = this.suppliers.find(item => {
                         return item.id === this.form.supplier_id;
-                    }).name;
+                    });
+                    supplier !== undefined ? this.form.supplier_name = supplier.name : '';
                     this.form.branch_name = this.getBranches.find(item => {
                         return item.id === this.form.branch_id;
                     }).name;

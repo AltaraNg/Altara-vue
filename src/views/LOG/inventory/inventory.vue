@@ -3,7 +3,7 @@
     <div id="reminder" class="attendance">
       <custom-header :title="'Inventory Overview'" />
 
-      <div class="mt-5 mb-3 attendance-head ">
+      <div class="mt-5 mb-3 attendance-head row">
         <div class="col-md-8">
                      <resueable-search
                       @childToParent="prepareList"
@@ -38,6 +38,15 @@
             </template>
           </resueable-search>
                 </div>
+
+                 <div class="col-md">
+          <router-link :to="{ name: 'inventoryCreate' }">
+            <button class="btn btn-primary bg-default myBtn float-right my-2">
+              + New Inventory
+            </button>
+          </router-link>
+        </div>
+                
       </div>
 
       <div class="mt-5 mb-3 attendance-head">
@@ -401,7 +410,10 @@ export default {
           `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
       )
         .then(({ data }) => this.prepareList(data))
-        .catch(() => Flash.setError("Error Preparing form"));
+        .catch(() => Flash.setError("Error Preparing form"))
+        .finally(() => {
+          this.$LIPS(false);
+        });
     },
 
     prepareList(response) {
@@ -436,9 +448,16 @@ export default {
     },
 
     getParent(id, array) {
-      return array.find((item) => {
+      if(array === null){
+        array = []
+      }
+      let res =  array.find((item) => {
         return item.id === id;
       });
+      if(res === undefined){
+        return {}
+      }
+      return res;
     },
 
     next(firstPage = null) {

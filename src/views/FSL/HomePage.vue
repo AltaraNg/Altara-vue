@@ -84,6 +84,12 @@ export default {
           url_c: "View Dashboard for showroom",
           desc: "View Dashboard"
         },
+
+         {              url: 'customer/create',
+                        title: 'Customer Registration',
+                        url_c: 'Register new customer now!',
+                        desc: 'Registering new customers',
+                    }
        
 
       ]

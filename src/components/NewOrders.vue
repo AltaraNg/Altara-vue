@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class=" mb-3 attendance-head">
-             <resueable-search :url="url" @childToParent="prepareList" :showBranch="true" :showDate="true">
+             <resueable-search :url="renewal ? url + '?renewalList=true' : url" @childToParent="prepareList" :showBranch="true" :showDate="true">
                  <template #default= "{ searchQuery }">          
                     <div class="col-md">
                     <div>
@@ -13,18 +13,33 @@
                         </option>
                     </select>
                 </div>
+                <div class="col-md">
+                    <div>
+                    <label class="form-control-label">Status:  </label>
+                    </div>
+                   <select name="category" id="category" class="custom-select" v-model="searchQuery.status">
+                        <option :value="type.status" v-for="type in renewalStatus">
+                            {{type.status}}
+                        </option>
+                    </select>
+                </div>
                 </template>
             </resueable-search>
                 <div class="w-100 my-5 mx-0 hr"></div>
                 <div class="row px-4 pt-3 pb-4 text-center">
                     <div class="col light-heading" style="max-width: 120px">S/N</div>
                     <div class="col light-heading" v-for="header in headings">{{header}}</div>
+                    <div class="col light-heading" v-if="renewal === false">Reminder History</div>
+                    <div class="col light-heading" v-if="renewal">Status</div>
+                    <div class="col light-heading" v-if="renewal">Date-Time</div>
+                    <div class="col light-heading" v-if="renewal">Feedback</div>
+
                 </div>
         </div>
         <div class="tab-content mt-1 attendance-body">
              <div class="mb-3 row attendance-item" :key="index" v-for="(order, index) in orders" v-if="orders">
                  <div class="col d-flex align-items-center" style="max-width: 120px">
-                     <span class="user mx-auto">{{ index + OId }}</span>
+                     <span class="user mx-auto" @click="submitFeedback(order)">{{ index + OId }}</span>
                  </div>
                  <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center">
                      {{order.order_number}}
@@ -38,9 +53,23 @@
                  <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center" data-hoverable="true"  @click="viewStuffs(order, 'amortization')">
                      {{order.repayment - calcDebt(order.amortization) | currency('₦')}} | {{order.repayment  |  currency('₦')}}
                  </div>
-                  <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center" data-hoverable="true"  @click="viewStuffs(order.notifications, 'notification')">
+                  <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center" data-hoverable="true"  @click="viewStuffs(order.notifications, 'notification')" v-if="renewal === false">
                      {{order.notifications[0]? order.notifications.length : '0'}} reminder(s) sent
                  </div>
+                  <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center" data-hoverable="true"   v-if="renewal">
+                     <select v-model="order.renewal_status" name="status" class="custom-select">
+                         <option :value="option.status" v-for="option in renewalStatus">
+                             {{option.status}}
+                         </option>
+                     </select>
+                 </div>
+                 <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center" data-hoverable="true"   v-if="renewal">
+                    <input type="date" v-model="order.renewal_date" class="form-control" :disabled="order.renewal_status !== 'callback' ">
+                 </div>
+                 <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center" data-hoverable="true"   v-if="renewal">
+                     <input type="text" v-model="order.feedback" class="form-control" >
+                 </div>
+                 
           
              </div>
         </div>
@@ -226,44 +255,77 @@
 
 <script>
 import Vue from 'vue';
-import {get} from '../utilities/api';
+import {get, post} from '../utilities/api';
+import queryParam from '../utilities/queryParam';
 import {mapGetters, mapActions} from "vuex";
  import Vue2Filters from 'vue2-filters';
  import NewOrderAmortization from './NewOrderAmortization';
  import ResueableSearch from './ReusableSearch.vue';
  import BasePagination from './Pagination/BasePagination';
+import Index from '../views/ACC/index.vue';
 
  Vue.use(Vue2Filters);
     export default {
-        components: {NewOrderAmortization, ResueableSearch, BasePagination},
+        components: {NewOrderAmortization, ResueableSearch, BasePagination, Index},
         computed: {...mapGetters(['getBranches'])},
+        props: {
+            renewal : {
+                type: Boolean,
+                required: false,
+                default: false
+            },
+             url: {
+                 type: String,
+                 required: false,
+                 default: '/api/new_order'
+             },
+        },
         data(){
             return {
-                headings:  ['Order Number', 'Order Summary', 'Customer Info Summary', 'Repayment Summary', 'Reminder History'],
+                headings:  ['Order Number', 'Order Summary', 'Customer Info Summary', 'Repayment Summary'],
                 orders: null,
-                url: '/api/new_order',
+               
                 pageParams: {},
                 OId: 0,
                 showModalContent: false,
                 mode: null,
                 modalItem: null,
                 page: 1,
-                businessTypes: []
+                businessTypes: [],
+                renewalStatus: null,
 
             
             }
         },
         methods: {
             fetchData() {
-                this.$scrollToTop();
                 this.$LIPS(true);
-                let { page, page_size } = this.$data;
-                get(
-                    this.url +`${!!this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
-          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
+                let param = {
+                    renewalList: 'true',
+                    page: this.pageParams.page,
+                    limit: this.pageParams.limit
+                }
+                if(this.renewal === true){
+                     get(
+                    this.url + queryParam(param)
                     )
                    .then(({ data }) => this.prepareList(data))
-                    .catch(() => Flash.setError("Error Preparing form"));
+                    .catch(() => Flash.setError("Error Preparing form"))
+                    .finally(()=> {
+                        this.$LIPS(false);
+                    });
+                }
+                else{
+                    delete param.renewalList;
+                get(
+                    this.url + queryParam(param)
+                    )
+                   .then(({ data }) => this.prepareList(data))
+                    .catch(() => Flash.setError("Error Preparing form"))
+                    .finally(() => {
+                        this.$LIPS(false);
+                    });
+                }
                 },
 
             
@@ -292,19 +354,7 @@ import {mapGetters, mapActions} from "vuex";
                 this.showModalContent = true;    
                 return $(`#viewStuffs`).modal('toggle');
             },
-            next(firstPage = null) {
-                if (this.pageParams.next_page_url) {
-                    this.page = firstPage ? firstPage : parseInt(this.page) + 1;
-                    this.fetchData();
-                    }
-                },
-
-            prev(lastPage = null) {
-                if (this.pageParams.prev_page_url) {
-                    this.page = lastPage ? lastPage : parseInt(this.page) - 1;
-                    this.fetchData();
-                    }
-                },
+           
 
              convertDate(date){
                 let utcDate = new Date(date).toUTCString();
@@ -314,6 +364,40 @@ import {mapGetters, mapActions} from "vuex";
             async getBusinessTypes(){
                 let types = await get('/api/business_type');
                 this.businessTypes = types.data.data.data;
+            },
+             async getRenewalStatus(){
+                let types = await get('/api/renewal-list-status');
+                this.renewalStatus = types.data.data;
+            },
+
+            submitFeedback(order){
+
+                this.$LIPS(true);
+
+                let data = {
+                    order_id: order.id,
+                    feedback: order.feedback,
+                    status: order.renewal_status,
+                    date: order.renewal_date
+                }
+                post('/api/new-order-renewal', data).then(res => {
+                    console.log(res);
+                   if (res.data.status === 'success') {                                        
+                                        this.$swal({
+                                            icon: 'success',
+                                            title: ''
+
+                                        });}
+                    order.feedback = '';
+                    order.renewal_status = '';
+                    order.renewal_date = '';
+                }).catch(err => {
+                    console.log(err);
+                }).finally(() => {
+                    this.$LIPS(false);
+                })
+
+                
             }
             
         },
@@ -321,6 +405,7 @@ import {mapGetters, mapActions} from "vuex";
             this.$prepareBranches();
             this.fetchData();
             this.getBusinessTypes();
+            this.getRenewalStatus();
         },
 
         

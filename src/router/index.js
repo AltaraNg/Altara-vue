@@ -291,7 +291,12 @@ const router = new VueRouter({
                     path: "all-overdue",
                     component: AllOverdue,
                     name: "all-overdue-dva"
-                }
+                },
+                {
+                    path: "customer/create",
+                    component: CustomerForm,
+                    meta: { mode: "register" }
+                },
             ]
         },
         {

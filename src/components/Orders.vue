@@ -450,6 +450,10 @@
                 get(url({query: {list, filterWithBranch}})).then(({data}) => {
                     if (list === 8) data.orders = data.orders.map(promiseCall => promiseCall.order);
                  this.prepareForm(data);
+                }).catch(err => {
+
+                }).finally(() => {
+                    this.$LIPS(false);
                 });
             },
 

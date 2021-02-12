@@ -56,6 +56,12 @@
                         url: 'reminder-list', title: 'Reminder list', url_c: 'View Reminder List',
                         desc: 'View Reminder List!',
                     },
+                    {
+                        url: 'customer/create',
+                        title: 'Customer Registration',
+                        url_c: 'Register new customer now!',
+                        desc: 'Registering new customers',
+                    }
                     
                     // TODO:: cleanup
                 ]

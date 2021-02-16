@@ -48,8 +48,8 @@
         </div>
                 
       </div>
-
-      <div class="mt-5 mb-3 attendance-head">
+      <div v-if="inventories.length > 0">
+      <div class="mt-5 mb-3 attendance-head" >
         <div class="w-100 my-5 mx-0 hr"></div>
         <div class="row px-4 pt-3 pb-4 text-center">
           <div class="col light-heading" style="max-width: 120px">S/N</div>
@@ -63,7 +63,7 @@
           class="mb-3 row attendance-item"
           :key="index"
           v-for="(inventory, index) in inventories"
-          v-if="inventories"
+          
         >
           <div class="col d-flex align-items-center" style="max-width: 120px">
             <span class="user mx-auto">{{ index + OId }}</span>
@@ -129,6 +129,10 @@
             <i class="fa fa-ban" aria-hidden="true"></i>
           </div>
         </div>
+      </div>
+      </div>
+      <div v-else class="mt-5 mb-3 attendance-head display-4">
+        <display-empty :name="'inventory'" />
       </div>
       <div class="modal fade repayment" id="viewInventory">
         <div class="modal-dialog" role="document">
@@ -307,6 +311,7 @@ import Flash from "../../../utilities/flash";
 import { mapActions, mapGetters } from "vuex";
 import Vue2Filters from "vue2-filters";
 import CustomHeader from "../../../components/customHeader";
+import DisplayEmpty from "../../../components/DisplayEmpty";
 import BasePagination from "../../../components/Pagination/BasePagination";
 import InventorySearch from "../../../components/InventorySearch";
 import ResueableSearch from '../../../components/ReusableSearch.vue';
@@ -318,7 +323,7 @@ export default {
     urlToFetchOrders: { default: "/api/inventory" },
   },
 
-  components: { CustomHeader, BasePagination, InventorySearch, ResueableSearch },
+  components: { CustomHeader, BasePagination, InventorySearch, ResueableSearch, DisplayEmpty },
 
   computed: { ...mapGetters(["getAuthUserDetails", "getBranches"]) },
 

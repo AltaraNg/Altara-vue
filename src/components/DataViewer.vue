@@ -316,7 +316,7 @@
         created() {
             this.$prepareStates();
             this.$prepareBranches();
-            // this.fetchIndexData();
+            this.fetchIndexData();
             $(document).on('click', 'tr', function () {
                 $('tr.current').removeClass('current');
                 $(this).addClass('current');
@@ -376,6 +376,39 @@
                             });
                         }
                         this.pageCount = Math.ceil(res.data.model.total/res.data.model.per_page);
+                        Vue.set(this.$data, 'model', res.data.model);
+                        Vue.set(this.$data, 'columns', res.data.columns);
+                        this.$scrollToTop();
+                        this.$LIPS(false);
+                    })
+            },
+            fetchIndexData() {
+                this.$LIPS(true);
+                $('.modal').modal('hide');
+                get(
+                    `${this.$route.meta.source}` +
+                    `?page=${this.query.page}` +
+                    `&column=${this.query.column}` +
+                    `&per_page=${this.query.per_page}` +
+                    `&direction=${this.query.direction}` +
+                    `&search_input=${this.query.search_input}` +
+                    `&search_column=${this.query.search_column}` +
+                    `&search_operator=${this.query.search_operator}`)
+                    .then(res => {
+                        let data = res.data.model.data;
+                        /*the state id for the branch fetched from the db is a number
+                        * hence the code below is used to get the state name
+                        * corresponding to the state id and display it
+                        * instead of showing state id as a number*/
+                        if (data.length) {
+                            data.forEach(curr => {
+                                if (data[0].state_id) curr.state_id =
+                                    this.$store.getters.getStates.find(obj => obj.id === curr.state_id).name;
+                                if (data[0].branch_id) curr.branch_id =
+                                    this.$store.getters.getBranches.find(obj => obj.id === curr.branch_id).name;
+                                if (this.isModel('customer')) curr.verification = this.$getCustomerApprovalStatus(curr.verification);
+                            });
+                        }
                         Vue.set(this.$data, 'model', res.data.model);
                         Vue.set(this.$data, 'columns', res.data.columns);
                         this.$scrollToTop();

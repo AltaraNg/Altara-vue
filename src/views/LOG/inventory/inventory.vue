@@ -428,7 +428,7 @@ export default {
     },
 
     prepareList(response) {
-      console.log(response)
+    
       let {
         current_page,
         first_page_url,

@@ -8,11 +8,15 @@
                 @input="searchEvent"
             />
             <div v-show="inputValue && apiLoaded" class="dropdown-list">
+                <div v-if="itemList.length === 0" class="dropdown-item">
+                    No Item to show!!
+                </div>
                 <div
                     @click="selectItem(item)"
                     v-for="item in itemList"
                     :key="item.id"
                     class="dropdown-item"
+                    v-else
                 >
                     {{
                         apiUrl === "/api/inventory"

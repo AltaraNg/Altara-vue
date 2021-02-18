@@ -306,6 +306,7 @@
     import OrderWithPromiseCall from '../../utilities/reminder';
     import ResueableSearch from '../../components/ReusableSearch.vue';
 import ConfirmModal from '../../components/modals/ConfirmModal.vue';
+import queryParam from '../../utilities/queryParam';
 
 
 
@@ -336,6 +337,7 @@ import ConfirmModal from '../../components/modals/ConfirmModal.vue';
                 date_to: null,
                 page: 1,
                 pageParams: {},
+                searchQuery: {},
                  limit: 10,
                 filters: [
                     {name: 'date from', model: 'date_from'},
@@ -366,10 +368,13 @@ import ConfirmModal from '../../components/modals/ConfirmModal.vue';
                 // this.$scrollToTop();
                 this.$LIPS(true);
                
-                let {page, limit} = this.$data;
-                await get(`${this.urlToFetchOrders}?days=${this.type === null ? 7 : this.type}`+`${!!this.pageParams.page ? `&page=${this.pageParams.page}` : ""}` +
-          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
-                )
+                let params = {
+                    days: this.type === null ? 7 : this.type,
+                    page: this.pageParams.page,
+                    limit: this.pageParams.limit,
+                    ...this.searchQuery
+                }
+                await get(this.urlToFetchOrders + queryParam(params))
                    .then(({data}) => this.prepareList(data))
                     .catch(() => Flash.setError('Error Preparing form'));
 
@@ -388,6 +393,9 @@ import ConfirmModal from '../../components/modals/ConfirmModal.vue';
                 let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
                 this.orders = data;
+                 if(response.queryParams !== undefined){
+        this.searchQuery = response.queryParams;
+      }
                 this.OId = from;
                 this.classAdd(this.modeType);
                 this.$LIPS(false);

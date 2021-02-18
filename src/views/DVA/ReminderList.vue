@@ -41,6 +41,7 @@
                      <div class="col light-heading" v-if="evalMode==='collection' || evalMode === 'recovery'">Visited?</div>
                     <div class="col light-heading" v-if="evalMode==='call' || evalMode === 'collection' || evalMode === 'recovery'">Feedback</div>
                     <div class="col light-heading" v-if="evalMode==='call'">Promise Date</div>
+                    <div class="col light-heading" v-if="evalMode==='recovery'">Action</div>
                    
                     
                 </div>
@@ -93,6 +94,10 @@
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" v-if="evalMode==='call'">
                             <input type="date" name="date" v-model="order.promise_date" class="form-control" required :disabled="order.isProcessed" v-validate="'required'"/>
+                        </div>
+
+                        <div class="col d-flex align-items-center justify-content-center" v-if="evalMode==='recovery'">
+                            <button class="bg-default btn" @click="confirmModal(order)" :disabled="order.status === 'Repossessed'">Repossess</button>
                         </div>
 
 
@@ -276,6 +281,9 @@
                 </base-pagination>
 
             </div>
+            <div>
+                <confirm-modal :show="showPrompt" @touched="repossess($event)"></confirm-modal>
+            </div>
 
 
 
@@ -287,17 +295,17 @@
 </template>
 <script>
     import Vue from 'vue';
-    import {get, post} from '../../utilities/api';
+    import {get, post, patch} from '../../utilities/api';
     import Flash from "../../utilities/flash";
     import {mapGetters, mapActions} from "vuex";
     import CustomHeader from '../../components/customHeader';
-    
-    import ReusableSearch from '../../components/ReusableSearch';
+    import confirmModal from '../../components/modals/ConfirmModal';
     import BasePagination from '../../components/Pagination/BasePagination';
     import Vue2Filters from 'vue2-filters';
     import NewOrderAmortization from "../../components/NewOrderAmortization"
     import OrderWithPromiseCall from '../../utilities/reminder';
     import ResueableSearch from '../../components/ReusableSearch.vue';
+import ConfirmModal from '../../components/modals/ConfirmModal.vue';
 
 
 
@@ -311,7 +319,7 @@
             
         },
 
-        components: {CustomHeader, BasePagination, NewOrderAmortization, ResueableSearch },
+        components: {CustomHeader, BasePagination, NewOrderAmortization, ResueableSearch, ConfirmModal},
 
         computed: {...mapGetters(['getBranches'])},
 
@@ -319,6 +327,8 @@
             return {
                 urlToFetchOrders: '/api/repayment_reminder',
                 formErrors: [],
+                selectedOrder: null,
+                showPrompt: false,
                 branch_id: '',
                 modalItem: null,    
                  OId: null,
@@ -415,6 +425,16 @@
                 this.message.sort((a,b) => {
                    return (a.id < b.id) ? -1 : 1
                 });
+            },
+
+            confirmModal(order){
+                if(this.showPrompt === true){
+                    this.showPrompt = false
+                }else{
+                this.showPrompt = true;
+
+                }
+                this.selectedOrder = order;
             },
 
              async getBusinessType(){
@@ -516,6 +536,32 @@
                     }
                     
                 });
+            },
+            repossess(elem){
+                if(elem) {
+                    //send the request
+                    this.$LIPS(true);
+                    patch(`/api/new-order/${this.selectedOrder.id}/repossess`).then((res) => {
+                        
+                        this.fetchData();
+                         this.$swal({
+                                                              icon: 'success',
+                                            title: "Product successfully Repossessed and Order Closed!!"
+
+                                        });
+                    }).catch((err) => {
+                        Flash.setError(err)
+                    }).finally(() => {
+                        this.$LIPS(false);
+                    })
+
+                }
+                else{
+                    //close modal
+                    
+                    
+                }
+                this.showPrompt = false;
             }
         },
         created(){
@@ -539,7 +585,7 @@
                 else if(modeType === 'first_collection' || modeType === 'second_collection' || modeType === 'third_collection'){
                     this.evalMode = 'collection';
                 }
-                else if(modeType === 'first_recovery' || modeType === 'second_recovery' || modeType === 'third_recovery'){
+                else if(modeType === 'first_recovery' || modeType === 'second_recovery' || modeType === 'third_recovery' || modeType === 'recovery'){
                     this.evalMode = 'recovery';
                 }
 

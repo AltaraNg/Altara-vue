@@ -542,8 +542,13 @@ import ConfirmModal from '../../components/modals/ConfirmModal.vue';
                     //send the request
                     this.$LIPS(true);
                     patch(`/api/new-order/${this.selectedOrder.id}/repossess`).then((res) => {
-                        console.log(res.data);
+                        
                         this.fetchData();
+                         this.$swal({
+                                                              icon: 'success',
+                                            title: "Product successfully Repossessed and Order Closed!!"
+
+                                        });
                     }).catch((err) => {
                         Flash.setError(err)
                     }).finally(() => {

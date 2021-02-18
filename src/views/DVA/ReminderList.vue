@@ -319,7 +319,7 @@ import ConfirmModal from '../../components/modals/ConfirmModal.vue';
             
         },
 
-        components: {CustomHeader, BasePagination, NewOrderAmortization, ResueableSearch, ConfirmModal, ConfirmModal },
+        components: {CustomHeader, BasePagination, NewOrderAmortization, ResueableSearch, ConfirmModal},
 
         computed: {...mapGetters(['getBranches'])},
 
@@ -559,7 +559,7 @@ import ConfirmModal from '../../components/modals/ConfirmModal.vue';
                 else{
                     //close modal
                     
-                    console.log('I am here')
+                    
                 }
                 this.showPrompt = false;
             }

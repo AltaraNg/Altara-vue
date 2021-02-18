@@ -9,7 +9,7 @@
             />
             <div v-show="inputValue && apiLoaded" class="dropdown-list">
                 <div v-if="itemList.length === 0" class="dropdown-item">
-                    No Item to show!!
+                    Inventory not available!!
                 </div>
                 <div
                     @click="selectItem(item)"

@@ -116,15 +116,19 @@ export default {
       if(this.searchQuery.branch === 'all'){
         this.searchQuery.branch = '';
       }
+     
       get(this.url + queryParam(this.searchQuery)).then(response => {
         if(this.searchQuery.days !== undefined){
           this.$emit("childToParent", {
             data: response.data.data,
-            days: this.searchQuery.days
+            days: this.searchQuery.days,
+            queryParams: this.searchQuery
           });
         }
         else{
-          this.$emit("childToParent", response.data);        
+          this.$emit("childToParent", {data : response.data.data,
+          queryParams: this.searchQuery
+          });        
         }
         
         

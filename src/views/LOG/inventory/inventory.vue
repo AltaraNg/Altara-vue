@@ -307,6 +307,8 @@
 import Vue from "vue";
 import { get, post } from "../../../utilities/api";
 import Flash from "../../../utilities/flash";
+import queryParam from '../../../utilities/queryParam';
+
 
 import { mapActions, mapGetters } from "vuex";
 import Vue2Filters from "vue2-filters";
@@ -335,6 +337,7 @@ export default {
       showProductTransfer: false,
       pageParams: {},
       page_size: 10,
+      searchQuery: {},
       products: [],
       suppliers: [],
       date_from: null,
@@ -409,10 +412,13 @@ export default {
     fetchData() {
       
       this.$LIPS(true);
-      let { page, page_size } = this.$data;
+      let param = {                    
+                    page: this.pageParams.page,
+                    limit: this.pageParams.limit,
+                    ...this.searchQuery
+                }
       get(
-        this.urlToFetchOrders +`${!!this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
-          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
+        this.urlToFetchOrders + queryParam(param)
       )
         .then(({ data }) => this.prepareList(data))
         .catch(() => Flash.setError("Error Preparing form"))
@@ -422,6 +428,7 @@ export default {
     },
 
     prepareList(response) {
+      console.log(response)
       let {
         current_page,
         first_page_url,
@@ -447,6 +454,9 @@ export default {
         total,
         prev_page_url,
       });
+      if(response.queryParams !== undefined){
+        this.searchQuery = response.queryParams;
+      }
       this.inventories = data;
       this.OId = from;
       this.$LIPS(false);

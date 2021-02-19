@@ -74,8 +74,8 @@
                     <tr>
                       <th>Actual Amount Paid</th>
                       <td
-                        v-for="armo in amortizationData"
-                        @click="updateAmmo(armo)"
+                        v-for="(armo, index) in amortizationData"
+                        @click="updateAmmo(armo, index)"
                       >{{$formatCurrency(armo.actual_amount)}}</td>
                     </tr>
                   </tbody>
@@ -196,6 +196,7 @@ export default {
     data(){
         return {
           actual_amount: null,
+          ammoIndex: null,
           completed: null,
           ammo_item: null,
           newOrderItem:{},
@@ -238,9 +239,10 @@ this.$emit("childToParent", res.data);
             this.$emit('preparePayments');
         },
         
-        updateAmmo(armo){
+        updateAmmo(armo, index){
           this.showModal = true;
           this.ammo_item = armo;
+          this.ammoIndex = index
           return $(`#viewEdit`).modal("toggle");
         },
         save(){
@@ -254,12 +256,15 @@ this.$emit("childToParent", res.data);
               icon: 'success',
               title: 'Payment Updated Successfully'
               });
+              this.amortizationData[this.ammoIndex] = res.data.data;
+
               this.$LIPS(false); 
 
           }).catch(err => {
             Flash.setError("Unable to update payment")
           }).finally(() => {
-             return $(`#viewEdit`).modal("toggle");
+             $(`#viewEdit`).modal("toggle");
+             this.showModal = false;
              
           })
          

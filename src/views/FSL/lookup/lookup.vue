@@ -100,7 +100,7 @@
                 >{{$formatCurrency(order.product_price)}}</div>
                 <div
                   class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
-                >{{'N/A'}}</div>
+                >{{order.sales_type.name}}</div>
                 <div
                   class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
                 >{{$formatCurrency(order.down_payment)}}</div>
@@ -510,7 +510,7 @@ export default {
         "Order No.",
         "Product Name",
         "Total Product Price",
-        "Percentage",
+        "Type",
         "Down Payment",
         "Repayment Plans",
       ],

@@ -19,9 +19,7 @@
                     v-else
                 >
                     {{
-                        apiUrl === "/api/inventory"
-                            ? `${item.product_name}   ${item.inventory_sku}`
-                            : item.name
+                        formatInput(item)
                     }}
                 </div>
             </div>
@@ -49,12 +47,7 @@ export default {
 
     methods: {
         selectItem(data) {
-         if (this.apiUrl === "/api/inventory") {
-                 this.inputValue = `${data.product_name}   ${data.inventory_sku}`;
-            } else {
-                this.inputValue =data.name;
-            }
-
+            this.inputValue = this.formatInput(data);
             this.apiLoaded = false;
             this.$emit("childToParent", data);
         },
@@ -67,7 +60,7 @@ export default {
             if (this.apiUrl === "/api/inventory") {
                 query = {
                     productName: this.inputValue,
-                    isActive:true,
+                    salesLogger:true,
 
                 };
             }
@@ -83,6 +76,22 @@ export default {
             } catch (err) {
                 this.$displayErrorMessage(err);
             }
+        },
+        formatInput(item){
+            if(item !== undefined){
+            let result = '';
+            if(this.apiUrl !== "/api/inventory"){
+                result = item.name                
+            }
+            else{               
+                result =  `${item.product_name}   ${item.inventory_sku}`
+                if(item.inventory_status.status === 'Repossessed'){
+                    result = result + `   Repossessed`
+                }
+            }
+            return result;}
+
+
         }
     }
 };

@@ -346,7 +346,7 @@ export default {
       searchFilter: {},
       filters: [],
       transferList: [],
-      inventories: null,
+      inventories: [],
       inventoryItem: null,
       response: {},
       transferItem: {},

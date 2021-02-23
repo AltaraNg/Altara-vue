@@ -16,14 +16,14 @@
                         <div class="form-group col-md-6 col-12 float-left px-0 px-md-3">
                             <label>Product feature</label>
                             <input class="form-control" name="feature" placeholder="product feature"
-                                   type="text" v-model="form.feature" v-validate="'required|max:50'">
+                                   type="text" :disabled="mode === 'edit'" v-model="form.feature" v-validate="'required|max:50'">
                             <small v-if="errors.first('feature')">{{ errors.first('feature') }}</small>
                         </div>
                         <div class="spaceBetween mb-md-2 mb-0"></div>
                         <div class="form-group col-md-6 col-12 ">
                             <label for="brand" class="form-control-label">Brand </label>
                             <br>
-                            <select name="brand" id="brand" v-model="form.brand_id" class="custom-select" data-vv-as="brand id">
+                            <select name="brand" id="brand" v-model="form.brand_id" class="custom-select" data-vv-as="brand id" :disabled="mode === 'edit'">
                                 <option disabled value="" >--select--</option>
                                 <option
                                     :value="brand.id"
@@ -35,7 +35,7 @@
                         <div class="form-group col-md-6 col-12 float-left px-0 px-md-3">
                             <label class="form-control-label" for="category">Category</label>
                             <br>
-                            <select name="category" id="category" v-model="form.category_id" class="custom-select" data-vv-as="category id">
+                            <select name="category" id="category" v-model="form.category_id" class="custom-select" data-vv-as="category id" :disabled="mode === 'edit'">
                                 <option disabled value="">--select--</option>
                                 <option
                                     :value="category.id"
@@ -56,7 +56,7 @@
                         <div class="form-group col-md-6 col-12 ">
                             <label for="product_type" class="form-control-label">Product Type </label>
                             <br>
-                            <select name="product_type" id="product_type" v-model="form.product_type_id" class="custom-select" >
+                            <select name="product_type" id="product_type" v-model="form.product_type_id" class="custom-select" :disabled="mode === 'edit'">
                                 <option value="all" selected="selected" >--select--</option>
                                 <option
                                     :value="type.id"

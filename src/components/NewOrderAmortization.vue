@@ -20,6 +20,7 @@
                       <td>Name</td>
                       <td>Order Id</td>
                       <td>Product</td>
+                      <td>Owner</td>
                       <td>Serial No</td>
                       <th>Branch</th>
                       <th>Status</th>
@@ -28,6 +29,7 @@
                       <td class="font-weight-bold">{{`${customer.first_name} ${customer.last_name}`}}</td>
                       <th>{{order.order_number}}</th>
                       <th>{{order.product.name}}</th>
+                      <th>{{order.owner}}</th>                      
                       <th>{{order.serial_number}}</th>
                       <td class="font-weight-bold">{{order.branch}}</td>
                       <td class="font-wight-bold td-back">ok</td>
@@ -74,8 +76,8 @@
                     <tr>
                       <th>Actual Amount Paid</th>
                       <td
-                        v-for="armo in amortizationData"
-                        @click="updateAmmo(armo)"
+                        v-for="(armo, index) in amortizationData"
+                        @click="updateAmmo(armo, index)"
                       >{{$formatCurrency(armo.actual_amount)}}</td>
                     </tr>
                   </tbody>
@@ -196,6 +198,7 @@ export default {
     data(){
         return {
           actual_amount: null,
+          ammoIndex: null,
           completed: null,
           ammo_item: null,
           newOrderItem:{},
@@ -238,9 +241,10 @@ this.$emit("childToParent", res.data);
             this.$emit('preparePayments');
         },
         
-        updateAmmo(armo){
+        updateAmmo(armo, index){
           this.showModal = true;
           this.ammo_item = armo;
+          this.ammoIndex = index
           return $(`#viewEdit`).modal("toggle");
         },
         save(){
@@ -254,12 +258,15 @@ this.$emit("childToParent", res.data);
               icon: 'success',
               title: 'Payment Updated Successfully'
               });
+              this.amortizationData[this.ammoIndex] = res.data.data;
+
               this.$LIPS(false); 
 
           }).catch(err => {
             Flash.setError("Unable to update payment")
           }).finally(() => {
-             return $(`#viewEdit`).modal("toggle");
+             $(`#viewEdit`).modal("toggle");
+             this.showModal = false;
              
           })
          

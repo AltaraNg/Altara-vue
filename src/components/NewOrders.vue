@@ -293,6 +293,7 @@ import Index from '../views/ACC/index.vue';
                 page: 1,
                 businessTypes: [],
                 renewalStatus: null,
+                searchQuery: {},
 
             
             }
@@ -303,7 +304,8 @@ import Index from '../views/ACC/index.vue';
                 let param = {
                     renewalList: 'true',
                     page: this.pageParams.page,
-                    limit: this.pageParams.limit
+                    limit: this.pageParams.limit,
+                    ...this.searchQuery
                 }
                 if(this.renewal === true){
                      get(
@@ -333,6 +335,9 @@ import Index from '../views/ACC/index.vue';
                 let {current_page, first_page_url, from, last_page, last_page_url, data, per_page, next_page_url, to, total, prev_page_url} = response.data;
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
                 this.orders = data;
+                 if(response.queryParams !== undefined){
+        this.searchQuery = response.queryParams;
+      }
                 this.OId = from;
                 this.$LIPS(false);
 

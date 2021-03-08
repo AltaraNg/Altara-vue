@@ -196,7 +196,7 @@
                     {name: 'date from', model: 'date_from'},
                     {name: 'date to', model: 'date_to'}
                 ],
-                products: null,
+                products: {},
                 productItem: null,
                 response: {},
                 show: false,

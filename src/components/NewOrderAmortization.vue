@@ -101,7 +101,7 @@
                       <td>Total After Discount</td>
                       <th>{{order.discountedTotal || 'null'}}</th>
                       <td>Total Debt</td>
-                      <th>{{order.outstandingDebt || 'null'}}</th>
+                      <th>{{$formatCurrency(calcDebt(order.amortization)) || 'null'}}</th>
                     </tr>
                     <tr>
                       <td class="text-left">Down Payment</td>
@@ -274,10 +274,13 @@ this.$emit("childToParent", res.data);
         },
         calcDebt(amortization){
                 // * Assumed equal distribution of amortization
-                let res = amortization.filter(amor => {
+                if(amortization[0] !== undefined){
+                  let res = amortization.filter(amor => {
                     return amor.actual_amount === 0
                 });
                 return res.length * amortization[0].expected_amount;
+                }
+                
             },
 
     },

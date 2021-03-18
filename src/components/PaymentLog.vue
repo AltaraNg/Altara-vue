@@ -618,6 +618,45 @@ export default {
       }
     },
 
+        async getUsers(salesCat){
+        this.$LIPS(true);
+          
+          await get(`/api/sales-category/${salesCat}/roles`).then(res => {
+            this.users = this.mergeArrays(res.data.data);
+          });
+          
+          this.$LIPS(false);
+        },
+        mergeArrays(parent){
+          let result = [];
+          parent.forEach(elem => {
+            result = result.concat(elem.active_users);
+          })
+          return result;
+        },
+        async getBusinessTypes() {
+            try {
+                const fetchBusinessTypes = await get(
+                    this.apiUrls.businessTypes
+                );
+                this.businessTypes = fetchBusinessTypes.data.data.data;
+                this.businessTypes = this.businessTypes.filter(item => {
+                  return item.name.includes("Altara Credit")
+                });
+            } catch (err) {
+                this.$displayErrorMessage(err);
+            }
+        },
+        async getDiscounts(){
+            try{
+                const fetchDiscounts = await get(
+                    this.apiUrls.discounts
+                );
+                this.discounts = fetchDiscounts.data.data.data;
+            }catch(err){
+                this.$displayErrorMessage(err);
+            }
+        },
     async getUsers(salesCat) {
       this.$LIPS(true);
 
@@ -630,7 +669,7 @@ export default {
     mergeArrays(parent) {
       let result = [];
       parent.forEach((elem) => {
-        result = result.concat(elem.users);
+        result = result.concat(elem.active_users);
       });
       return result.sort((a, b) =>
         a["full_name"].localeCompare(b["full_name"])

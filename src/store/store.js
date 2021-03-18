@@ -26,10 +26,10 @@ export const store = new Vuex.Store({
         branches: null,
         paymentMethods: null,
         lifestyleBranches: [8]
-            /*note this is different from other number used in the array
-            below, this one is the id of the lifestyle branches
-            the others below are role id for users*/
-            ,
+        /*note this is different from other number used in the array
+        below, this one is the id of the lifestyle branches
+        the others below are role id for users*/
+        ,
         loader: true,
         ProfileAccess: [],
         ProfileEditAccess: [],
@@ -41,11 +41,11 @@ export const store = new Vuex.Store({
         /*object for access controls*/
         DSALead: [...admin, 15],
         DSACaptain: [...admin, 15, 17, 29],
-        DSAAccess: [...admin, 15, 17, 18, 29],
+        DSAAccess: [...admin, 15, 17, 18, 29, 44, 45],
         DVALead: [...admin, 13, 16],
         DVAAccess: [...admin, 13, 16, 21, 22, 23],
         HRMAccess: [...admin, 6, 7],
-        peoplesOps: [...admin, 6, 7, ],
+        peoplesOps: [...admin, 6, 7,],
         FSLLead: [...admin, 11],
         supervisor: [...admin, 11, 14],
         FSLAccess: [...admin, 11, 14, 19],
@@ -107,6 +107,6 @@ export const store = new Vuex.Store({
 
 
         toggleLoader: ({ commit }, bool) => commit('TOGGLE_LOADER', bool)
-            // TODO:: cleanup
+        // TODO:: cleanup
     }
 });

@@ -1,228 +1,214 @@
 <template>
-    <div style="margin-left: 5rem; margin-right: 5rem">
-        <div class="row">
-            <div class="col-md">
-                <div class="card">
-                    <form
-                        class="card-body"
-                        @submit.prevent="previewAmortization"
-                    >
-                    <div class="row">
-                        <div class="form-group align-self-left text-capitalize col" >
-                            <label for="amount" class="form-control-label w-100"
-                                >Product Name
-                                <span class="serial" @click="toggleSerial()">{{ serial === true ? 'Remove' : 'Add'}} serial number</span>
-                                <span :class="{'renewal': eligible}" v-if="eligible">Entitled to renewal discount!!!</span>
-                                </label>
-                            <AutoComplete
-                                v-on:childToParent="selectedItem"
-                                :apiUrl="apiUrls.getProduct"
-                            />
-                        </div>
+  <div style="margin-left: 5rem; margin-right: 5rem">
+    <div class="row">
+      <div class="col-md">
+        <div class="card">
+          <form class="card-body" @submit.prevent="previewAmortization">
+            <div class="row">
+              <div class="form-group align-self-left text-capitalize col">
+                <label for="amount" class="form-control-label w-100"
+                  >Product Name
+                  <span class="serial" @click="toggleSerial()"
+                    >{{ serial === true ? "Remove" : "Add" }} serial
+                    number</span
+                  >
+                  <span :class="{ renewal: eligible }" v-if="eligible"
+                    >Entitled to renewal discount!!!</span
+                  >
+                </label>
+                <AutoComplete
+                  v-on:childToParent="selectedItem"
+                  :apiUrl="apiUrls.getProduct"
+                />
+              </div>
 
-                        <div class="col form-group" v-if="serial">
-                          <label for="amount" class="form-control-label w-100">Serial number (Optional)</label>
-                          <input v-model="salesLogForm.serial_number"  name="serial number" class="custom-select w-100"/>
-                        </div>
+              <div class="col form-group" v-if="serial">
+                <label for="amount" class="form-control-label w-100"
+                  >Serial number (Optional)</label
+                >
+                <input
+                  v-model="salesLogForm.serial_number"
+                  name="serial number"
+                  class="custom-select w-100"
+                />
+              </div>
 
-                        <div class="col form-group">
-                                <label for="amount" class="form-control-label"
-                                    >Sales Category</label
-                                >
-                                <select
-                                    @change="getUsers(salesLogForm.sales_category_id)"                                    
-                                    class="custom-select w-100"
-                                    v-model="salesLogForm.sales_category_id"
-                                    v-validate="'required'"
-                                >
-                                    <option disabled selected="selected">
-                                        Sales Category
-                                    </option>                                    
-                                    <option
-                                        :value="type.id"
-                                        :key="type.id"
-                                        v-for="type in salesCategories"
-                                    >
-                                        {{ type.name }}
-                                    </option>
-                                </select>
-                            </div>
+              <div class="col form-group">
+                <label for="amount" class="form-control-label"
+                  >Sales Category</label
+                >
+                <select
+                  @change="getUsers(salesLogForm.sales_category_id)"
+                  class="custom-select w-100"
+                  v-model="salesLogForm.sales_category_id"
+                  v-validate="'required'"
+                >
+                  <option disabled selected="selected">Sales Category</option>
+                  <option
+                    :value="type.id"
+                    :key="type.id"
+                    v-for="type in salesCategories"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
 
-                            <div class="col form-group" >
-                                <label for="amount" class="form-control-label"
-                                    >Owner</label
-                                >
-                                <select                                                                      
-                                    class="custom-select w-100"
-                                    v-model="salesLogForm.owner_id"
-                                    v-validate="'required'"
-                                >
-                                    <option disabled selected="selected">
-                                        Owner
-                                    </option>
-                                    <option  selected="selected" value="">
-                                        None
-                                    </option>
-                                    <option
-                                        :value="user.id"
-                                        :key="user.id"
-                                        v-for="user in users"
-                                    >
-                                        {{ user.full_name }}
-                                    </option>
-                                </select>
-                            </div>
-                    </div>
-                        <div class="row">
-                            <div class="col form-group">
-                                <label for="amount" class="form-control-label"
-                                    >Repayment Cycle</label
-                                >
-                                <select
-                                    class="custom-select w-100"
-                                    v-model="salesLogForm.repayment_cycle_id"
-                                    v-validate="'required'"
-                                    @change="customDate($event)"
-                                >
-                                    <option disabled selected="selected"
-                                        >Repayment Cycle</option
-                                    >
-                                    <option
-                                        :value="type"
-                                        :key="type.id"
-                                        v-for="type in repaymentCyclesopt"
-                                    >
-                                        {{ type.name }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div v-if="customDateToggle" class="col form-group">
-                                <label
-                                    for="custom-date"
-                                    class="form-control-label"
-                                    >Custom Date</label
-                                >
-                                <input
-                                    class="form-control w-100"
-                                    type="number"
-                                    min="1"
-                                    max="31"
-                                    v-model="salesLogForm.custom_date"
-                                    v-validate="'required'"
-                                />
-                            </div>
-                            <div class="col form-group">
-                                <label for="amount" class="form-control-label"
-                                    >Repayment Duration</label
-                                >
-                                <select
-                                    @change="getCalc()"
-                                    class="custom-select w-100"
-                                    v-model="salesLogForm.repayment_duration_id"
-                                    v-validate="'required'"
-                                >
-                                    <option disabled selected="selected">
-                                        Repayment Duration
-                                    </option>
-                                    <option
-                                        :value="type"
-                                        :key="type.id"
-                                        v-for="type in repaymentDuration"
-                                    >
-                                        {{ type.name }}
-                                    </option>
-                                </select>
-                            </div>
-                            
-                            <div class="col form-group">
-                                <label for="amount" class="form-control-label"
-                                    >Downpayment Rates</label
-                                >
-                                <select
-                                    class="custom-select w-100"
-                                    v-model="salesLogForm.payment_type_id"
-                                    v-validate="'required'"
-                                    @change="getCalc()"
-                                >
-                                    <option disabled selected="selected">
-                                        Downpayment Rates
-                                    </option>
-                                    <option
-                                        :value="type"
-                                        :key="type.id"
-                                        v-for="type in downPaymentRates"
-                                    >
-                                        {{ type.name }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col form-group">
-                                <label for="amount" class="form-control-label"
-                                    >Business Type</label
-                                >
-                                <select
-                                    class="custom-select w-100"
-                                    v-model="salesLogForm.business_type_id"
-                                    v-validate="'required'"
-                                    @change="getCalc()"
-                                >
-                                    <option disabled selected="selected"
-                                        >Business Type</option
-                                    >
-                                    <option
-                                        :value="type.id"
-                                        :key="type.id"
-                                        v-for="type in businessTypes"
-                                    >
-                                        {{ type.name }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col form-group">
-                                <label for="amount" class="form-control-label"
-                                    >Payment Method</label
-                                >
-                                <select
-                                    class="custom-select w-100"
-                                    v-model="salesLogForm.payment_method_id"
-                                    v-validate="'required'"
-                                    @change="getCalc()"
-                                >
-                                    <option disabled selected="selected"
-                                        >Payment Method</option
-                                    >
-                                    <option
-                                        :value="type.id"
-                                        :key="type.id"
-                                        v-for="type in getPaymentMethods.filter(element => element.name !== 'direct-debit')"
-                                    >
-                                        {{ type.name }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col form-group">
-                                <label for="amount" class="form-control-label"
-                                    >Bank</label
-                                >
-                                <select
-                                    class="custom-select w-100"
-                                    v-model="salesLogForm.bank_id"
-                                    v-validate="'required'"
-                                    @change="getCalc()"
-                                >
-                                    <option disabled selected="selected"
-                                        >Bank</option
-                                    >
-                                    <option
-                                        :value="type.id"
-                                        :key="type.id"
-                                        v-for="type in getBanks"
-                                    >
-                                        {{ type.name }}
-                                    </option>
-                                </select>
-                            </div>
-                            <!-- <div class="col form-group">
+              <div class="col form-group">
+                <label for="amount" class="form-control-label">Owner</label>
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.owner_id"
+                  v-validate="'required'"
+                >
+                  <option disabled selected="selected">Owner</option>
+                  <option selected="selected" value="">None</option>
+                  <option :value="user.id" :key="user.id" v-for="user in users">
+                    {{ user.full_name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col form-group">
+                <label for="amount" class="form-control-label"
+                  >Repayment Cycle</label
+                >
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.repayment_cycle_id"
+                  v-validate="'required'"
+                  @change="customDate($event)"
+                >
+                  <option disabled selected="selected">Repayment Cycle</option>
+                  <option
+                    :value="type"
+                    :key="type.id"
+                    v-for="type in repaymentCyclesopt"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
+              <div v-if="customDateToggle" class="col form-group">
+                <label for="custom-date" class="form-control-label"
+                  >Custom Date</label
+                >
+                <input
+                  class="form-control w-100"
+                  type="number"
+                  min="1"
+                  max="31"
+                  v-model="salesLogForm.custom_date"
+                  v-validate="'required'"
+                />
+              </div>
+              <div class="col form-group">
+                <label for="amount" class="form-control-label"
+                  >Repayment Duration</label
+                >
+                <select
+                  @change="getCalc()"
+                  class="custom-select w-100"
+                  v-model="salesLogForm.repayment_duration_id"
+                  v-validate="'required'"
+                >
+                  <option disabled selected="selected">
+                    Repayment Duration
+                  </option>
+                  <option
+                    :value="type"
+                    :key="type.id"
+                    v-for="type in repaymentDuration"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col form-group">
+                <label for="amount" class="form-control-label"
+                  >Downpayment Rates</label
+                >
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.payment_type_id"
+                  v-validate="'required'"
+                  @change="getCalc()"
+                >
+                  <option disabled selected="selected">
+                    Downpayment Rates
+                  </option>
+                  <option
+                    :value="type"
+                    :key="type.id"
+                    v-for="type in downPaymentRates"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="col form-group">
+                <label for="amount" class="form-control-label"
+                  >Business Type</label
+                >
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.business_type_id"
+                  v-validate="'required'"
+                  @change="getCalc()"
+                >
+                  <option disabled selected="selected">Business Type</option>
+                  <option
+                    :value="type.id"
+                    :key="type.id"
+                    v-for="type in businessTypes"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="col form-group">
+                <label for="amount" class="form-control-label"
+                  >Payment Method</label
+                >
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.payment_method_id"
+                  v-validate="'required'"
+                  @change="getCalc()"
+                >
+                  <option disabled selected="selected">Payment Method</option>
+                  <option
+                    :value="type.id"
+                    :key="type.id"
+                    v-for="type in getPaymentMethods.filter(
+                      (element) => element.name !== 'direct-debit'
+                    )"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="col form-group">
+                <label for="amount" class="form-control-label">Bank</label>
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.bank_id"
+                  v-validate="'required'"
+                  @change="getCalc()"
+                >
+                  <option disabled selected="selected">Bank</option>
+                  <option
+                    :value="type.id"
+                    :key="type.id"
+                    v-for="type in getBanks"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
+              <!-- <div class="col form-group">
                     <label for="amount" class="form-control-label">Down Payment</label>
                     <input class="w-100 custom-select" name="amount" v-model="salesLogForm.down_payment" v-validate="'required'" type="number" placeholder="Enter Amount"/>
               </div>-->
@@ -351,110 +337,105 @@ import calculate from "../utilities/calculator";
 import Flash from "../utilities/flash";
 
 export default {
-    props: { customerId: null, customer: null },
-    components: { AutoComplete },
-    data() {
-        return {
-            error: {},
-            users: [],
-            product: "",
-            salesLogForm: {},
-            repaymentDuration: [],
-            repaymentCyclesopt: [],
-            downPaymentRates: [],
-            businessTypes: [],
-            amortization: [],
-            calculation: [],
-            salesCategories: [],
-            test0: true,
-            test1: true,
-            apiUrls: {
-                repaymentDuration: `/api/repayment_duration`,
-                repaymentCycles: `/api/repayment_cycle`,
-                downPaymentRates: `/api/down_payment_rate`,
-                businessTypes: `/api/business_type`,
-                previewAmortization: `/api/amortization/preview`,
-                createOrder: `/api/new_order`,
-                getCalculation: `/api/price_calculator`,
-                getProduct: `/api/inventory`,
-                discounts: `/api/discount`,
-                salesCategoryUrl: `/api/sales_category`
-               
-            },
-            inputValue: "",
-            selectedProduct: {},
-            fPayment: "",
-            pPrice: "",
-            rPayment: "",
-            repaymentCircle: "",
-            rDuration: "",
-            customDateToggle: false,
-            discounts: null,
-            eligible: false,
-            serial: false
-            
-        };
-    },
-    async mounted() {
-        this.checkIfDiscountElig();
-        await this.getRepaymentDuration();
-        await this.getSalesCategory();
-        await this.getRepaymentCycles();
-        await this.getDownPaymentRates();
-        await this.getBusinessTypes();
-        await this.getCalculation();
-        await this.getDiscounts();
-        
-        
-       
-    },
-    computed: {
-        ...mapGetters(["getPaymentMethods", "getBanks"])
-    },
-    methods: {
-        customDate(event) {
-            this.salesLogForm.repayment_cycle_id.name === "custom"
-                ? (this.customDateToggle = true)
-                : (this.customDateToggle = false);
+  props: { customerId: null, customer: null },
+  components: { AutoComplete },
+  data() {
+    return {
+      error: {},
+      users: [],
+      product: "",
+      salesLogForm: {},
+      repaymentDuration: [],
+      repaymentCyclesopt: [],
+      downPaymentRates: [],
+      businessTypes: [],
+      amortization: [],
+      calculation: [],
+      salesCategories: [],
+      test0: true,
+      test1: true,
+      apiUrls: {
+        repaymentDuration: `/api/repayment_duration`,
+        repaymentCycles: `/api/repayment_cycle`,
+        downPaymentRates: `/api/down_payment_rate`,
+        businessTypes: `/api/business_type`,
+        previewAmortization: `/api/amortization/preview`,
+        createOrder: `/api/new_order`,
+        getCalculation: `/api/price_calculator`,
+        getProduct: `/api/inventory`,
+        discounts: `/api/discount`,
+        salesCategoryUrl: `/api/sales_category`,
+      },
+      inputValue: "",
+      selectedProduct: {},
+      fPayment: "",
+      pPrice: "",
+      rPayment: "",
+      repaymentCircle: "",
+      rDuration: "",
+      customDateToggle: false,
+      discounts: null,
+      eligible: false,
+      serial: false,
+    };
+  },
+  async mounted() {
+    this.checkIfDiscountElig();
+    await this.getRepaymentDuration();
+    await this.getSalesCategory();
+    await this.getRepaymentCycles();
+    await this.getDownPaymentRates();
+    await this.getBusinessTypes();
+    await this.getCalculation();
+    await this.getDiscounts();
+  },
+  computed: {
+    ...mapGetters(["getPaymentMethods", "getBanks"]),
+  },
+  methods: {
+    customDate(event) {
+      this.salesLogForm.repayment_cycle_id.name === "custom"
+        ? (this.customDateToggle = true)
+        : (this.customDateToggle = false);
 
-            this.getCalc();
-        },
-        async logSale() {
-            this.salesLogForm.customer_id = this.customerId;
-            let renewal = '';
-            this.eligible? renewal = this.discounts.find(item => {
-                return item.name === 'renewal';
-            }).id : renewal = '';
-            const data = {
-                customer_id: this.customerId,
-                inventory_id: this.selectedProduct.id,
-                repayment_duration_id: this.salesLogForm.repayment_duration_id
-                    .id,
-                repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
-                business_type_id: this.salesLogForm.business_type_id,
-                branch_id: localStorage.getItem("branch_id"),
-                down_payment: this.fPayment,
-                custom_date: this.salesLogForm.custom_date,
-                repayment: this.rPayment,
-                bank_id: this.salesLogForm.bank_id,
-                product_price: this.$formatMoney(this.pPrice),
-                payment_type_id: this.salesLogForm.payment_type_id.id,
-                payment_method_id: this.salesLogForm.payment_method_id,
-                sales_category_id: this.salesLogForm.sales_category_id,
-                owner_id: this.salesLogForm.owner_id,
-                serial_number: this.salesLogForm.serial_number
-                
-            };
-            if(this.eligible){
-                data.discount = [renewal]
-            }
-            this.$validator.validateAll().then(result => {
-                if (result) {
-                    this.$LIPS(true);
-                    post(this.apiUrls.createOrder, data)
-                        .then(res => {
-                            this.$LIPS(false);
-                            $(`#amortizationPreview`).modal("toggle");
+      this.getCalc();
+    },
+    async logSale() {
+      this.salesLogForm.customer_id = this.customerId;
+      let renewal = "";
+      this.eligible
+        ? (renewal = this.discounts.find((item) => {
+            return item.name === "renewal";
+          }).id)
+        : (renewal = "");
+      const data = {
+        customer_id: this.customerId,
+        inventory_id: this.selectedProduct.id,
+        repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
+        repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
+        business_type_id: this.salesLogForm.business_type_id,
+        branch_id: localStorage.getItem("branch_id"),
+        down_payment: this.fPayment,
+        custom_date: this.salesLogForm.custom_date,
+        repayment: this.rPayment,
+        bank_id: this.salesLogForm.bank_id,
+        product_price: this.$formatMoney(this.pPrice),
+        payment_type_id: this.salesLogForm.payment_type_id.id,
+        payment_method_id: this.salesLogForm.payment_method_id,
+        sales_category_id: this.salesLogForm.sales_category_id,
+        owner_id: this.salesLogForm.owner_id,
+        serial_number: this.salesLogForm.serial_number,
+      };
+      if (this.eligible) {
+        data.discount = [renewal];
+      }
+      this.$validator.validateAll().then((result) => {
+        if (result) {
+          this.$LIPS(true);
+          post(this.apiUrls.createOrder, data)
+            .then((res) => {
+              this.$LIPS(false);
+              $(`#amortizationPreview`).modal("toggle");
 
               this.$swal({
                 icon: "success",
@@ -487,9 +468,10 @@ export default {
         payment_method_id: this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
         owner_id: this.salesLogForm.owner_id,
-        
       };
-      this.salesLogForm.serial_number !== null? data.serial_number = this.salesLogForm.serial_number : '';
+      this.salesLogForm.serial_number !== null
+        ? (data.serial_number = this.salesLogForm.serial_number)
+        : "";
       this.$validator.validateAll().then((result) => {
         if (result) {
           this.$LIPS(true);
@@ -506,7 +488,7 @@ export default {
         } else this.$networkErr("form");
       });
     },
-    
+
     async getRepaymentDuration() {
       try {
         const fetchRepaymentDuration = await get(
@@ -518,7 +500,6 @@ export default {
       }
     },
     getCalc() {
-     
       try {
         this.salesLogForm.customer_id = this.customerId;
         const data0 = {
@@ -593,57 +574,49 @@ export default {
       try {
         const fetchGetCalclations = await get(this.apiUrls.getCalculation);
 
-                const unwrapped = fetchGetCalclations.data.data;
-                this.calculation = unwrapped;
-                const unwrapped0 = JSON.stringify(unwrapped);
-            } catch (err) {
-                this.$displayErrorMessage(err);
-            }
-        },
-        selectedItem(value) {
-            this.selectedProduct = value;
-            this.test0 = false;
-            this.getCalc();
-        },
-        async getProduct() {
-            try {
-                const fetchProduct = await get(
-                    this.apiUrls.getProduct + this.product
-                );
-            } catch (err) {
-                this.$displayErrorMessage(err);
-            }
-        },
-        async getRepaymentCycles() {
-            try {
-                const fetchRepaymentCycles = await get(
-                    this.apiUrls.repaymentCycles
-                );
-                this.repaymentCyclesopt = fetchRepaymentCycles.data.data.data;
-            } catch (err) {
-                this.$displayErrorMessage(err);
-            }
-        },
-        async getDownPaymentRates() {
-            try {
-                const fetchDownPaymentRates = await get(
-                    this.apiUrls.downPaymentRates
-                );
-                this.downPaymentRates = fetchDownPaymentRates.data.data.data;
-            } catch (err) {
-                this.$displayErrorMessage(err);
-            }
-        },
-        async getSalesCategory(){
-          try{
-            const fetchSalesCategory = await get(
-              this.apiUrls.salesCategoryUrl
-            );
-            this.salesCategories = fetchSalesCategory.data.data.data;
-          }catch (err){
-            this.$displayErrorMessage(err);
-          }
-        },
+        const unwrapped = fetchGetCalclations.data.data;
+        this.calculation = unwrapped;
+        const unwrapped0 = JSON.stringify(unwrapped);
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
+    selectedItem(value) {
+      this.selectedProduct = value;
+      this.test0 = false;
+      this.getCalc();
+    },
+    async getProduct() {
+      try {
+        const fetchProduct = await get(this.apiUrls.getProduct + this.product);
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
+    async getRepaymentCycles() {
+      try {
+        const fetchRepaymentCycles = await get(this.apiUrls.repaymentCycles);
+        this.repaymentCyclesopt = fetchRepaymentCycles.data.data.data;
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
+    async getDownPaymentRates() {
+      try {
+        const fetchDownPaymentRates = await get(this.apiUrls.downPaymentRates);
+        this.downPaymentRates = fetchDownPaymentRates.data.data.data;
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
+    async getSalesCategory() {
+      try {
+        const fetchSalesCategory = await get(this.apiUrls.salesCategoryUrl);
+        this.salesCategories = fetchSalesCategory.data.data.data;
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
 
         async getUsers(salesCat){
         this.$LIPS(true);
@@ -684,35 +657,71 @@ export default {
                 this.$displayErrorMessage(err);
             }
         },
+    async getUsers(salesCat) {
+      this.$LIPS(true);
 
-        checkIfDiscountElig(){
-            if (this.customer.new_orders.length > 0){
-                let arrLength = this.customer.new_orders.length;
-                if(this.calcDebt(this.customer.new_orders[arrLength - 1].amortization) === 0){
-                    this.eligible = true;
-                }
+      await get(`/api/sales-category/${salesCat}/roles`).then((res) => {
+        this.users = this.mergeArrays(res.data.data);
+      });
 
-            }
-        },
-        calcDebt(amortization){
-                // I assumed that all repayments are uniform and are not varied
-                if(amortization[0] !== undefined){
-                    let res = amortization.filter(amor => {
-                    return amor.actual_amount === 0
-                });
-                return res.length * amortization[0].expected_amount;
-                }
-                return
-                
-            },
+      this.$LIPS(false);
+    },
+    mergeArrays(parent) {
+      let result = [];
+      parent.forEach((elem) => {
+        result = result.concat(elem.active_users);
+      });
+      return result.sort((a, b) =>
+        a["full_name"].localeCompare(b["full_name"])
+      );
+    },
+    async getBusinessTypes() {
+      try {
+        const fetchBusinessTypes = await get(this.apiUrls.businessTypes);
+        this.businessTypes = fetchBusinessTypes.data.data.data;
+        this.businessTypes = this.businessTypes.filter((item) => {
+          return item.name.includes("Altara Credit");
+        });
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
+    async getDiscounts() {
+      try {
+        const fetchDiscounts = await get(this.apiUrls.discounts);
+        this.discounts = fetchDiscounts.data.data.data;
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
 
-            toggleSerial(){
-              this.serial === true ? this.serial =false : this.serial =true
-            }
+    checkIfDiscountElig() {
+      if (this.customer.new_orders.length > 0) {
+        let arrLength = this.customer.new_orders.length;
+        if (
+          this.calcDebt(
+            this.customer.new_orders[arrLength - 1].amortization
+          ) === 0
+        ) {
+          this.eligible = true;
+        }
+      }
+    },
+    calcDebt(amortization) {
+      // I assumed that all repayments are uniform and are not varied
+      if (amortization[0] !== undefined) {
+        let res = amortization.filter((amor) => {
+          return amor.actual_amount === 0;
+        });
+        return res.length * amortization[0].expected_amount;
+      }
+      return;
+    },
 
-            
-       
-    }
+    toggleSerial() {
+      this.serial === true ? (this.serial = false) : (this.serial = true);
+    },
+  },
 };
 </script>
 
@@ -753,15 +762,15 @@ export default {
   width: 1092px;
   overflow: scroll;
 }
-.renewal{   
-    color: forestgreen;
-    display: block;
-    float: right;
+.renewal {
+  color: forestgreen;
+  display: block;
+  float: right;
 }
-.serial{
+.serial {
   font-size: 8px;
   display: block;
-    float: right;
-    text-decoration: underline;
+  float: right;
+  text-decoration: underline;
 }
 </style>

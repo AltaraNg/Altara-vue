@@ -657,7 +657,7 @@ export default {
         mergeArrays(parent){
           let result = [];
           parent.forEach(elem => {
-            result = result.concat(elem.users);
+            result = result.concat(elem.active_users);
           })
           return result;
         },

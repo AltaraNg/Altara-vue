@@ -669,7 +669,7 @@ export default {
     mergeArrays(parent) {
       let result = [];
       parent.forEach((elem) => {
-        result = result.concat(elem.active_users);
+        result = result.concat(elem.users);
       });
       return result.sort((a, b) =>
         a["full_name"].localeCompare(b["full_name"])

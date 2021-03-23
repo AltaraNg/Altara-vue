@@ -1855,7 +1855,7 @@
 
                     <hr class="style-two"/>
                     <div class="col-sm-12 ml-auto mr-auto mt-md-2 mt-0 px-md-3 px-1 mb-3 float-right">
-                        <button :disabled="$isProcessing" class="btn btn-block btn-lg bg-default" type="submit">
+                        <button class="btn btn-block btn-lg bg-default" type="submit">
                             {{mode | capitalize}} Customer
                             <i class="far fa-paper-plane ml-1"></i>
                         </button>
@@ -2127,12 +2127,16 @@
                                         e.status === 422 ? "unique field" : e.message,
                                         10000
                                     );
+                                })
+                                .finally(()=>{
+                                    this.$isProcessing = false;
                                 });
                             this.$scrollToTop();
                             this.$LIPS(false);
                         } else this.$networkErr();
                     } else this.$networkErr("form");
                     $('input[name="occ"]').attr('disabled', !(this.isOther && this.isClick));
+                    
                 });
             },
 

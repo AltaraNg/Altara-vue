@@ -2124,7 +2124,7 @@
                                     if (e.status === 422)
                                         this.error = e.data.errors ? e.data.errors : e.data;
                                     Flash.setError(
-                                        e.status === 422 ? "unique field" : e.message,
+                                        e.status === 422 ? "Email and Phone number exists" : e.message,
                                         10000
                                     );
                                 })

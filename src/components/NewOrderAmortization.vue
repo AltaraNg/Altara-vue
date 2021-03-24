@@ -265,6 +265,7 @@ import Auth from "../utilities/auth";
 import LogForm from "./LogForm";
 import { get, patch, put } from "../utilities/api";
 import DatePicker from "vue2-datepicker";
+import 'vue2-datepicker/index.css';
 
 export default {
   name: "NewOrderAmortization",

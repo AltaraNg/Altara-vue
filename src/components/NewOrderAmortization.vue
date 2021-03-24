@@ -41,7 +41,11 @@
             </tr>
           </tbody>
         </table>
-        <h5 class="mt-5 mb-0">Amortization Schedule</h5>
+        <h5 class="mt-5 mb-0">
+          <div class="d-flex justify-content-between">
+            <div>Amortization Schedule</div>
+          </div>
+        </h5>
         <div class="amor-table">
           <table class="table table-bordered">
             <tbody class="text-center">
@@ -91,6 +95,7 @@
                 <td
                   v-for="(armo, index) in amortizationData"
                   @click="updateAmmo(armo, index)"
+                  class="pointer"
                 >
                   {{ $formatCurrency(armo.actual_amount) }}
                 </td>
@@ -164,8 +169,12 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content" v-if="showModal">
           <div>
-            <h5>Update Amortization</h5>
-
+            <h5>
+              <div class="d-flex justify-content-between">
+                <div>Update Amortization</div>
+                <div @click="closeModal()"><i class="fa fa-times"></i></div>
+              </div>
+            </h5>
             <div class="card">
               <form class="card-body" @submit.prevent="save">
                 <div class="row">
@@ -228,34 +237,6 @@
         </div>
       </div>
     </div>
-
-    <div class="modal fade repayment" id="viewEdit">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content" v-if="showModal">
-          <div class="modal-header py-2">
-            <h4>edit payment</h4>
-            <a aria-label="Close" class="close py-1" data-dismiss="modal">
-              <span aria-hidden="true" class="modal-close text-danger">
-                <i class="fas fa-times"></i>
-              </span>
-            </a>
-          </div>
-          <div class="modal-body px-5">
-            <input
-              name="ammo"
-              class="custom-select"
-              v-model="actual_amount"
-              :placeholder="ammo_item.actual_amount"
-            />
-          </div>
-          <div class="modal-footer justify-content-center">
-            <button class="text-center btn bg-default" @click="save">
-              Save
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 <script>
@@ -265,7 +246,7 @@ import Auth from "../utilities/auth";
 import LogForm from "./LogForm";
 import { get, patch, put } from "../utilities/api";
 import DatePicker from "vue2-datepicker";
-import 'vue2-datepicker/index.css';
+import "vue2-datepicker/index.css";
 
 export default {
   name: "NewOrderAmortization",
@@ -337,12 +318,15 @@ export default {
     },
 
     updateAmmo(armo, index) {
-      console.log("popopop12345", armo);
       this.showModal = true;
       this.ammo_item = armo;
       this.ammoIndex = index;
 
       return $(`#viewEdit`).modal("toggle");
+    },
+    closeModal() {
+      this.showModal = false;
+      // $(`#viewEdit`).modal("toggle");
     },
     save() {
       this.$LIPS(true);
@@ -367,6 +351,7 @@ export default {
           this.$LIPS(false);
 
           Flash.setError("Unable to update payment");
+          return $(`#viewEdit`).modal("toggle");
         })
         .finally(() => {
           $(`#viewEdit`).modal("toggle");
@@ -424,6 +409,9 @@ export default {
 .status-row td {
   padding: 0;
   margin: 0;
+}
+.pointer {
+  cursor: pointer;
 }
 </style>
 

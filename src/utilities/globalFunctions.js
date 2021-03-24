@@ -121,6 +121,14 @@ Vue.prototype.$displayErrorMessage = function (error) {
     this.$networkErr(null, 50000, error)
 };
 
+Vue.prototype.$displayErrorText = function (error) {
+    let message = '';
+    Object.values(error).forEach(value => {
+        message = message + value[0];
+    })
+    return message;
+}
+
 /*** this function checks for app level branch Hence the call for list of branches is done
  * Once throughout the application lifecycle this is for memory optimization
  * also this ensure we have 1 instance of the branches variable

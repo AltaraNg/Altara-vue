@@ -117,9 +117,11 @@
                   class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
                   style="max-width: 100px"
                 >
-                  <span class="user mx-auto" @click="updateOrder(order)">{{
-                    customer.orders.length + index + 1
-                  }}</span>
+                  <span
+                    class="user mx-auto pointer"
+                    @click="updateOrder(order)"
+                    >{{ customer.orders.length + index + 1 }}</span
+                  >
                   <span v-if="$route.meta.customSMS">
                     <CustomSMSButton
                       :order="order"
@@ -288,7 +290,7 @@
                         >Order Date</label
                       >
                       <date-picker
-                        :class="w-100"
+                        class="w-100"
                         v-model="currentOrder.order_date"
                         valueType="format"
                         placeholder="Date"
@@ -704,7 +706,7 @@ import {
 import LogForm from "../../../components/LogForm";
 import PaymentLog from "../../../components/PaymentLog";
 import DatePicker from "vue2-datepicker";
-import 'vue2-datepicker/index.css';
+import "vue2-datepicker/index.css";
 
 export default {
   components: {
@@ -1108,5 +1110,8 @@ export default {
 .amor-table {
   width: 1092px;
   overflow: scroll;
+}
+.pointer {
+  cursor: pointer;
 }
 </style>

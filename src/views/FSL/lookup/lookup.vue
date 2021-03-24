@@ -288,7 +288,7 @@
                         >Order Date</label
                       >
                       <date-picker
-                        class="w-100"
+                        :class="w-100"
                         v-model="currentOrder.order_date"
                         valueType="format"
                         placeholder="Date"
@@ -704,6 +704,7 @@ import {
 import LogForm from "../../../components/LogForm";
 import PaymentLog from "../../../components/PaymentLog";
 import DatePicker from "vue2-datepicker";
+import 'vue2-datepicker/index.css';
 
 export default {
   components: {

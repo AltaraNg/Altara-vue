@@ -779,10 +779,12 @@ export default {
         });
     },
     updateOrder(order) {
-      this.showOrdermodal = true;
-
-      this.currentOrder = order;
-      return $(`#updateOrderModal`).modal("toggle");
+      if(this.canEditPayment){
+          this.showOrdermodal = true;
+        this.currentOrder = order;
+        return $(`#updateOrderModal`).modal("toggle");
+      }
+      
     },
     async updateView(data) {
       let { customer, user } = data;
@@ -1084,10 +1086,7 @@ export default {
 
     canEditPayment() {
       if (this.auth("FSLLead")) return true;
-      return (
-        this.auth("FSLAccess") &&
-        this.user.branch === this.activeOrder.branch.id
-      );
+     
     },
   },
 

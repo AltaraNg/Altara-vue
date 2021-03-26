@@ -318,12 +318,15 @@ export default {
     },
 
     updateAmmo(armo, index) {
-      this.showModal = true;
+      if(this.canEditAmmoPayment){
+         this.showModal = true;
       this.ammo_item = armo;
       this.ammoIndex = index;
 
       return $(`#viewEdit`).modal("toggle");
-    },
+
+      }
+         },
     closeModal() {
       this.showModal = false;
       // $(`#viewEdit`).modal("toggle");
@@ -383,6 +386,18 @@ export default {
       this.amortizationData = this.order.amortization;
     },
   },
+  computed: {
+    ...mapGetters([
+     
+      "auth",
+      "getAuthUserDetails",
+    ]),
+
+    canEditAmmoPayment() {
+      if (this.auth("FSLLead")) return true;
+     
+    },
+  }
 };
 </script>
 <style scoped>

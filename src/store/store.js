@@ -11,7 +11,7 @@ const getYears = () => {
     return years;
 };
 
-const admin = [1, 2, 8, 9];
+const admin = [1, 2, 8, 9, 32];
 
 Vue.use(Vuex);
 const debug = process.env.NODE_ENV !== 'production';

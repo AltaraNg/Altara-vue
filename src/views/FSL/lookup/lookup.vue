@@ -482,9 +482,9 @@
                     </tbody>
                   </table>
 
-                  <div v-if="canEditPayment && !isReadOnly">
+                  <div >
                     <h5 class="mt-5 mb-0">
-                      {{ paymentFormType | capitalize }} a new payment
+                      {{ paymentFormType | capitalize }} a payment
                     </h5>
                     <table class="table table-bordered">
                       <tbody class="text-center">
@@ -605,30 +605,26 @@
                   </div>
                 </div>
               </div>
-              <div
-                :class="{
-                  'd-flex justify-content-end': !canEditPayment || isReadOnly,
-                }"
-                class="modal-footer"
+              <div class="d-flex modal-footer"
               >
                 <button
                   @click="addPaymentForm('add')"
                   class="btn status my-sm-2"
-                  v-if="canAddPayment && !isReadOnly"
+                  
                 >
                   Add Payment
                 </button>
                 <button
                   @click="addPaymentForm('edit')"
                   class="btn status my-sm-2"
-                  v-if="canEditPayment && !isReadOnly"
+                 
                 >
                   Edit Payment
                 </button>
                 <button
                   @click="preparePayments()"
                   class="btn status my-sm-2 approved ml-4"
-                  v-if="canEditPayment && !isReadOnly"
+                  
                 >
                   Click here to Submit Payment(s)!
                 </button>
@@ -783,10 +779,12 @@ export default {
         });
     },
     updateOrder(order) {
-      this.showOrdermodal = true;
-
-      this.currentOrder = order;
-      return $(`#updateOrderModal`).modal("toggle");
+      if(this.canEditPayment){
+          this.showOrdermodal = true;
+        this.currentOrder = order;
+        return $(`#updateOrderModal`).modal("toggle");
+      }
+      
     },
     async updateView(data) {
       let { customer, user } = data;
@@ -1087,11 +1085,8 @@ export default {
     },
 
     canEditPayment() {
-      if (this.auth("FSLLead")) return true;
-      return (
-        this.auth("FSLAccess") &&
-        this.user.branch === this.activeOrder.branch.id
-      );
+     if (this.auth("EditPayment") ) return true;
+     
     },
   },
 

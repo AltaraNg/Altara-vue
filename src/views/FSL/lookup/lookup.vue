@@ -1085,7 +1085,7 @@ export default {
     },
 
     canEditPayment() {
-     if (this.auth("FSLLead") || this.auth("DVALead") ) return true;
+     if (this.auth("EditPayment") ) return true;
      
     },
   },

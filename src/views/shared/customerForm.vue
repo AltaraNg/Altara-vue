@@ -124,9 +124,10 @@
                             <small v-if="errors.first('gender')">{{errors.first('gender')}}</small>
                         </div>
 
-                        <div class="form-group col-md-8 px-md-3 px-1 float-left">
-                            <label>Phone Number</label>
-                            <input
+                        <div class="form-group col-md-8 px-md-3 px-1 float-left row">
+                            <div class="col-6">
+                                <label>Phone Number</label>
+                                <input
                                     class="form-control"
                                     name="telephone"
                                     placeholder="Enter Phone number here.."
@@ -134,9 +135,24 @@
                                     v-model="newCustomer.telephone"
                                     v-validate="'required|numeric|max:11|min:11'"
                             />
-                            <small v-if="errors.first('telephone')">{{errors.first('telephone')}}</small>
-                            <small v-if="error.telephone">{{error.telephone[0]}}</small>
+                                <small v-if="errors.first('telephone')">{{errors.first('telephone')}}</small>
+                                <small v-if="error.telephone">{{error.telephone[0]}}</small>
+                            </div>
+                            <div class="col-6">
+                                 <label>Email</label>
+                                <input
+                                    class="form-control"
+                                    name="email"
+                                    placeholder="Enter Email.."
+                                    type="email"
+                                    v-model="newCustomer.email"
+                                    v-validate="'required|email'"
+                            />
+                            <small v-if="errors.first('email')">{{errors.first('email')}}</small>
+                            <small v-if="error.email">{{error.email[0]}}</small>
+                            </div>
                         </div>
+                        
                         <div class="spaceAfter"></div>
                     <!-- </div> -->
                     <!--form section for register stops here-->

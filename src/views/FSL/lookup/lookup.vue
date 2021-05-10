@@ -81,7 +81,7 @@
                 <div
                   class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
                 >
-                  {{ $formatCurrency(order.order.down_payment) }}
+                  {{ customer.employment_status }}
                 </div>
                 <div
                   class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
@@ -166,7 +166,7 @@
                 <div
                   class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
                 >
-                  {{ $formatCurrency(order.down_payment) }}
+                  {{ order.customer.employment_status }}
                 </div>
 
                 <div
@@ -741,7 +741,7 @@ export default {
         "Product Name",
         "Total Product Price",
         "Type",
-        "Down Payment",
+        "Customer Type",
         "Repayment Plans",
       ],
       products: [],

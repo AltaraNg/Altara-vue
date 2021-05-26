@@ -243,6 +243,7 @@
                      <AutoComplete
                   v-on:childToParent="selectedItem"
                   :apiUrl="apiURL.product"
+                  :currentValue="currentOrder.product_name"
                 />
                     </div>
                     <div class="col form-group">
@@ -683,6 +684,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
+import Vue from 'vue';
 import { log } from "../../../utilities/log";
 import Auth from "../../../utilities/auth";
 import Flash from "../../../utilities/flash";
@@ -768,17 +770,17 @@ export default {
       this.$LIPS(true);
       put(`/api/new_order/${this.currentOrder.id}`, updateData)
         .then((res) => {
-          // this.currentOrder = {};
           this.$LIPS(false);
 
           this.$swal({
             icon: "success",
             title: "Order Successfully Updated",
           });
-          console.log(this.currentOrder);
-          this.customer.new_orders.find((elem) => {
-            return elem.id = this.currentOrder.id
-          }).product = res.data.product;
+          console.log('order',this.currentOrder);
+          let x = this.customer.new_orders.findIndex((elem) => {
+            return elem.id === this.currentOrder.id
+          });         
+          Vue.set(this.customer.new_orders, x, res.data.data);          
           this.currentOrder = {};
           return $(`#updateOrderModal`).modal("toggle");
 

@@ -240,12 +240,11 @@
                       <label for="amount" class="form-control-label"
                         >Name</label
                       >
-                      <input
-                        class="w-100 custom-select"
-                        name="name"
-                        v-model="currentOrder.product_name"
-                        v-validate="'required'"
-                      />
+                     <AutoComplete
+                  v-on:childToParent="selectedItem"
+                  :apiUrl="apiURL.product"
+                  :currentValue="currentOrder.product_name"
+                />
                     </div>
                     <div class="col form-group">
                       <label for="amount" class="form-control-label"
@@ -685,11 +684,13 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
+import Vue from 'vue';
 import { log } from "../../../utilities/log";
 import Auth from "../../../utilities/auth";
 import Flash from "../../../utilities/flash";
 import { get, post, put } from "../../../utilities/api";
 import CustomHeader from "../../../components/customHeader";
+import AutoComplete from "../../../components/AutoComplete";
 import NewOrderAmortization from "../../../components/NewOrderAmortization";
 import CustomerProfile from "../../../components/CustomerProfile";
 import { Order, OrderWithPromiseCall } from "../../../utilities/Amortization";
@@ -709,6 +710,7 @@ export default {
     CustomHeader,
     CustomerProfile,
     CustomSMSButton,
+    AutoComplete,
     AutocompleteSearch,
     LogForm,
     PaymentLog,
@@ -730,6 +732,7 @@ export default {
         id: Auth.state.user_id,
       },
       show: false,
+      selectedProduct: {},
       showModal: false,
       showModalContent: false,
       ammo_item: {},
@@ -749,13 +752,16 @@ export default {
       paymentFormType: "add",
       showOrdermodal: false,
       currentOrder: {},
+      apiURL: {
+        product: `/api/product`
+      }
     };
   },
 
   methods: {
     async submitForm() {
       const updateData = {
-        product_name: this.currentOrder.product_name,
+        product_id: this.selectedProduct.id,
         repayment: this.currentOrder.repayment,
         down_payment: this.currentOrder.down_payment,
         product_price: this.currentOrder.product_price,
@@ -764,14 +770,20 @@ export default {
       this.$LIPS(true);
       put(`/api/new_order/${this.currentOrder.id}`, updateData)
         .then((res) => {
-          this.currentOrder = {};
           this.$LIPS(false);
 
           this.$swal({
             icon: "success",
             title: "Order Successfully Updated",
           });
+          console.log('order',this.currentOrder);
+          let x = this.customer.new_orders.findIndex((elem) => {
+            return elem.id === this.currentOrder.id
+          });         
+          Vue.set(this.customer.new_orders, x, res.data.data);          
+          this.currentOrder = {};
           return $(`#updateOrderModal`).modal("toggle");
+
         })
         .catch(() => {
           this.$LIPS(false);
@@ -930,6 +942,12 @@ export default {
     deletePayment(index) {
       this.paymentForm.payments.splice(index, 1);
       this.reNumber();
+    },
+
+    selectedItem(value) {
+      this.selectedProduct = value;
+      
+      
     },
     formatDate(date) {
       if (date !== null) {

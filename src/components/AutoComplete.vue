@@ -34,7 +34,11 @@ import { get, post } from "../utilities/api";
 export default {
     name: "AutoComplete",
     props: {
-        apiUrl: ""
+        apiUrl: "",
+        currentValue: {
+            type: String,
+            default: ""
+        }
     },
     data() {
         return {
@@ -43,6 +47,10 @@ export default {
             itemList: [],
             apiLoaded: false
         };
+    },
+
+    mounted(){
+        this.inputValue = this.currentValue;
     },
 
     methods: {
@@ -94,6 +102,7 @@ export default {
 
         }
     }
+    
 };
 </script>
 

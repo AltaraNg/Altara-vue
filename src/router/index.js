@@ -215,7 +215,13 @@ const router = new VueRouter({
                     component: AllOverdue,
                     name: "direct-debit-overdue",
                     meta: { mode: "direct-debit" }
-                }
+                },
+                {
+                    path: "credit-worthy",
+                    component: CreditWorthy,
+                    name: "credit-worthy",
+                    meta: { mode: "create" }
+                },
             ]
         },
         {
@@ -296,6 +302,12 @@ const router = new VueRouter({
                     path: "customer/create",
                     component: CustomerForm,
                     meta: { mode: "register" }
+                },
+                {
+                    path: "credit-worthy",
+                    component: CreditWorthy,
+                    name: "credit-worthy",
+                    meta: { mode: "create" }
                 },
             ]
         },

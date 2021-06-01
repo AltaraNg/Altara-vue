@@ -578,6 +578,17 @@
                         </div>-->
 
                         <div class="form-group mb-5 col-md-12 px-md-3 px-1 float-left">
+                            <div class="form-group col-md-3 px-md-3 px-1 mt-2 float-left">
+                                 <label> Employment Status</label>
+                                <select class="custom-select w-100" v-model="newCustomer.employment_status">
+                                    <option value="informal(business)">informal(business)</option>
+                                    <option value="formal">formal</option>
+                                    <option value="unemployed">unemployed</option>                         
+
+
+                                </select>
+
+                            </div>
                             <br/>
                             <span
                                     v-for="occupation in occupations"
@@ -598,6 +609,7 @@
                             >{{name}}</span>
                             &nbsp;
                             <div class="form-group col-md-3 col-12 px-md-3 px-1 mt-2 float-left">
+                                <label> Occupation</label>
                                 <input
                                         class="form-control"
                                         name="occ"
@@ -610,10 +622,11 @@
                             <small v-if="errors.has('occ')">
                                 {{errors.first('occ')}}
                             </small>
+                             
                         </div>
 
                         <transition name="fade">
-                            <div v-if="newCustomer.employment_status === 'formal'">
+                            <div v-if="newCustomer.employment_status === 'formal' && this.newCustomer.occupation !== ''">
                                 <div class="form-group col-md-6 px-md-3 px-1 float-left">
                                     <label>Phone number of working/business individual in household</label>
                                     <input
@@ -904,7 +917,7 @@
                                 </div>
                             </div>
 
-                            <div v-else-if="newCustomer.employment_status === 'informal(business)'">
+                            <div v-else-if="newCustomer.employment_status === 'informal(business)' && newCustomer.occupation !== ''">
                                 <div class="form-group col-md-6 px-md-3 px-1 float-left">
                                     <label>Phone number of working/business individual in household</label>
                                     <input
@@ -2162,7 +2175,7 @@
                     if (element.id === id) {
                         $(`.occupation-title[data-id="${id}"]`).addClass('active shadow-sm');
                         this.occName = element.names;
-                        this.newCustomer.employment_status = element.category;
+                        // this.newCustomer.employment_status = element.category;
                         this.isClick = true;
                         this.isOther = (element.id === 12) ? true : false
                         if (element.id === 12) {

@@ -49,7 +49,7 @@ export const store = new Vuex.Store({
         FSLLead: [...admin, 11, 32],
         supervisor: [...admin, 11, 14],
         FSLAccess: [...admin, 11, 14, 19],
-        LOGLead: [...admin, 11],
+        LOGLead: [...admin, 11, 32],
         LOGAccess: [...admin, 11, 14],
         CAGAccess: [...admin, 30],
         EditPayment: [...admin, 8, 32, 14],

@@ -580,13 +580,16 @@
                         <div class="form-group mb-5 col-md-12 px-md-3 px-1 float-left">
                             <div class="form-group col-md-3 px-md-3 px-1 mt-2 float-left">
                                  <label> Employment Status</label>
-                                <select class="custom-select w-100" v-model="newCustomer.employment_status">
+                                <select class="custom-select w-100" v-model="newCustomer.employment_status" v-validate="'required'" name="emp">
                                     <option value="informal(business)">informal(business)</option>
                                     <option value="formal">formal</option>
                                     <option value="unemployed">unemployed</option>                         
 
 
                                 </select>
+                            <small v-if="errors.has('emp')">
+                                {{errors.first('emp')}}
+                            </small>
 
                             </div>
                             <br/>

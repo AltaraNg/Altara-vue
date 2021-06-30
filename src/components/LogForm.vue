@@ -7,7 +7,7 @@
                     <label for="amount" class="form-control-label">Payment Method</label>
                     <select class="custom-select w-100" v-model="paymentId" v-validate="'required'">
                         <option disabled selected="selected">Payment Method</option>
-                        <option :value="type.id" :key="type.id" v-for="type in getPaymentMethods">
+                        <option :value="type.id" :key="type.id" v-for="type in paymentMeths">
                             {{type.name}}
                         </option>
                     </select>
@@ -57,11 +57,15 @@ export default {
                 payment: `/api/payment`,
                 paymentType: `/api/payment-type`,
             },
+            paymentMeths: []
         }
     },
     async mounted(){
         await this.getPaymentType();
         this.amountData = this.amortizationData[0].expected_amount;
+        this.paymentMeths = this.getPaymentMethods.filter(item => {
+            return item.name !== 'direct-debit'
+        })
 
     },
     computed:{

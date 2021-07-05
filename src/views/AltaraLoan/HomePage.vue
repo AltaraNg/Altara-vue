@@ -50,6 +50,13 @@ export default {
           url_c: "Check credit worthiness",
           desc: "Credit Worthy",
         },
+
+        {
+          url: "plan-advisor",
+          title: "Plan Advisor",
+          url_c: "Check suitable plan",
+          desc: "Plan Advisor",
+        },
       ],
     };
   },

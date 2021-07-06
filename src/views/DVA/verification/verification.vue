@@ -555,12 +555,12 @@
                 work_guarantor: {},
                 personal_guarantor: {},
                 processing_fee: {},
-                picsView: ['id_card', 'passport'],
+                picsView: ['id_card', 'passport', 'proof_of_income', 'guarantor_id'],
                 veriView: ['work_guarantor', 'personal_guarantor', 'processing_fee'],
                 veriData: ['address', 'work_guarantor', 'personal_guarantor', 'processing_fee'],
                 cardView: ['passport', 'id_card', 'address', 'work_guarantor', 'personal_guarantor', 'processing_fee'],
                 verification: {},
-                form: {id_card: '', passport: '', document: ''},
+                form: {id_card: '', passport: '', document: '', proof_of_income: '',  guarantor_id: ''},
                 error: {},
                 storeURL: '',
                 user: {},
@@ -751,6 +751,10 @@
                 * it after opening and closing the modal responsible for that
                 * particular action*/
             });
+            this.flag = localStorage.getItem('flag');
+            if(this.flag === 'beta'){
+                this.cardView = this.cardView.concat(['guarantor_id', 'proof_of_income']);
+            }
         },
     }
 </script>

@@ -14,8 +14,8 @@
                         <label for="customer-type" class="form-control-label"
                             >Select Customer Type
                         </label>
-                        <select name="customer-type" id="customer-type" class="custom-select w-100" v-model="form1[0]">
-                            <option value="formal">Formal</option>
+                        <select name="customer-type" id="customer-type" class="custom-select w-100 h-100" v-model="form1[0]">
+                            <option value="formal" class="text-">Formal</option>
                             <option value="informal">Informal</option>
 
                         </select>
@@ -42,18 +42,22 @@
                     </div>
                     <div class="col form-group">
                         <label for="custom-date" class="form-control-label"
-                            >Repayment Plan
+                            >Salary
                         </label>
-                        <select name="plan" id="plan">
-                            <option value=""></option>
-                        </select>
+                         <input
+                            class="form-control w-100"
+                            type="number"
+                            min="1"
+                            max="31"
+                            v-model="form2[2]"
+                        />
                     </div>
                 </div>
                 <br />
                 <div class="row">
                     <div class="col form-group">
                         <label for="custom-date" class="form-control-label"
-                            >Plan Duration
+                            >Downpayment
                         </label>
                         <input
                             class="form-control w-100"
@@ -131,61 +135,7 @@
 
                 </div>
             </tab-content>
-            <tab-content title="3rd Month" :before-change="beforeTabSwitch3">
-                <div class="row">
-                    <div class="col form-group">
-                        <label for="custom-date" class="form-control-label"
-                            >7th day of the month
-                        </label>
-                        <input
-                            class="form-control w-100"
-                            type="number"
-                            min="1"
-                            max="31"
-                            v-model="form3[0]"
-                        />
-                    </div>
-                    <div class="col form-group">
-                        <label for="custom-date" class="form-control-label"
-                            >14th day of the month
-                        </label>
-                        <input
-                            class="form-control w-100"
-                            type="number"
-                            min="1"
-                            max="31"
-                            v-model="form3[1]"
-                        />
-                    </div>
-                </div>
-                <br />
-                <div class="row">
-                    <div class="col form-group">
-                        <label for="custom-date" class="form-control-label"
-                            >21st day of the month
-                        </label>
-                        <input
-                            class="form-control w-100"
-                            type="number"
-                            min="1"
-                            max="31"
-                            v-model="form3[2]"
-                        />
-                    </div>
-                    <div class="col form-group">
-                        <label for="custom-date" class="form-control-label"
-                            >28th day of the month
-                        </label>
-                        <input
-                            class="form-control w-100"
-                            type="number"
-                            min="1"
-                            max="31"
-                            v-model="form3[3]"
-                        />
-                    </div>
-                </div>
-            </tab-content>
+           
         </form-wizard>
     </div>
 </template>

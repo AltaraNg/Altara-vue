@@ -49,7 +49,7 @@
                             type="number"
                             min="1"
                             max="31"
-                            v-model="form2[2]"
+                            v-model="form2[1]"
                         />
                     </div>
                 </div>
@@ -69,7 +69,7 @@
                     </div>
                     <div class="col form-group">
                         <label for="custom-date" class="form-control-label"
-                            >28th day of the month
+                            >% Plan
                         </label>
                         <input
                             class="form-control w-100"
@@ -121,7 +121,7 @@
                     </div>
                     <div class="col form-group">
                         <label for="custom-date" class="form-control-label"
-                            >28th day of the month
+                            >% Plan
                         </label>
                         <input
                             class="form-control w-100"
@@ -166,8 +166,9 @@ export default {
             next2: false,
             next3: false,
             apiUrls: {
-                creditCheck: `/api/credit-check`
-            }
+                recommend: `/api/recommendation`
+            },
+            formData: {}
         };
     },
     async mounted() {},
@@ -192,17 +193,7 @@ export default {
                 this.next2 = false;
             } else this.next2 = true;
         },
-        isDisable3() {
-            if (
-                !this.form3[0] ||
-                !this.form3[1] ||
-                !this.form3[2] ||
-                !this.form3[3]
-            ) {
-                this.next3 = false;
-            } else this.next3 = true;
-        },
-
+        
         validateAsync: function() {
             return new Promise((resolve, reject) => {
                 () => {
@@ -218,8 +209,8 @@ export default {
             });
         },
         onComplete: function() {
-            const _balances = [this.form1, this.form2, this.form3];
-            alert("Yay. Done!");
+           
+
         },
         beforeTabSwitch1: function() {
             this.isDisable1();
@@ -229,36 +220,32 @@ export default {
             this.isDisable2();
             return this.next2;
         },
-        beforeTabSwitch3: function() {
-            this.isDisable3();
-            return this.next3;
-        },
+       
         async logAmounts() {
+            this.formData.down_payment = this.form2[2];
+            this.formData.total_price = this.form2[0];
+            this.formData.salary = this.form2[1];
+
             const data = { balances: [this.form1, this.form2, this.form3] };
             this.$validator.validateAll().then(result => {
                 if (result) {
                     this.$LIPS(true);
-                    post(this.apiUrls.creditCheck, data)
+                    post(this.apiUrls.recommend, this.formData)
                         .then(res => {
                             this.$LIPS(false);
-                            const resData = res.data.data;
-                            let arr = [];
-                            for (let resD in resData) {
-                                if (resData[resD] === "Approved") {
-                                    arr.push(resD);
-                                }
-                            }
-                            const last = arr[arr.length - 1];
+                            const resData = res.data.data.ans;
+                            
 
-                            last
+                            resData === 'There is no suitable plan'
                                 ? this.$swal({
-                                      icon: "success",
-                                      title: `You can get up to ₦${last}`
+                                      icon: "error",
+                                      title: "No Plan available",
+                                      text: `Try a lower total price`
                                   })
                                 : this.$swal({
-                                      icon: "error",
-                                      title: "Loan Request UnSuccessful.",
-                                      text: `You can't get any loan`
+                                      icon: "success",
+                                      title: "Recommendation successful.",
+                                      text: resData
                                   });
                         })
                         .catch(() => {

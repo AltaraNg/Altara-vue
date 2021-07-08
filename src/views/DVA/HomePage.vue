@@ -110,6 +110,12 @@ export default {
           url_c: "Register new customer now!",
           desc: "Registering new customers",
         },
+       {
+          url: "plan-advisor",
+          title: "Plan Advisor",
+          url_c: "Check suitable plan",
+          desc: "Plan Advisor",
+        },
 
         // TODO:: cleanup
       ],

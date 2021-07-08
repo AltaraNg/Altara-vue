@@ -726,7 +726,9 @@
                     this.modal(modal);
                     Flash.setSuccess('Document Updated Successfully!');
                     this.done();
-                }).catch(e => this.error = e.response.data.errors);
+                }).catch(e => {
+                    this.error =e.response.data.data.errors;
+                    });
                 this.$LIPS(false);
                 this.$scrollToTop();
             }

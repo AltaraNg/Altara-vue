@@ -14,6 +14,9 @@
                 default: null
             }
         },
+        mounted() {
+            console.log('i am',process.env.VUE_APP_S3_URL)
+            },
         data() {
             return {
                 image: null
@@ -34,7 +37,7 @@
                     };
                     fileReader.readAsDataURL(this.preview)
                 } else if (typeof this.preview === 'string') {
-                    this.image = `https://s3.eu-west-2.amazonaws.com/altara-one/${this.preview}`;
+                    this.image = `https://altara-staging.s3.amazonaws.com/${this.preview}`;
                 } else this.image = null;
             }
         }

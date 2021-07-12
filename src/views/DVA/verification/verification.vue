@@ -90,7 +90,9 @@
                                 </a>
                             </div>
                             <form @submit.prevent="save(type,type+'_modal')" enctype="multipart/form-data" v-if="customer">
+                               
                                 <div class="modal-body">
+                                     <div class="bg-default text-white">max-size: 512kb max-dimension: 1200 x 1200</div>
                                     <div class="upload-image p-2">
                                         <div class="upload-box">
                                             <image-upload v-model="$data['form'][type]"/>

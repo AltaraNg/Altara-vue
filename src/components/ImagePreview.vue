@@ -14,10 +14,7 @@
                 default: null
             }
         },
-        mounted() {
-            console.log('i am',process.env.VUE_APP_S3_URL)
-            },
-        data() {
+       data() {
             return {
                 image: null
             }

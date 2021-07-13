@@ -34,7 +34,7 @@
                     };
                     fileReader.readAsDataURL(this.preview)
                 } else if (typeof this.preview === 'string') {
-                    this.image = `https://altara-staging.s3.amazonaws.com/${this.preview}`;
+                    this.image = `${process.env.VUE_APP_S3_URL}/${this.preview}`;
                 } else this.image = null;
             }
         }

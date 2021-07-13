@@ -144,7 +144,7 @@
             },
 
             passport() {
-                return `https://s3.eu-west-2.amazonaws.com/altara-one/${this.customer.document.passport_url}`;
+                return `${process.env.VUE_APP_S3_URL}/${this.customer.document.passport_url}`;
             },
 
             branch() {

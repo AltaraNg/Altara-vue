@@ -63,9 +63,9 @@
                                 <div @click="modal(type+'_modal')" class="card-footer pointer">
                                     <i class="now-ui-icons ui-1_calendar-60 pr-1"></i>
                                     {{key(type) ? 'Verified' : 'Not Verified'}}
-                                    <small v-if="! key(type)">(Click here to update status!)</small>
+                                    <small v-if="! key(type)" style="font-size: 9px">(Click here to update status!)</small>
                                     <span class="float-right" style="font-size: 10px" v-else>
-                                            by - {{type == 'passport' || type == 'id_card' ?
+                                            by - {{type == 'passport' || type == 'id_card' || type == 'guarantor_id' || type == 'proof_of_income' ?
                                         customer['document'].staff_name : customer[type].staff_name | capitalize}}
                                     </span>
                                 </div>
@@ -89,8 +89,10 @@
                                 </span>
                                 </a>
                             </div>
-                            <form @submit.prevent="save(type,type+'_modal')" v-if="customer">
+                            <form @submit.prevent="save(type,type+'_modal')" enctype="multipart/form-data" v-if="customer">
+                               
                                 <div class="modal-body">
+                                     <div class="bg-default text-white">max-size: 512kb max-dimension: 1200 x 1200</div>
                                     <div class="upload-image p-2">
                                         <div class="upload-box">
                                             <image-upload v-model="$data['form'][type]"/>

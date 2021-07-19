@@ -57,6 +57,12 @@ export default {
           url_c: "Check suitable plan",
           desc: "Plan Advisor",
         },
+        {
+          url: "recommender-informal",
+          title: "Recommender Informal",
+          url_c: "Check suitable plan for informal",
+          desc: "Recommender Informal",
+        },
       ],
     };
   },

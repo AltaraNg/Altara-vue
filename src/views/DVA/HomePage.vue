@@ -117,6 +117,13 @@ export default {
           desc: "Plan Advisor",
         },
 
+        {
+          url: "recommender-informal",
+          title: "Recommender Informal",
+          url_c: "Check suitable plan for informal",
+          desc: "Recommender Informal",
+        },
+
         // TODO:: cleanup
       ],
     };

@@ -225,6 +225,7 @@ export default {
             this.formData.down_payment = this.form2[2];
             this.formData.total_price = this.form2[0];
             this.formData.salary = this.form2[1];
+            this.formData.type = 'formal'
 
             const data = { balances: [this.form1, this.form2, this.form3] };
             this.$validator.validateAll().then(result => {

@@ -74,6 +74,8 @@ const CreditWorthy = () =>
 
 const PlanAdvisor = () =>
 	import('../views/AltaraLoan/plan_advisor/plan_advisor.vue');
+	const RecommenderInformal = () =>
+	import('../views/AltaraLoan/plan_advisor/recommender_informal.vue');
 const AltaraLoan = () => import('../views/AltaraLoan/index.vue');
 const AltaraLoanHome = () => import('../views/AltaraLoan/HomePage.vue');
 
@@ -264,6 +266,12 @@ const router = new VueRouter({
 					name: 'plan-advisor',
 					meta: { mode: 'create' },
 				},
+				{
+					path: 'recommender-informal',
+					component: RecommenderInformal,
+					name: 'recommender-informal',
+					meta: { mode: 'create' },
+				},
 			],
 		},
 		{
@@ -363,6 +371,12 @@ const router = new VueRouter({
 					path: 'plan-advisor',
 					component: PlanAdvisor,
 					name: 'plan-advisor',
+					meta: { mode: 'create' },
+				},
+				{
+					path: 'recommender-informal',
+					component: RecommenderInformal,
+					name: 'recommender-informal',
 					meta: { mode: 'create' },
 				},
 			],

@@ -7,37 +7,13 @@
 			color="#2975A5"
 			error-color="#FF0000"
 		>
-			<tab-content title="1st Month" :before-change="beforeTabSwitch1">
+
+			<tab-content title="Plan Details" :before-change="beforeTabSwitch1">
 				<div class="row">
+
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
 							>Product Price
-						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="formData.product_price"
-						/>
-					</div>
-					<div class="col form-group">
-						<label for="custom-date" class="form-control-label"
-							>Downpayment
-						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="formData.downpayment"
-						/>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col form-group">
-						<label for="7th-day" class="form-control-label"
-							>7th day of the month
 						</label>
 						<input
 							class="form-control w-100"
@@ -48,50 +24,94 @@
 						/>
 					</div>
 					<div class="col form-group">
-						<label for="14th-day" class="form-control-label"
-							>14th day of the month
-						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
+						<label for="amount" class="form-control-label"
+							>Downpayment Rates</label
+						>
+						<select
+							class="custom-select w-100"
 							v-model="form1[1]"
-						/>
+							v-validate="'required'"
+						>
+							<option disabled selected="selected">Downpayment Rates</option>
+							<option
+								:value="type.id"
+								:key="type.id"
+								v-for="type in downPaymentRates"
+							>
+								{{ type.name }}
+							</option>
+						</select>
 					</div>
-				</div>
-				<br />
-				<div class="row">
+
 					<div class="col form-group">
-						<label for="21st-day" class="form-control-label"
-							>21st day of the month
-						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
+						<label for="amount" class="form-control-label"
+							>Repayment Duration</label
+						>
+						<select
+							class="custom-select w-100"
 							v-model="form1[2]"
-						/>
+							v-validate="'required'"
+						>
+							<option disabled selected="selected">
+								Repayment Duration
+							</option>
+							<option
+								:value="type.id"
+								:key="type.id"
+								v-for="type in repaymentDuration"
+							>
+								{{ type.name }}
+							</option>
+						</select>
 					</div>
+
+                </div>
+
+                <div class="row">
+
 					<div class="col form-group">
-						<label for="28th-day" class="form-control-label"
-							>28th day of the month
-						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
+						<label for="amount" class="form-control-label"
+							>Repayment Cycle</label
+						>
+						<select
+							class="custom-select w-100"
 							v-model="form1[3]"
-						/>
+							v-validate="'required'"
+						>
+							<option disabled selected="selected">Repayment Cycle</option>
+							<option
+								:value="type.id"
+								:key="type.id"
+								v-for="type in repaymentCyclesopt"
+							>
+								{{ type.name }}
+							</option>
+						</select>
+					</div>
+
+					<div class="col form-group">
+						<label for="amount" class="form-control-label">Business Type</label>
+						<select
+							class="custom-select w-100"
+							v-model="form1[4]"
+							v-validate="'required'"
+						>
+							<option disabled selected="selected">Business Type</option>
+							<option
+								:value="type.id"
+								:key="type.id"
+								v-for="type in businessTypes"
+							>
+								{{ type.name }}
+							</option>
+						</select>
 					</div>
 				</div>
 			</tab-content>
-			<tab-content title="2nd Month" :before-change="beforeTabSwitch2">
+			<tab-content title="1st Month" :before-change="beforeTabSwitch2">				
 				<div class="row">
 					<div class="col form-group">
-						<label for="custom-date" class="form-control-label"
+						<label for="7th-day" class="form-control-label"
 							>7th day of the month
 						</label>
 						<input
@@ -103,7 +123,7 @@
 						/>
 					</div>
 					<div class="col form-group">
-						<label for="custom-date" class="form-control-label"
+						<label for="14th-day" class="form-control-label"
 							>14th day of the month
 						</label>
 						<input
@@ -118,7 +138,7 @@
 				<br />
 				<div class="row">
 					<div class="col form-group">
-						<label for="custom-date" class="form-control-label"
+						<label for="21st-day" class="form-control-label"
 							>21st day of the month
 						</label>
 						<input
@@ -130,7 +150,7 @@
 						/>
 					</div>
 					<div class="col form-group">
-						<label for="custom-date" class="form-control-label"
+						<label for="28th-day" class="form-control-label"
 							>28th day of the month
 						</label>
 						<input
@@ -143,7 +163,7 @@
 					</div>
 				</div>
 			</tab-content>
-			<tab-content title="3rd Month" :before-change="beforeTabSwitch3">
+			<tab-content title="2nd Month" :before-change="beforeTabSwitch3">
 				<div class="row">
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
@@ -198,6 +218,61 @@
 					</div>
 				</div>
 			</tab-content>
+			<tab-content title="3rd Month" :before-change="beforeTabSwitch4">
+				<div class="row">
+					<div class="col form-group">
+						<label for="custom-date" class="form-control-label"
+							>7th day of the month
+						</label>
+						<input
+							class="form-control w-100"
+							type="number"
+							min="1"
+							max="31"
+							v-model="form4[0]"
+						/>
+					</div>
+					<div class="col form-group">
+						<label for="custom-date" class="form-control-label"
+							>14th day of the month
+						</label>
+						<input
+							class="form-control w-100"
+							type="number"
+							min="1"
+							max="31"
+							v-model="form4[1]"
+						/>
+					</div>
+				</div>
+				<br />
+				<div class="row">
+					<div class="col form-group">
+						<label for="custom-date" class="form-control-label"
+							>21st day of the month
+						</label>
+						<input
+							class="form-control w-100"
+							type="number"
+							min="1"
+							max="31"
+							v-model="form4[2]"
+						/>
+					</div>
+					<div class="col form-group">
+						<label for="custom-date" class="form-control-label"
+							>28th day of the month
+						</label>
+						<input
+							class="form-control w-100"
+							type="number"
+							min="1"
+							max="31"
+							v-model="form4[3]"
+						/>
+					</div>
+				</div>
+			</tab-content>
 		</form-wizard>
 	</div>
 </template>
@@ -207,6 +282,8 @@
 	import { mapGetters } from "vuex";
 	import { FormWizard, TabContent } from "vue-form-wizard";
 	import "vue-form-wizard/dist/vue-form-wizard.min.css";
+import Flash from "../utilities/flash";
+
 	//component code
 
 	export default {
@@ -223,17 +300,33 @@
 	            form1: [],
 	            form2: [],
 	            form3: [],
+				form4: [],
 	            balances: [],
 	            next1: false,
 	            next2: false,
 	            next3: false,
+	            next4: false,
+
 	           apiUrls: {
-	                recommend: `/api/recommendation`
+	                recommend: `/api/recommendation`,
+					repaymentDuration: `/api/repayment_duration`,
+					repaymentCycles: `/api/repayment_cycle`,
+					downPaymentRates: `/api/down_payment_rate`,
+					businessTypes: `/api/business_type`,
 	            },
-	            formData: {}
+	            formData: {},
+				repaymentCyclesopt: [],
+				downPaymentRates: [],
+				repaymentDuration: [],
+                businessTypes: []
 	        };
 	    },
-	    async mounted() {},
+	    async mounted() {
+			await this.getRepaymentCycles();
+			await this.getDownPaymentRates();
+			await this.getRepaymentDuration();
+            await this.getBusinessTypes();
+		},
 	    computed: {
 	        // ...mapGetters(["getPaymentMethods"])
 	    },
@@ -243,7 +336,8 @@
 	                !this.form1[0] ||
 	                !this.form1[1] ||
 	                !this.form1[2] ||
-	                !this.form1[3]
+	                !this.form1[3] ||
+					!this.form1[4]
 	            ) {
 	                this.next1 = false;
 	            } else this.next1 = true;
@@ -269,6 +363,67 @@
 	            } else this.next3 = true;
 	        },
 
+			isDisable4() {
+	            if (
+	                !this.form4[0] ||
+	                !this.form4[1] ||
+	                !this.form4[2] ||
+	                !this.form4[3]
+	            ) {
+	                this.next4 = false;
+	            } else this.next4 = true;
+	        },
+
+			async getRepaymentCycles() {
+				try {
+					const fetchRepaymentCycles = await get(this.apiUrls.repaymentCycles);
+					this.repaymentCyclesopt = fetchRepaymentCycles.data.data.data;
+					this.repaymentCyclesopt = this.repaymentCyclesopt.filter((item) => {
+						return item.name !== 'custom';
+					});
+				} catch (err) {
+					this.$displayErrorMessage(err);
+				}
+			},
+			async getDownPaymentRates() {
+				try {
+					const fetchDownPaymentRates = await get(
+						this.apiUrls.downPaymentRates
+					);
+					this.downPaymentRates = fetchDownPaymentRates.data.data.data;
+					this.downPaymentRates = this.downPaymentRates.filter((item) => {
+						return item.name !== 'zero' && item.name !== 'ten';
+					});
+				} catch (err) {
+					this.$displayErrorMessage(err);
+				}
+			},
+			async getRepaymentDuration() {
+				try {
+					const fetchRepaymentDuration = await get(
+						this.apiUrls.repaymentDuration
+					);
+					this.repaymentDuration = fetchRepaymentDuration.data.data.data;
+					this.repaymentDuration = this.repaymentDuration.filter((item) => {
+						return item.name !== 'nine_months' && item.name !== 'twelve_months';
+					});
+				} catch (err) {
+					this.$displayErrorMessage(err);
+				}
+			},
+
+			async getBusinessTypes() {
+				try {
+					const fetchBusinessTypes = await get(this.apiUrls.businessTypes);
+					this.businessTypes = fetchBusinessTypes.data.data.data;
+					this.businessTypes = this.businessTypes.filter((item) => {
+						return item.name.includes('Products');
+					});
+				} catch (err) {
+					this.$displayErrorMessage(err);
+				}
+			},
+
 	        validateAsync: function() {
 	            return new Promise((resolve, reject) => {
 	                () => {
@@ -284,8 +439,7 @@
 	            });
 	        },
 	        onComplete: function() {
-	            const _balances = [this.form1, this.form2, this.form3];
-	            alert("Yay. Done!");
+	            
 	        },
 	        beforeTabSwitch1: function() {
 	            this.isDisable1();
@@ -299,12 +453,19 @@
 	            this.isDisable3();
 	            return this.next3;
 	        },
+			beforeTabSwitch4: function() {
+	            this.isDisable4();
+	            return this.next4;
+	        },
 	        async logAmounts() {
 	            const data = { 
-                    balances: [this.form1, this.form2, this.form3], 
+                    balances: [this.form2, this.form3, this.form4], 
                     type: 'informal', 
-                    down_payment: this.formData.downpayment, 
-                    total_price: this.formData.product_price 
+                    total_price: this.form1[0] ,
+					plan_id: this.form1[1],
+					duration: this.form1[2],
+					cycle: this.form1[3],
+					business_type: this.form1[4]
                     };
 	            this.$validator.validateAll().then(result => {
 	                if (result) {

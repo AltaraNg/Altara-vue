@@ -12,7 +12,7 @@
 				<div class="row">
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
-							>Product Price
+							>Cost Price
 						</label>
 						<input
 							class="form-control w-100"

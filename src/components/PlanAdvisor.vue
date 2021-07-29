@@ -12,7 +12,7 @@
 				<div class="row">
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
-							>Product Price
+							>Total Amount To Spend
 						</label>
 						<input
 							class="form-control w-100"
@@ -106,21 +106,7 @@
 					</div>
 
 					<div class="col form-group">
-						<label for="amount" class="form-control-label">Business Type</label>
-						<select
-							class="custom-select w-100"
-							v-model="form2[3]"
-							v-validate="'required'"
-						>
-							<option disabled selected="selected">Business Type</option>
-							<option
-								:value="type.id"
-								:key="type.id"
-								v-for="type in businessTypes"
-							>
-								{{ type.name }}
-							</option>
-						</select>
+						
 					</div>
 				</div>
 			</tab-content>
@@ -185,8 +171,8 @@
 				if (
 					!this.form2[0] ||
 					!this.form2[1] ||
-					!this.form2[2] ||
-					!this.form2[3]
+					!this.form2[2] 
+					
 				) {
 					this.next2 = false;
 				} else this.next2 = true;
@@ -270,8 +256,7 @@
 				this.formData.salary = this.form1[1];
 				this.formData.plan_id = this.form2[0];
 				this.formData.duration = this.form2[1];
-				this.formData.cycle = this.form2[2];
-				this.formData.business_type = this.form2[3];
+				this.formData.cycle = this.form2[2];				
 				this.formData.type = 'formal';
 
 				this.$validator.validateAll().then((result) => {
@@ -290,8 +275,8 @@
 									  })
 									: this.$swal({
 											icon: 'success',
-											title: 'Recommendation successful.',
-											text: resData,
+											title: resData[1] === 0 ? `The best plan is ${resData[0]}%`: `The best plan is ${resData[0]}% + ${resData[1]} repayment`,
+											text: "Recommendation Successful"
 									  });
 							})
 							.catch(() => {

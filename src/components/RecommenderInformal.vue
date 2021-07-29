@@ -13,7 +13,7 @@
 
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
-							>Product Price
+							>Total Amount To Spend
 						</label>
 						<input
 							class="form-control w-100"
@@ -43,27 +43,7 @@
 						</select>
 					</div>
 
-					<div class="col form-group">
-						<label for="amount" class="form-control-label"
-							>Repayment Duration</label
-						>
-						<select
-							class="custom-select w-100"
-							v-model="form1[2]"
-							v-validate="'required'"
-						>
-							<option disabled selected="selected">
-								Repayment Duration
-							</option>
-							<option
-								:value="type.id"
-								:key="type.id"
-								v-for="type in repaymentDuration"
-							>
-								{{ type.name }}
-							</option>
-						</select>
-					</div>
+					
 
                 </div>
 
@@ -90,17 +70,21 @@
 					</div>
 
 					<div class="col form-group">
-						<label for="amount" class="form-control-label">Business Type</label>
+						<label for="amount" class="form-control-label"
+							>Repayment Duration</label
+						>
 						<select
 							class="custom-select w-100"
-							v-model="form1[4]"
+							v-model="form1[2]"
 							v-validate="'required'"
 						>
-							<option disabled selected="selected">Business Type</option>
+							<option disabled selected="selected">
+								Repayment Duration
+							</option>
 							<option
 								:value="type.id"
 								:key="type.id"
-								v-for="type in businessTypes"
+								v-for="type in repaymentDuration"
 							>
 								{{ type.name }}
 							</option>
@@ -336,8 +320,8 @@ import Flash from "../utilities/flash";
 	                !this.form1[0] ||
 	                !this.form1[1] ||
 	                !this.form1[2] ||
-	                !this.form1[3] ||
-					!this.form1[4]
+	                !this.form1[3]
+					
 	            ) {
 	                this.next1 = false;
 	            } else this.next1 = true;
@@ -465,7 +449,6 @@ import Flash from "../utilities/flash";
 					plan_id: this.form1[1],
 					duration: this.form1[2],
 					cycle: this.form1[3],
-					business_type: this.form1[4]
                     };
 	            this.$validator.validateAll().then(result => {
 	                if (result) {
@@ -481,9 +464,9 @@ import Flash from "../utilities/flash";
                                       text: `Try a lower total price`
                                   })
                                 : this.$swal({
-                                      icon: "success",
-                                      title: "Recommendation successful.",
-                                      text: resData
+                                      icon: 'success',
+											title: resData[1] === 0 ? `The best plan is ${resData[0]}%`: `The best plan is ${resData[0]}% + ${resData[1]} repayment`,
+											text: "Recommendation Successful"
                                   });
 	                        })
 	                        .catch(() => {

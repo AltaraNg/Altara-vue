@@ -261,9 +261,9 @@ const router = new VueRouter({
 				},
 
 				{
-					path: 'plan-advisor',
+					path: 'recommender-formal',
 					component: PlanAdvisor,
-					name: 'plan-advisor',
+					name: 'recommender-formal',
 					meta: { mode: 'create' },
 				},
 				{
@@ -368,9 +368,9 @@ const router = new VueRouter({
 					meta: { mode: 'create' },
 				},
                 {
-					path: 'plan-advisor',
+					path: 'recommender-formal',
 					component: PlanAdvisor,
-					name: 'plan-advisor',
+					name: 'recommender-formal',
 					meta: { mode: 'create' },
 				},
 				{

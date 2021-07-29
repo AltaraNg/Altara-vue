@@ -52,16 +52,16 @@ export default {
         },
 
         {
-          url: "plan-advisor",
-          title: "Plan Advisor",
+          url: "recommender-formal",
+          title: "Recommender Service Formal",
           url_c: "Check suitable plan",
-          desc: "Plan Advisor",
+          desc: "Recommender Service Formal",
         },
         {
           url: "recommender-informal",
-          title: "Recommender Informal",
+          title: "Recommender Service Informal",
           url_c: "Check suitable plan for informal",
-          desc: "Recommender Informal",
+          desc: "Recommender Service Informal",
         },
       ],
     };

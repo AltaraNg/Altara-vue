@@ -2,7 +2,7 @@
 	<div style="margin-left: 5rem; margin-right: 5rem;">
 		<form-wizard
 			@on-complete="logAmounts()"
-			title="ENTER ACCOUNT BALANCE FOR THE FOLLOWING DAYS"
+			title="Fill Form to know recommended plan"
 			subtitle=""
 			color="#2975A5"
 			error-color="#FF0000"

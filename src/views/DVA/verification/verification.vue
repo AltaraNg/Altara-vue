@@ -755,10 +755,7 @@
                 * it after opening and closing the modal responsible for that
                 * particular action*/
             });
-            this.flag = localStorage.getItem('flag');
-            if(this.flag === 'beta'){
-                this.cardView = this.cardView.concat(['guarantor_id', 'proof_of_income']);
-            }
+            
         },
     }
 </script>

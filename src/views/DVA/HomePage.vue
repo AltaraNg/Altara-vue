@@ -110,6 +110,19 @@ export default {
           url_c: "Register new customer now!",
           desc: "Registering new customers",
         },
+       {
+          url: "recommender-formal",
+          title: "Recommender Service Formal",
+          url_c: "Check suitable plan",
+          desc: "Recommender Service Formal",
+        },
+
+        {
+          url: "recommender-informal",
+          title: "Recommender Sevice Informal",
+          url_c: "Check suitable plan for informal",
+          desc: "Recommender Service Informal",
+        },
 
         // TODO:: cleanup
       ],

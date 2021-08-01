@@ -50,6 +50,19 @@ export default {
           url_c: "Check credit worthiness",
           desc: "Credit Worthy",
         },
+
+        {
+          url: "recommender-formal",
+          title: "Recommender Service Formal",
+          url_c: "Check suitable plan",
+          desc: "Recommender Service Formal",
+        },
+        {
+          url: "recommender-informal",
+          title: "Recommender Service Informal",
+          url_c: "Check suitable plan for informal",
+          desc: "Recommender Service Informal",
+        },
       ],
     };
   },

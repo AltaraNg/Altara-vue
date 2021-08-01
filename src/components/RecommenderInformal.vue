@@ -465,7 +465,7 @@ import Flash from "../utilities/flash";
                                   })
                                 : this.$swal({
                                       icon: 'success',
-											title: resData[1] === 0 ? `The best plan is ${resData[0]}%`: `The best plan is ${resData[0]}% + ${resData[1]} repayment`,
+											title: resData[1] === 0 ? `The minimum recommended plan is ${resData[0]}%`: `The minimum recommended plan is ${resData[0]}% + ${resData[1]} repayment`,
 											text: "Recommendation Successful"
                                   });
 	                        })

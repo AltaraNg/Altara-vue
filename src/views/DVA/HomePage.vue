@@ -112,16 +112,16 @@ export default {
         },
        {
           url: "recommender-formal",
-          title: "Recommender Service Formal",
+          title: "Recommendation Service Formal",
           url_c: "Check suitable plan",
-          desc: "Recommender Service Formal",
+          desc: "Recommendation Service Formal",
         },
 
         {
           url: "recommender-informal",
-          title: "Recommender Sevice Informal",
+          title: "Recommendation Sevice Informal",
           url_c: "Check suitable plan for informal",
-          desc: "Recommender Service Informal",
+          desc: "Recommendation Service Informal",
         },
 
         // TODO:: cleanup

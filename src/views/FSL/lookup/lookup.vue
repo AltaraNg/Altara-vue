@@ -618,7 +618,7 @@
 									Edit Payment
 								</button>
 								<button
-									@click="preparePayments()"
+									@click="preparePayments(index)"
 									class="btn status my-sm-2 approved ml-4"
 								>
 									Click here to Submit Payment(s)!
@@ -900,7 +900,6 @@
 
 					this.paymentForm.payments.push(newPaymentData);
 				} else {
-			    console.log(this.getPaymentMethods);
           this.paymentMeths = this.getPaymentMethods.filter(item => {
 			        return item.name !== 'direct-debit'
 			    });
@@ -967,7 +966,7 @@
 				});
 			},
 
-			preparePayments() {
+			preparePayments(index=0) {
 				if (!this.canAddPayment) return;
 				let payments = {};
 				this.paymentForm.payments.forEach((payment) => {
@@ -983,7 +982,7 @@
 				});
 				this.activeOrder.payments = payments;
 				!$.isEmptyObject(payments)
-					? this.savePayments()
+					? this.savePayments(index)
 					: Flash.setError('You have not added any payment.');
 			},
 			updateAmmo(armo) {
@@ -1014,7 +1013,7 @@
 					});
 			},
 
-			savePayments() {
+			savePayments(index) {
 				if (!this.canAddPayment) return;
 				this.$LIPS(true);
 				let type, data, order, orderIndex;
@@ -1026,6 +1025,7 @@
 					repayment_id: this.activeOrder.order.id,
 					order_id: this.activeOrder.order.id,
 					amount: this.paymentForm.payments[0]._pay,
+					payment_method_id: this.paymentForm.payments[index]._payment_method
 				};
 				post(`/api/repayment`, data)
 					.then(async (res) => {

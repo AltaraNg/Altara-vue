@@ -126,7 +126,7 @@
                 </select>
               </div>
 
-              <div class="col form-group">
+               <div class="col form-group">
                 <label for="amount" class="form-control-label"
                   >Downpayment Rates</label
                 >
@@ -142,12 +142,12 @@
                   <option
                     :value="type"
                     :key="type.id"
-                    v-for="type in downPaymentRates"
+                    v-for="type in getdownPaymentRates"
                   >
                     {{ type.name }}
                   </option>
                 </select>
-              </div>
+              </div> 
               <div class="col form-group">
                 <label for="amount" class="form-control-label"
                   >Business Type</label
@@ -309,7 +309,7 @@
 
                     <tr class="table-separator">
                       <th>Repayment Amount</th>
-                      <td v-for="am in amortization">
+                      <td v-for="{am} in amortization" :key="am.index">
                         {{ $formatCurrency(am.expected_amount) }}
                       </td>
                     </tr>
@@ -348,6 +348,7 @@ export default {
       repaymentDuration: [],
       repaymentCyclesopt: [],
       downPaymentRates: [],
+      filteredDownPaymentRates:[],
       businessTypes: [],
       amortization: [],
       calculation: [],
@@ -391,6 +392,12 @@ export default {
   },
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
+    getdownPaymentRates(){
+      return this.downPaymentRates.filter((item)=>{
+        return !(item.name.includes('plus')) 
+        
+      })
+    }
   },
   methods: {
     customDate(event) {
@@ -605,6 +612,8 @@ export default {
       try {
         const fetchDownPaymentRates = await get(this.apiUrls.downPaymentRates);
         this.downPaymentRates = fetchDownPaymentRates.data.data.data;
+
+        
       } catch (err) {
         this.$displayErrorMessage(err);
       }

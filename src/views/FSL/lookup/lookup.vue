@@ -35,8 +35,7 @@
 						>
 							<div
 								class="mb-3 row attendance-item"
-								v-for="(order, index) in customer.orders"
-							>
+								v-for="(order, index) in customer.orders" :key="order.index"											>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
 									style="max-width: 100px"
@@ -384,7 +383,7 @@
 												</tr>
 												<tr>
 													<th>Actual Pay Day</th>
-													<td v-for="date in activeOrder.actualPayDates">
+													<td v-for="{date, index} in activeOrder.actualPayDates" :key="index">
 														{{ date }}
 													</td>
 												</tr>
@@ -431,6 +430,7 @@
 													<td
 														class="text-capitalize"
 														v-for="repaymentBank in activeOrder.paymentBanks"
+														:key="repaymentBank.index"
 													>
 														{{ Order.convertToName(repaymentBank, 'banks') }}
 													</td>
@@ -546,6 +546,7 @@
 															<option
 																:value="id"
 																v-for="{ name, id } in paymentMeths"
+																:key="name.id"
 															>
 																{{ name | capitalize }}
 															</option>

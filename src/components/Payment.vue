@@ -8,10 +8,10 @@
                  <template #default= "{ searchQuery }">          
                     <div class="col-md">
                     <div>
-                    <label class="form-control-label">Payment Type:  </label>
+                    <label class="form-control-label">Payment Method:  </label>
                     </div>
                    <select name="category" id="category" class="custom-select" v-model="searchQuery.method">
-                        <option :value="type.id" v-for="type in getPaymentMethods">
+                        <option :value="type.id" :key="type.id" v-for="type in getPaymentMethods">
                             {{type.name}}
                         </option>
                     </select>
@@ -21,7 +21,7 @@
                     <label class="form-control-label">Bank:  </label>
                     </div>
                    <select name="bank" id="bank" class="custom-select" v-model="searchQuery.bank">
-                        <option :value="type.id" v-for="type in getBanks">
+                        <option :value="type.id" :key="type.id" v-for="type in getBanks">
                             {{type.name}}
                         </option>
                     </select>
@@ -70,7 +70,7 @@
                 </div>
             </div>
             <div v-if="tab === 'Reconcile'">
-                <div class="mb-3 row attendance-item" v-for="(item, index) in renderedList">
+                <div class="mb-3 row attendance-item" v-for="(item, index) in renderedList" :key="item.index">
                     <div class="col d-flex align-items-center" style="max-width: 120px">
                         <span class="user mx-auto" :class="tab" @click="updateReconciledPayment(item)">{{index+OId}}</span>
                     </div>
@@ -317,7 +317,7 @@
                 let list = 1;
                 const tabs = ["Log Payment","View Payments", "Reconcile"];
                 const headings2 = ['index','Type','Date', 'Cash In Hand', 'Total', 'Amount Bank','Variance','Comment', 'Status'];
-                const headings1 = ['index','Customer ID', 'Date of Payment', 'Time of Payment','Payment Purpose','Payment Type','Amount Paid', 'Bank','Comment'];
+                const headings1 = ['index','Customer ID', 'Date of Payment', 'Time of Payment','Payment Purpose','Payment Method','Amount Paid', 'Bank','Comment'];
                 const headings = this.tab === "View Payments" ? headings1 : this.tab === "Reconcile" ? headings2 : '';
                 return {tabs, headings, list};
             },

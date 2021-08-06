@@ -176,6 +176,7 @@ export default {
   },
 
   methods: {
+    
     getParent(id, array) {
       if(array.length > 0){
       return array.find((item) => {

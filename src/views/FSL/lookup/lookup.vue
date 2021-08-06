@@ -781,7 +781,7 @@
 							icon: 'success',
 							title: 'Order Successfully Updated',
 						});
-						console.log('order', this.currentOrder);
+						
 						let x = this.customer.new_orders.findIndex((elem) => {
 							return elem.id === this.currentOrder.id;
 						});
@@ -860,7 +860,6 @@
 				} else {
 					this.newOrder = false;
 					this.activeOrder = order;
-					console.log(this.activeOrder);
 					this.paymentForm = { payments: [] };
 				}
 
@@ -909,7 +908,7 @@
 
 					this.paymentForm.payments.push(newPaymentData);
 				} else {
-			    console.log(this.getPaymentMethods);
+			    
           this.paymentMeths = this.getPaymentMethods.filter(item => {
 			        return item.name !== 'direct-debit'
 			    });

@@ -19,7 +19,7 @@
 							<div class="col light-heading" style="max-width: 100px">
 								S/No.
 							</div>
-							<div class="col light-heading" v-for="header in headers">
+							<div class="col light-heading" v-for="(header, index) in headers" :key="index">
 								{{ header }}
 							</div>
 						</div>
@@ -110,7 +110,7 @@
 							</div>
 							<div
 								class="mb-3 row attendance-item"
-								v-for="(order, index) in customer.new_orders"
+								v-for="(order, index) in customer.new_orders" :key="index"
 							>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
@@ -626,7 +626,7 @@
 									Edit Payment
 								</button>
 								<button
-									@click="preparePayments()"
+									@click="preparePayments(index)"
 									class="btn status my-sm-2 approved ml-4"
 								>
 									Click here to Submit Payment(s)!
@@ -908,7 +908,6 @@
 
 					this.paymentForm.payments.push(newPaymentData);
 				} else {
-			    
           this.paymentMeths = this.getPaymentMethods.filter(item => {
 			        return item.name !== 'direct-debit'
 			    });
@@ -975,7 +974,7 @@
 				});
 			},
 
-			preparePayments() {
+			preparePayments(index=0) {
 				if (!this.canAddPayment) return;
 				let payments = {};
 				this.paymentForm.payments.forEach((payment) => {
@@ -991,7 +990,7 @@
 				});
 				this.activeOrder.payments = payments;
 				!$.isEmptyObject(payments)
-					? this.savePayments()
+					? this.savePayments(index)
 					: Flash.setError('You have not added any payment.');
 			},
 			updateAmmo(armo) {
@@ -1022,7 +1021,7 @@
 					});
 			},
 
-			savePayments() {
+			savePayments(index) {
 				if (!this.canAddPayment) return;
 				this.$LIPS(true);
 				let type, data, order, orderIndex;
@@ -1034,6 +1033,7 @@
 					repayment_id: this.activeOrder.order.id,
 					order_id: this.activeOrder.order.id,
 					amount: this.paymentForm.payments[0]._pay,
+					payment_method_id: this.paymentForm.payments[index]._payment_method
 				};
 				post(`/api/repayment`, data)
 					.then(async (res) => {

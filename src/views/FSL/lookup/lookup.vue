@@ -371,13 +371,13 @@
 												<tr>
 													<th>Repayment</th>
 													<td
-														v-for="caption in activeOrder.repaymentCaptions"
-														v-html="caption"
+														v-for="(caption, index) in activeOrder.repaymentCaptions"
+														v-html="caption" :key="index"
 													></td>
 												</tr>
 												<tr class="table-separator">
 													<th>Due Date</th>
-													<td v-for="date in activeOrder.dueDates">
+													<td v-for="(date, index) in activeOrder.dueDates" :key="index">
 														{{ date }}
 													</td>
 												</tr>
@@ -391,21 +391,24 @@
 													<th>Status</th>
 													<td
 														:class="status.class"
-														v-for="status in activeOrder.paymentStatusClasses"
+														v-for="(status,index) in activeOrder.paymentStatusClasses"
+														:key="index"
 													>
 														<i :class="status.icon" class="fas"></i>
 													</td>
 												</tr>
 												<tr class="table-separator">
 													<th>Repayment Amount</th>
-													<td v-for="payment in activeOrder.amountsToBePaid">
+													<td v-for="(payment, index) in activeOrder.amountsToBePaid" 
+													:key="index">
 														{{ $formatCurrency(payment) }}
 													</td>
 												</tr>
 												<tr>
 													<th>Actual Amount Paid</th>
 													<td
-														v-for="payment in activeOrder.actualAmountsPaid"
+														v-for="(payment, index) in activeOrder.actualAmountsPaid"
+														:key="index"
 														@click="updateAmmo(armo)"
 													>
 														{{ $formatCurrency(payment) }}
@@ -415,7 +418,8 @@
 													<th>Payment Method</th>
 													<td
 														class="text-capitalize"
-														v-for="repaymentMethod in activeOrder.paymentMethods"
+														v-for="(repaymentMethod, index) in activeOrder.paymentMethods"
+														:key="index"
 													>
 														{{
 															Order.convertToName(
@@ -497,7 +501,8 @@
 													<th>Collected By</th>
 													<th>Action</th>
 												</tr>
-												<tr v-for="(payment, index) in paymentForm.payments">
+												<tr v-for="(payment, index) in paymentForm.payments"
+												:key="index">
 													<th>{{ index + 1 }}</th>
 													<th>
 														<div
@@ -519,7 +524,8 @@
 														>
 															<option
 																:value="i"
-																v-for="i in activeOrder.repaymentLevel"
+																v-for="(i, index) in activeOrder.repaymentLevel"
+																:key="index"
 															>
 																{{ $getColumn(i) }} Repayment
 															</option>
@@ -562,7 +568,8 @@
 														>
 															<option
 																:value="id"
-																v-for="{ name, id } in getBanks"
+																v-for="(name, id) in getBanks"
+																:key="id"
 															>
 																{{ name }}
 															</option>
@@ -853,6 +860,7 @@
 				} else {
 					this.newOrder = false;
 					this.activeOrder = order;
+					console.log(this.activeOrder);
 					this.paymentForm = { payments: [] };
 				}
 

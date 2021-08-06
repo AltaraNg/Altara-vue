@@ -302,14 +302,14 @@
                   <tbody class="text-center">
                     <tr class="table-separator">
                       <th>Due Date</th>
-                      <td v-for="am in amortization">
+                      <td v-for="(am, index) in amortization" :key="index">
                         {{ am.expected_payment_date }}
                       </td>
                     </tr>
 
                     <tr class="table-separator">
                       <th>Repayment Amount</th>
-                      <td v-for="{am} in amortization" :key="am.index">
+                      <td v-for="(am, index) in amortization" :key="index">
                         {{ $formatCurrency(am.expected_amount) }}
                       </td>
                     </tr>
@@ -348,7 +348,6 @@ export default {
       repaymentDuration: [],
       repaymentCyclesopt: [],
       downPaymentRates: [],
-      filteredDownPaymentRates:[],
       businessTypes: [],
       amortization: [],
       calculation: [],

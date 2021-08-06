@@ -9,8 +9,7 @@
 <script>
     import Lookup from "../lookup/lookup";
     import Flash from '../../../utilities/flash';
-    // import PaymentFilter from "../../../components/PaymentFilter"; 
-
+   
     export default {
         components: {Lookup},
         data() {

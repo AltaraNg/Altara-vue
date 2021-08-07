@@ -12,16 +12,50 @@
 				<div class="row">
 
 					<div class="col form-group">
+						<label for="amount" class="form-control-label"
+							>Customer Type</label
+						>
+						<select
+							class="custom-select w-100"
+							v-model="customer_type"
+							v-validate="'required'"
+						>							
+							<option
+								value="new_customer"							
+							>
+								New Customer
+							</option>
+
+							<option
+								value="renewal"							
+							>
+								Renewal
+							</option>
+						</select>
+					</div>
+					<div class="col form-group">
+						
+					</div>
+
+					
+
+                </div>
+
+
+				<div class="row">
+
+					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
-							>Total Amount To Spend
+							>Total Product Price
 						</label>
-						<input
+						<!-- <input
 							class="form-control w-100"
 							type="number"
 							min="1"
 							max="31"
 							v-model="form1[0]"
-						/>
+						/> -->
+						<currency-input :options=" { currency: 'NGN'}" v-model="form1[0]" class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="amount" class="form-control-label"
@@ -96,54 +130,30 @@
 				<div class="row">
 					<div class="col form-group">
 						<label for="7th-day" class="form-control-label"
-							>7th day of the month
+							>Max Balance (6th, 7th, 8th)
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form2[0]"
-						/>
+						<currency-input :options=" { currency: 'NGN'}" v-model="form2[0]" class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="14th-day" class="form-control-label"
-							>14th day of the month
+							>Max Balance (13th, 14th, 15th)
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form2[1]"
-						/>
+						<currency-input :options=" { currency: 'NGN'}" v-model="form2[1]" class="form-control w-100" />
 					</div>
 				</div>
 				<br />
 				<div class="row">
 					<div class="col form-group">
 						<label for="21st-day" class="form-control-label"
-							>21st day of the month
+							>Max Balance (20th, 21st, 22nd)
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form2[2]"
-						/>
+						<currency-input :options=" { currency: 'NGN'}" v-model="form2[2]" class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="28th-day" class="form-control-label"
-							>28th day of the month
+							>Max Balance (27th, 28th, 29th)
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form2[3]"
-						/>
+						<currency-input :options=" { currency: 'NGN'}" v-model="form2[3]" class="form-control w-100" />
 					</div>
 				</div>
 			</tab-content>
@@ -151,54 +161,30 @@
 				<div class="row">
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
-							>7th day of the month
+							>Max Balance (6th, 7th, 8th)
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form3[0]"
-						/>
+						<currency-input :options=" { currency: 'NGN'}" v-model="form3[0]" class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
-							>14th day of the month
+							>Max Balance (13th, 14th, 15th)
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form3[1]"
-						/>
+						<currency-input :options=" { currency: 'NGN'}" v-model="form3[1]" class="form-control w-100" />
 					</div>
 				</div>
 				<br />
 				<div class="row">
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
-							>21st day of the month
+							>Max Balance (20th, 21st, 22nd)
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form3[2]"
-						/>
+						<currency-input :options=" { currency: 'NGN'}" v-model="form3[2]" class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
-							>28th day of the month
+							>Max Balance (27th, 28th, 29th)
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form3[3]"
-						/>
+						<currency-input :options=" { currency: 'NGN'}" v-model="form3[3]" class="form-control w-100" />
 					</div>
 				</div>
 			</tab-content>
@@ -206,54 +192,30 @@
 				<div class="row">
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
-							>7th day of the month
+							>Max Balance (6th, 7th, 8th)
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form4[0]"
-						/>
+						<currency-input :options=" { currency: 'NGN'}" v-model="form4[0]" class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
-							>14th day of the month
+							>Max Balance (13th, 14th, 15th)
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form4[1]"
-						/>
+						<currency-input :options=" { currency: 'NGN'}" v-model="form4[1]" class="form-control w-100" />
 					</div>
 				</div>
 				<br />
 				<div class="row">
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
-							>21st day of the month
+							>Max Balance (20th, 21st, 22nd)
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form4[2]"
-						/>
+						<currency-input :options=" { currency: 'NGN'}" v-model="form4[2]" class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
-							>28th day of the month
+							>Max Balance (27th, 28th, 29th)
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form4[3]"
-						/>
+						<currency-input :options=" { currency: 'NGN'}" v-model="form4[3]" class="form-control w-100" />
 					</div>
 				</div>
 			</tab-content>
@@ -266,6 +228,7 @@
 	import { mapGetters } from "vuex";
 	import { FormWizard, TabContent } from "vue-form-wizard";
 	import "vue-form-wizard/dist/vue-form-wizard.min.css";
+	import CurrencyInput from "./CurrencyInput.vue";
 import Flash from "../utilities/flash";
 
 	//component code
@@ -274,7 +237,9 @@ import Flash from "../utilities/flash";
 
 	    components: {
 	        FormWizard,
-	        TabContent
+	        TabContent,
+			CurrencyInput,
+CurrencyInput
 	    },
 	    data() {
 	        return {
@@ -302,7 +267,8 @@ import Flash from "../utilities/flash";
 				repaymentCyclesopt: [],
 				downPaymentRates: [],
 				repaymentDuration: [],
-                businessTypes: []
+                businessTypes: [],
+				customer_type: ''
 	        };
 	    },
 	    async mounted() {
@@ -449,6 +415,7 @@ import Flash from "../utilities/flash";
 					plan_id: this.form1[1],
 					duration: this.form1[2],
 					cycle: this.form1[3],
+					customer_type: this.customer_type
                     };
 	            this.$validator.validateAll().then(result => {
 	                if (result) {

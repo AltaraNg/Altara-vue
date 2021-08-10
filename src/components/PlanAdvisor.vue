@@ -180,6 +180,10 @@
 					this.downPaymentRates = this.downPaymentRates.filter((item) => {
 						return item.name !== 'zero' && item.name !== 'ten';
 					});
+
+					this.downPaymentRates = this.downPaymentRates.sort((a, b) => {
+						return a.percent-b.percent;
+					});
 				} catch (err) {
 					this.$displayErrorMessage(err);
 				}

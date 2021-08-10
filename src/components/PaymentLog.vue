@@ -611,6 +611,9 @@ export default {
       try {
         const fetchDownPaymentRates = await get(this.apiUrls.downPaymentRates);
         this.downPaymentRates = fetchDownPaymentRates.data.data.data;
+        this.downPaymentRates = this.downPaymentRates.sort((a, b) => {
+						return a.percent-b.percent;
+					});
 
         
       } catch (err) {

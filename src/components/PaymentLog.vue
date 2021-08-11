@@ -126,7 +126,7 @@
                 </select>
               </div>
 
-              <div class="col form-group">
+               <div class="col form-group">
                 <label for="amount" class="form-control-label"
                   >Downpayment Rates</label
                 >
@@ -142,12 +142,12 @@
                   <option
                     :value="type"
                     :key="type.id"
-                    v-for="type in downPaymentRates"
+                    v-for="type in getdownPaymentRates"
                   >
                     {{ type.name }}
                   </option>
                 </select>
-              </div>
+              </div> 
               <div class="col form-group">
                 <label for="amount" class="form-control-label"
                   >Business Type</label
@@ -302,14 +302,14 @@
                   <tbody class="text-center">
                     <tr class="table-separator">
                       <th>Due Date</th>
-                      <td v-for="am in amortization">
+                      <td v-for="(am, index) in amortization" :key="index">
                         {{ am.expected_payment_date }}
                       </td>
                     </tr>
 
                     <tr class="table-separator">
                       <th>Repayment Amount</th>
-                      <td v-for="am in amortization">
+                      <td v-for="(am, index) in amortization" :key="index">
                         {{ $formatCurrency(am.expected_amount) }}
                       </td>
                     </tr>
@@ -391,6 +391,12 @@ export default {
   },
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
+    getdownPaymentRates(){
+      return this.downPaymentRates.filter((item)=>{
+        return !(item.name.includes('plus')) 
+        
+      })
+    }
   },
   methods: {
     customDate(event) {
@@ -605,6 +611,11 @@ export default {
       try {
         const fetchDownPaymentRates = await get(this.apiUrls.downPaymentRates);
         this.downPaymentRates = fetchDownPaymentRates.data.data.data;
+        this.downPaymentRates = this.downPaymentRates.sort((a, b) => {
+						return a.percent-b.percent;
+					});
+
+        
       } catch (err) {
         this.$displayErrorMessage(err);
       }

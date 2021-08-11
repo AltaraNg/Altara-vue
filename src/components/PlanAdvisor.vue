@@ -12,28 +12,18 @@
 				<div class="row">
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
-							>Total Amount To Spend
+							>Total Product Price
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form1[0]"
-						/>
+						<currency-input v-model="form1[0]" class="form-control w-100"
+						:options="{currency : 'NGN', hideGroupingSeparatorOnFocus: false}" />
 					</div>
 
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
 							>Monthly Salary
 						</label>
-						<input
-							class="form-control w-100"
-							type="number"
-							min="1"
-							max="31"
-							v-model="form1[1]"
-						/>
+						<currency-input v-model="form1[1]" class="form-control w-100"
+						:options="{currency : 'NGN', hideGroupingSeparatorOnFocus: false}" />
 					</div>
 				</div>
 			</tab-content>
@@ -80,11 +70,9 @@
 							</option>
 						</select>
 					</div>
+				</div>
 
-                </div>
-
-                <div class="row">
-
+				<div class="row">
 					<div class="col form-group">
 						<label for="amount" class="form-control-label"
 							>Repayment Cycle</label
@@ -105,9 +93,7 @@
 						</select>
 					</div>
 
-					<div class="col form-group">
-						
-					</div>
+					<div class="col form-group"></div>
 				</div>
 			</tab-content>
 		</form-wizard>
@@ -119,12 +105,14 @@
 	import { mapGetters } from 'vuex';
 	import { FormWizard, TabContent } from 'vue-form-wizard';
 	import 'vue-form-wizard/dist/vue-form-wizard.min.css';
+	import CurrencyInput from './CurrencyInput.vue';
 	//component code
 
 	export default {
 		components: {
 			FormWizard,
 			TabContent,
+			CurrencyInput,
 		},
 		data() {
 			return {
@@ -149,14 +137,14 @@
 				repaymentCyclesopt: [],
 				downPaymentRates: [],
 				repaymentDuration: [],
-                businessTypes: []
+				businessTypes: [],
 			};
 		},
 		async mounted() {
 			await this.getRepaymentCycles();
 			await this.getDownPaymentRates();
 			await this.getRepaymentDuration();
-            await this.getBusinessTypes();
+			await this.getBusinessTypes();
 		},
 		computed: {
 			// ...mapGetters(["getPaymentMethods"])
@@ -168,12 +156,7 @@
 				} else this.next1 = true;
 			},
 			isDisable2() {
-				if (
-					!this.form2[0] ||
-					!this.form2[1] ||
-					!this.form2[2] 
-					
-				) {
+				if (!this.form2[0] || !this.form2[1] || !this.form2[2]) {
 					this.next2 = false;
 				} else this.next2 = true;
 			},
@@ -196,6 +179,10 @@
 					this.downPaymentRates = fetchDownPaymentRates.data.data.data;
 					this.downPaymentRates = this.downPaymentRates.filter((item) => {
 						return item.name !== 'zero' && item.name !== 'ten';
+					});
+
+					this.downPaymentRates = this.downPaymentRates.sort((a, b) => {
+						return a.percent-b.percent;
 					});
 				} catch (err) {
 					this.$displayErrorMessage(err);
@@ -256,7 +243,7 @@
 				this.formData.salary = this.form1[1];
 				this.formData.plan_id = this.form2[0];
 				this.formData.duration = this.form2[1];
-				this.formData.cycle = this.form2[2];				
+				this.formData.cycle = this.form2[2];
 				this.formData.type = 'formal';
 
 				this.$validator.validateAll().then((result) => {
@@ -275,8 +262,11 @@
 									  })
 									: this.$swal({
 											icon: 'success',
-											title: resData[1] === 0 ? `The minimum recommended plan is ${resData[0]}%`: `The minimum recommended plan is ${resData[0]}% + ${resData[1]} repayment`,
-											text: "Recommendation Successful"
+											title:
+												resData[1] === 0
+													? `The minimum recommended plan is ${resData[0]}%`
+													: `The minimum recommended plan is ${resData[0]}% + ${resData[1]} repayment`,
+											text: 'Recommendation Successful',
 									  });
 							})
 							.catch(() => {

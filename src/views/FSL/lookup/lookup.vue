@@ -19,7 +19,7 @@
 							<div class="col light-heading" style="max-width: 100px">
 								S/No.
 							</div>
-							<div class="col light-heading" v-for="header in headers">
+							<div class="col light-heading" v-for="(header, index) in headers" :key="index">
 								{{ header }}
 							</div>
 						</div>
@@ -35,8 +35,7 @@
 						>
 							<div
 								class="mb-3 row attendance-item"
-								v-for="(order, index) in customer.orders"
-							>
+								v-for="(order, index) in customer.orders" :key="order.index"											>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
 									style="max-width: 100px"
@@ -111,7 +110,7 @@
 							</div>
 							<div
 								class="mb-3 row attendance-item"
-								v-for="(order, index) in customer.new_orders"
+								v-for="(order, index) in customer.new_orders" :key="index"
 							>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
@@ -372,19 +371,19 @@
 												<tr>
 													<th>Repayment</th>
 													<td
-														v-for="caption in activeOrder.repaymentCaptions"
-														v-html="caption"
+														v-for="(caption, index) in activeOrder.repaymentCaptions"
+														v-html="caption" :key="index"
 													></td>
 												</tr>
 												<tr class="table-separator">
 													<th>Due Date</th>
-													<td v-for="date in activeOrder.dueDates">
+													<td v-for="(date, index) in activeOrder.dueDates" :key="index">
 														{{ date }}
 													</td>
 												</tr>
 												<tr>
 													<th>Actual Pay Day</th>
-													<td v-for="date in activeOrder.actualPayDates">
+													<td v-for="{date, index} in activeOrder.actualPayDates" :key="index">
 														{{ date }}
 													</td>
 												</tr>
@@ -392,21 +391,24 @@
 													<th>Status</th>
 													<td
 														:class="status.class"
-														v-for="status in activeOrder.paymentStatusClasses"
+														v-for="(status,index) in activeOrder.paymentStatusClasses"
+														:key="index"
 													>
 														<i :class="status.icon" class="fas"></i>
 													</td>
 												</tr>
 												<tr class="table-separator">
 													<th>Repayment Amount</th>
-													<td v-for="payment in activeOrder.amountsToBePaid">
+													<td v-for="(payment, index) in activeOrder.amountsToBePaid" 
+													:key="index">
 														{{ $formatCurrency(payment) }}
 													</td>
 												</tr>
 												<tr>
 													<th>Actual Amount Paid</th>
 													<td
-														v-for="payment in activeOrder.actualAmountsPaid"
+														v-for="(payment, index) in activeOrder.actualAmountsPaid"
+														:key="index"
 														@click="updateAmmo(armo)"
 													>
 														{{ $formatCurrency(payment) }}
@@ -416,7 +418,8 @@
 													<th>Payment Method</th>
 													<td
 														class="text-capitalize"
-														v-for="repaymentMethod in activeOrder.paymentMethods"
+														v-for="(repaymentMethod, index) in activeOrder.paymentMethods"
+														:key="index"
 													>
 														{{
 															Order.convertToName(
@@ -431,6 +434,7 @@
 													<td
 														class="text-capitalize"
 														v-for="repaymentBank in activeOrder.paymentBanks"
+														:key="repaymentBank.index"
 													>
 														{{ Order.convertToName(repaymentBank, 'banks') }}
 													</td>
@@ -497,7 +501,8 @@
 													<th>Collected By</th>
 													<th>Action</th>
 												</tr>
-												<tr v-for="(payment, index) in paymentForm.payments">
+												<tr v-for="(payment, index) in paymentForm.payments"
+												:key="index">
 													<th>{{ index + 1 }}</th>
 													<th>
 														<div
@@ -519,7 +524,8 @@
 														>
 															<option
 																:value="i"
-																v-for="i in activeOrder.repaymentLevel"
+																v-for="(i, index) in activeOrder.repaymentLevel"
+																:key="index"
 															>
 																{{ $getColumn(i) }} Repayment
 															</option>
@@ -546,6 +552,7 @@
 															<option
 																:value="id"
 																v-for="{ name, id } in paymentMeths"
+																:key="name.id"
 															>
 																{{ name | capitalize }}
 															</option>
@@ -561,7 +568,8 @@
 														>
 															<option
 																:value="id"
-																v-for="{ name, id } in getBanks"
+																v-for="(name, id) in getBanks"
+																:key="id"
 															>
 																{{ name }}
 															</option>
@@ -618,7 +626,7 @@
 									Edit Payment
 								</button>
 								<button
-									@click="preparePayments()"
+									@click="preparePayments(index)"
 									class="btn status my-sm-2 approved ml-4"
 								>
 									Click here to Submit Payment(s)!
@@ -773,7 +781,7 @@
 							icon: 'success',
 							title: 'Order Successfully Updated',
 						});
-						console.log('order', this.currentOrder);
+						
 						let x = this.customer.new_orders.findIndex((elem) => {
 							return elem.id === this.currentOrder.id;
 						});
@@ -900,7 +908,6 @@
 
 					this.paymentForm.payments.push(newPaymentData);
 				} else {
-			    console.log(this.getPaymentMethods);
           this.paymentMeths = this.getPaymentMethods.filter(item => {
 			        return item.name !== 'direct-debit'
 			    });
@@ -967,7 +974,7 @@
 				});
 			},
 
-			preparePayments() {
+			preparePayments(index=0) {
 				if (!this.canAddPayment) return;
 				let payments = {};
 				this.paymentForm.payments.forEach((payment) => {
@@ -983,7 +990,7 @@
 				});
 				this.activeOrder.payments = payments;
 				!$.isEmptyObject(payments)
-					? this.savePayments()
+					? this.savePayments(index)
 					: Flash.setError('You have not added any payment.');
 			},
 			updateAmmo(armo) {
@@ -1014,7 +1021,7 @@
 					});
 			},
 
-			savePayments() {
+			savePayments(index) {
 				if (!this.canAddPayment) return;
 				this.$LIPS(true);
 				let type, data, order, orderIndex;
@@ -1026,6 +1033,7 @@
 					repayment_id: this.activeOrder.order.id,
 					order_id: this.activeOrder.order.id,
 					amount: this.paymentForm.payments[0]._pay,
+					payment_method_id: this.paymentForm.payments[index]._payment_method
 				};
 				post(`/api/repayment`, data)
 					.then(async (res) => {

@@ -70,7 +70,7 @@
 							<option
 								:value="type.id"
 								:key="type.id"
-								v-for="type in downPaymentRates"
+								v-for="type in computedGetDownPaymentRates"
 							>
 								{{ type.name }}
 							</option>
@@ -277,9 +277,17 @@ CurrencyInput
 			await this.getRepaymentDuration();
             await this.getBusinessTypes();
 		},
-	    computed: {
-	        // ...mapGetters(["getPaymentMethods"])
-	    },
+	     computed: {
+    computedGetDownPaymentRates() {
+      function compare(a, b) {
+        if (a.percent + a.plus < b.percent + b.plus) return -1;
+        if (a.percent + a.plus > b.percent + b.plus) return 1;
+        return 0;
+      }
+      return this.downPaymentRates.sort(compare);
+    },
+    // ...mapGetters(["getPaymentMethods"])
+  },
 	    methods: {
 	        isDisable1() {
 	            if (

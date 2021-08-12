@@ -114,7 +114,7 @@
                   <h4 v-if="transferHistory.length < 1" class="text-center">
                     No history available.
                   </h4>
-                  <tr v-for="transfer in transferHistory">
+                  <tr v-for="(transfer, index) in transferHistory" :key="index">
                     <td>{{ transfer.from || "Not Available" }}</td>
                     <td>{{ transfer.to || "Not Available" }}</td>
                     <td>

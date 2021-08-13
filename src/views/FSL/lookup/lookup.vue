@@ -383,7 +383,7 @@
 												</tr>
 												<tr>
 													<th>Actual Pay Day</th>
-													<td v-for="{date, index} in activeOrder.actualPayDates" :key="index">
+													<td v-for="(date, index) in activeOrder.actualPayDates" :key="index">
 														{{ date }}
 													</td>
 												</tr>
@@ -433,8 +433,8 @@
 													<th>Bank</th>
 													<td
 														class="text-capitalize"
-														v-for="repaymentBank in activeOrder.paymentBanks"
-														:key="repaymentBank.index"
+														v-for="(repaymentBank, key) in activeOrder.paymentBanks"
+														:key="key"
 													>
 														{{ Order.convertToName(repaymentBank, 'banks') }}
 													</td>

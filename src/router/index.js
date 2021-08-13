@@ -78,6 +78,11 @@ const PlanAdvisor = () =>
 	import('../views/AltaraLoan/plan_advisor/recommender_informal.vue');
 const AltaraLoan = () => import('../views/AltaraLoan/index.vue');
 const AltaraLoanHome = () => import('../views/AltaraLoan/HomePage.vue');
+const Admin = () => import('../views/Admin/Index.vue');
+const AdminHome = () => import('../views/Admin/HomePage.vue');
+const ReportingTool = () => import('../views/Admin/ReportingTool.vue');
+
+
 
 Vue.use(VueRouter);
 Vue.use(routerHistory);
@@ -130,6 +135,23 @@ const router = new VueRouter({
 					meta: { mode: 'register' },
 				},
 			],
+		},
+		{
+			path: '/admin',
+			component: Admin,
+			meta: { requiresAuth: true },
+			children: [
+				{path: '/', redirect: { name: 'AdminHome'}},
+				{
+					path: 'home',
+					component: AdminHome,
+					name: 'AdminHome',
+				},
+
+				{path: 'reporting', component: ReportingTool, name: 'ReportingTool'}
+				
+			]
+
 		},
 		{
 			path: '/altarapay',

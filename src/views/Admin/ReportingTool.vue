@@ -22,24 +22,28 @@
 			</div>
 		</div>
 		<div class="row my-3 mx-2" v-if="reports !== null">
-			<stat-card
+				<stat-card
 				:stat="reports.meta.total_no_sales"
-				class="col mx-4 w-50"
-				:icon="'fas fa-poll'"
-				:label="'Total Number of Sales'"
-			></stat-card>
+				class="col mx-4 w-50" :label="'Total Number of Sales'"
+			>
+				<template v-slot:svg> <Sales/> </template>
+			</stat-card>
 			<stat-card
 				:stat="'₦' + reports.meta.revenue_per_sale"
 				class="col mx-4 w-50"
 				:icon="'fas fa-dolly-flatbed'"
 				:label="'Revenue per Sale'"
-			></stat-card>
+			>
+				<template v-slot:svg> <Revenue/> </template>
+			</stat-card>
 			<stat-card
 				:stat="'₦' + reports.meta.total_revenue"
 				class="col mx-4 w-50"
 				:label="'Total Revenue'"
 				:icon="'fas fa-dolly-flatbed'"
-			></stat-card>
+			>
+				<template v-slot:svg> <Total/> </template>
+			</stat-card>
 		</div>
 
 		<div class="row m-3">
@@ -64,13 +68,13 @@
 				<table class="table table-responsive">
 					<thead>
 						<tr>
-							<th v-for="header in tableHeaders" class="font-weight-bolder">
+							<th v-for="(header, index) in tableHeaders" class="font-weight-bolder" :key="index">
 								{{ header }}
 							</th>
 						</tr>
 					</thead>
 					<tbody v-if="reports !== null">
-						<tr v-for="branch in reports.meta.groupedDataByBranch">
+						<tr v-for="(branch, index) in reports.meta.groupedDataByBranch" :key="index">
 							<td class="font-weight-bold">{{ branch.branch_name }}</td>
 							<td>{{ branch.total_potential_revenue_sold_per_showroom }}</td>
 							<td>{{ branch.number_of_sales }}</td>
@@ -89,14 +93,16 @@
 <script>
 	import StatCard from '../../components/StatCard.vue';
 	import { get, post } from '../../utilities/api';
-
+	import Sales from '../../assets/css/svgs/sales.vue'
+	import Revenue from '../../assets/css/svgs/revenue.vue'
+	import Total from '../../assets/css/svgs/total.vue'
 	import DatePicker from 'vue2-datepicker';
 	import 'vue2-datepicker/index.css';
 	import BarChart from '../../components/charts/BarChart.vue';
 import PieChart from '../../components/charts/PieChart.vue';
 
 	export default {
-		components: { StatCard, DatePicker, BarChart, PieChart },
+		components: { StatCard, DatePicker, BarChart, PieChart, Sales, Revenue , Total },
 		data() {
 			return {
 				reports: null,
@@ -180,6 +186,5 @@ import PieChart from '../../components/charts/PieChart.vue';
 </script>
 
 <style lang="scss" scoped>
-	table {
-	}
+	
 </style>

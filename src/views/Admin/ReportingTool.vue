@@ -9,18 +9,18 @@
                 <div class="col-8 row">
 				<date-picker
 					class="col-4 w-100 mr-0"
-					v-model="query.from_date"
+					v-model="query.fromDate"
 					valueType="format"
 					placeholder="From Date"
 				></date-picker>
 
 				<date-picker
 					class="col-4 w-100 ml-0"
-					v-model="query.to_date"
+					v-model="query.toDate"
 					valueType="format"
 					placeholder="To Date"
 				></date-picker>
-                <button class="bg-default rounded w-25 h3 col-4">Filter</button>
+                <button class="bg-default rounded w-25 h3 col-4" @click="filterByDate">Filter</button>
                 </div>
 			</div>
 		</div>
@@ -50,16 +50,17 @@
 			</stat-card>
 		</div>
 
-		<div class="my-3 mx-3 p-3 row">
-			<div class="card col-8" v-if="reports !== null">
+		<div class="my-3 ml-5 pl-2 row w-100 text-center ml-2">
+			<div class="card col-6 m-2" v-if="reports !== null">
 				<bar-chart
 					:chartdata="barData"
 					:options="option"
 					v-if="loaded"
 				></bar-chart>
 			</div>
+			<div class="col-md-offset-2"></div>
 
-			<div class="card col-4" v-if="reports !== null">
+			<div class="card col-5 ml-5 m-2 text-right" v-if="reports !== null">
 				<pie-chart
 					:chartdata="pieData"
 					:options="option"
@@ -68,7 +69,7 @@
 				></pie-chart>
 			</div>
 		</div>
-		<div class="my-3 mx-3 w-100 ">
+		<div class="my-3 mx-3 w-100 pt-3">
 			<!-- table -->
 			<div class="ml-4 mr-5 mt-3 bg-white shadow">
 				<table class="table table-responsive table-striped w-100">
@@ -76,7 +77,7 @@
 						<tr>
 							<th
 								v-for="(header, index) in tableHeaders"
-								class="font-weight-bolder"
+								class="font-weight-bolder h5 text-center"
 								:key="index"
 							>
 								{{ header }}
@@ -86,7 +87,7 @@
 					<tbody v-if="reports !== null">
 						<tr
 							v-for="(branch, index) in reports.meta.groupedDataByBranch"
-							:key="index"
+							:key="index" class="text-center"
 						>
 							<td class="font-weight-bold">{{ branch.branch_name }}</td>
 							<td>{{ branch.total_potential_revenue_sold_per_showroom }}</td>
@@ -105,7 +106,7 @@
 
 <script>
 	import StatCard from '../../components/StatCard.vue';
-	import { get, post } from '../../utilities/api';
+	import { get, byMethod } from '../../utilities/api';
 	import Sales from '../../assets/css/svgs/sales.vue';
 	import Revenue from '../../assets/css/svgs/revenue.vue';
 	import Total from '../../assets/css/svgs/total.vue';
@@ -201,8 +202,8 @@
 						backgroundColor: '#f87979',
 						data: this.getPieData(),
 						backgroundColor: [
-							'rgba(7, 70, 111, 0.2)',
-							'rgba(255, 159, 64, 0.2)',
+							'rgba(7, 70, 111, 0.2)',							
+							'rgba(251, 173, 74, 0.2)'
 						],
 
 					},
@@ -212,7 +213,7 @@
 			async getReport() {
 				this.$LIPS(true);
 				try {
-					const report = await get(this.apiUrls.getReports);
+					const report = await byMethod('GET',this.apiUrls.getReports, {}, this.query);
 					this.reports = report.data.data;
 					console.log(this.reports);
 				} catch (err) {
@@ -223,7 +224,7 @@
 			},
 
 			getBranchLabel() {
-				const branches = Object.values(this.reports.meta.groupedDataByBranch);
+				const branches = this.reports.meta.groupedDataByBranch;
 				return branches.map((item) => {
 					return item.branch_name;
 				});
@@ -235,7 +236,7 @@
 	           },
 
 			getSalesPerBranch() {
-				const branches = Object.values(this.reports.meta.groupedDataByBranch);
+				const branches = this.reports.meta.groupedDataByBranch;
 				return branches.map((item) => {
 					return item.number_of_sales;
 				});
@@ -259,7 +260,12 @@
 	           }
 
                ,
-               filterByDate(){
+               filterByDate(){	                
+                    this.loaded = false;
+                    this.getReport();
+                    this.getPieChartData();			
+                    this.getBarChartData();	         
+			        this.loaded = true;
                    
                }
 		},

@@ -3,30 +3,34 @@
 		<div class="mx-3 my-3 py-4 row">
 			<h3 class="text-capitalize col">dashboard</h3>
 			<div class="col float-right text-right row">
-				<button class="bg-default rounded w-20 h3 p-3 col">
+				<button class="bg-default rounded w-25 h3 col-4 fbutton" @click="exportReportCsv">
 					<i class="fas fa-download mr-3"></i>Download
 				</button>
+                <div class="col-8 row">
 				<date-picker
-					class="w-50 col"
+					class="col-4 w-100 mr-0"
 					v-model="query.from_date"
 					valueType="format"
 					placeholder="From Date"
 				></date-picker>
 
 				<date-picker
-					class="w-50 col"
+					class="col-4 w-100 ml-0"
 					v-model="query.to_date"
 					valueType="format"
 					placeholder="To Date"
 				></date-picker>
+                <button class="bg-default rounded w-25 h3 col-4">Filter</button>
+                </div>
 			</div>
 		</div>
 		<div class="row my-3 mx-2" v-if="reports !== null">
-				<stat-card
+			<stat-card
 				:stat="reports.meta.total_no_sales"
-				class="col mx-4 w-50" :label="'Total Number of Sales'"
+				class="col mx-4 w-50"
+				:label="'Total Number of Sales'"
 			>
-				<template v-slot:svg> <Sales/> </template>
+				<template v-slot:svg> <Sales /> </template>
 			</stat-card>
 			<stat-card
 				:stat="'₦' + reports.meta.revenue_per_sale"
@@ -34,7 +38,7 @@
 				:icon="'fas fa-dolly-flatbed'"
 				:label="'Revenue per Sale'"
 			>
-				<template v-slot:svg> <Revenue/> </template>
+				<template v-slot:svg> <Revenue /> </template>
 			</stat-card>
 			<stat-card
 				:stat="'₦' + reports.meta.total_revenue"
@@ -42,39 +46,48 @@
 				:label="'Total Revenue'"
 				:icon="'fas fa-dolly-flatbed'"
 			>
-				<template v-slot:svg> <Total/> </template>
+				<template v-slot:svg> <Total /> </template>
 			</stat-card>
 		</div>
 
-		<div class="row m-3">
-			<div class="mx-2 card col-7" v-if="reports !== null">
+		<div class="my-3 mx-3 p-3 row">
+			<div class="card col-8" v-if="reports !== null">
 				<bar-chart
 					:chartdata="barData"
 					:options="option"
 					v-if="loaded"
 				></bar-chart>
 			</div>
-			<div class="mx-2 card col-4 ml-2" v-if="reports !== null">
+
+			<div class="card col-4" v-if="reports !== null">
 				<pie-chart
-					:chartdata="barData"
+					:chartdata="pieData"
 					:options="option"
 					v-if="loaded"
+					class=""
 				></pie-chart>
 			</div>
 		</div>
-		<div class="ml-4 mx-2 card">
+		<div class="my-3 mx-3 w-100 ">
 			<!-- table -->
-			<div class="ml-4 mr-5 w-100">
-				<table class="table table-responsive">
+			<div class="ml-4 mr-5 mt-3 bg-white shadow">
+				<table class="table table-responsive table-striped w-100">
 					<thead>
 						<tr>
-							<th v-for="(header, index) in tableHeaders" class="font-weight-bolder" :key="index">
+							<th
+								v-for="(header, index) in tableHeaders"
+								class="font-weight-bolder"
+								:key="index"
+							>
 								{{ header }}
 							</th>
 						</tr>
 					</thead>
 					<tbody v-if="reports !== null">
-						<tr v-for="(branch, index) in reports.meta.groupedDataByBranch" :key="index">
+						<tr
+							v-for="(branch, index) in reports.meta.groupedDataByBranch"
+							:key="index"
+						>
 							<td class="font-weight-bold">{{ branch.branch_name }}</td>
 							<td>{{ branch.total_potential_revenue_sold_per_showroom }}</td>
 							<td>{{ branch.number_of_sales }}</td>
@@ -93,22 +106,31 @@
 <script>
 	import StatCard from '../../components/StatCard.vue';
 	import { get, post } from '../../utilities/api';
-	import Sales from '../../assets/css/svgs/sales.vue'
-	import Revenue from '../../assets/css/svgs/revenue.vue'
-	import Total from '../../assets/css/svgs/total.vue'
+	import Sales from '../../assets/css/svgs/sales.vue';
+	import Revenue from '../../assets/css/svgs/revenue.vue';
+	import Total from '../../assets/css/svgs/total.vue';
 	import DatePicker from 'vue2-datepicker';
 	import 'vue2-datepicker/index.css';
 	import BarChart from '../../components/charts/BarChart.vue';
-import PieChart from '../../components/charts/PieChart.vue';
+	import PieChart from '../../components/charts/PieChart.vue';
 
 	export default {
-		components: { StatCard, DatePicker, BarChart, PieChart, Sales, Revenue , Total },
+		components: {
+			StatCard,
+			DatePicker,
+			BarChart,
+			PieChart,
+			Sales,
+			Revenue,
+			Total,
+		},
 		data() {
 			return {
 				reports: null,
 				query: {},
 				apiUrls: {
 					getReports: '/api/order/reports',
+	                   exportReport: '/api/order/reports/export'
 				},
 				tableHeaders: [
 					'Branch',
@@ -120,6 +142,7 @@ import PieChart from '../../components/charts/PieChart.vue';
 					'% Total Rev.',
 				],
 				barData: {},
+	               pieData: {},
 				option: {
 					responsive: true,
 					maintainAspectRatio: false,
@@ -129,11 +152,22 @@ import PieChart from '../../components/charts/PieChart.vue';
 		},
 		async mounted() {
 			await this.getReport();
-			this.barData = {
+            this.getPieChartData();			
+            this.getBarChartData();	         
+			this.loaded = true;
+		},
+		methods: {
+
+            getBarChartData(){
+                this.barData = {
 				labels: this.getBranchLabel(),
 				datasets: [
 					{
-						label: 'Data Set',
+						barPercentage: 1,
+						barThickness: 12,
+						maxBarThickness: 16,
+
+						label: 'Number of sales',
 						backgroundColor: '#f87979',
 						data: this.getSalesPerBranch(),
 						backgroundColor: [
@@ -152,9 +186,29 @@ import PieChart from '../../components/charts/PieChart.vue';
 					},
 				],
 			};
-			this.loaded = true;
-		},
-		methods: {
+            },
+
+            getPieChartData(){
+                this.pieData = {
+	               labels: ['Altara Pay', 'Altara Cash'],
+				datasets: [
+					{
+						barPercentage: 1,
+						barThickness: 12,
+						maxBarThickness: 16,
+
+						label: 'Number of sales',
+						backgroundColor: '#f87979',
+						data: this.getPieData(),
+						backgroundColor: [
+							'rgba(7, 70, 111, 0.2)',
+							'rgba(255, 159, 64, 0.2)',
+						],
+
+					},
+				],
+	           }
+            },
 			async getReport() {
 				this.$LIPS(true);
 				try {
@@ -175,16 +229,49 @@ import PieChart from '../../components/charts/PieChart.vue';
 				});
 			},
 
+	           getPieData(){
+	               const businessType = this.reports.meta.altaraPayVersusAltaraCash;
+	               return [businessType.no_of_sales_altara_cash, businessType.no_of_sales_altara_pay]
+	           },
+
 			getSalesPerBranch() {
 				const branches = Object.values(this.reports.meta.groupedDataByBranch);
 				return branches.map((item) => {
 					return item.number_of_sales;
 				});
 			},
+
+	           async exportReportCsv(){
+	               this.$LIPS(true);
+	                  try {
+	                      const response = await get(this.apiUrls.exportReport);
+	                      let fileURL = window.URL.createObjectURL(new Blob([response.data]));
+	                      let fileLink = document.createElement('a');
+	                      fileLink.href = fileURL;
+	                      fileLink.setAttribute('download', 'file.csv');
+	                      document.body.appendChild(fileLink);
+	                      fileLink.click();
+	     } catch (error) {
+	       this.$displayErrorMessage(error);
+	     }finally{
+	       this.$LIPS(false);
+	     }
+	           }
+
+               ,
+               filterByDate(){
+                   
+               }
 		},
 	};
 </script>
 
 <style lang="scss" scoped>
-	
+button{
+    max-height: 36px;
+    max-width: 120px;
+};
+.fbutton{
+    margin-right: 48px;
+}
 </style>

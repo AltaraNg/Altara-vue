@@ -31,5 +31,7 @@
 </script>
 
 <style lang="scss" scoped>
-
+    p{
+        color: #084871;
+    }
 </style>

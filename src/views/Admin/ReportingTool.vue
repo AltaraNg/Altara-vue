@@ -53,7 +53,7 @@
 		<div class="my-3 ml-5 pl-2 row w-100 text-center ml-2">
 			<div class="card col-6 m-2" v-if="reports !== null">
 				<bar-chart
-					:chartdata="barData"
+					:chart-data="barData"
 					:options="option"
 					v-if="loaded"
 				></bar-chart>
@@ -62,7 +62,7 @@
 
 			<div class="card col-5 ml-5 m-2 text-right" v-if="reports !== null">
 				<pie-chart
-					:chartdata="pieData"
+					:chart-data="pieData"
 					:options="option"
 					v-if="loaded"
 					class=""
@@ -142,8 +142,8 @@
 					'Average Price/Product',
 					'% Total Rev.',
 				],
-				barData: {},
-	               pieData: {},
+				barData: null,
+	               pieData: null,
 				option: {
 					responsive: true,
 					maintainAspectRatio: false,
@@ -260,9 +260,9 @@
 	           }
 
                ,
-               filterByDate(){	                
+               async filterByDate(){	                
                     this.loaded = false;
-                    this.getReport();
+                    await this.getReport();
                     this.getPieChartData();			
                     this.getBarChartData();	         
 			        this.loaded = true;

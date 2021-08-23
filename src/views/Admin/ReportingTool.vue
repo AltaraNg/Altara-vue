@@ -245,7 +245,7 @@
 	           async exportReportCsv(){
 	               this.$LIPS(true);
 	                  try {
-	                      const response = await get(this.apiUrls.exportReport);
+	                      const response = await byMethod('GET',this.apiUrls.exportReport, {}, this.query);
 	                      let fileURL = window.URL.createObjectURL(new Blob([response.data]));
 	                      let fileLink = document.createElement('a');
 	                      fileLink.href = fileURL;

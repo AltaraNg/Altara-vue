@@ -15,7 +15,7 @@
             return {
                 portals: [
                     {
-                        url: 'reporting', title: 'Reporting Tool', url_c: 'View daily report',
+                        url: 'reporting', title: 'Daily Invoice Report', url_c: 'View daily report',
                         desc: 'View daily report',
                     },
                     

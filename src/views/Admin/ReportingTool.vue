@@ -1,5 +1,5 @@
 <template>
-	<div class="my-3 py-4">
+	<div class="my-3 py-4" v-if="reports !== null">
 		<div class="mx-3 my-3 py-4 row">
 			<h3 class="text-capitalize col">dashboard</h3>
 			<div class="col float-right text-right row">
@@ -69,11 +69,16 @@
 				></pie-chart>
 			</div>
 		</div>
-		<div class="my-3 mx-3 w-100 pt-3">
+		<div class="my-4 mx-3 w-100 pt-3">
 			<!-- table -->
+			<div class=" mx-auto my-auto w-100 text-center">
+						<h4 class="my-3 font-weight-bold h4"><u>Showroom Statistics</u></h4>
+						</div>
 			<div class="ml-4 mr-5 mt-3 bg-white shadow">
+				
 				<table class="table table-responsive table-striped w-100">
 					<thead>
+						
 						<tr>
 							<th
 								v-for="(header, index) in tableHeaders"
@@ -89,6 +94,7 @@
 							v-for="(branch, index) in reports.meta.groupedDataByBranch"
 							:key="index" class="text-center"
 						>
+							<td>{{index+1}}</td>
 							<td class="font-weight-bold">{{ branch.branch_name }}</td>
 							<td>{{ branch.total_potential_revenue_sold_per_showroom }}</td>
 							<td>{{ branch.number_of_sales }}</td>
@@ -134,6 +140,7 @@
 	                   exportReport: '/api/order/reports/export'
 				},
 				tableHeaders: [
+					'S/N',
 					'Branch',
 					'Revenue',
 					'No. of Sales',
@@ -176,12 +183,34 @@
 							'rgba(255, 159, 64, 0.2)',
 							'rgba(255, 205, 86, 0.2)',
 							'rgba(75, 192, 192, 0.2)',
+							'rgba(255, 99, 132, 0.2)',
+							'rgba(255, 159, 64, 0.2)',
+							'rgba(255, 205, 86, 0.2)',
+							'rgba(75, 192, 192, 0.2)',
+							'rgba(255, 99, 132, 0.2)',
+							'rgba(255, 159, 64, 0.2)',
+							'rgba(255, 205, 86, 0.2)',
+							'rgba(75, 192, 192, 0.2)',
+							'rgba(255, 99, 132, 0.2)',
+							'rgba(255, 159, 64, 0.2)',
+							'rgba(255, 205, 86, 0.2)',
 						],
 						borderColor: [
 							'rgb(255, 99, 132)',
 							'rgb(255, 159, 64)',
 							'rgb(255, 205, 86)',
 							'rgb(75, 192, 192)',
+							'rgb(255, 99, 132)',
+							'rgb(255, 159, 64)',
+							'rgb(255, 205, 86)',
+							'rgb(75, 192, 192)',
+							'rgb(255, 99, 132)',
+							'rgb(255, 159, 64)',
+							'rgb(255, 205, 86)',
+							'rgb(75, 192, 192)',
+							'rgb(255, 99, 132)',
+							'rgb(255, 159, 64)',
+							'rgb(255, 205, 86)',
 						],
 						borderWidth: 1,
 					},

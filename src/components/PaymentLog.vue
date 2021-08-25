@@ -348,6 +348,7 @@ export default {
       repaymentDuration: [],
       repaymentCyclesopt: [],
       downPaymentRates: [],
+      orderTypes: [],
       businessTypes: [],
       amortization: [],
       calculation: [],
@@ -356,6 +357,7 @@ export default {
       test1: true,
       apiUrls: {
         repaymentDuration: `/api/repayment_duration`,
+        orderType: `/api/order-types`,
         repaymentCycles: `/api/repayment_cycle`,
         downPaymentRates: `/api/down_payment_rate`,
         businessTypes: `/api/business_type`,
@@ -388,6 +390,7 @@ export default {
     await this.getBusinessTypes();
     await this.getCalculation();
     await this.getDiscounts();
+    await this.getOrderTypes();
   },
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
@@ -414,7 +417,11 @@ export default {
             return item.name === "renewal";
           }).id)
         : (renewal = "");
+        let orderType = this.orderTypes.find((item) => {
+          return item.name === 'Altara Credit';
+        })
       const data = {
+        order_type_id: orderType.id,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
@@ -426,6 +433,7 @@ export default {
         repayment: this.rPayment,
         bank_id: this.salesLogForm.bank_id,
         product_price: this.$formatMoney(this.pPrice),
+        down_payment_rate_id: this.salesLogForm.payment_type_id.id,
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
@@ -466,6 +474,7 @@ export default {
         business_type_id: this.salesLogForm.business_type_id,
         branch_id: localStorage.getItem("branch_id"),
         down_payment: this.$formatMoney(this.fPayment),
+        down_payment_rate_id: this.salesLogForm.payment_type_id.id,
         custom_date: this.salesLogForm.custom_date,
         repayment: this.$formatMoney(this.rPayment),
         bank_id: this.salesLogForm.bank_id,
@@ -603,6 +612,15 @@ export default {
       try {
         const fetchRepaymentCycles = await get(this.apiUrls.repaymentCycles);
         this.repaymentCyclesopt = fetchRepaymentCycles.data.data.data;
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
+
+    async getOrderTypes() {
+      try {
+        const orderTypes = await get(this.apiUrls.orderType);
+        this.orderTypes = orderTypes.data.orderTypes;
       } catch (err) {
         this.$displayErrorMessage(err);
       }

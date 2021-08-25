@@ -98,8 +98,8 @@
 							<td class="font-weight-bold">{{ branch.branch_name }}</td>
 							<td>{{ branch.total_potential_revenue_sold_per_showroom }}</td>
 							<td>{{ branch.number_of_sales }}</td>
-							<td>{{ branch.no_of_altara_cash }}</td>
 							<td>{{ branch.no_of_altara_pay }}</td>
+							<td>{{ branch.no_of_altara_cash }}</td>
 							<td>{{ branch.avg_price_of_prod_per_showroom }}</td>
 							<td>{{ branch.percentage_of_total_revenues }}</td>
 						</tr>
@@ -220,7 +220,7 @@
 
             getPieChartData(){
                 this.pieData = {
-	               labels: ['Altara Pay', 'Altara Cash'],
+	               labels: ['Altara Cash', 'Altara Pay'],
 				datasets: [
 					{
 						barPercentage: 1,

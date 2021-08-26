@@ -142,11 +142,11 @@
 				tableHeaders: [
 					'S/N',
 					'Branch',
-					'Revenue',
+					'Revenue (₦)',
 					'No. of Sales',
 					'Altara Pay',
 					'Altara Cash',
-					'Average Price/Product',
+					'Average Price/Product (₦)',
 					'% Total Rev.',
 				],
 				barData: null,

@@ -91,7 +91,7 @@
 					</thead>
 					<tbody v-if="reports !== null">
 						<tr
-							v-for="(branch, index) in reports.meta.groupedDataByBranch"
+							v-for="(branch, index) in Object.values(reports.meta.groupedDataByBranch)"
 							:key="index" class="text-center"
 						>
 							<td>{{index+1}}</td>
@@ -173,10 +173,8 @@
 					{
 						barPercentage: 1,
 						barThickness: 12,
-						maxBarThickness: 16,
-
+						maxBarThickness: 16,	
 						label: 'Number of sales',
-						backgroundColor: '#f87979',
 						data: this.getSalesPerBranch(),
 						backgroundColor: [
 							'#e76f51',
@@ -225,10 +223,7 @@
 					{
 						barPercentage: 1,
 						barThickness: 12,
-						maxBarThickness: 16,
-
-						label: 'Number of sales',
-						backgroundColor: '#f87979',
+						maxBarThickness: 16,						
 						data: this.getPieData(),
 						backgroundColor: [
 							'#023e8a',							
@@ -253,7 +248,8 @@
 			},
 
 			getBranchLabel() {
-				const branches = this.reports.meta.groupedDataByBranch;
+				const branches = Object.values(this.reports.meta.groupedDataByBranch);
+				console.log(branches);
 				return branches.map((item) => {
 					return item.branch_name;
 				});
@@ -265,7 +261,7 @@
 	           },
 
 			getSalesPerBranch() {
-				const branches = this.reports.meta.groupedDataByBranch;
+				const branches = Object.values(this.reports.meta.groupedDataByBranch);
 				return branches.map((item) => {
 					return item.number_of_sales;
 				});

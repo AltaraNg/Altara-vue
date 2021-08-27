@@ -91,7 +91,7 @@
 					</thead>
 					<tbody v-if="reports !== null">
 						<tr
-							v-for="(branch, index) in reports.meta.groupedDataByBranch"
+							v-for="(branch, index) in Object.values(reports.meta.groupedDataByBranch)"
 							:key="index" class="text-center"
 						>
 							<td>{{index+1}}</td>
@@ -173,44 +173,42 @@
 					{
 						barPercentage: 1,
 						barThickness: 12,
-						maxBarThickness: 16,
-
+						maxBarThickness: 16,	
 						label: 'Number of sales',
-						backgroundColor: '#f87979',
 						data: this.getSalesPerBranch(),
 						backgroundColor: [
-							'rgba(255, 99, 132, 0.2)',
-							'rgba(255, 159, 64, 0.2)',
-							'rgba(255, 205, 86, 0.2)',
-							'rgba(75, 192, 192, 0.2)',
-							'rgba(255, 99, 132, 0.2)',
-							'rgba(255, 159, 64, 0.2)',
-							'rgba(255, 205, 86, 0.2)',
-							'rgba(75, 192, 192, 0.2)',
-							'rgba(255, 99, 132, 0.2)',
-							'rgba(255, 159, 64, 0.2)',
-							'rgba(255, 205, 86, 0.2)',
-							'rgba(75, 192, 192, 0.2)',
-							'rgba(255, 99, 132, 0.2)',
-							'rgba(255, 159, 64, 0.2)',
-							'rgba(255, 205, 86, 0.2)',
+							'#e76f51',
+							'#457b9d',
+							'#cb997e',
+							'#4361ee',
+							'#00f5d4',
+							'#333d29',
+							'#9b5de5',
+							'#22223b',
+							'#55a630',
+							'#973aa8',
+							'#cb997e',
+							'#ff0a54',
+							'#b392ac',
+							'#355070',
+							'#be0aff',
 						],
 						borderColor: [
-							'rgb(255, 99, 132)',
-							'rgb(255, 159, 64)',
-							'rgb(255, 205, 86)',
-							'rgb(75, 192, 192)',
-							'rgb(255, 99, 132)',
-							'rgb(255, 159, 64)',
-							'rgb(255, 205, 86)',
-							'rgb(75, 192, 192)',
-							'rgb(255, 99, 132)',
-							'rgb(255, 159, 64)',
-							'rgb(255, 205, 86)',
-							'rgb(75, 192, 192)',
-							'rgb(255, 99, 132)',
-							'rgb(255, 159, 64)',
-							'rgb(255, 205, 86)',
+							'#e76f51',
+							'#457b9d',
+							'#cb997e',
+							'#4361ee',
+							'#00f5d4',
+							'#333d29',
+							'#9b5de5',
+							'#22223b',
+							'#55a630',
+							'#973aa8',
+							'#cb997e',
+							'#ff0a54',
+							'#b392ac',
+							'#355070',
+							'#be0aff',
 						],
 						borderWidth: 1,
 					},
@@ -225,14 +223,11 @@
 					{
 						barPercentage: 1,
 						barThickness: 12,
-						maxBarThickness: 16,
-
-						label: 'Number of sales',
-						backgroundColor: '#f87979',
+						maxBarThickness: 16,						
 						data: this.getPieData(),
 						backgroundColor: [
-							'rgba(7, 70, 111, 0.2)',							
-							'rgba(251, 173, 74, 0.2)'
+							'#023e8a',							
+							'#CC5A71'
 						],
 
 					},
@@ -253,7 +248,8 @@
 			},
 
 			getBranchLabel() {
-				const branches = this.reports.meta.groupedDataByBranch;
+				const branches = Object.values(this.reports.meta.groupedDataByBranch);
+				console.log(branches);
 				return branches.map((item) => {
 					return item.branch_name;
 				});
@@ -265,7 +261,7 @@
 	           },
 
 			getSalesPerBranch() {
-				const branches = this.reports.meta.groupedDataByBranch;
+				const branches = Object.values(this.reports.meta.groupedDataByBranch);
 				return branches.map((item) => {
 					return item.number_of_sales;
 				});

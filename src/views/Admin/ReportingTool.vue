@@ -1,27 +1,74 @@
 <template>
 	<div class="my-3 py-4" v-if="reports !== null">
 		<div class="mx-3 my-3 py-4 row">
-			<h3 class="text-capitalize col">dashboard</h3>
-			<div class="col float-right text-right row">
-				<button class="bg-default rounded w-25 h3 col-4 fbutton" @click="exportReportCsv">
+			<h3 class="text-capitalize col-4">dashboard</h3>
+			<div class="col-8 float-right text-right row">
+				<button
+					class="bg-default rounded w-25 h3 col-4 fbutton"
+					@click="exportReportCsv"
+				>
 					<i class="fas fa-download mr-3"></i>Download
 				</button>
-                <div class="col-8 row">
-				<date-picker
-					class="col-4 w-100 mr-0"
-					v-model="query.fromDate"
-					valueType="format"
-					placeholder="From Date"
-				></date-picker>
+				<div class="col-8 row">
+					<date-picker
+						class="col w-100 mr-0"
+						v-model="query.fromDate"
+						valueType="format"
+						placeholder="From Date"
+					></date-picker>
 
-				<date-picker
-					class="col-4 w-100 ml-0"
-					v-model="query.toDate"
-					valueType="format"
-					placeholder="To Date"
-				></date-picker>
-                <button class="bg-default rounded w-25 h3 col-4" @click="filterByDate">Filter</button>
-                </div>
+					<date-picker
+						class="col w-100 ml-0"
+						v-model="query.toDate"
+						valueType="format"
+						placeholder="To Date"
+					></date-picker>
+					<div class="col">
+						
+					<select
+							name="business_type"
+							class="custom-select w-100"
+							v-model="query.businessType"							
+						>
+							<option :value="''" disabled selected >Business Type</option>
+							<option :value="''"  ></option>
+							<option
+								:value="type.id"
+								:key="type.id"
+								v-for="type in businessTypes"
+							>
+								{{ type.name }}
+							</option>
+						</select>
+						</div>
+
+						<div class="col">
+					<select
+							class="custom-select w-100"
+							v-model="query.sector"
+							v-validate="'required'"
+						>
+							<option disabled selected="selected">Sector</option>
+							<option :value="''"  ></option>
+							<option
+								:value="'formal'"
+							>
+								Formal
+							</option>
+							<option
+								:value="'informal'"
+							>
+								Informal
+							</option>
+						</select>
+						</div>
+					<button
+						class="bg-default rounded w-25 h3 col-4"
+						@click="filterByDate"
+					>
+						Filter
+					</button>
+				</div>
 			</div>
 		</div>
 		<div class="row my-3 mx-2" v-if="reports !== null">
@@ -72,13 +119,11 @@
 		<div class="my-4 mx-3 w-100 pt-3">
 			<!-- table -->
 			<div class=" mx-auto my-auto w-100 text-center">
-						<h4 class="my-3 font-weight-bold h4"><u>Showroom Statistics</u></h4>
-						</div>
+				<h4 class="my-3 font-weight-bold h4"><u>Showroom Statistics</u></h4>
+			</div>
 			<div class="ml-4 mr-5 mt-3 bg-white shadow">
-				
 				<table class="table table-responsive table-striped w-100">
 					<thead>
-						
 						<tr>
 							<th
 								v-for="(header, index) in tableHeaders"
@@ -91,10 +136,13 @@
 					</thead>
 					<tbody v-if="reports !== null">
 						<tr
-							v-for="(branch, index) in Object.values(reports.meta.groupedDataByBranch)"
-							:key="index" class="text-center"
+							v-for="(branch, index) in Object.values(
+								reports.meta.groupedDataByBranch
+							)"
+							:key="index"
+							class="text-center"
 						>
-							<td>{{index+1}}</td>
+							<td>{{ index + 1 }}</td>
 							<td class="font-weight-bold">{{ branch.branch_name }}</td>
 							<td>{{ branch.total_potential_revenue_sold_per_showroom }}</td>
 							<td>{{ branch.number_of_sales }}</td>
@@ -102,6 +150,17 @@
 							<td>{{ branch.no_of_altara_cash }}</td>
 							<td>{{ branch.avg_price_of_prod_per_showroom }}</td>
 							<td>{{ branch.percentage_of_total_revenues }}</td>
+						</tr>
+						<hr>
+
+						<tr class="text-center text-lg font-weight-bold h6">
+							<td colspan="2" class=" text-center">Total</td>
+							<td class="">{{ $formatCurrency(sums.totalRevenue) }}</td>
+							<td>{{ sums.totalSales }}</td>
+							<td>{{ sums.totalAltPay }}</td>
+							<td>{{ sums.totalAltCash }}</td>
+							<td>{{ $formatCurrency(sums.totalAvePerProd) }}</td>
+							<td>{{ sums.totalPercent }}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -137,7 +196,8 @@
 				query: {},
 				apiUrls: {
 					getReports: '/api/order/reports',
-	                   exportReport: '/api/order/reports/export'
+					exportReport: '/api/order/reports/export',
+					businessTypes: '/api/business_type'
 				},
 				tableHeaders: [
 					'S/N',
@@ -150,115 +210,151 @@
 					'% Total Rev.',
 				],
 				barData: null,
-	               pieData: null,
+				pieData: null,
 				option: {
 					responsive: true,
 					maintainAspectRatio: false,
 				},
 				loaded: false,
+				sums: {},
+				businessTypes: {}
 			};
 		},
 		async mounted() {
+			var date = new Date(),
+				y = date.getFullYear(),
+				m = date.getMonth();
+			var firstDay = new Date(y, m, 1).toISOString();
+			this.query.fromDate = firstDay.slice(0, 10);
 			await this.getReport();
-            this.getPieChartData();			
-            this.getBarChartData();	         
+			this.getPieChartData();
+			this.getBarChartData();
+			this.getBusinessTypes();
 			this.loaded = true;
 		},
+
 		methods: {
+			getBarChartData() {
+				this.barData = {
+					labels: this.getBranchLabel(),
+					datasets: [
+						{
+							barPercentage: 1,
+							barThickness: 12,
+							maxBarThickness: 16,
+							label: 'Number of sales',
+							data: this.getSalesPerBranch(),
+							backgroundColor: [
+								'#e76f51',
+								'#457b9d',
+								'#cb997e',
+								'#4361ee',
+								'#00f5d4',
+								'#333d29',
+								'#9b5de5',
+								'#22223b',
+								'#55a630',
+								'#973aa8',
+								'#cb997e',
+								'#ff0a54',
+								'#b392ac',
+								'#355070',
+								'#be0aff',
+							],
+							borderColor: [
+								'#e76f51',
+								'#457b9d',
+								'#cb997e',
+								'#4361ee',
+								'#00f5d4',
+								'#333d29',
+								'#9b5de5',
+								'#22223b',
+								'#55a630',
+								'#973aa8',
+								'#cb997e',
+								'#ff0a54',
+								'#b392ac',
+								'#355070',
+								'#be0aff',
+							],
+							borderWidth: 1,
+						},
+					],
+				};
+			},
 
-            getBarChartData(){
-                this.barData = {
-				labels: this.getBranchLabel(),
-				datasets: [
-					{
-						barPercentage: 1,
-						barThickness: 12,
-						maxBarThickness: 16,	
-						label: 'Number of sales',
-						data: this.getSalesPerBranch(),
-						backgroundColor: [
-							'#e76f51',
-							'#457b9d',
-							'#cb997e',
-							'#4361ee',
-							'#00f5d4',
-							'#333d29',
-							'#9b5de5',
-							'#22223b',
-							'#55a630',
-							'#973aa8',
-							'#cb997e',
-							'#ff0a54',
-							'#b392ac',
-							'#355070',
-							'#be0aff',
-						],
-						borderColor: [
-							'#e76f51',
-							'#457b9d',
-							'#cb997e',
-							'#4361ee',
-							'#00f5d4',
-							'#333d29',
-							'#9b5de5',
-							'#22223b',
-							'#55a630',
-							'#973aa8',
-							'#cb997e',
-							'#ff0a54',
-							'#b392ac',
-							'#355070',
-							'#be0aff',
-						],
-						borderWidth: 1,
-					},
-				],
-			};
-            },
-
-            getPieChartData(){
-                this.pieData = {
-	               labels: ['Altara Cash', 'Altara Pay'],
-				datasets: [
-					{
-						barPercentage: 1,
-						barThickness: 12,
-						maxBarThickness: 16,						
-						data: this.getPieData(),
-						backgroundColor: [
-							'#023e8a',							
-							'#CC5A71'
-						],
-
-					},
-				],
-	           }
-            },
+			getPieChartData() {
+				this.pieData = {
+					labels: ['Altara Cash', 'Altara Pay'],
+					datasets: [
+						{
+							barPercentage: 1,
+							barThickness: 12,
+							maxBarThickness: 16,
+							data: this.getPieData(),
+							backgroundColor: ['#023e8a', '#CC5A71'],
+						},
+					],
+				};
+			},
 			async getReport() {
 				this.$LIPS(true);
 				try {
-					const report = await byMethod('GET',this.apiUrls.getReports, {}, this.query);
+					const report = await byMethod(
+						'GET',
+						this.apiUrls.getReports,
+						{},
+						this.query
+					);
 					this.reports = report.data.data;
-					console.log(this.reports);
+					this.getSums(this.reports.meta.groupedDataByBranch);
 				} catch (err) {
-					this.$displayErrorMessage(err);
+					// this.$displayErrorMessage(err);
 				} finally {
 					this.$LIPS(false);
+				}
+			},
+			getSums(dataArray) {
+				this.sums.totalSales = 0;
+				this.sums.totalRevenue = 0;
+				this.sums.totalAltPay = 0;
+				this.sums.totalAltCash = 0;
+				this.sums.totalAvePerProd = 0;
+				this.sums.totalPercent = 0;
+				for (let i = 0; i < dataArray.length; i++) {
+					this.sums.totalSales += Number(dataArray[i].number_of_sales);
+					this.sums.totalRevenue += parseFloat(
+						dataArray[i].total_potential_revenue_sold_per_showroom.replace(
+							/,/g,
+							''
+						)
+					);
+					this.sums.totalAltPay += dataArray[i].no_of_altara_pay;
+					this.sums.totalAltCash += dataArray[i].no_of_altara_cash;
+					this.sums.totalAvePerProd += parseFloat(
+						dataArray[i].avg_price_of_prod_per_showroom.replace(/,/g, '')
+					);
+					this.sums.totalPercent += Number(
+						dataArray[i].percentage_of_total_revenues
+					);
 				}
 			},
 
 			getBranchLabel() {
 				const branches = Object.values(this.reports.meta.groupedDataByBranch);
-				console.log(branches);
 				return branches.map((item) => {
 					return item.branch_name;
 				});
 			},
 
-	           getPieData(){
-	               const businessType = this.reports.meta.altaraPayVersusAltaraCash;
-	               return [businessType.no_of_sales_altara_cash, businessType.no_of_sales_altara_pay]
-	           },
+			getPieData() {
+				const businessType = this.reports.meta.altaraPayVersusAltaraCash;
+				return [
+					businessType.no_of_sales_altara_cash,
+					businessType.no_of_sales_altara_pay,
+				];
+			},
 
 			getSalesPerBranch() {
 				const branches = Object.values(this.reports.meta.groupedDataByBranch);
@@ -267,42 +363,57 @@
 				});
 			},
 
-	           async exportReportCsv(){
-	               this.$LIPS(true);
-	                  try {
-	                      const response = await byMethod('GET',this.apiUrls.exportReport, {}, this.query);
-	                      let fileURL = window.URL.createObjectURL(new Blob([response.data]));
-	                      let fileLink = document.createElement('a');
-	                      fileLink.href = fileURL;
-	                      fileLink.setAttribute('download', 'file.csv');
-	                      document.body.appendChild(fileLink);
-	                      fileLink.click();
-	     } catch (error) {
-	       this.$displayErrorMessage(error);
-	     }finally{
-	       this.$LIPS(false);
-	     }
-	           }
+			async exportReportCsv() {
+				this.$LIPS(true);
+				try {
+					const response = await byMethod(
+						'GET',
+						this.apiUrls.exportReport,
+						{},
+						this.query
+					);
+					let fileURL = window.URL.createObjectURL(new Blob([response.data]));
+					let fileLink = document.createElement('a');
+					fileLink.href = fileURL;
+					fileLink.setAttribute('download', 'file.csv');
+					document.body.appendChild(fileLink);
+					fileLink.click();
+				} catch (error) {
+					this.$displayErrorMessage(error);
+				} finally {
+					this.$LIPS(false);
+				}
+			},
 
-               ,
-               async filterByDate(){	                
-                    this.loaded = false;
-                    await this.getReport();
-                    this.getPieChartData();			
-                    this.getBarChartData();	         
-			        this.loaded = true;
-                   
-               }
+			async filterByDate() {
+				this.loaded = false;
+				await this.getReport();
+				this.getPieChartData();
+				this.getBarChartData();
+				this.loaded = true;
+			},
+
+			async getBusinessTypes() {
+				try {
+					const fetchBusinessTypes = await get(this.apiUrls.businessTypes);
+					this.businessTypes = fetchBusinessTypes.data.data.data;
+					this.businessTypes = this.businessTypes.filter((item) => {
+						return item.name.includes('Products');
+					});
+				} catch (err) {
+					this.$displayErrorMessage(err);
+				}
+			},
 		},
 	};
 </script>
 
 <style lang="scss" scoped>
-button{
-    max-height: 36px;
-    max-width: 120px;
-};
-.fbutton{
-    margin-right: 48px;
-}
+	button {
+		max-height: 36px;
+		max-width: 120px;
+	}
+	.fbutton {
+		margin-right: 48px;
+	}
 </style>

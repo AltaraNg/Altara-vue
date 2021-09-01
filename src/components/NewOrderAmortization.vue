@@ -21,8 +21,12 @@
               <td>Product</td>
               <td>Owner</td>
               <td>Serial No</td>
+               <th>Order Type</th>
+              <th>Downpayment</th>
+              <th>Payment Gateway</th>
               <th>Branch</th>
               <th>Status</th>
+             
             </tr>
             <tr>
               <td class="font-weight-bold">
@@ -32,6 +36,9 @@
               <th>{{ order.product.name }}</th>
               <th>{{ order.owner }}</th>
               <th>{{ order.serial_number }}</th>
+              <th>{{ order.order_type }}</th>
+              <th class="text-capitalize">{{ order.down_payment_rate }} percent</th>
+              <th>{{ order.payment_gateway }}</th>
               <td class="font-weight-bold">{{ order.branch }}</td>
               <td class="font-wight-bold td-back">ok</td>
               <!-- <td

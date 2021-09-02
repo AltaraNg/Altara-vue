@@ -40,6 +40,23 @@
             </select>
           </div>
 
+		  <div class="col">
+            <select
+              name="order_type"
+              class="custom-select"
+              v-model="orderType"
+            >
+              <option :value="''" selected>All Order Types</option>
+              <option
+                :value="type.id"
+                :key="type.id"
+                v-for="type in orderTypes"
+              >
+                {{ type.name }}
+              </option>
+            </select>
+          </div>
+
           <div class="col">
             <select
               class="custom-select"
@@ -185,13 +202,16 @@ export default {
       toDate: "",
       query: {},
 	  businessType: '',
+	  orderType: '',
 	  sector: '',
 	  branchesInfo: {},
+	  orderTypes: {},
 
       apiUrls: {
         getReports: "/api/order/reports",
         exportReport: "/api/order/reports/export",
         businessTypes: "/api/business_type",
+		orderTypes: "/api/order-types"
       },
       tableHeaders: [
         "S/N",
@@ -224,6 +244,7 @@ export default {
     this.getPieChartData();
     this.getBarChartData();
     this.getBusinessTypes();
+	this.getOrderTypes();
     this.loaded = true;
   },
 
@@ -408,9 +429,22 @@ export default {
       try {
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes);
         this.businessTypes = fetchBusinessTypes.data.data.data;
-        this.businessTypes = this.businessTypes.filter((item) => {
-          return item.name.includes("Products");
-        });
+        // this.businessTypes = this.businessTypes.filter((item) => {
+        //   return item.name.includes("Products");
+        // });
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
+
+	async getOrderTypes() {
+      try {
+        const fetchOrderTypes = await get(this.apiUrls.orderTypes);
+		console.log(fetchOrderTypes);
+        this.orderTypes = fetchOrderTypes.data.orderTypes;
+        // this.businessTypes = this.businessTypes.filter((item) => {
+        //   return item.name.includes("Products");
+        // });
       } catch (err) {
         this.$displayErrorMessage(err);
       }
@@ -425,9 +459,9 @@ button {
   max-width: 120px;
 }
 .fbutton {
-  margin-right: 48px;
+  margin-right: 30px;
 }
 .custom-select {
-  width: 175px;
+  width: 125px;
 }
 </style>

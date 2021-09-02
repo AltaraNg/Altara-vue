@@ -43,7 +43,8 @@
                     {name: 'CAG', url: 'CAG/home', icon: 'fa-id-card'},
                     {name: 'ACC', url: 'acc/home', icon: 'fa-coins'},
                     { name: "CASHLOAN", url: "cashloan/home", icon: "fa-id-card" },
-                    {name: 'ALTARAPAY', url: 'altarapay/home', icon: 'fa-money-bill-alt'}
+                    {name: 'ALTARAPAY', url: 'altarapay/home', icon: 'fa-money-bill-alt'},
+                    {name: "Admin", url: 'admin/home', icon: 'fa-user-shield'}
                 ]
             }
         },

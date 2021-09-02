@@ -41,6 +41,7 @@ export const store = new Vuex.Store({
         /*object for access controls*/
         DSALead: [...admin, 15],
         DSACaptain: [...admin, 15, 17, 29, 46, 32, 46],
+        AdminAccess: [...admin],
         DSAAccess: [...admin, 15, 17, 18, 29, 44, 45, 32, 46],
         DVALead: [...admin, 13, 16, 22, 32],
         DVAAccess: [...admin, 13, 16, 21, 22, 23, 32],

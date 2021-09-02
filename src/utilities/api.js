@@ -21,10 +21,11 @@ export const patch = (url, data) => axios({
     data,
     headers: { 'Authorization': `Bearer ${Auth.state.api_token}` }
 });
-export const byMethod = (method, url, data) => axios({
+export const byMethod = (method, url, data, params = {}) => axios({
     method,
     url,
     data,
+    params,
     headers: { 'Authorization': `Bearer ${Auth.state.api_token}` }
 });
 export const postD = (url, data) => axios({

@@ -230,6 +230,7 @@
 	import "vue-form-wizard/dist/vue-form-wizard.min.css";
 	import CurrencyInput from "./CurrencyInput.vue";
 import Flash from "../utilities/flash";
+import downPaymentSort from "../utilities/downPayment.js"
 
 	//component code
 
@@ -277,9 +278,7 @@ CurrencyInput
 			await this.getRepaymentDuration();
             await this.getBusinessTypes();
 		},
-	    computed: {
-	        // ...mapGetters(["getPaymentMethods"])
-	    },
+
 	    methods: {
 	        isDisable1() {
 	            if (
@@ -344,9 +343,7 @@ CurrencyInput
 					this.downPaymentRates = this.downPaymentRates.filter((item) => {
 						return item.name !== 'zero' && item.name !== 'ten';
 					});
-					this.downPaymentRates = this.downPaymentRates.sort((a, b) => {
-						return a.percent-b.percent;
-					});
+					 return this.downPaymentRates.sort(downPaymentSort);
 				} catch (err) {
 					this.$displayErrorMessage(err);
 				}

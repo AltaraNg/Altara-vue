@@ -319,6 +319,7 @@ export default {
       this.query.toDate = this.toDate;
 	  this.query.businessType = this.businessType;
 	  this.query.sector = this.sector;
+	  this.query.orderType = this.orderType;
       try {
         const report = await byMethod(
           "GET",

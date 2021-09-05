@@ -95,6 +95,11 @@ export default {
       required: false,
       default: true
     },
+    defaultBranch: {
+      type: Number,
+      required: false,
+      default: ''
+    }
     
   },
   computed: {   
@@ -115,6 +120,9 @@ export default {
       this.$LIPS(true);
       if(this.searchQuery.branch === 'all'){
         this.searchQuery.branch = '';
+      }
+      if(this.defaultBranch !== ''){
+        this.searchQuery.branch = this.defaultBranch;
       }
      
       get(this.url + queryParam(this.searchQuery)).then(response => {

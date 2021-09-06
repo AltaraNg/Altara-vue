@@ -1,7 +1,7 @@
 const calculate = (productPrice, data, params) => {
   const count = repaymentCount(
     data.repayment_duration_id.value,
-    data.repayment_cycle_id.value
+    14
   );
   
   const marketPrice = productPrice * params.margin + productPrice;

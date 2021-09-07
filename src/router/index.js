@@ -459,6 +459,7 @@ const router = new VueRouter({
 					component: CashLogger,
 					name: 'payment-logger',
 					meta: { mode: 'create' },
+					props: route => ({ query: route.query})
 				},
 				{
 					path: 'sales-logger',

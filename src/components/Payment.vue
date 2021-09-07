@@ -5,6 +5,7 @@
     </div>
     <div class="mb-3 attendance-head">
       <resueable-search
+      :currentRoute="currentRoute"
         :url="url"
         @childToParent="prepareList"
         :showBranch="false"
@@ -436,6 +437,9 @@ export default {
   },
 
   computed: {
+      currentRoute(){
+          return this.$route.path;
+      },
     details() {
       let list = 1;
       const tabs = ["Log Payment", "View Payments", "Reconcile"];
@@ -492,7 +496,6 @@ export default {
         : this.$LIPS(false);
     },
     prepareList(response) {
-      console.log(response);
       let {
         current_page,
         first_page_url,
@@ -522,21 +525,33 @@ export default {
       this.OId = from;
       this.$LIPS(false);
       this.searchQuery = response.queryParams;
+
     },
 
     async getPaymentList() {
+      
       try {
+        this.$LIPS(true);
         let param = {
           page: this.pageParams.page ? this.pageParams.page : "",
           limit: this.pageParams.limit ? this.pageParams.limit : "",
           branch: localStorage.getItem("branch_id"),
           ...this.searchQuery,
         };
-        console.log(this.url);
+        if(this.$route.query){
+          param = {...param, ...this.$route.query};
+        }
         const fetchPaymentList = await get(this.url + queryParam(param));
         this.prepareList(fetchPaymentList.data);
+        console.log(param);
+
+        
+
       } catch (err) {
         this.$displayErrorMessage(err);
+      }
+      finally {
+        this.$LIPS(false);
       }
     },
 
@@ -556,6 +571,9 @@ export default {
           from: from,
           ...this.searchQuery,
         };
+        if(this.$route.query){
+          param = {...param, ...this.$route.query};
+        }
         const fetchPaymentReconciliation = await get(
          this.url + queryParam(param)
         );

@@ -4,6 +4,7 @@ require("bootstrap");
 import Vue from 'vue'
 var VueTruncate = require("vue-truncate-filter");
 import App from './App.vue'
+import VueRouterMultiView from 'vue-router-multi-view'
 import router from './router'
 import VeeValidate from "vee-validate";
 import VueSweetalert2 from "vue-sweetalert2";
@@ -27,6 +28,7 @@ Vue.use(VeeValidate, {
     classes: true,
     classNames: { invalid: "is-invalid" }
 });
+Vue.use(VueRouterMultiView);
 Vue.use(VueTruncate);
 new Vue({
     router,

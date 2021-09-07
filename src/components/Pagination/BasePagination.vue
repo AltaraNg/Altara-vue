@@ -97,6 +97,10 @@ export default {
     },
     fetchData(data) {
       this.$emit("fetchData", data);
+      let param = this.$route.query
+      param = {...param, ...this.pageParam}
+        this.$router.replace({query: Object.assign({}, this.$route.query, param)})
+
     },
   },
 

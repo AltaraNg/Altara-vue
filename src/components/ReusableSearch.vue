@@ -96,8 +96,13 @@ export default {
       default: true
     },
     defaultBranch: {
-      type: Number,
+      type: String,
       required: false,
+      default: ''
+    },
+    currentRoute:{
+      type: String,
+       required: false,
       default: ''
     }
     
@@ -124,6 +129,7 @@ export default {
       if(this.defaultBranch !== ''){
         this.searchQuery.branch = this.defaultBranch;
       }
+      this.$router.push({path: `${this.currentRoute}` , query: this.searchQuery})
      
       get(this.url + queryParam(this.searchQuery)).then(response => {
         if(this.searchQuery.days !== undefined){
@@ -132,6 +138,7 @@ export default {
             days: this.searchQuery.days,
             queryParams: this.searchQuery
           });
+          
         }
         else{
           this.$emit("childToParent", {data : response.data.data,

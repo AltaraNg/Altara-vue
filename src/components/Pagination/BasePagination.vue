@@ -95,10 +95,10 @@ export default {
         this.fetchData();
       }
     },
-    fetchData(data) {
+    async fetchData(data) {
       this.$emit("fetchData", data);
       let param = this.$route.query
-      param = {...param, ...this.pageParam}
+       param = await {...param, page: this.pageParam.page?? '', limit: this.pageParam.limit ?? ''};
         this.$router.replace({query: Object.assign({}, this.$route.query, param)})
 
     },

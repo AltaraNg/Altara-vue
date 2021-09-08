@@ -59,7 +59,7 @@
                             {{order.customer_name}}
                         </div>
                         <div class="col d-flex align-items-center justify-content-center" >
-                            {{order.product.name}}
+                            {{order.product ? order.product.name : 'N/A'}}
                         </div>
                          <div class="col d-flex align-items-center justify-content-center overflow-auto" @click="viewStuffs(order, 'amortization')">
                             {{order.repayment - calcDebt(order.amortization) | currency('₦')}} | {{order.repayment  |  currency('₦')}} 
@@ -136,7 +136,7 @@
 
                                     <tr>
                                         <th>Product</th>
-                                        <td>{{modalItem.product.name }}</td>
+                                        <td>{{modalItem.product.name || '' }}</td>
                                     </tr>
                                     <tr>
                                         <th>Business Type</th>
@@ -370,8 +370,8 @@ import queryParam from '../../utilities/queryParam';
                
                 let params = {
                     days: this.type === null ? 7 : this.type,
-                    page: this.pageParams.page,
-                    limit: this.pageParams.limit,
+                    page: this.pageParams.page ?? '',
+                    limit: this.pageParams.limit ?? '',
                     ...this.searchQuery
                 }
                 await get(this.urlToFetchOrders + queryParam(params))

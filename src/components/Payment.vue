@@ -5,7 +5,6 @@
     </div>
     <div class="mb-3 attendance-head">
       <resueable-search
-      :currentRoute="currentRoute"
         :url="url"
         @childToParent="prepareList"
         :showBranch="false"
@@ -437,9 +436,7 @@ export default {
   },
 
   computed: {
-      currentRoute(){
-          return this.$route.path;
-      },
+      
     details() {
       let list = 1;
       const tabs = ["Log Payment", "View Payments", "Reconcile"];
@@ -529,9 +526,9 @@ export default {
     },
 
     async getPaymentList() {
-      
+         this.$LIPS(true);
       try {
-        this.$LIPS(true);
+       
         let param = {
           page: this.pageParams.page ? this.pageParams.page : "",
           limit: this.pageParams.limit ? this.pageParams.limit : "",

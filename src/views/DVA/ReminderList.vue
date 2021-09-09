@@ -374,6 +374,9 @@ import queryParam from '../../utilities/queryParam';
                     limit: this.pageParams.limit,
                     ...this.searchQuery
                 }
+                if(this.$route.query){
+          param = {...param, ...this.$route.query};
+        }
                 await get(this.urlToFetchOrders + queryParam(params))
                    .then(({data}) => this.prepareList(data))
                     .catch(() => Flash.setError('Error Preparing form'));

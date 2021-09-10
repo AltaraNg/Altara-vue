@@ -20,6 +20,7 @@
         "vue-form-wizard": "^0.8.4",
         "vue-router": "^3.0.1",
         "vue-router-back-button": "^1.1.1",
+        "vue-router-multi-view": "^0.1.0",
         "vue-select": "^2.5.1",
         "vue-sweetalert2": "^3.0.3",
         "vue-truncate-filter": "^1.1.7",

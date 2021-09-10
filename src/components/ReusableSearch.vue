@@ -95,6 +95,12 @@ export default {
       required: false,
       default: true
     },
+    defaultBranch: {
+      type: String,
+      required: false,
+      default: ''
+    },
+    
     
   },
   computed: {   
@@ -116,6 +122,11 @@ export default {
       if(this.searchQuery.branch === 'all'){
         this.searchQuery.branch = '';
       }
+      if(this.defaultBranch !== ''){
+        this.searchQuery.branch = this.defaultBranch;
+      }
+      let currentRoute = this.$route.path;
+      this.$router.push({path: `${currentRoute}` , query: this.searchQuery})
      
       get(this.url + queryParam(this.searchQuery)).then(response => {
         if(this.searchQuery.days !== undefined){
@@ -124,6 +135,7 @@ export default {
             days: this.searchQuery.days,
             queryParams: this.searchQuery
           });
+          
         }
         else{
           this.$emit("childToParent", {data : response.data.data,

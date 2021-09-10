@@ -24,7 +24,7 @@
              
 
            
-
+            <router-multi-view view-name="listToOrder"></router-multi-view>
 
             <Payment :list="listToOrder" :tab="listToOrder" :filter-by="filterObject"/>
         </div>

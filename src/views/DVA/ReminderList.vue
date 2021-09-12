@@ -366,7 +366,6 @@ import queryParam from '../../utilities/queryParam';
              async fetchData() {
 
                 // this.$scrollToTop();
-                console.log('i got here')
                 this.$LIPS(true);
                
                 let params = {

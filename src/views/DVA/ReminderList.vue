@@ -366,6 +366,7 @@ import queryParam from '../../utilities/queryParam';
              async fetchData() {
 
                 // this.$scrollToTop();
+                console.log('i got here')
                 this.$LIPS(true);
                
                 let params = {
@@ -375,7 +376,7 @@ import queryParam from '../../utilities/queryParam';
                     ...this.searchQuery
                 }
                 if(this.$route.query){
-          param = {...param, ...this.$route.query};
+          params = {...params, ...this.$route.query};
         }
                 await get(this.urlToFetchOrders + queryParam(params))
                    .then(({data}) => this.prepareList(data))
@@ -575,11 +576,11 @@ import queryParam from '../../utilities/queryParam';
                 this.showPrompt = false;
             }
         },
-        created(){
+        async created(){
 
-            this.getReminderValues();
-           this.getBusinessType();         
-           this.fetchData();   
+          await  this.getReminderValues();
+          await this.getBusinessType();         
+        await this.fetchData();   
         },
         mounted(){
            

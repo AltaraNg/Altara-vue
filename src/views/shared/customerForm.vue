@@ -110,7 +110,7 @@
 
                         <div class="form-group col-md-4 px-md-3 px-1 float-left">
                             <label class="w-100 float-left">Gender</label>
-                            <div class="radio p-0 col-md-6 col-6 float-left" v-for="sex in gender">
+                            <div class="radio p-0 col-md-6 col-6 float-left" v-for="(sex, index) in gender" :key="index">
                                 <input
                                         :id="sex"
                                         :value="sex"
@@ -240,7 +240,7 @@
                                     v-validate="'required'"
                             >
                                 <option value>select state</option>
-                                <option v-bind:value="state.name" v-for="state in states">{{state.name}}</option>
+                                <option v-bind:value="state.name" v-for="(state, index) in states" :key="index">{{state.name}}</option>
                             </select>
                             <small v-if="errors.first('state')">{{errors.first('state')}}</small>
                         </div>
@@ -280,7 +280,7 @@
 
                         <div class="form-group col-md-8 px-md-3 px-1 float-left">
                             <label class="w-100 float-left pl-1">Civil Status</label>
-                            <div class="radio pl-1 pr-3 float-left" v-for="status in civilStatus">
+                            <div class="radio pl-1 pr-3 float-left" v-for="(status, index) in civilStatus" :key="index">
                                 <input
                                         :id="status"
                                         :value="status"
@@ -317,7 +317,7 @@
 
                         <div class="form-group col-md-5 px-md-3 px-1 float-left">
                             <label class="w-100 float-left pl-1">Type of Home</label>
-                            <div class="radio pl-1 pr-3 float-left" v-for="typeOfHome in typesOfHome">
+                            <div class="radio pl-1 pr-3 float-left" v-for="(typeOfHome, index) in typesOfHome" :key="index">
                                 <input
                                         :id="typeOfHome"
                                         :value="typeOfHome"
@@ -334,7 +334,7 @@
 
                         <div class="form-group col-md-5 px-md-3 px-1 float-left">
                             <label class="w-100 float-left pl-1">Number of Rooms</label>
-                            <div class="radio pl-1 pr-3 float-left" v-for="noOfRoom in noOfRooms">
+                            <div class="radio pl-1 pr-3 float-left" v-for="(noOfRoom, index) in noOfRooms" :key="index">
                                 <input
                                         :id="noOfRoom"
                                         :value="noOfRoom"
@@ -437,7 +437,7 @@
 
                         <div class="form-group col-md-12 px-md-3 px-1 float-left">
                             <label class="w-100 float-left pl-1">Highest Level of Education</label>
-                            <div class="radio pl-1 pr-3 float-left" v-for="highestLevel in highestLevelOfEdu">
+                            <div class="radio pl-1 pr-3 float-left" v-for="(highestLevel, index) in highestLevelOfEdu" :key="index">
                                 <input
                                         :id="highestLevel"
                                         :value="highestLevel"
@@ -594,8 +594,8 @@
                             </div>
                             <br/>
                             <span
-                                    v-for="occupation in occupations"
-
+                                    v-for="(occupation, index) in occupations"
+                                    :key="index"
                                     class="badge badge-primary occupation-title"
                                     @click="checkOccupation(occupation.id)"
                                     :data-id="occupation.id"
@@ -606,7 +606,8 @@
                             <span
                                     v-if="isClick"
                                     @click="setOccupation(name)"
-                                    v-for="name in occName"
+                                    v-for="(name, index) in occName"
+                                    :key="index"
                                     class="badge badge-default occupation-option"
                                     :data-name="name"
                             >{{name}}</span>
@@ -692,7 +693,7 @@
 
                                 <div class="form-group col-md-6 px-md-3 px-1 float-left">
                                     <label class="w-100 float-left pl-1">How do you receive salary?</label>
-                                    <div class="radio pl-1 pr-3 float-left" v-for="means in receiveIncomeMeans">
+                                    <div class="radio pl-1 pr-3 float-left" v-for="(means, index) in receiveIncomeMeans" :key="index">
                                         <input
                                                 :id="means"
                                                 :value="means"
@@ -709,7 +710,7 @@
 
                                 <div class="form-group col-md-6 px-md-3 px-1 float-left">
                                     <label class="w-100 float-left pl-1">Payment Period</label>
-                                    <div class="radio pl-1 pr-3 float-left" v-for="period in paymentPeriod">
+                                    <div class="radio pl-1 pr-3 float-left" v-for="(period, index) in paymentPeriod" :key="index">
                                         <input
                                                 :id="period"
                                                 :value="period"
@@ -737,7 +738,7 @@
                                             v-validate="'required'"
                                     >
                                         <option value>select duration</option>
-                                        <option :value="duration" v-for="duration in durations">{{duration}}</option>
+                                        <option :value="duration" v-for="(duration, index) in durations" :key="index">{{duration}}</option>
                                     </select>
                                     <small v-if="errors.first('work_duration')">{{errors.first('work_duration')}}
                                     </small>
@@ -745,7 +746,7 @@
 
                                 <div class="form-group col-md-9 px-md-3 px-1 float-left">
                                     <label class="w-100 float-left">Days of Work</label>
-                                    <div class="checkbox float-left pr-3" v-for="day in weekdays">
+                                    <div class="checkbox float-left pr-3" v-for="(day, index) in weekdays" key="index">
                                         <input
                                                 :id="day"
                                                 :value="day"
@@ -855,7 +856,7 @@
                                             v-validate="'required'"
                                     >
                                         <option value>select state</option>
-                                        <option :value="state.name" v-for="state in states">{{state.name}}</option>
+                                        <option :value="state.name" v-for="(state, index) in states" :key="index">{{state.name}}</option>
                                     </select>
                                     <small v-if="errors.first('company_state')">{{errors.first('company_state')}}
                                     </small>
@@ -1011,7 +1012,7 @@
                                             v-validate="'required'"
                                     >
                                         <option value>select duration</option>
-                                        <option :value="duration" v-for="duration in durations">{{duration}}</option>
+                                        <option :value="duration" v-for="(duration, index) in durations" :key="index">{{duration}}</option>
                                     </select>
                                     <small v-if="errors.first('work_duration')">{{errors.first('work_duration')}}
                                     </small>
@@ -1048,7 +1049,7 @@
 
                                 <div class="form-group col-md-9 px-md-3 px-1 float-left">
                                     <label class="w-100 float-left">Days of Work</label>
-                                    <div class="checkbox float-left pr-3" v-for="day in weekdays">
+                                    <div class="checkbox float-left pr-3" v-for="(day, index) in weekdays" :key="index">
                                         <input
                                                 :id="day"
                                                 :value="day"
@@ -1158,7 +1159,7 @@
                                             v-validate="'required'"
                                     >
                                         <option value>select state</option>
-                                        <option :value="state.name" v-for="state in states">{{state.name}}</option>
+                                        <option :value="state.name" v-for="(state, index) in states" :key="index">{{state.name}}</option>
                                     </select>
                                     <small v-if="errors.first('company_state')">{{errors.first('company_state')}}
                                     </small>
@@ -1270,7 +1271,7 @@
 
                         <div class="form-group col-md-4 px-md-3 px-1 float-left">
                             <label class="w-100 float-left pl-1">Gender</label>
-                            <div class="radio p-0 col-md-6 col-6 float-left" v-for="sex in gender">
+                            <div class="radio p-0 col-md-6 col-6 float-left" v-for="(sex, index) in gender" :key="index">
                                 <input
                                         :id="'nok'+sex"
                                         :value="sex"
@@ -1310,7 +1311,7 @@
                                     v-validate="'required'"
                             >
                                 <option value>select duration</option>
-                                <option :value="duration" v-for="duration in durations">{{duration}}</option>
+                                <option :value="duration" v-for="(duration, index) in durations" :key = "index">{{duration}}</option>
                             </select>
                             <small v-if="errors.first('NOK_work_duration')">{{errors.first('NOK_work_duration')}}
                             </small>
@@ -1320,7 +1321,7 @@
 
                         <div class="form-group col-md-12 px-md-3 px-1 float-left">
                             <label class="w-100 float-left pl-1">Relationship</label>
-                            <div class="radio p-0 col-md-2 col-4 float-left" v-for="rela in relationships">
+                            <div class="radio p-0 col-md-2 col-4 float-left" v-for="(rela, index) in relationships" :key="index">
                                 <input
                                         :id="rela"
                                         :value="rela"
@@ -1390,7 +1391,7 @@
 
                         <div class="form-group col-md-9 col-sm-12 px-md-3 px-1 float-left">
                             <label class="w-100 float-left pl-1">Relationship</label>
-                            <div class="radio p-0 col-md-3 col-6 float-left" v-for="rela in relationshipWG">
+                            <div class="radio p-0 col-md-3 col-6 float-left" v-for="(rela, index) in relationshipWG" :key="index">
                                 <input
                                         :id="rela+'wg'"
                                         :value="rela"
@@ -1407,7 +1408,7 @@
 
                         <div class="form-group col-md-3 col-sm-6 px-md-3 px-1 float-left">
                             <label class="w-100 float-left pl-1">Gender</label>
-                            <div class="radio p-0 col-6 float-left" v-for="sex in gender">
+                            <div class="radio p-0 col-6 float-left" v-for="(sex, index) in gender" :key="index">
                                 <input
                                         :id="'gua'+sex"
                                         :value="sex"
@@ -1524,7 +1525,7 @@
                                     v-validate="'required'"
                             >
                                 <option value>select state</option>
-                                <option :value="state.name" v-for="state in states">{{state.name}}</option>
+                                <option :value="state.name" v-for="(state, index) in states" :key="index">{{state.name}}</option>
                             </select>
                             <small
                                     v-if="errors.first('work_guarantor_state')"
@@ -1562,7 +1563,7 @@
                                     v-validate="'required'"
                             >
                                 <option value>select duration</option>
-                                <option :value="duration" v-for="duration in durations">{{duration}}</option>
+                                <option :value="duration" v-for="(duration, index) in durations" :key="index">{{duration}}</option>
                             </select>
                             <small
                                     v-if="errors.first('work_guarantor_work_duration')"
@@ -1635,7 +1636,7 @@
 
                         <div class="form-group col-md-9 col-sm-12 px-md-3 px-1 float-left">
                             <label class="w-100 float-left pl-1">Relationship</label>
-                            <div class="radio p-0 col-md-3 col-6 float-left" v-for="rela in relationshipPG">
+                            <div class="radio p-0 col-md-3 col-6 float-left" v-for="(rela, index) in relationshipPG" :key="index">
                                 <input
                                         :id="rela+'pg'"
                                         :value="rela"
@@ -1652,7 +1653,7 @@
 
                         <div class="form-group col-md-3 col-sm-6 px-md-3 px-1 float-left">
                             <label class="w-100 float-left pl-1">Gender</label>
-                            <div class="radio p-0 col-md-6 col-6 float-left" v-for="sex in gender">
+                            <div class="radio p-0 col-md-6 col-6 float-left" v-for="(sex, index) in gender" :key="index">
                                 <input
                                         :id="'pg'+sex"
                                         :value="sex"
@@ -1756,7 +1757,7 @@
                                     v-validate="'required'"
                             >
                                 <option value>select state</option>
-                                <option :value="state.name" v-for="state in states">{{state.name}}</option>
+                                <option :value="state.name" v-for="(state, index) in states" :key="index">{{state.name}}</option>
                             </select>
                             <small
                                     v-if="errors.first('personal_guarantor_state')"
@@ -1794,7 +1795,7 @@
                                     v-validate="'required'"
                             >
                                 <option value>select duration</option>
-                                <option :value="duration" v-for="duration in durations">{{duration}}</option>
+                                <option :value="duration" v-for="(duration, index) in durations" :key="index">{{duration}}</option>
                             </select>
                             <small
                                     class="text-muted"
@@ -1878,7 +1879,7 @@
                                     v-validate="'required'"
                             >
                                 <option value>select office branch</option>
-                                <option :value="branch.id" v-for="branch in branches">{{branch.name}}</option>
+                                <option :value="branch.id" v-for="(branch, index) in branches" :key="index">{{branch.name}}</option>
                             </select>
                             <small v-if="errors.first('branch_id')">{{errors.first('branch_id')}}</small>
                         </div>
@@ -2026,6 +2027,12 @@
                     },
                     {
                         id: 12,
+                        jobType: "NYSC",
+                        category: "formal",
+                        names: []
+                    },
+                    {
+                        id: 13,
                         jobType: "Other",
                         category: "informal(business)",
                         names: []

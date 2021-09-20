@@ -323,6 +323,7 @@ const router = new VueRouter({
 			children: [
 				{ path: '/', redirect: { name: 'HRMHome' } },
 				{ path: 'home', component: HRMHome, name: 'HRMHome' },
+				{ path: 'message', component: DVAMessage, name: 'DVAMessage' },
 				{
 					path: 'employee',
 					component: DataViewer,

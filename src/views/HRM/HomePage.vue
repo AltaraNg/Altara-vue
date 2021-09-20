@@ -1,7 +1,7 @@
 <template>
    <transition name="fade">
       <div>
-         <div v-for="portal in portals">
+         <div v-for="(portal, index) in portals" :key="index">
             <portal-card :desc="portal.desc" :title="portal.title" :url="portal.url" :url_c="portal.url_c"/>
          </div>
       </div>
@@ -26,6 +26,10 @@
                {
                   url: 'caution', title: 'Manage Caution', url_c: 'Manage Caution!',
                   desc: 'Managing staff caution'
+               },
+               {
+                  url: 'message', title: 'Messaging', url_c: 'Send messages!',
+                  desc: 'For sending messages to customers,'
                }
             ]
          }

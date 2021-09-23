@@ -153,17 +153,17 @@
               <td>{{ branch.percentage_of_total_revenues }}</td>
               <td>{{ branch.percentage_downpayment }}</td>
             </tr>
-            
+
             <tr class="text-center text-lg font-weight-bold h6 divider">
               <td colspan="2" class="text-center">Total</td>
               <td class="">{{ $formatCurrency(sums.totalRevenue) }}</td>
               <td>{{ sums.totalSales }}</td>
-              <td>{{ sums.forecast.toFixed(2) }}</td>
+              <td>{{ sums.totalForecast.toFixed(2) }}</td>
               <td>{{ sums.totalAltPay }}</td>
               <td>{{ sums.totalAltCash }}</td>
               <td>{{ $formatCurrency(sums.totalAvePerProd) }}</td>
               <td>{{ sums.totalPercent }}</td>
-              <td></td>
+              <td>{{ sums.averageDownPayment  }}</td>
             </tr>
           </tbody>
         </table>
@@ -356,7 +356,9 @@ export default {
       this.sums.totalAltCash = 0;
       this.sums.totalAvePerProd = 0;
       this.sums.totalPercent = 0;
-      this.sums.forecast = 0;
+      this.sums.totalForecast = 0;
+      this.sums.averageDownPayment = 0;
+     
       for (let index = 0; index < dataArray.length; index++) {
         this.sums.totalSales += Number(dataArray[index].number_of_sales);
         this.sums.totalRevenue += parseFloat(
@@ -373,7 +375,10 @@ export default {
         this.sums.totalPercent += Number(
           dataArray[index].percentage_of_total_revenues
         );
-        this.sums.forecast += Number(dataArray[index].forecast);
+        this.sums.totalForecast += Number(dataArray[index].forecast);
+        this.sums.averageDownPayment += Number(
+          dataArray[index].percentage_downpayment
+        );
       }
     },
 

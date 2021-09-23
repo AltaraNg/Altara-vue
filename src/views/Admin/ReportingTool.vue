@@ -163,7 +163,7 @@
               <td>{{ sums.totalAltCash }}</td>
               <td>{{ $formatCurrency(sums.totalAvePerProd) }}</td>
               <td>{{ sums.totalPercent }}</td>
-              <td>{{ sums.averageDownPayment  }}</td>
+              <td>{{ sums.averageDownPayment }}</td>
             </tr>
           </tbody>
         </table>
@@ -357,7 +357,7 @@ export default {
       this.sums.totalPercent = 0;
       this.sums.totalForecast = 0;
       this.sums.averageDownPayment = 0;
-     
+
       for (let index = 0; index < dataArray.length; index++) {
         this.sums.totalSales += Number(dataArray[index].number_of_sales);
         this.sums.totalRevenue += parseFloat(

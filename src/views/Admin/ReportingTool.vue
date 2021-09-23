@@ -331,7 +331,6 @@ export default {
         this.branchesInfo = Object.values(
           this.reports.meta.groupedDataByBranch
         );
-        console.log("odododo");
         this.branchesInfo.sort((a, b) => {
           if (a.branch_name < b.branch_name) {
             return -1;
@@ -449,7 +448,6 @@ export default {
     async getOrderTypes() {
       try {
         const fetchOrderTypes = await get(this.apiUrls.orderTypes);
-        console.log(fetchOrderTypes);
         this.orderTypes = fetchOrderTypes.data.orderTypes;
         // this.businessTypes = this.businessTypes.filter((item) => {
         //   return item.name.includes("Products");

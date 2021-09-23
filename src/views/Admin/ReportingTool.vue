@@ -40,12 +40,8 @@
             </select>
           </div>
 
-		  <div class="col">
-            <select
-              name="order_type"
-              class="custom-select"
-              v-model="orderType"
-            >
+          <div class="col">
+            <select name="order_type" class="custom-select" v-model="orderType">
               <option :value="''" selected>All Order Types</option>
               <option
                 :value="type.id"
@@ -142,8 +138,7 @@
           </thead>
           <tbody v-if="reports !== null">
             <tr
-              v-for="(branch, index) in branchesInfo
-              "
+              v-for="(branch, index) in branchesInfo"
               :key="index"
               class="text-center"
             >
@@ -151,21 +146,24 @@
               <td class="font-weight-bold">{{ branch.branch_name }}</td>
               <td>{{ branch.total_potential_revenue_sold_per_showroom }}</td>
               <td>{{ branch.number_of_sales }}</td>
+              <td>{{ branch.forecast.toFixed(2) }}</td>
               <td>{{ branch.no_of_altara_pay }}</td>
               <td>{{ branch.no_of_altara_cash }}</td>
               <td>{{ branch.avg_price_of_prod_per_showroom }}</td>
               <td>{{ branch.percentage_of_total_revenues }}</td>
+              <td>{{ branch.percentage_downpayment }}</td>
             </tr>
-            <hr />
-
-            <tr class="text-center text-lg font-weight-bold h6">
+            
+            <tr class="text-center text-lg font-weight-bold h6 divider">
               <td colspan="2" class="text-center">Total</td>
               <td class="">{{ $formatCurrency(sums.totalRevenue) }}</td>
               <td>{{ sums.totalSales }}</td>
+              <td>{{ sums.forecast.toFixed(2) }}</td>
               <td>{{ sums.totalAltPay }}</td>
               <td>{{ sums.totalAltCash }}</td>
               <td>{{ $formatCurrency(sums.totalAvePerProd) }}</td>
               <td>{{ sums.totalPercent }}</td>
+              <td></td>
             </tr>
           </tbody>
         </table>
@@ -201,27 +199,29 @@ export default {
       fromDate: "",
       toDate: "",
       query: {},
-	  businessType: '',
-	  orderType: '',
-	  sector: '',
-	  branchesInfo: {},
-	  orderTypes: {},
+      businessType: "",
+      orderType: "",
+      sector: "",
+      branchesInfo: {},
+      orderTypes: {},
 
       apiUrls: {
         getReports: "/api/order/reports",
         exportReport: "/api/order/reports/export",
         businessTypes: "/api/business_type",
-		orderTypes: "/api/order-types"
+        orderTypes: "/api/order-types",
       },
       tableHeaders: [
         "S/N",
         "Branch",
         "Revenue (₦)",
         "No. of Sales",
+        "Forecast",
         "Altara Pay",
         "Altara Cash",
         "Average Price/Product (₦)",
         "% Total Rev.",
+        "Average Down Payment",
       ],
       barData: null,
       pieData: null,
@@ -244,7 +244,7 @@ export default {
     this.getPieChartData();
     this.getBarChartData();
     this.getBusinessTypes();
-	this.getOrderTypes();
+    this.getOrderTypes();
     this.loaded = true;
   },
 
@@ -317,9 +317,9 @@ export default {
       this.$LIPS(true);
       this.query.fromDate = this.fromDate;
       this.query.toDate = this.toDate;
-	  this.query.businessType = this.businessType;
-	  this.query.sector = this.sector;
-	  this.query.orderType = this.orderType;
+      this.query.businessType = this.businessType;
+      this.query.sector = this.sector;
+      this.query.orderType = this.orderType;
       try {
         const report = await byMethod(
           "GET",
@@ -328,7 +328,9 @@ export default {
           this.query
         );
         this.reports = report.data.data;
-		this.branchesInfo = Object.values(this.reports.meta.groupedDataByBranch);
+        this.branchesInfo = Object.values(
+          this.reports.meta.groupedDataByBranch
+        );
         console.log("odododo");
         this.branchesInfo.sort((a, b) => {
           if (a.branch_name < b.branch_name) {
@@ -347,7 +349,6 @@ export default {
       }
     },
 
-    
     getSums(dataArray) {
       this.sums.totalSales = 0;
       this.sums.totalRevenue = 0;
@@ -355,22 +356,24 @@ export default {
       this.sums.totalAltCash = 0;
       this.sums.totalAvePerProd = 0;
       this.sums.totalPercent = 0;
-      for (let i = 0; i < dataArray.length; i++) {
-        this.sums.totalSales += Number(dataArray[i].number_of_sales);
+      this.sums.forecast = 0;
+      for (let index = 0; index < dataArray.length; index++) {
+        this.sums.totalSales += Number(dataArray[index].number_of_sales);
         this.sums.totalRevenue += parseFloat(
-          dataArray[i].total_potential_revenue_sold_per_showroom.replace(
+          dataArray[index].total_potential_revenue_sold_per_showroom.replace(
             /,/g,
             ""
           )
         );
-        this.sums.totalAltPay += dataArray[i].no_of_altara_pay;
-        this.sums.totalAltCash += dataArray[i].no_of_altara_cash;
+        this.sums.totalAltPay += dataArray[index].no_of_altara_pay;
+        this.sums.totalAltCash += dataArray[index].no_of_altara_cash;
         this.sums.totalAvePerProd += parseFloat(
-          dataArray[i].avg_price_of_prod_per_showroom.replace(/,/g, "")
+          dataArray[index].avg_price_of_prod_per_showroom.replace(/,/g, "")
         );
         this.sums.totalPercent += Number(
-          dataArray[i].percentage_of_total_revenues
+          dataArray[index].percentage_of_total_revenues
         );
+        this.sums.forecast += Number(dataArray[index].forecast);
       }
     },
 
@@ -438,10 +441,10 @@ export default {
       }
     },
 
-	async getOrderTypes() {
+    async getOrderTypes() {
       try {
         const fetchOrderTypes = await get(this.apiUrls.orderTypes);
-		console.log(fetchOrderTypes);
+        console.log(fetchOrderTypes);
         this.orderTypes = fetchOrderTypes.data.orderTypes;
         // this.businessTypes = this.businessTypes.filter((item) => {
         //   return item.name.includes("Products");
@@ -464,5 +467,9 @@ button {
 }
 .custom-select {
   width: 125px;
+}
+.divider {
+  width: 100%;
+  border-top: 2px solid rgba(75, 85, 99, 0.54);
 }
 </style>

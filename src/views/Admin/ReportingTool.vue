@@ -163,7 +163,7 @@
               <td>{{ sums.totalAltCash }}</td>
               <td>{{ $formatCurrency(sums.totalAvePerProd) }}</td>
               <td>{{ sums.totalPercent }}</td>
-              <td>{{ sums.averageDownPayment }}</td>
+              <td></td>
             </tr>
           </tbody>
         </table>

@@ -541,7 +541,6 @@ export default {
           backgroundColor: this.productPieData.bgColor,
         },
       ];
-      console.log(this.productPieData);
     },
   },
 };

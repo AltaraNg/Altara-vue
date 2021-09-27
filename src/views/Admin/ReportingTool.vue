@@ -169,12 +169,12 @@
         </table>
       </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid" v-show="productPieData">
       
       <div class="card">
         <h3 class="mx-5 my-5">Products Statistics</h3>
         <div class="card-body">
-          <div class="product-pie-card">
+          <div class="row product-pie-card">
             <div class="col-md-4">
               <pie-chart
                 :chart-data="productPieData"
@@ -183,8 +183,8 @@
                 class=""
               ></pie-chart>
             </div>
-            <div class="col-md-6">
-              <ul class="list-disc">
+            <div class="col-md-8">
+              <ul class="list-disc pl-5">
                 <li
                   v-for="(item, index) in productPieData.dataSet"
                   class="list-disc"

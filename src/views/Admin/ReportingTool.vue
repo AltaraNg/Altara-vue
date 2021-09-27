@@ -191,7 +191,7 @@
                   :style="`color: ${productPieData.bgColor[index]}`"
                   :key="index"
                 >
-                  <span class="text-left text-black"
+                  <span class="text-left text-black display-5"
                     >{{ productPieData.labels[index] }}: </span
                   ><span class="h3">{{ item }}</span>
                 </li>

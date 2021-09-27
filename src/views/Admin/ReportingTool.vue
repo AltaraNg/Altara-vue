@@ -146,7 +146,7 @@
               <td class="font-weight-bold">{{ branch.branch_name }}</td>
               <td>{{ branch.total_potential_revenue_sold_per_showroom }}</td>
               <td>{{ branch.number_of_sales }}</td>
-              <td>{{ branch.forecast.toFixed(2) }}</td>
+              <td>{{ branch.forecast }}</td>
               <td>{{ branch.no_of_altara_pay }}</td>
               <td>{{ branch.no_of_altara_cash }}</td>
               <td>{{ branch.avg_price_of_prod_per_showroom }}</td>
@@ -158,7 +158,7 @@
               <td colspan="2" class="text-center">Total</td>
               <td class="">{{ $formatCurrency(sums.totalRevenue) }}</td>
               <td>{{ sums.totalSales }}</td>
-              <td>{{ sums.totalForecast.toFixed(2) }}</td>
+              <td>{{ sums.totalForecast }}</td>
               <td>{{ sums.totalAltPay }}</td>
               <td>{{ sums.totalAltCash }}</td>
               <td>{{ $formatCurrency(sums.totalAvePerProd) }}</td>
@@ -167,6 +167,37 @@
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+    <div class="container-fluid" v-show="productPieData">
+      <div class="card">
+        <h3 class="mx-5 my-5">Products Statistics</h3>
+        <div class="card-body">
+          <div class="row product-pie-card">
+            <div class="col-md-4">
+              <pie-chart
+                :chart-data="productPieData"
+                :options="productPieData.options"
+                v-if="loaded"
+                class=""
+              ></pie-chart>
+            </div>
+            <div class="col-md-8">
+              <ul class="list-disc pl-5">
+                <li
+                  v-for="(item, index) in productPieData.dataSet"
+                  class="list-disc"
+                  :style="`color: ${productPieData.bgColor[index]}`"
+                  :key="index"
+                >
+                  <span class="text-left text-black display-5"
+                    >{{ productPieData.labels[index] }}: </span
+                  ><span class="h3">{{ item }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -182,6 +213,7 @@ import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import BarChart from "../../components/charts/BarChart.vue";
 import PieChart from "../../components/charts/PieChart.vue";
+import Flash from "../../utilities/flash";
 
 export default {
   components: {
@@ -229,6 +261,35 @@ export default {
         responsive: true,
         maintainAspectRatio: false,
       },
+      noOfSalesMadeOnEachProduct: null,
+      productPieData: {
+        labels: [],
+        dataSet: [],
+        bgColor: [
+          "#ff0000",
+          "#00aeae",
+          "#7580ce",
+          "#007900",
+          "#39f159",
+          "#989000",
+          "#20062b",
+          "#dc5355",
+          "#5526c4",
+          "#ff7f00",
+        ],
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          legend: {
+            display: false,
+          },
+          title: {
+            display: true,
+            position: "bottom",
+            text: "Top 10 Product Chart",
+          },
+        },
+      },
       loaded: false,
       sums: {},
       businessTypes: {},
@@ -242,6 +303,7 @@ export default {
     this.fromDate = firstDay.slice(0, 10);
     await this.getReport();
     this.getPieChartData();
+    this.drawProductPieChart();
     this.getBarChartData();
     this.getBusinessTypes();
     this.getOrderTypes();
@@ -340,9 +402,14 @@ export default {
           }
           return 0;
         });
+        this.noOfSalesMadeOnEachProduct =
+          this.reports.meta.noOfSalesMadeOnEachProduct;
 
         this.getSums(this.reports.meta.groupedDataByBranch);
       } catch (err) {
+        if (err.response) {
+          Flash.setError(err.response.statusText);
+        }
       } finally {
         this.$LIPS(false);
       }
@@ -456,6 +523,29 @@ export default {
         this.$displayErrorMessage(err);
       }
     },
+    getProductPieData() {
+      let productsStats = this.noOfSalesMadeOnEachProduct;
+      let productsLabel = [];
+      let productsData = [];
+      productsStats.forEach(function (productStat) {
+        productsLabel.push(productStat["product_name"]);
+        productsData.push(productStat["product_count"]);
+      });
+      this.productPieData.labels = productsLabel;
+      this.productPieData.dataSet = productsData;
+    },
+    drawProductPieChart() {
+      this.getProductPieData();
+      this.productPieData.datasets = [
+        {
+          barPercentage: 1,
+          barThickness: 12,
+          maxBarThickness: 16,
+          data: this.productPieData.dataSet,
+          backgroundColor: this.productPieData.bgColor,
+        },
+      ];
+    },
   },
 };
 </script>
@@ -474,5 +564,10 @@ button {
 .divider {
   width: 100%;
   border-top: 2px solid rgba(75, 85, 99, 0.54);
+}
+.product-pie-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

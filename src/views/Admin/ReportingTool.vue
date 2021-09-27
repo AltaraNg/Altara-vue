@@ -169,16 +169,35 @@
         </table>
       </div>
     </div>
-    <div>
-      <h3>Products Statistics</h3>
+    <div class="container-fluid">
+      
       <div class="card">
+        <h3 class="mx-5 my-5">Products Statistics</h3>
         <div class="card-body">
-          <pie-chart
-            :chart-data="productPieData"
-            :options="productPieData.options"
-            v-if="loaded"
-            class=""
-          ></pie-chart>
+          <div class="product-pie-card">
+            <div class="col-md-4">
+              <pie-chart
+                :chart-data="productPieData"
+                :options="productPieData.options"
+                v-if="loaded"
+                class=""
+              ></pie-chart>
+            </div>
+            <div class="col-md-6">
+              <ul class="list-disc">
+                <li
+                  v-for="(item, index) in productPieData.dataSet"
+                  class="list-disc"
+                  :style="`color: ${productPieData.bgColor[index]}`"
+                  :key="index"
+                >
+                  <span class="text-left text-black"
+                    >{{ productPieData.labels[index] }}: </span
+                  ><span class="h3">{{ item }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -246,6 +265,18 @@ export default {
       productPieData: {
         labels: [],
         dataSet: [],
+        bgColor: [
+          "#ff0000",
+          "#00aeae",
+          "#7580ce",
+          "#007900",
+          "#39f159",
+          "#989000",
+          "#20062b",
+          "#dc5355",
+          "#5526c4",
+          "#ff7f00",
+        ],
         options: {
           responsive: true,
           maintainAspectRatio: true,
@@ -501,25 +532,13 @@ export default {
     },
     drawProductPieChart() {
       this.getProductPieData();
-
       this.productPieData.datasets = [
         {
           barPercentage: 1,
           barThickness: 12,
           maxBarThickness: 16,
           data: this.productPieData.dataSet,
-          backgroundColor: [
-            "#023e8a",
-            "#CC5A71",
-            "#22223b",
-            "#55a630",
-            "#973aa8",
-            "#cb997e",
-            "#ff0a54",
-            "#43010e",
-            "#355070",
-            "#be0aff",
-          ],
+          backgroundColor: this.productPieData.bgColor,
         },
       ];
       console.log(this.productPieData);
@@ -542,5 +561,10 @@ button {
 .divider {
   width: 100%;
   border-top: 2px solid rgba(75, 85, 99, 0.54);
+}
+.product-pie-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

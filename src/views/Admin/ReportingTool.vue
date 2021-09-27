@@ -214,7 +214,6 @@ import "vue2-datepicker/index.css";
 import BarChart from "../../components/charts/BarChart.vue";
 import PieChart from "../../components/charts/PieChart.vue";
 import Flash from "../../utilities/flash";
-import { log } from "../../utilities/log";
 
 export default {
   components: {

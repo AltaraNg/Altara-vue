@@ -170,7 +170,6 @@
       </div>
     </div>
     <div class="container-fluid" v-show="productPieData">
-      
       <div class="card">
         <h3 class="mx-5 my-5">Products Statistics</h3>
         <div class="card-body">
@@ -214,6 +213,8 @@ import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import BarChart from "../../components/charts/BarChart.vue";
 import PieChart from "../../components/charts/PieChart.vue";
+import Flash from "../../utilities/flash";
+import { log } from "../../utilities/log";
 
 export default {
   components: {
@@ -404,8 +405,12 @@ export default {
         });
         this.noOfSalesMadeOnEachProduct =
           this.reports.meta.noOfSalesMadeOnEachProduct;
+
         this.getSums(this.reports.meta.groupedDataByBranch);
       } catch (err) {
+        if (err.response) {
+          Flash.setError(err.response.statusText);
+        }
       } finally {
         this.$LIPS(false);
       }

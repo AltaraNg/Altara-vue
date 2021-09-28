@@ -100,7 +100,7 @@
     </div>
 
     <div class="my-3 ml-5 pl-2 row w-100 text-center ml-2">
-      <div class="card col-6 m-2" v-if="reports !== null">
+      <div class="card col-6 m-2" v-if="reports">
         <bar-chart
           :chart-data="barData"
           :options="option"
@@ -109,7 +109,7 @@
       </div>
       <div class="col-md-offset-2"></div>
 
-      <div class="card col-5 ml-5 m-2 text-right" v-if="reports !== null">
+      <div class="card col-5 ml-5 m-2 text-right" v-if="reports">
         <pie-chart
           :chart-data="pieData"
           :options="option"
@@ -200,6 +200,24 @@
         </div>
       </div>
     </div>
+    <div class="container-fluid" v-show="productPieData">
+      <div class="card">
+        <h3 class="mx-5 my-5">Order By Day Statistics</h3>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12">
+              <template v-if="reports">
+                <bar-chart
+                  :chart-data="OrderBarChart.data"
+                  :options="OrderBarChart.option"
+                  v-if="loaded"
+                ></bar-chart>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -214,6 +232,7 @@ import "vue2-datepicker/index.css";
 import BarChart from "../../components/charts/BarChart.vue";
 import PieChart from "../../components/charts/PieChart.vue";
 import Flash from "../../utilities/flash";
+import { log } from "../../utilities/log";
 
 export default {
   components: {
@@ -290,6 +309,13 @@ export default {
           },
         },
       },
+      OrderBarChart: {
+        data: null,
+        option: {
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      },
       loaded: false,
       sums: {},
       businessTypes: {},
@@ -305,6 +331,7 @@ export default {
     this.getPieChartData();
     this.drawProductPieChart();
     this.getBarChartData();
+    this.getOrderBarChartData();
     this.getBusinessTypes();
     this.getOrderTypes();
     this.loaded = true;
@@ -360,7 +387,6 @@ export default {
         ],
       };
     },
-
     getPieChartData() {
       this.pieData = {
         labels: ["Altara Cash", "Altara Pay"],
@@ -497,6 +523,7 @@ export default {
       await this.getReport();
       this.getPieChartData();
       this.getBarChartData();
+      this.getOrderBarChartData();
       this.loaded = true;
     },
 
@@ -545,6 +572,90 @@ export default {
           backgroundColor: this.productPieData.bgColor,
         },
       ];
+    },
+    getOrderBarChartData() {
+      this.OrderBarChart.data = {
+        labels: this.getOrderDates(),
+        datasets: [
+          {
+            barPercentage: 1,
+            barThickness: 12,
+            maxBarThickness: 16,
+            label: "Number of sales made per day",
+            data: this.getOrderValues(),
+            backgroundColor: [
+              "#6ae299",
+              "#5973e5",
+              "#ebad4c",
+              "#fb8ca0",
+              "#2582c8",
+              "#13098c",
+              "#1e023b",
+              "#510387",
+              "#20bc00",
+              "#f5485f",
+              "#73b6ad",
+              "#dbc620",
+              "#046b2d",
+              "#423f5a",
+              "#e80130",
+              "#cb997e",
+              "#ff0a54",
+              "#b392ac",
+              "#355070",
+              "#be0aff",
+              "#4d1230"
+            ],
+            borderColor: [
+              "#6ae299",
+              "#5973e5",
+              "#ebad4c",
+              "#fb8ca0",
+              "#2582c8",
+              "#13098c",
+              "#1e023b",
+              "#510387",
+              "#20bc00",
+              "#f5485f",
+              "#73b6ad",
+              "#dbc620",
+              "#046b2d",
+              "#423f5a",
+              "#e80130",
+              "#cb997e",
+              "#ff0a54",
+              "#b392ac",
+              "#355070",
+              "#be0aff",
+              "#4d1230"
+            ],
+            borderWidth: 1,
+          },
+        ],
+      };
+    },
+    getOrderDates() {
+      const dateConfig = {
+        weekday: "short",
+        year: "2-digit",
+        month: "short",
+        day: "numeric",
+      };
+      return this.reports?.meta?.totalSalesPerDay?.map((item) => {
+        let date = new Date(item.order_date);
+        let month = date.toLocaleString("en-us", { month: dateConfig.month });
+        let weekday = date.toLocaleString("en-us", {
+          weekday: dateConfig.weekday,
+        });
+        let year = date.toLocaleString("en-us", { year: dateConfig.year });
+        let day = date.toLocaleString("en-us", { day: dateConfig.day });
+        return [weekday, month, year].join("-");
+      }) ?? null;
+    },
+    getOrderValues() {
+      return this.reports?.meta?.totalSalesPerDay?.map((item) => {
+        return item.total;
+      });
     },
   },
 };

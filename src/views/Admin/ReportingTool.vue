@@ -641,7 +641,7 @@ export default {
         month: "short",
         day: "numeric",
       };
-      return this.reports.meta.totalSalesPerDay.map((item) => {
+      return this.reports?.meta?.totalSalesPerDay?.map((item) => {
         let date = new Date(item.order_date);
         let month = date.toLocaleString("en-us", { month: dateConfig.month });
         let weekday = date.toLocaleString("en-us", {
@@ -653,9 +653,9 @@ export default {
       }) ?? null;
     },
     getOrderValues() {
-      return this.reports.meta.totalSalesPerDay.map((item) => {
+      return this.reports?.meta?.totalSalesPerDay?.map((item) => {
         return item.total;
-      }) ?? null;
+      });
     },
   },
 };

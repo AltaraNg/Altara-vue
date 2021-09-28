@@ -109,7 +109,7 @@
       </div>
       <div class="col-md-offset-2"></div>
 
-      <div class="card col-5 ml-5 m-2 text-right" v-if="reports !== null">
+      <div class="card col-5 ml-5 m-2 text-right" v-if="!reports">
         <pie-chart
           :chart-data="pieData"
           :options="option"

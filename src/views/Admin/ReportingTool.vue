@@ -100,7 +100,7 @@
     </div>
 
     <div class="my-3 ml-5 pl-2 row w-100 text-center ml-2">
-      <div class="card col-6 m-2" v-if="reports !== null">
+      <div class="card col-6 m-2" v-if="reports">
         <bar-chart
           :chart-data="barData"
           :options="option"
@@ -109,7 +109,7 @@
       </div>
       <div class="col-md-offset-2"></div>
 
-      <div class="card col-5 ml-5 m-2 text-right" v-if="!reports">
+      <div class="card col-5 ml-5 m-2 text-right" v-if="reports">
         <pie-chart
           :chart-data="pieData"
           :options="option"
@@ -206,7 +206,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-12">
-              <template v-if="reports !== null">
+              <template v-if="reports">
                 <bar-chart
                   :chart-data="OrderBarChart.data"
                   :options="OrderBarChart.option"

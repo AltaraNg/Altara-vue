@@ -40,12 +40,8 @@
             </select>
           </div>
 
-		  <div class="col">
-            <select
-              name="order_type"
-              class="custom-select"
-              v-model="orderType"
-            >
+          <div class="col">
+            <select name="order_type" class="custom-select" v-model="orderType">
               <option :value="''" selected>All Order Types</option>
               <option
                 :value="type.id"
@@ -104,7 +100,7 @@
     </div>
 
     <div class="my-3 ml-5 pl-2 row w-100 text-center ml-2">
-      <div class="card col-6 m-2" v-if="reports !== null">
+      <div class="card col-6 m-2" v-if="reports">
         <bar-chart
           :chart-data="barData"
           :options="option"
@@ -113,7 +109,7 @@
       </div>
       <div class="col-md-offset-2"></div>
 
-      <div class="card col-5 ml-5 m-2 text-right" v-if="reports !== null">
+      <div class="card col-5 ml-5 m-2 text-right" v-if="reports">
         <pie-chart
           :chart-data="pieData"
           :options="option"
@@ -142,8 +138,7 @@
           </thead>
           <tbody v-if="reports !== null">
             <tr
-              v-for="(branch, index) in branchesInfo
-              "
+              v-for="(branch, index) in branchesInfo"
               :key="index"
               class="text-center"
             >
@@ -151,24 +146,76 @@
               <td class="font-weight-bold">{{ branch.branch_name }}</td>
               <td>{{ branch.total_potential_revenue_sold_per_showroom }}</td>
               <td>{{ branch.number_of_sales }}</td>
+              <td>{{ branch.forecast }}</td>
               <td>{{ branch.no_of_altara_pay }}</td>
               <td>{{ branch.no_of_altara_cash }}</td>
               <td>{{ branch.avg_price_of_prod_per_showroom }}</td>
               <td>{{ branch.percentage_of_total_revenues }}</td>
+              <td>{{ branch.percentage_downpayment }}</td>
             </tr>
-            <hr />
 
-            <tr class="text-center text-lg font-weight-bold h6">
+            <tr class="text-center text-lg font-weight-bold h6 divider">
               <td colspan="2" class="text-center">Total</td>
               <td class="">{{ $formatCurrency(sums.totalRevenue) }}</td>
               <td>{{ sums.totalSales }}</td>
+              <td>{{ sums.totalForecast }}</td>
               <td>{{ sums.totalAltPay }}</td>
               <td>{{ sums.totalAltCash }}</td>
               <td>{{ $formatCurrency(sums.totalAvePerProd) }}</td>
               <td>{{ sums.totalPercent }}</td>
+              <td></td>
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+    <div class="container-fluid" v-show="productPieData">
+      <div class="card">
+        <h3 class="mx-5 my-5">Products Statistics</h3>
+        <div class="card-body">
+          <div class="row product-pie-card">
+            <div class="col-md-4">
+              <pie-chart
+                :chart-data="productPieData"
+                :options="productPieData.options"
+                v-if="loaded"
+                class=""
+              ></pie-chart>
+            </div>
+            <div class="col-md-8">
+              <ul class="list-disc pl-5">
+                <li
+                  v-for="(item, index) in productPieData.dataSet"
+                  class="list-disc"
+                  :style="`color: ${productPieData.bgColor[index]}`"
+                  :key="index"
+                >
+                  <span class="text-left text-black display-5"
+                    >{{ productPieData.labels[index] }}: </span
+                  ><span class="h3">{{ item }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid" v-show="productPieData">
+      <div class="card">
+        <h3 class="mx-5 my-5">Order By Day Statistics</h3>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12">
+              <template v-if="reports">
+                <bar-chart
+                  :chart-data="OrderBarChart.data"
+                  :options="OrderBarChart.option"
+                  v-if="loaded"
+                ></bar-chart>
+              </template>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -184,6 +231,8 @@ import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import BarChart from "../../components/charts/BarChart.vue";
 import PieChart from "../../components/charts/PieChart.vue";
+import Flash from "../../utilities/flash";
+import { log } from "../../utilities/log";
 
 export default {
   components: {
@@ -201,33 +250,71 @@ export default {
       fromDate: "",
       toDate: "",
       query: {},
-	  businessType: '',
-	  orderType: '',
-	  sector: '',
-	  branchesInfo: {},
-	  orderTypes: {},
+      businessType: "",
+      orderType: "",
+      sector: "",
+      branchesInfo: {},
+      orderTypes: {},
 
       apiUrls: {
         getReports: "/api/order/reports",
         exportReport: "/api/order/reports/export",
         businessTypes: "/api/business_type",
-		orderTypes: "/api/order-types"
+        orderTypes: "/api/order-types",
       },
       tableHeaders: [
         "S/N",
         "Branch",
         "Revenue (₦)",
         "No. of Sales",
+        "Forecast",
         "Altara Pay",
         "Altara Cash",
         "Average Price/Product (₦)",
         "% Total Rev.",
+        "Average Down Payment",
       ],
       barData: null,
       pieData: null,
       option: {
         responsive: true,
         maintainAspectRatio: false,
+      },
+      noOfSalesMadeOnEachProduct: null,
+      productPieData: {
+        labels: [],
+        dataSet: [],
+        bgColor: [
+          "#ff0000",
+          "#00aeae",
+          "#7580ce",
+          "#007900",
+          "#39f159",
+          "#989000",
+          "#20062b",
+          "#dc5355",
+          "#5526c4",
+          "#ff7f00",
+        ],
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          legend: {
+            display: false,
+          },
+          title: {
+            display: true,
+            position: "bottom",
+            text: "Top 10 Product Chart",
+          },
+        },
+      },
+      OrderBarChart: {
+        data: null,
+        option: {
+          responsive: true,
+          maintainAspectRatio: false,
+        },
       },
       loaded: false,
       sums: {},
@@ -242,9 +329,11 @@ export default {
     this.fromDate = firstDay.slice(0, 10);
     await this.getReport();
     this.getPieChartData();
+    this.drawProductPieChart();
     this.getBarChartData();
+    this.getOrderBarChartData();
     this.getBusinessTypes();
-	this.getOrderTypes();
+    this.getOrderTypes();
     this.loaded = true;
   },
 
@@ -298,7 +387,6 @@ export default {
         ],
       };
     },
-
     getPieChartData() {
       this.pieData = {
         labels: ["Altara Cash", "Altara Pay"],
@@ -317,9 +405,9 @@ export default {
       this.$LIPS(true);
       this.query.fromDate = this.fromDate;
       this.query.toDate = this.toDate;
-	  this.query.businessType = this.businessType;
-	  this.query.sector = this.sector;
-	  this.query.orderType = this.orderType;
+      this.query.businessType = this.businessType;
+      this.query.sector = this.sector;
+      this.query.orderType = this.orderType;
       try {
         const report = await byMethod(
           "GET",
@@ -328,8 +416,9 @@ export default {
           this.query
         );
         this.reports = report.data.data;
-		this.branchesInfo = Object.values(this.reports.meta.groupedDataByBranch);
-        console.log("odododo");
+        this.branchesInfo = Object.values(
+          this.reports.meta.groupedDataByBranch
+        );
         this.branchesInfo.sort((a, b) => {
           if (a.branch_name < b.branch_name) {
             return -1;
@@ -339,15 +428,19 @@ export default {
           }
           return 0;
         });
+        this.noOfSalesMadeOnEachProduct =
+          this.reports.meta.noOfSalesMadeOnEachProduct;
 
         this.getSums(this.reports.meta.groupedDataByBranch);
       } catch (err) {
+        if (err.response) {
+          Flash.setError(err.response.statusText);
+        }
       } finally {
         this.$LIPS(false);
       }
     },
 
-    
     getSums(dataArray) {
       this.sums.totalSales = 0;
       this.sums.totalRevenue = 0;
@@ -355,21 +448,28 @@ export default {
       this.sums.totalAltCash = 0;
       this.sums.totalAvePerProd = 0;
       this.sums.totalPercent = 0;
-      for (let i = 0; i < dataArray.length; i++) {
-        this.sums.totalSales += Number(dataArray[i].number_of_sales);
+      this.sums.totalForecast = 0;
+      this.sums.averageDownPayment = 0;
+
+      for (let index = 0; index < dataArray.length; index++) {
+        this.sums.totalSales += Number(dataArray[index].number_of_sales);
         this.sums.totalRevenue += parseFloat(
-          dataArray[i].total_potential_revenue_sold_per_showroom.replace(
+          dataArray[index].total_potential_revenue_sold_per_showroom.replace(
             /,/g,
             ""
           )
         );
-        this.sums.totalAltPay += dataArray[i].no_of_altara_pay;
-        this.sums.totalAltCash += dataArray[i].no_of_altara_cash;
+        this.sums.totalAltPay += dataArray[index].no_of_altara_pay;
+        this.sums.totalAltCash += dataArray[index].no_of_altara_cash;
         this.sums.totalAvePerProd += parseFloat(
-          dataArray[i].avg_price_of_prod_per_showroom.replace(/,/g, "")
+          dataArray[index].avg_price_of_prod_per_showroom.replace(/,/g, "")
         );
         this.sums.totalPercent += Number(
-          dataArray[i].percentage_of_total_revenues
+          dataArray[index].percentage_of_total_revenues
+        );
+        this.sums.totalForecast += Number(dataArray[index].forecast);
+        this.sums.averageDownPayment += Number(
+          dataArray[index].percentage_downpayment
         );
       }
     },
@@ -423,6 +523,7 @@ export default {
       await this.getReport();
       this.getPieChartData();
       this.getBarChartData();
+      this.getOrderBarChartData();
       this.loaded = true;
     },
 
@@ -438,10 +539,9 @@ export default {
       }
     },
 
-	async getOrderTypes() {
+    async getOrderTypes() {
       try {
         const fetchOrderTypes = await get(this.apiUrls.orderTypes);
-		console.log(fetchOrderTypes);
         this.orderTypes = fetchOrderTypes.data.orderTypes;
         // this.businessTypes = this.businessTypes.filter((item) => {
         //   return item.name.includes("Products");
@@ -449,6 +549,113 @@ export default {
       } catch (err) {
         this.$displayErrorMessage(err);
       }
+    },
+    getProductPieData() {
+      let productsStats = this.noOfSalesMadeOnEachProduct;
+      let productsLabel = [];
+      let productsData = [];
+      productsStats.forEach(function (productStat) {
+        productsLabel.push(productStat["product_name"]);
+        productsData.push(productStat["product_count"]);
+      });
+      this.productPieData.labels = productsLabel;
+      this.productPieData.dataSet = productsData;
+    },
+    drawProductPieChart() {
+      this.getProductPieData();
+      this.productPieData.datasets = [
+        {
+          barPercentage: 1,
+          barThickness: 12,
+          maxBarThickness: 16,
+          data: this.productPieData.dataSet,
+          backgroundColor: this.productPieData.bgColor,
+        },
+      ];
+    },
+    getOrderBarChartData() {
+      this.OrderBarChart.data = {
+        labels: this.getOrderDates(),
+        datasets: [
+          {
+            barPercentage: 1,
+            barThickness: 12,
+            maxBarThickness: 16,
+            label: "Number of sales made per day",
+            data: this.getOrderValues(),
+            backgroundColor: [
+              "#6ae299",
+              "#5973e5",
+              "#ebad4c",
+              "#fb8ca0",
+              "#2582c8",
+              "#13098c",
+              "#1e023b",
+              "#510387",
+              "#20bc00",
+              "#f5485f",
+              "#73b6ad",
+              "#dbc620",
+              "#046b2d",
+              "#423f5a",
+              "#e80130",
+              "#cb997e",
+              "#ff0a54",
+              "#b392ac",
+              "#355070",
+              "#be0aff",
+              "#4d1230"
+            ],
+            borderColor: [
+              "#6ae299",
+              "#5973e5",
+              "#ebad4c",
+              "#fb8ca0",
+              "#2582c8",
+              "#13098c",
+              "#1e023b",
+              "#510387",
+              "#20bc00",
+              "#f5485f",
+              "#73b6ad",
+              "#dbc620",
+              "#046b2d",
+              "#423f5a",
+              "#e80130",
+              "#cb997e",
+              "#ff0a54",
+              "#b392ac",
+              "#355070",
+              "#be0aff",
+              "#4d1230"
+            ],
+            borderWidth: 1,
+          },
+        ],
+      };
+    },
+    getOrderDates() {
+      const dateConfig = {
+        weekday: "short",
+        year: "2-digit",
+        month: "short",
+        day: "numeric",
+      };
+      return this.reports?.meta?.totalSalesPerDay?.map((item) => {
+        let date = new Date(item.order_date);
+        let month = date.toLocaleString("en-us", { month: dateConfig.month });
+        let weekday = date.toLocaleString("en-us", {
+          weekday: dateConfig.weekday,
+        });
+        let year = date.toLocaleString("en-us", { year: dateConfig.year });
+        let day = date.toLocaleString("en-us", { day: dateConfig.day });
+        return [weekday, month, year].join("-");
+      }) ?? null;
+    },
+    getOrderValues() {
+      return this.reports?.meta?.totalSalesPerDay?.map((item) => {
+        return item.total;
+      });
     },
   },
 };
@@ -464,5 +671,14 @@ button {
 }
 .custom-select {
   width: 125px;
+}
+.divider {
+  width: 100%;
+  border-top: 2px solid rgba(75, 85, 99, 0.54);
+}
+.product-pie-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

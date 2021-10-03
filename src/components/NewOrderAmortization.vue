@@ -23,7 +23,7 @@
               <td>Serial No</td>
                <th>Order Type</th>
               <th>Downpayment</th>
-              <th>Payment Gateway</th>
+              <th>Collection Channel</th>
               <th>Branch</th>
               <th>Status</th>
              

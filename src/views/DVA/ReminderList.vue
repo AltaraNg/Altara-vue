@@ -374,6 +374,9 @@ import queryParam from '../../utilities/queryParam';
                     limit: this.pageParams.limit ?? '',
                     ...this.searchQuery
                 }
+                if(this.$route.query){
+          params = {...params, ...this.$route.query};
+        }
                 await get(this.urlToFetchOrders + queryParam(params))
                    .then(({data}) => this.prepareList(data))
                     .catch(() => Flash.setError('Error Preparing form'));
@@ -572,11 +575,11 @@ import queryParam from '../../utilities/queryParam';
                 this.showPrompt = false;
             }
         },
-        created(){
+        async created(){
 
-            this.getReminderValues();
-           this.getBusinessType();         
-           this.fetchData();   
+          await  this.getReminderValues();
+          await this.getBusinessType();         
+        await this.fetchData();   
         },
         mounted(){
            

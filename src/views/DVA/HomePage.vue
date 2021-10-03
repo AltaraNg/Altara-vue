@@ -32,12 +32,12 @@ export default {
           url_c: "Update customers details!",
           desc: "For Updating existing customers details",
         },
-        {
-          url: "message",
-          title: "Messaging",
-          url_c: "Send messages!",
-          desc: "For sending messages to customers",
-        },
+        // {
+        //   url: "message",
+        //   title: "Messaging",
+        //   url_c: "Send messages!",
+        //   desc: "For sending messages to customers",
+        // },
         {
           url: "reminder/sms",
           title: "Customer SMS Reminder",

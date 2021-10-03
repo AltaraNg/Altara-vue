@@ -323,6 +323,7 @@ const router = new VueRouter({
 			children: [
 				{ path: '/', redirect: { name: 'HRMHome' } },
 				{ path: 'home', component: HRMHome, name: 'HRMHome' },
+				{ path: 'message', component: DVAMessage, name: 'DVAMessage' },
 				{
 					path: 'employee',
 					component: DataViewer,
@@ -459,6 +460,7 @@ const router = new VueRouter({
 					component: CashLogger,
 					name: 'payment-logger',
 					meta: { mode: 'create' },
+					props: route => ({ query: route.query})
 				},
 				{
 					path: 'sales-logger',

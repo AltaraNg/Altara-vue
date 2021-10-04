@@ -523,7 +523,7 @@
 				this.getPieChartData();
 				this.getBarChartData();
 				this.getOrderBarChartData();
-        this.drawProductPieChart();
+				this.drawProductPieChart();
 				this.loaded = true;
 			},
 
@@ -581,7 +581,7 @@
 							barPercentage: 1,
 							barThickness: 12,
 							maxBarThickness: 16,
-							label: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
+							label: '',
 							data: this.getOrderValues(),
 							backgroundColor: this.getBarchartColors(),
 							borderColor: this.getBarchartColors(),
@@ -592,7 +592,7 @@
 			},
 			getBarchartColors() {
 				let total_no = this.reports?.meta?.totalSalesPerDay?.length;
-        let newColors = []
+				let newColors = [];
 				let colors = [
 					'#6ae299',
 					'#5973e5',
@@ -602,15 +602,13 @@
 					'#13098c',
 					'#1e023b',
 				];
-        for(let i=0; i < total_no; i++){
-          if(i <  7){
-            newColors.push(colors[i]);
-          }
-          else{
-            newColors.push(colors[i % 7])
-          }
-          
-        }
+				for (let i = 0; i < total_no; i++) {
+					if (i < 7) {
+						newColors.push(colors[i]);
+					} else {
+						newColors.push(colors[i % 7]);
+					}
+				}
 
 				return newColors;
 			},

@@ -2147,15 +2147,7 @@
                                     );
                                     log(`${this.mode}dCustomer`, `Customer ID :${id}`);
                                     if (this.mode === "register") {
-                                        let body =
-                                            `Dear ${FN} ${LN}, Welcome to Altara Credit Limited,` +
-                                            ` You are hereby invited to our showroom at ${branch.description} to` +
-                                            ` learn more about our offerings. Pick up products now and pay later.` +
-                                            ` We look forward to seeing you. For more info contact:` +
-                                            `${branch.phone_yoruba}. Your customer id is: ${id}`;
-                                        new Message(body, tel).send(
-                                            r => r.status === 200 && this.prepareForm(data.prepareForm)
-                                        );
+                                        this.prepareForm(data.prepareForm)
                                     }
                                 })
                                 .catch(e => {

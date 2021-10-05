@@ -2139,6 +2139,9 @@
                                         30000
                                     );
                                     log(`${this.mode}dCustomer`, `Customer ID :${id}`);
+                                    if (this.mode === "register") {
+                                        this.prepareForm(data.prepareForm)
+                                    }
                                 })
                                 .catch(e => {
                                     e = e.response;

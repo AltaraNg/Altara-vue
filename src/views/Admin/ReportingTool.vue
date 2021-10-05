@@ -1,29 +1,29 @@
 <template>
 	<div class="my-3 py-4" v-if="reports !== null">
 		<div class="mx-3 my-3 py-4 row">
-			<h3 class="text-capitalize col-2 float-left">dashboard</h3>
-			<div class="w-100 float-right text-right col-10 row mr-0">
+			<h3 class="text-capitalize col-2 ml-3">dashboard</h3>
+			<div class="w-100 float-lg-right right text-right col-10 row mr-0">
 				<button
-					class="bg-default rounded w-25 h3 float-left fbutton"
+					class="bg-default rounded w-25 h3 float-left fbutton col-2"
 					@click="exportReportCsv"
 				>
 					<i class="fas fa-download mr-3"></i>Download
 				</button>
-				<div class="row">
+				<div class="row col-10">
 					<date-picker
-						class="col mr-0"
+						class="col-2 mr-0"
 						v-model="fromDate"
 						valueType="format"
 						placeholder="From Date"
 					></date-picker>
 
 					<date-picker
-						class="col ml-0"
+						class="col-2 ml-0"
 						v-model="toDate"
 						valueType="format"
 						placeholder="To Date"
 					></date-picker>
-					<div class="col">
+					<div class="col-2">
 						<select
 							name="business_type"
 							class="custom-select"
@@ -40,7 +40,7 @@
 						</select>
 					</div>
 
-					<div class="col">
+					<div class="col-2">
 						<select name="order_type" class="custom-select" v-model="orderType">
 							<option :value="''" selected>All Order Types</option>
 							<option
@@ -53,7 +53,7 @@
 						</select>
 					</div>
 
-					<div class="col">
+					<div class="col-2">
 						<select
 							class="custom-select"
 							v-model="sector"
@@ -65,7 +65,7 @@
 						</select>
 					</div>
 					<button
-						class="bg-default rounded w-25 h3 col-4"
+						class="bg-default rounded w-25 h3 col-2"
 						@click="filterByDate"
 					>
 						Filter
@@ -169,7 +169,7 @@
 				</table>
 			</div>
 		</div>
-		<div class="container-fluid" v-show="productPieData">
+		<div class="container-fluid h-75" v-show="productPieData">
 			<div class="card">
 				<h3 class="mx-5 my-5">Products Statistics</h3>
 				<div class="card-body">
@@ -209,7 +209,7 @@
 							<template v-if="reports">
 								<bar-chart
 									:chart-data="OrderBarChart.data"
-									:options="OrderBarChart.option"
+									:options="OrderBarChart.options"
 									v-if="loaded"
 								></bar-chart>
 							</template>
@@ -310,9 +310,13 @@
 				},
 				OrderBarChart: {
 					data: null,
-					option: {
+					options: {
 						responsive: true,
 						maintainAspectRatio: false,
+						legend: {
+								display: false,								
+							},
+						
 					},
 				},
 				loaded: false,
@@ -580,13 +584,13 @@
 						{
 							barPercentage: 1,
 							barThickness: 12,
-							maxBarThickness: 16,
-							label: '',
+							maxBarThickness: 16,							
 							data: this.getOrderValues(),
 							backgroundColor: this.getBarchartColors(),
 							borderColor: this.getBarchartColors(),
 							borderWidth: 1,
 						},
+						
 					],
 				};
 			},

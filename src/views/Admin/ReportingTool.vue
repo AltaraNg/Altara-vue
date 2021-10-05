@@ -2,28 +2,31 @@
 	<div class="my-3 py-4" v-if="reports !== null">
 		<div class="mx-3 my-3 py-4 row">
 			<h3 class="text-capitalize col-2 ml-3">dashboard</h3>
-			<div class="w-100 float-lg-right right text-right col-10 row mr-0">
+			<div class="w-100 float-lg-right right text-right col row mr-0">
 				<button
-					class="bg-default rounded w-25 h3 float-left fbutton col-2"
+					class="bg-default rounded w-100 h3 float-left fbutton col"
 					@click="exportReportCsv"
 				>
 					<i class="fas fa-download mr-3"></i>Download
 				</button>
-				<div class="row col-10">
+				<div class="row col">
+					<div class="col w-50">
 					<date-picker
-						class="col-2 mr-0"
+						class="w-100"
 						v-model="fromDate"
 						valueType="format"
 						placeholder="From Date"
 					></date-picker>
-
+					</div>
+					<div class="col w-50">
 					<date-picker
-						class="col-2 ml-0"
+						class="w-100"						
 						v-model="toDate"
 						valueType="format"
 						placeholder="To Date"
 					></date-picker>
-					<div class="col-2">
+					</div>
+					<div class="col">
 						<select
 							name="business_type"
 							class="custom-select"
@@ -40,7 +43,7 @@
 						</select>
 					</div>
 
-					<div class="col-2">
+					<div class="col">
 						<select name="order_type" class="custom-select" v-model="orderType">
 							<option :value="''" selected>All Order Types</option>
 							<option
@@ -53,7 +56,7 @@
 						</select>
 					</div>
 
-					<div class="col-2">
+					<div class="col">
 						<select
 							class="custom-select"
 							v-model="sector"
@@ -65,7 +68,7 @@
 						</select>
 					</div>
 					<button
-						class="bg-default rounded w-25 h3 col-2"
+						class="bg-default rounded w-100 h3 col h-100"
 						@click="filterByDate"
 					>
 						Filter
@@ -103,7 +106,7 @@
 			<div class="card col-6 m-2" v-if="reports">
 				<bar-chart
 					:chart-data="barData"
-					:options="option"
+					:options="barOption"
 					v-if="loaded"
 				></bar-chart>
 			</div>
@@ -278,6 +281,13 @@
 				option: {
 					responsive: true,
 					maintainAspectRatio: false,
+				},
+				barOption: {
+					responsive: true,
+					maintainAspectRatio: false,
+					legend: {
+							display: false,
+						},
 				},
 				noOfSalesMadeOnEachProduct: null,
 				productPieData: {
@@ -598,13 +608,13 @@
 				let total_no = this.reports?.meta?.totalSalesPerDay?.length;
 				let newColors = [];
 				let colors = [
-					'#6ae299',
-					'#5973e5',
-					'#ebad4c',
-					'#fb8ca0',
-					'#2582c8',
-					'#13098c',
-					'#1e023b',
+					'#808080',
+					'#808080',
+					'#808080',
+					'#808080',
+					'#808080',
+					'#808080',
+					'#808080',
 				];
 				for (let i = 0; i < total_no; i++) {
 					if (i < 7) {

@@ -1,82 +1,62 @@
 <template>
 	<div class="my-3 py-4" v-if="reports !== null">
-		<div class="mx-3 my-3 py-4 row">
-			<h3 class="text-capitalize col-2 ml-3">dashboard</h3>
-			<div class="w-100 float-lg-right right text-right col row mr-0">
-				<button
-					class="bg-default rounded w-100 h3 float-left fbutton col"
-					@click="exportReportCsv"
-				>
-					<i class="fas fa-download mr-3"></i>Download
-				</button>
-				<div class="row col">
-					<div class="col w-50">
-					<date-picker
-						class="w-100"
-						v-model="fromDate"
-						valueType="format"
-						placeholder="From Date"
-					></date-picker>
-					</div>
-					<div class="col w-50">
-					<date-picker
-						class="w-100"						
-						v-model="toDate"
-						valueType="format"
-						placeholder="To Date"
-					></date-picker>
-					</div>
-					<div class="col">
-						<select
-							name="business_type"
-							class="custom-select"
-							v-model="businessType"
-						>
-							<option :value="''" selected>All Products</option>
-							<option
-								:value="type.id"
-								:key="type.id"
-								v-for="type in businessTypes"
-							>
-								{{ type.name }}
-							</option>
-						</select>
-					</div>
-
-					<div class="col">
-						<select name="order_type" class="custom-select" v-model="orderType">
-							<option :value="''" selected>All Order Types</option>
-							<option
-								:value="type.id"
-								:key="type.id"
-								v-for="type in orderTypes"
-							>
-								{{ type.name }}
-							</option>
-						</select>
-					</div>
-
-					<div class="col">
-						<select
-							class="custom-select"
-							v-model="sector"
-							v-validate="'required'"
-						>
-							<option value="">All Sectors</option>
-							<option :value="'formal'">Formal</option>
-							<option :value="'informal'">Informal</option>
-						</select>
-					</div>
-					<button
-						class="bg-default rounded w-100 h3 col h-100"
-						@click="filterByDate"
-					>
-						Filter
-					</button>
-				</div>
-			</div>
+		<div class="space-between mb-5 px-4">
+			<h3 class="text-capitalize mb-0">dashboard</h3>
+			<button class="bg-default rounded py-2 px-4 h5" @click="exportReportCsv" >
+				<i class="fas fa-download mr-3"></i>Download
+			</button>
 		</div>
-		<div class="row my-3 mx-2" v-if="reports !== null">
+
+		<div class="center my-2 flex px-4" style="gap: 10px">
+			<date-picker
+				class="flex-1"
+				v-model="fromDate"
+				valueType="format"
+				placeholder="From Date"
+			></date-picker>
+
+			<date-picker
+				class="flex-1"
+				v-model="toDate"
+				valueType="format"
+				placeholder="To Date"
+			></date-picker>
+
+			<select name="order_type" class="custom-select flex-1" v-model="orderType" >
+				<option :value="''" selected>All Order Types</option>
+				<option :value="type.id" :key="type.id" v-for="type in orderTypes">
+					{{ type.name }}
+				</option>
+			</select>
+
+			<select name="business_type" class="custom-select flex-1" v-model="businessType" >
+				<option :value="''" selected>All Products</option>
+				<option :value="type.id" :key="type.id" v-for="type in businessTypes">
+					{{ type.name }}
+				</option>
+			</select>
+
+			
+
+			<select class="custom-select flex-1" v-model="sector" v-validate="'required'" >
+				<option value="">All Sectors</option>
+				<option :value="'formal'">Formal</option>
+				<option :value="'informal'">Informal</option>
+			</select>
+		</div>
+		<div class="flex mt-3 mb-5 px-4 ">
+			<button
+				class="bg-default rounded ml-auto py-2 px-4"
+				@click="filterByDate"
+			>
+			<span class="h5" style="width: 5rem">
+				Filter
+			</span>
+			</button>
+		</div>
+
+		
+		<div class="row px-4" v-if="reports !== null">
 			<stat-card
 				:stat="reports.meta.total_no_sales"
 				class="col mx-4 w-50"
@@ -102,17 +82,16 @@
 			</stat-card>
 		</div>
 
-		<div class="my-3 ml-5 pl-2 row w-100 text-center ml-2">
-			<div class="card col-6 m-2" v-if="reports">
+		<div class="my-3 space-between px-4 w-100 text-center ">
+			<div class="card col mr-3 py-2" v-if="reports">
 				<bar-chart
 					:chart-data="barData"
 					:options="barOption"
 					v-if="loaded"
 				></bar-chart>
 			</div>
-			<div class="col-md-offset-2"></div>
 
-			<div class="card col-5 ml-5 m-2 text-right" v-if="reports">
+			<div class="card col ml-3 py-2" v-if="reports">
 				<pie-chart
 					:chart-data="pieData"
 					:options="option"
@@ -286,8 +265,8 @@
 					responsive: true,
 					maintainAspectRatio: false,
 					legend: {
-							display: false,
-						},
+						display: false,
+					},
 				},
 				noOfSalesMadeOnEachProduct: null,
 				productPieData: {
@@ -324,9 +303,8 @@
 						responsive: true,
 						maintainAspectRatio: false,
 						legend: {
-								display: false,								
-							},
-						
+							display: false,
+						},
 					},
 				},
 				loaded: false,
@@ -594,13 +572,12 @@
 						{
 							barPercentage: 1,
 							barThickness: 12,
-							maxBarThickness: 16,							
+							maxBarThickness: 16,
 							data: this.getOrderValues(),
 							backgroundColor: this.getBarchartColors(),
 							borderColor: this.getBarchartColors(),
 							borderWidth: 1,
 						},
-						
 					],
 				};
 			},
@@ -658,16 +635,22 @@
 </script>
 
 <style lang="scss" scoped>
-	button {
-		max-height: 36px;
-		max-width: 120px;
+	.center {
+		align-items: center;
+		justify-content: center;
 	}
-	.fbutton {
-		margin-right: 30px;
+	.flex {
+		display: flex;
+		flex-wrap: wrap;
 	}
-	.custom-select {
-		width: 125px;
+	.flex-1{
+		flex: 1 1 0%;
 	}
+	.space-between {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}	
 	.divider {
 		width: 100%;
 		border-top: 2px solid rgba(75, 85, 99, 0.54);

@@ -650,15 +650,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-	}
-	button {
-		max-height: 36px;
-		max-width: 120px;
-	}
-
-	.custom-select {
-		width: 125px;
-	}
+	}	
 	.divider {
 		width: 100%;
 		border-top: 2px solid rgba(75, 85, 99, 0.54);

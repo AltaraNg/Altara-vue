@@ -66,6 +66,13 @@ export default {
           url_c: "View Renewals",
           desc: "View all renewal!"
         },
+
+        {
+          url: "renewal",
+          title: "Renewal list Revamped",
+          url_c: "View Renewals",
+          desc: "View renewal list!"
+        },
         {
           url: "payment-logger",
           title: "Payment Logger",

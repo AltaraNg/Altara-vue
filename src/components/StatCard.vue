@@ -8,7 +8,7 @@
 			<p class="mb-0">{{ label }}</p>
 		</div>
 		<div class="col-6 text-right my-auto">
-			<slot name="svg" class=""></slot>
+			<slot name="svg"></slot>
 			
 		</div>
         </div>

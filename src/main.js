@@ -14,10 +14,12 @@ import { store } from './store/store'
 import '../src/assets/css/_mixins.scss'
 import '../src/assets/css/_variables.scss'
 import '../src/assets/css/app.scss'
+import VModal from 'vue-js-modal'
 // import '../src/assets/css/bootstrap.min.css'
 // import '../src/assets/css/now-ui-kit.css'
 import "./utilities/globalFunctions.js";
 import 'sweetalert2/dist/sweetalert2.min.css';
+
 
 
 Vue.config.productionTip = false
@@ -30,6 +32,7 @@ Vue.use(VeeValidate, {
 });
 Vue.use(VueRouterMultiView);
 Vue.use(VueTruncate);
+Vue.use(VModal);
 new Vue({
     router,
     store,

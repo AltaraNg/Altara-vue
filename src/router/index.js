@@ -136,6 +136,12 @@ const router = new VueRouter({
 					component: CustomerForm,
 					meta: { mode: 'register' },
 				},
+				{
+					path: 'renewal',
+					component: RenewalNew,
+					name: 'renewal-fsl',
+					meta: {tab: 'all'}
+				},
 			],
 		},
 		{
@@ -449,7 +455,7 @@ const router = new VueRouter({
 					path: 'renewal',
 					component: RenewalNew,
 					name: 'renewal-fsl',
-					meta: {tab: 'All'}
+					meta: {tab: 'all'}
 				},
 
 				{

@@ -129,6 +129,9 @@
 				this.$LIPS(true);
 				let statuses = await get(this.apiUrl?.statuses);
 				this.statuses = statuses.data?.data?.prompter_statuses;
+				this.statuses = this.statuses.filter(item => {
+					return item.name !== 'not contacted'
+				})
 				this.$LIPS(false);
 			},
 

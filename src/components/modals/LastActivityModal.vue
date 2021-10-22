@@ -8,24 +8,25 @@
 				</span>
 			</a>
 		</div>
-		<div class="modal-body px-5">
+		<div class="modal-body px-5" v-if="modalItem.length > 0">
+            <div class="">
+                <p>Customer Added by: <b>{{modalItem[0].attributes.creator}}</b></p>
+                <p>Sales logged by: <b>{{modalItem[0].attributes.owner}}</b></p>
+
+            </div>
 			<div class="table-responsive">
 				<table class="table table-bordered table-striped">
 					<tbody>
 						<tr>
                             <th>S/N</th>
-							<th>Customer Name</th>
                             <th>Order Id</th>
-                            <th>Attended to by</th>
                             <th>feedback</th>
                             <th>Status</th>
 							
 						</tr>
 						<tr v-for="(item, index) in modalItem">
                             <td>{{index+1}}</td>
-                            <td>{{item.attributes.creator}}</td>
                             <td>{{item.attributes.order_id}}</td>
-                            <td>{{item.attributes.owner}}</td>
                             <td>{{item.attributes.feedback}}</td>
                             <td>{{item.attributes.renewal_prompter_status}}</td>
 

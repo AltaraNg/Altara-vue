@@ -20,7 +20,11 @@
 					data-hoverable="true"
 					@click="viewOrder(customer)"
 				>
-					{{ customer.order_number }}
+					<i
+						class="fas fa-exclamation-circle text-warning p-1"
+						v-if="calcDebt(customer.amortization) > 0"
+					></i
+					>{{ customer.order_number }}
 				</div>
 
 				<div
@@ -58,16 +62,23 @@
 				</div>
 
 				<div
+					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
+					data-hoverable="true"
+					@click="viewActivity(customer)"
+				>
+					{{
+						customer.last_renewal_prompter_activity
+							? formatDate(customer.last_renewal_prompter_activity.attributes.created_at)
+							: ''|| 'N/A'
+					}}
+				</div>
+
+				<div
 					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center "
 					data-hoverable="true"
 					@click="updateStatus(customer)"
 				>
-					{{
-						customer.last_renewal_prompter_activity
-							? customer.last_renewal_prompter_activity.attributes
-									.renewal_prompter_status
-							: '' || 'N/A'
-					}}
+					<i class="far fa-edit text-success"></i>
 				</div>
 			</div>
 		</div>
@@ -110,6 +121,7 @@
 	import OrderInfoModal from '../modals/OrderInfoModal.vue';
 	import UpdateRenewalModal from '../modals/UpdateRenewalModal.vue';
 	import LastActivityModal from '../modals/LastActivityModal.vue';
+	import moment from 'moment';
 
 	Vue.use(Vue2Filters);
 
@@ -131,7 +143,9 @@
 					'Customer Info Summary',
 					'Repayment Summary',
 					'Last Activity',
-					'Status',
+					'Last Activity Date',
+
+					'Action',
 				],
 			},
 			customers: {
@@ -159,10 +173,14 @@
 				selectedOrder: '',
 				selectedOrderRenew: '',
 				selectedActivity: '',
+				debt: false,
 			};
 		},
 
 		methods: {
+			formatDate(date) {
+				return moment(date).fromNow();
+			},
 			calcDebt(amortization) {
 				// I assumed that all repayments are uniform and are not varied
 
@@ -204,7 +222,7 @@
 			viewActivity(order) {
 				if (order?.renewal_prompters?.data?.length !== 0) {
 					this.selectedActivity = order?.renewal_prompters?.data;
-					console.log(this.selectedActivity)
+					console.log(this.selectedActivity);
 					this.show('last-activity');
 				}
 			},

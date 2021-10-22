@@ -2,7 +2,12 @@
 	<div>
 		<div class="modal-header py-2">
 			<h4>Order Summary</h4>
-			<a aria-label="Close" class="close py-1" data-dismiss="modal" @click="closeModal">
+			<a
+				aria-label="Close"
+				class="close py-1"
+				data-dismiss="modal"
+				@click="closeModal"
+			>
 				<span aria-hidden="true" class="modal-close text-danger">
 					<i class="fas fa-times"></i>
 				</span>
@@ -42,8 +47,28 @@
 							<td>{{ modalItem.product_price | currency('₦') }}</td>
 						</tr>
 						<tr>
-							<th>Owner</th>
-							<td>{{ modalItem.owner }}</td>
+							<th>
+								Owner
+								<span @click="editOwner" class="pointer text-warning">
+									Edit
+								</span>
+							</th>
+							<td class="pointer" data-hoverable="true">
+								<span v-show="edit === false">{{ modalItem.owner }}</span>
+								<select v-show="edit" class="custom-control w-75 p-1 text-black" v-model="agent_id">
+									<option value="" disabled selected>--select dsa--</option>
+									<option value="" v-for="agent in dsas" :value="agent.id">
+										{{agent.full_name}}
+									</option>
+								</select>
+								<button
+									v-show="edit"
+									class="bg-success text-white border-0 p-1 mr-4 rounded float-right"
+									@click="submit"
+								>
+									Done
+								</button>
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -54,21 +79,74 @@
 </template>
 
 <script>
-import moment from 'moment';
+	import moment from 'moment';
+	import { get, put } from '../../utilities/api';
+	import flash from '../../utilities/flash';
 	export default {
 		props: {
 			modalItem: {
 				required: true,
 			},
 		},
-		methods:{
-			closeModal(){
+		data() {
+			return {
+				edit: false,
+				dsas: [],
+				apiUrl: {
+					dsas: `/api/get-users?role=18&limit=200`,
+					new_order: '/api/new_order/'
+				},
+				agent_id: ''
+			};
+		},
+		beforeMount() {
+			this.fetchDsas();
+		},
+		methods: {
+			closeModal() {
 				this.$emit('close');
 			},
-			formatDate(date){
+			formatDate(date) {
 				return moment(date).fromNow();
+			},
+			editOwner() {
+				this.edit ? (this.edit = false) : (this.edit = true);
+			},
+			async fetchDsas() {
+				this.$LIPS(true);
+				try {
+					let agents = await get(this.apiUrl.dsas);
+					this.dsas = agents.data?.data?.data;
+				} catch (error) {
+					flash.setError(error);
+				} finally {
+					this.$LIPS(false);
+				}
+			},
+			async submit(){
+				this.$LIPS(true);
+				try{
+					let data = {
+					id: this.modalItem.id,
+					owner_id: this.agent_id,					
+				}
+				let response = await put(this.apiUrl.new_order + data.id, data);
+				if (response.data.status === 'success') {
+						this.$swal({
+							icon: 'success',
+							title: 'Owner changed successfully',
+						});
+						this.$root.$emit('owner_updated');
+					}
+
+				}catch(err){
+					flash.setError(err)
+				} finally{
+					this.$LIPS(false)
+				}
+				
 			}
-		}
+		},
 	};
 </script>
 

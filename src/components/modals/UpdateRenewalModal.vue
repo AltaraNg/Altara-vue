@@ -14,6 +14,9 @@
 			</a>
 		</div>
 		<div class="modal-body px-5">
+			<div v-if="err.length > 0" class="small text-danger">
+				{{err[0]}}
+			</div>
 			<div class="table-responsive">
 				<table class="table table-bordered table-striped">
 					<tbody>
@@ -112,6 +115,7 @@
 				status: '',
 				date: '',
 				currentDate: new Date(),
+				err: []
 			};
 		},
 		beforeMount() {
@@ -142,15 +146,16 @@
 					this.$LIPS(true);
 
 					let response = await post(this.apiUrl.renewalList, data);
-					if (response) {
+					if (response.data.status === 'success') {
 						this.$swal({
 							icon: 'success',
 							title: 'Logged feedback successfully',
 						});
+						this.$root.$emit('feedback', this.status.name);
 					}
 					this.closeModal();
-				} catch (err) {
-					console.log(err);
+				} catch (res) {
+					this.err.push(res)
 				} finally {
 					this.$LIPS(false);
 				}

@@ -2,20 +2,10 @@
 	<transition name="fade">
 		<div id="reminder" class="my-4 container-fluid">
 			<div class="row">
-				<stat-card
-					class="col mx-5"
-					:label="'Total'"
-					:stat="meta.total"
-					:style="'background-color: #875953; color: white'"
-				>
+				<stat-card class="col mx-5" :label="'Total'" :stat="meta.total">
 					<template v-slot:svg> <Total class="bi bi-bootstrap-fill"/></template>
 				</stat-card>
-				<stat-card
-					class="col mx-5"
-					:label="'Contacted'"
-					:stat="meta.contacted"
-					style="background-color: #80DED9"
-				>
+				<stat-card class="col mx-5" :label="'Contacted'" :stat="meta.contacted">
 					<template v-slot:svg class="text-white"><People /></template>
 				</stat-card>
 
@@ -23,7 +13,6 @@
 					class="col mx-5"
 					:label="'Purchased/Renewed'"
 					:stat="meta.purchased_renewed"
-					style=""
 				>
 					<template v-slot:svg><Purchased /></template>
 				</stat-card>
@@ -31,12 +20,11 @@
 					class="col mx-5"
 					:label="'Interested'"
 					:stat="meta.interested"
-					style="background-color: #2975A5"
 				>
 					<template v-slot:svg><Interested /></template>
 				</stat-card>
 			</div>
-			<div class="mt-5 mb-3 w-50 px-2 py-3">
+			<div class="mt-5 mb-3 w-75 px-2 py-3">
 				<h3>Filter by Date</h3>
 				<div class="row">
 					<div class="col">
@@ -57,6 +45,10 @@
 					</div>
 					<button class="my-auto p-2 h-50  rounded float-right bg-default">
 						Submit
+					</button>
+
+					<button class="my-auto p-2 h-50  rounded float-right bg-default">
+						<i class="fas fa-file-export"></i> Download
 					</button>
 				</div>
 			</div>
@@ -161,7 +153,7 @@
 	import ZeroState from '../../../components/ZeroState.vue';
 	import Flash from '../../../utilities/flash';
 	import BasePagination from '../../../components/Pagination/BasePagination.vue';
-import { onMounted } from 'vue-demi';
+	import { onMounted } from 'vue-demi';
 
 	export default {
 		components: {
@@ -192,6 +184,7 @@ import { onMounted } from 'vue-demi';
 				apiUrl: {
 					renewalList: '/api/renewal/prompters',
 					statuses: '/api/renewal/prompters/statuses',
+					renewalListExport: ''
 				},
 				meta: {},
 				renewal: true,
@@ -207,11 +200,18 @@ import { onMounted } from 'vue-demi';
 			} else {
 				this.fetchData();
 			}
+			this.$root.$on('feedback', (payload) => {
+				this.fetchData();
+			});
+			this.$root.$on('owner_updated', (payload) => {
+				this.fetchData();
+			});
 		},
 		methods: {
 			fetchData() {
 				this.$LIPS(true);
 				let param = {
+					loadRenewalprompter: true,
 					isCompletedOrder: true,
 					page: this.pageParams.page,
 					limit: this.pageParams.limit,
@@ -242,8 +242,25 @@ import { onMounted } from 'vue-demi';
 				localStorage.setItem('activeTab', tab.alias);
 				this.fetchData();
 			},
-			showCorrectTab() {
 
+			async exportCsv() {
+				this.$LIPS(true);
+				try {
+					const response = await get(this.apiUrl.renewalListExport + queryParam(this.searchQuery))
+					let fileURL = window.URL.createObjectURL(new Blob([response.data]));
+					let fileLink = document.createElement('a');
+					fileLink.href = fileURL;
+					fileLink.setAttribute('download', 'file.csv');
+					document.body.appendChild(fileLink);
+					fileLink.click();
+				} catch (error) {
+					this.$displayErrorMessage(error);
+				} finally {
+					this.$LIPS(false);
+				}
+			},
+
+			showCorrectTab() {
 				let tab = localStorage.getItem('activeTab');
 
 				let tabObject = this.tabs.find((item) => {
@@ -251,7 +268,6 @@ import { onMounted } from 'vue-demi';
 				});
 
 				// this.$refs[tab]..classList.value = this.$refs[tab].$el.classList.value + 'active';
-
 
 				this.switchTab(tabObject);
 			},

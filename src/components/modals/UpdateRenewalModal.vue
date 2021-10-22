@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div v-if="modalItem.customer !== undefined">
 		<div class="modal-header py-2">
 			<h4>Update Customer Renewal</h4>
 			<a

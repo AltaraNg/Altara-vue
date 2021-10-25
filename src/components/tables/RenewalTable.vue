@@ -220,7 +220,7 @@
 				this.show('order-info');
 			},
 			viewActivity(order) {
-				if (order?.renewal_prompters?.data?.length !== 0) {
+				if (order.last_renewal_prompter_activity) {
 					this.selectedActivity = order?.renewal_prompters?.data;
 					console.log(this.selectedActivity);
 					this.show('last-activity');

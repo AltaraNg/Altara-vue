@@ -99,7 +99,7 @@
 				agent_id: ''
 			};
 		},
-		beforeMount() {
+		created() {
 			this.fetchDsas();
 		},
 		methods: {

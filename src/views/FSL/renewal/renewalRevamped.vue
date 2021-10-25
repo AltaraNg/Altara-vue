@@ -24,7 +24,7 @@
 					<template v-slot:svg><Interested /></template>
 				</stat-card>
 			</div>
-			<div class="mt-5 mb-3 w-75 px-2 py-3">
+			<div class="mt-5 mb-3 w-50 px-2 py-3">
 				<h3>Filter by Date</h3>
 				<div class="row">
 					<div class="col">
@@ -43,11 +43,11 @@
 							placeholder="Date To"
 						></date-picker>
 					</div>
-					<button class="my-auto p-2 h-50  rounded float-right bg-default">
-						Submit
+					<button class="my-auto p-2 h-50  rounded float-right bg-default" @click="searchAction">
+						Search
 					</button>
 
-					<button class="my-auto p-2 h-50  rounded float-right bg-default">
+					<button class="my-auto p-2 h-50  rounded float-right bg-default" v-show="false">
 						<i class="fas fa-file-export"></i> Download
 					</button>
 				</div>
@@ -195,6 +195,7 @@
 		},
 
 		async mounted() {
+			console.log(this.$route.query)
 			if (localStorage.getItem('activeTab')) {
 				this.showCorrectTab();
 			} else {
@@ -213,8 +214,8 @@
 				let param = {
 					loadRenewalprompter: true,
 					isCompletedOrder: true,
-					page: this.pageParams.page,
-					limit: this.pageParams.limit,
+					page: this.pageParams.page? this.pageParams.page : this.$route.query.page,
+					limit: this.pageParams.limit ? this.pageParams.limit: this.$route.query.limit,
 					...this.searchQuery,
 				};
 				this.currentTab === 'all' ? (param.rollUp = true) : delete param.rollUp;
@@ -223,6 +224,7 @@
 						.then(({ data }) => this.prepareList(data))
 						.catch(() => Flash.setError('Error Fetching Renewal List'))
 						.finally(() => {
+
 							this.$LIPS(false);
 						});
 				} else {
@@ -240,6 +242,13 @@
 				this.currentTab = tab.alias;
 				this.searchQuery.renewalPrompterStatus = tab.link;
 				localStorage.setItem('activeTab', tab.alias);
+				this.fetchData();
+			},
+
+			searchAction() {
+				this.searchQuery.fromDate = this.fromDate;
+				this.searchQuery.toDate = this.toDate;
+
 				this.fetchData();
 			},
 

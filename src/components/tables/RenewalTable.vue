@@ -20,11 +20,11 @@
 					data-hoverable="true"
 					@click="viewOrder(customer)"
 				>
+					{{ customer.order_number }}
 					<i
-						class="fas fa-exclamation-circle text-warning p-1"
-						v-if="calcDebt(customer.amortization) > 0"
-					></i
-					>{{ customer.order_number }}
+						class="fas fa-exclamation-circle text-success p-1"
+						v-if="calcDebt(customer.amortization) === 0"
+					></i>
 				</div>
 
 				<div
@@ -50,7 +50,9 @@
 
 				<div
 					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
-					data-hoverable="true"
+					:data-hoverable="
+						customer.last_renewal_prompter_activity ? true : false
+					"
 					@click="viewActivity(customer)"
 				>
 					{{
@@ -63,13 +65,17 @@
 
 				<div
 					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
-					data-hoverable="true"
+					:data-hoverable="
+						customer.last_renewal_prompter_activity ? true : false
+					"
 					@click="viewActivity(customer)"
 				>
 					{{
 						customer.last_renewal_prompter_activity
-							? formatDate(customer.last_renewal_prompter_activity.attributes.created_at)
-							: ''|| 'N/A'
+							? formatDate(
+									customer.last_renewal_prompter_activity.attributes.created_at
+							  )
+							: '' || 'N/A'
 					}}
 				</div>
 
@@ -143,7 +149,7 @@
 					'Customer Info Summary',
 					'Repayment Summary',
 					'Last Activity',
-					'Last Activity Date',
+					'Date',
 
 					'Action',
 				],

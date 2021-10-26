@@ -24,30 +24,44 @@
 					<template v-slot:svg><Interested /></template>
 				</stat-card>
 			</div>
-			<div class="mt-5 mb-3 w-50 px-2 py-3">
-				<h3>Filter by Date</h3>
-				<div class="row">
-					<div class="col">
-						<date-picker
-							class="w-100"
-							v-model="fromDate"
-							valueType="format"
-							placeholder="Date From"
-						></date-picker>
+			<div class="mt-5 mb-3 px-2 py-3 row">
+				<div class="col-8">
+					<h3>Filter by Date</h3>
+					<div class="d-flex">
+						<div class="col">
+							<date-picker
+								class="w-100"
+								v-model="fromDate"
+								valueType="format"
+								placeholder="Date From"
+							></date-picker>
+						</div>
+						<div class="col">
+							<date-picker
+								class="w-100"
+								v-model="toDate"
+								valueType="format"
+								placeholder="Date To"
+							></date-picker>
+						</div>
+						<div class="col d-flex">
+							<button
+								class="my-auto p-2 mx-2 h4  rounded bg-default w-100"
+								@click="searchAction"
+							>
+								Search
+							</button>
+							<button
+								class="my-auto p-2 h4 rounded mx-2 bg-default w-100"
+								@click="resetAction"
+							>
+								Reset
+							</button>
+						</div>
 					</div>
-					<div class="col">
-						<date-picker
-							class="w-100"
-							v-model="toDate"
-							valueType="format"
-							placeholder="Date To"
-						></date-picker>
-					</div>
-					<button class="my-auto p-2 h-50  rounded float-right bg-default" @click="searchAction">
-						Search
-					</button>
-
-					<button class="my-auto p-2 h-50  rounded float-right bg-default" v-show="false">
+				</div>
+				<div class="col-4 mt-5 px-5">
+					<button class="reset-button p-2 rounded bg-default" @click="exportCsv">
 						<i class="fas fa-file-export"></i> Download
 					</button>
 				</div>
@@ -75,7 +89,18 @@
 					</li>
 				</ul>
 			</div>
-			<div v-if="orders.length > 0">
+			<div v-if="orders.length <= 0 && $isProcessing === false" class="mx-4">
+				<zero-state
+					:title="'No Renewal List'"
+					:message="'There are currrently no customer that can renew'"
+					
+				>
+					<template v-slot:image>
+						<img src="../../../assets/thumb-up.png" />
+					</template>
+				</zero-state>
+			</div>
+			<div v-else >
 				<div class="tab-content" id="tabContent">
 					<div
 						class="tab-pane fade show active"
@@ -119,16 +144,9 @@
 					</div>
 				</div>
 			</div>
-			<div v-else class="mx-4">
-				<zero-state
-					:title="'No Renewal List'"
-					:message="'There are currrently no customer that can renew'"
-				>
-					<template v-slot:image>
-						<img src="../../../assets/thumb-up.png" />
-					</template>
-				</zero-state>
-			</div>
+			
+
+			
 
 			<div v-if="pageParams && orders.length > 0">
 				<base-pagination :page-param="pageParams" @fetchData="fetchData">
@@ -184,7 +202,7 @@
 				apiUrl: {
 					renewalList: '/api/renewal/prompters',
 					statuses: '/api/renewal/prompters/statuses',
-					renewalListExport: ''
+					renewalListExport: '/api/renewal/prompters/customer-list',
 				},
 				meta: {},
 				renewal: true,
@@ -195,7 +213,7 @@
 		},
 
 		async mounted() {
-			console.log(this.$route.query)
+			console.log(this.$route.query);
 			if (localStorage.getItem('activeTab')) {
 				this.showCorrectTab();
 			} else {
@@ -211,11 +229,18 @@
 		methods: {
 			fetchData() {
 				this.$LIPS(true);
+				this.pageParams.page = this.pageParams.page
+					? this.pageParams.page
+					: this.$route.query.page;
+				this.pageParams.limit = this.pageParams.limit
+					? this.pageParams.limit
+					: this.$route.query.limit;
+
 				let param = {
-					loadRenewalprompter: true,
-					isCompletedOrder: true,
-					page: this.pageParams.page? this.pageParams.page : this.$route.query.page,
-					limit: this.pageParams.limit ? this.pageParams.limit: this.$route.query.limit,
+					filterOrderbyBranch: true,
+					orderHasAtMostTwoPaymentsLeft: true,
+					page: this.pageParams.page,
+					limit: this.pageParams.limit,
 					...this.searchQuery,
 				};
 				this.currentTab === 'all' ? (param.rollUp = true) : delete param.rollUp;
@@ -224,7 +249,6 @@
 						.then(({ data }) => this.prepareList(data))
 						.catch(() => Flash.setError('Error Fetching Renewal List'))
 						.finally(() => {
-
 							this.$LIPS(false);
 						});
 				} else {
@@ -242,6 +266,7 @@
 				this.currentTab = tab.alias;
 				this.searchQuery.renewalPrompterStatus = tab.link;
 				localStorage.setItem('activeTab', tab.alias);
+
 				this.fetchData();
 			},
 
@@ -252,10 +277,24 @@
 				this.fetchData();
 			},
 
+			resetAction() {
+				delete this.searchQuery.fromDate;
+				delete this.searchQuery.toDate;
+
+				this.fetchData();
+			},
+
 			async exportCsv() {
+				let param = {
+					filterOrderbyBranch: true,
+					orderHasAtMostTwoPaymentsLeft: true,					
+					...this.searchQuery,
+				};
 				this.$LIPS(true);
 				try {
-					const response = await get(this.apiUrl.renewalListExport + queryParam(this.searchQuery))
+					const response = await get(
+						this.apiUrl.renewalListExport + queryParam(param)
+					);
 					let fileURL = window.URL.createObjectURL(new Blob([response.data]));
 					let fileLink = document.createElement('a');
 					fileLink.href = fileURL;
@@ -328,5 +367,9 @@
 <style scoped type="scss">
 	.attendance-head .light-heading:nth-child(1) {
 		max-width: 120px;
+	}
+	.reset-button{
+		margin-top: 9%;
+		float: right;
 	}
 </style>

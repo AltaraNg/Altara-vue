@@ -35,7 +35,7 @@
 
               <div class="col form-group">
                 <label for="amount" class="form-control-label"
-                  >Sales Category</label
+               >Sales Category</label
                 >
                 <select
                   @change="getUsers(salesLogForm.sales_category_id)"
@@ -249,9 +249,9 @@
                   <td>{{ $formatCurrency(fPayment) }}</td>
                 </tr>
 
-                <tr class="table-separator">
+                <tr class="table-separator repayment">
                   <th>Repayment</th>
-                  <td>{{ $formatCurrency(rPayment) }}</td>
+                  <td class="">{{ $formatCurrency(rPayment) }}<span class="" v-if="renewalState"><img class="discount" src="../assets/css/svgs/discount.png"/></span></td>
                 </tr>
               </tbody>
             </table>
@@ -373,15 +373,18 @@ export default {
       fPayment: "",
       pPrice: "",
       rPayment: "",
+      newRepayment:"",
       repaymentCircle: "",
       rDuration: "",
       customDateToggle: false,
       discounts: null,
       eligible: false,
       serial: false,
+      renewalState:false
     };
   },
   async mounted() {
+    this.watchSalesLogForm()
     this.checkIfDiscountElig();
     await this.getRepaymentDuration();
     await this.getSalesCategory();
@@ -392,6 +395,11 @@ export default {
     await this.getDiscounts();
     await this.getOrderTypes();
   },
+  watch:{
+      'salesLogForm.sales_category_id':function(newData, oldData){
+      this.watchSalesLogForm(newData)
+      }
+  },
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
     getdownPaymentRates(){
@@ -401,7 +409,15 @@ export default {
       })
     }
   },
+
   methods: {
+    watchSalesLogForm(){
+      if(this.salesLogForm.sales_category_id == "2"){
+        this.renewalState = true
+      }else{
+        this.renewalState = false
+      }
+    },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"
         ? (this.customDateToggle = true)
@@ -524,6 +540,7 @@ export default {
             status_id: 1,
           },
         };
+       
 
         const caly = this.calculation;
         const data = caly.filter(
@@ -533,7 +550,7 @@ export default {
             x.repayment_duration_id === data0.repayment_duration_id.id
         )[0];
 
-        const { total, actualDownpayment, actualRepayment } = calculate(
+        const { total, actualDownpayment, rePayment } = calculate(
           this.selectedProduct.price,
           data0,
           data
@@ -542,10 +559,10 @@ export default {
         this.repaymentCircle = data0.repayment_cycle_id.value;
         this.rDuration = data0.repayment_duration_id.value;
         this.fPayment = actualDownpayment;
-        this.rPayment = actualRepayment;
+        this.rPayment = rePayment;
         this.pPrice = total;
         this.test1 = false;
-
+       
         // $(`#amortizationPreview`).modal("toggle");
       } catch (e) {
         // this.$swal({
@@ -553,7 +570,6 @@ export default {
         //     title: "Plan is not available"
         // });
         this.test1 = true;
-
         this.repaymentCircle = "0";
         this.rDuration = "0";
         this.fPayment = "0";
@@ -648,6 +664,7 @@ export default {
     },
 
         async getUsers(salesCat){
+        this.getCalc()
         this.$LIPS(true);
           
           await get(`/api/sales-category/${salesCat}/roles`).then(res => {
@@ -687,6 +704,7 @@ export default {
             }
         },
     async getUsers(salesCat) {
+      this.getCalc()
       this.$LIPS(true);
 
       await get(`/api/sales-category/${salesCat}/roles`).then((res) => {
@@ -802,4 +820,12 @@ export default {
   float: right;
   text-decoration: underline;
 }
+.discount{
+  width:70px;
+  height:auto;
+  position: absolute;
+  bottom: 15px;
+  right:1
+}
+
 </style>

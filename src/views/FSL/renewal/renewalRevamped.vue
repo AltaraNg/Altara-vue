@@ -89,7 +89,53 @@
 					</li>
 				</ul>
 			</div>
-			<div v-if="orders.length <= 0 && $isProcessing === false" class="mx-4">
+			
+			<div v-if="orders.length > 0" >
+				<div class="tab-content" id="tabContent">
+					<div
+						class="tab-pane fade show active"
+						id="all"
+						role="tabpanel"
+						aria-labelledby="all-tab"
+					>
+						<renewal-table :customers="orders" :OId="OId" :statuses="statuses" :dsas="dsas"></renewal-table>
+					</div>
+					<div
+						class="tab-pane fade show"
+						id="nc"
+						role="tabpanel"
+						aria-labelledby="not-contacted-tab"
+					>
+						<renewal-table :customers="orders" :OId="OId" :statuses="statuses" :dsas="dsas"></renewal-table>
+					</div>
+					<div
+						class="tab-pane fade show"
+						id="contacted"
+						role="tabpanel"
+						aria-labelledby="called-tab"
+					>
+						<renewal-table :customers="orders" :OId="OId" :statuses="statuses" :dsas="dsas"></renewal-table>
+					</div>
+					<div
+						class="tab-pane fade show"
+						id="pr"
+						role="tabpanel"
+						aria-labelledby="successful-tab"
+					>
+						<renewal-table :customers="orders" :OId="OId" :statuses="statuses" :dsas="dsas"></renewal-table>
+					</div>
+					<div
+						class="tab-pane fade show"
+						id="interested"
+						role="tabpanel"
+						aria-labelledby="interested-tab"
+					>
+						<renewal-table :customers="orders" :OId="OId" :statuses="statuses" :dsas="dsas"></renewal-table>
+					</div>
+				</div>
+			</div>
+
+			<div v-else class="mx-4">
 				<zero-state
 					:title="'No Renewal List'"
 					:message="'There are currrently no customer that can renew'"
@@ -99,50 +145,6 @@
 						<img src="../../../assets/thumb-up.png" />
 					</template>
 				</zero-state>
-			</div>
-			<div v-else >
-				<div class="tab-content" id="tabContent">
-					<div
-						class="tab-pane fade show active"
-						id="all"
-						role="tabpanel"
-						aria-labelledby="all-tab"
-					>
-						<renewal-table :customers="orders" :OId="OId"></renewal-table>
-					</div>
-					<div
-						class="tab-pane fade show"
-						id="nc"
-						role="tabpanel"
-						aria-labelledby="not-contacted-tab"
-					>
-						<renewal-table :customers="orders" :OId="OId"></renewal-table>
-					</div>
-					<div
-						class="tab-pane fade show"
-						id="contacted"
-						role="tabpanel"
-						aria-labelledby="called-tab"
-					>
-						<renewal-table :customers="orders" :OId="OId"></renewal-table>
-					</div>
-					<div
-						class="tab-pane fade show"
-						id="pr"
-						role="tabpanel"
-						aria-labelledby="successful-tab"
-					>
-						<renewal-table :customers="orders" :OId="OId"></renewal-table>
-					</div>
-					<div
-						class="tab-pane fade show"
-						id="interested"
-						role="tabpanel"
-						aria-labelledby="interested-tab"
-					>
-						<renewal-table :customers="orders" :OId="OId"></renewal-table>
-					</div>
-				</div>
 			</div>
 			
 
@@ -203,28 +205,37 @@
 					renewalList: '/api/renewal/prompters',
 					statuses: '/api/renewal/prompters/statuses',
 					renewalListExport: '/api/renewal/prompters/customer-list',
+					statuses: '/api/renewal/prompters/statuses',
+					dsas: `/api/get-users?role=18&limit=200`,
+
+
 				},
 				meta: {},
 				renewal: true,
 				statuses: '',
 				OId: 1,
 				currentTab: 'all',
+				statuses: [],
+				dsas: [],
+
 			};
 		},
 
-		async mounted() {
+		async beforeMount() {
 			console.log(this.$route.query);
 			if (localStorage.getItem('activeTab')) {
 				this.showCorrectTab();
 			} else {
-				this.fetchData();
+				await this.fetchData();
 			}
-			this.$root.$on('feedback', (payload) => {
+			await this.$root.$on('feedback', (payload) => {
 				this.fetchData();
 			});
 			this.$root.$on('owner_updated', (payload) => {
 				this.fetchData();
 			});
+			this.getRenewalStatuses();
+			this.fetchDsas();
 		},
 		methods: {
 			fetchData() {
@@ -249,7 +260,6 @@
 						.then(({ data }) => this.prepareList(data))
 						.catch(() => Flash.setError('Error Fetching Renewal List'))
 						.finally(() => {
-							this.$LIPS(false);
 						});
 				} else {
 					delete param.renewalList;
@@ -277,11 +287,33 @@
 				this.fetchData();
 			},
 
+			async fetchDsas() {
+				this.$LIPS(true);
+				try {
+					let agents = await get(this.apiUrl.dsas);
+					this.dsas = agents.data?.data?.data;
+				} catch (error) {
+					flash.setError(error);
+				} finally {
+					this.$LIPS(false);
+				}
+			},
+
 			resetAction() {
 				delete this.searchQuery.fromDate;
 				delete this.searchQuery.toDate;
 
 				this.fetchData();
+			},
+
+			async getRenewalStatuses() {
+				this.$LIPS(true);
+				let statuses = await get(this.apiUrl?.statuses);
+				this.statuses = statuses.data?.data?.prompter_statuses;
+				this.statuses = this.statuses.filter(item => {
+					return item.name !== 'not contacted'
+				})
+				this.$LIPS(false);
 			},
 
 			async exportCsv() {

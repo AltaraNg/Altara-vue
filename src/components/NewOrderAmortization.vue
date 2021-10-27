@@ -326,7 +326,7 @@ export default {
     },
 
     updateAmmo(armo, index) {
-      if(this.canEditAmmoPayment){
+      if(this.canEditAmmoPayment && this.standAlone === false){
          this.showModal = true;
       this.ammo_item = armo;
       this.ammoIndex = index;

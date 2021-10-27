@@ -55,10 +55,14 @@
 							</th>
 							<td class="pointer" data-hoverable="true">
 								<span v-show="edit === false">{{ modalItem.owner }}</span>
-								<select v-show="edit" class="custom-control w-75 p-1 text-black" v-model="agent_id">
+								<select
+									v-show="edit"
+									class="custom-control w-75 p-1 text-black"
+									v-model="agent_id"
+								>
 									<option value="" disabled selected>--select dsa--</option>
 									<option value="" v-for="agent in dsas" :value="agent.id">
-										{{agent.full_name}}
+										{{ agent.full_name }}
 									</option>
 								</select>
 								<button
@@ -87,21 +91,21 @@
 			modalItem: {
 				required: true,
 			},
+			dsas: {
+				required: true,
+			},
 		},
 		data() {
 			return {
 				edit: false,
-				dsas: [],
 				apiUrl: {
 					dsas: `/api/get-users?role=18&limit=200`,
-					new_order: '/api/new_order/'
+					new_order: '/api/new_order/',
 				},
-				agent_id: ''
+				agent_id: '',
 			};
 		},
-		created() {
-			this.fetchDsas();
-		},
+
 		methods: {
 			closeModal() {
 				this.$emit('close');
@@ -112,40 +116,28 @@
 			editOwner() {
 				this.edit ? (this.edit = false) : (this.edit = true);
 			},
-			async fetchDsas() {
+
+			async submit() {
 				this.$LIPS(true);
 				try {
-					let agents = await get(this.apiUrl.dsas);
-					this.dsas = agents.data?.data?.data;
-				} catch (error) {
-					flash.setError(error);
-				} finally {
-					this.$LIPS(false);
-				}
-			},
-			async submit(){
-				this.$LIPS(true);
-				try{
 					let data = {
-					id: this.modalItem.id,
-					owner_id: this.agent_id,					
-				}
-				let response = await put(this.apiUrl.new_order + data.id, data);
-				if (response.data.status === 'success') {
+						id: this.modalItem.id,
+						owner_id: this.agent_id,
+					};
+					let response = await put(this.apiUrl.new_order + data.id, data);
+					if (response.data.status === 'success') {
 						this.$swal({
 							icon: 'success',
 							title: 'Owner changed successfully',
 						});
 						this.$root.$emit('owner_updated');
 					}
-
-				}catch(err){
-					flash.setError(err)
-				} finally{
-					this.$LIPS(false)
+				} catch (err) {
+					flash.setError(err);
+				} finally {
+					this.$LIPS(false);
 				}
-				
-			}
+			},
 		},
 	};
 </script>

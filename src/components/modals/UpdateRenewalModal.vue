@@ -14,8 +14,13 @@
 			</a>
 		</div>
 		<div class="modal-body px-5">
-			<div v-if="err.length > 0" class="small text-danger" v-for="item in err">
-				{{item}}
+			<div
+				v-if="err.length > 0"
+				class="small text-danger"
+				style="font-size: 12px;"
+				v-for="item in err"
+			>
+				{{ item }}
 			</div>
 			<div class="table-responsive">
 				<table class="table table-bordered table-striped">
@@ -40,6 +45,7 @@
 									v-model="status"
 									name="status"
 									class="custom-control w-100 text-black"
+									:class="{ 'border-danger': showError && this.status == '' }"
 									required
 								>
 									<option selected disabled value="">--select status--</option>
@@ -59,6 +65,7 @@
 									class="form-control"
 									placeholder="Enter Feedback"
 									required
+									:class="{ 'border-danger': showError && this.feedback == '' }"
 								/>
 							</td>
 						</tr>
@@ -103,10 +110,13 @@
 			modalItem: {
 				required: true,
 			},
+			statuses: {
+				required: true,
+			},
 		},
 		data() {
 			return {
-				statuses: [],
+				showError: false,
 				apiUrl: {
 					renewalList: '/api/renewal/prompters',
 					statuses: '/api/renewal/prompters/statuses',
@@ -115,29 +125,21 @@
 				status: '',
 				date: '',
 				currentDate: new Date(),
-				err: []
+				err: [],
 			};
 		},
-		async beforeMount() {
-			await this.getRenewalStatuses();
-		},
+
 		methods: {
 			closeModal() {
 				this.$emit('close');
 			},
-			async getRenewalStatuses() {
-				this.$LIPS(true);
-				let statuses = await get(this.apiUrl?.statuses);
-				this.statuses = statuses.data?.data?.prompter_statuses;
-				this.statuses = this.statuses.filter(item => {
-					return item.name !== 'not contacted'
-				})
-				this.$LIPS(false);
-			},
 
 			async submitStatus() {
-				try{
-				let data = {
+				try {
+					if (this.feedback === '' || !this.status) {
+						this.showError = true;
+					}
+					let data = {
 						order_id: this.modalItem?.id,
 						renewal_prompter_status_id: this.status?.id,
 						feedback: this.feedback,
@@ -148,17 +150,20 @@
 
 					this.$LIPS(true);
 
-					let response = await post(this.apiUrl.renewalList, data).catch(err => {
-						if(err.response){
-							this.err.push(err.response.data.data.errors)
-							this.$swal({
-								icon: 'error',
-								title: err.response.data.message
-							})
+					let response = await post(this.apiUrl.renewalList, data).catch(
+						(err) => {
+							if (err.response) {
+								this.err.push('Enter appropriate required fields');
+								this.$swal({
+									icon: 'error',
+									title: err.response.data.message,
+								});
+							}
 						}
-					});
+					);
 
 					if (response.data.status === 'success') {
+						this.showError = false;
 						this.$swal({
 							icon: 'success',
 							title: 'Logged feedback successfully',
@@ -166,14 +171,11 @@
 						this.$root.$emit('feedback', this.status.name);
 					}
 					this.closeModal();
-
-					
-					} catch(e) {
-						console.log(e);
-					} finally{
-						this.$LIPS(false);
-					}
-				
+				} catch (e) {
+					console.log(e);
+				} finally {
+					this.$LIPS(false);
+				}
 			},
 			disabledRange: function(date) {
 				return date < new Date();

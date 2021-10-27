@@ -100,6 +100,7 @@
 			<order-info-modal
 				:modalItem="selectedOrder"
 				@close="hide('order-info')"
+				:dsas="dsas"
 			/>
 		</modal>
 
@@ -107,6 +108,7 @@
 			<update-renewal-modal
 				:modalItem="selectedOrderRenew"
 				@close="hide('update-status')"
+				:statuses="statuses"
 			/>
 		</modal>
 
@@ -172,6 +174,13 @@
 				required: true,
 				default: 1,
 			},
+
+			statuses: {
+				required: true
+			},
+			dsas: {
+				required: true
+			}
 		},
 		data() {
 			return {

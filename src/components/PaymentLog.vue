@@ -290,7 +290,7 @@
                     </th>
                     <th>{{ $formatCurrency(pPrice) }}</th>
                     <th>{{ $formatCurrency(fPayment) }}</th>
-                    <th>{{ $formatCurrency(rPayment) }}</th>
+                    <th>{{ $formatCurrency(rPayment) }}<span class="" v-if="renewalState"><img class="modal_discount" src="../assets/css/svgs/discount.png"/></span></th>
                     <!-- <td class="font-weight-bold">Ikoyi</td> -->
                   </tr>
                 </tbody>
@@ -821,11 +821,16 @@ export default {
   text-decoration: underline;
 }
 .discount{
-  width:70px;
+  width:60px;
   height:auto;
   position: absolute;
-  bottom: 15px;
+  bottom: 18px;
   right:1
+}
+.modal_discount{
+  width:60px;
+  height:auto;
+  padding-left:3px;
 }
 
 </style>

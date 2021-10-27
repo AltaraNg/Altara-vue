@@ -73,7 +73,7 @@
 									{{ $formatCurrency(order.order.product_price) }}
 								</div>
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
+									class="col-12 col-xs-2  col-md col-lg d-flex align-items-center justify-content-center"
 								>
 									{{ order.order.sales_category.name }}
 								</div>
@@ -109,7 +109,7 @@
 								</div>
 							</div>
 							<div
-								class="mb-3 row attendance-item"
+								class="mb-3 row  attendance-item"
 								v-for="(order, index) in customer.new_orders" :key="index"
 							>
 								<div
@@ -160,7 +160,7 @@
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
 								>
-									{{ order.sales_type.name }}
+									{{ order.sales_type.name }}<span class="" v-if="order.sales_type.name == 'renewal(DSA)'"><img class="discount"  src="../../../assets/css/svgs/discount.png"/></span>
 								</div>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
@@ -1133,5 +1133,8 @@
 	}
 	.pointer {
 		cursor: pointer;
+	}
+	.discount{
+		width:60px;
 	}
 </style>

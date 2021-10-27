@@ -160,7 +160,7 @@
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
 								>
-									{{ order.sales_type.name }}<span class="" v-if="order.sales_type.name == 'renewal(DSA)'"><img class="discount"  src="../../../assets/css/svgs/discount.png"/></span>
+									{{ order.sales_type.name }}<span class="" v-if="order.sales_type.name == 'renewal(DSA)' && flag == 'beta'"><img class="discount"  src="../../../assets/css/svgs/discount.png"/></span>
 								</div>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
@@ -760,6 +760,7 @@
 					product: `/api/product`,
 				},
 				paymentMeths: [],
+				flag:localStorage.getItem("flag")
 			};
 		},
 
@@ -1118,7 +1119,6 @@
 			this.$prepareBanks();
 			this.$prepareBranches();
 			this.$preparePaymentMethods();
-			
 		},
 	};
 </script>

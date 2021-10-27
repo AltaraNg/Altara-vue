@@ -251,7 +251,7 @@
 
                 <tr class="table-separator repayment">
                   <th>Repayment</th>
-                  <td class="">{{ $formatCurrency(rPayment) }}<span class="" v-if="renewalState"><img class="discount" src="../assets/css/svgs/discount.png"/></span></td>
+                  <td class="">{{ $formatCurrency(rPayment) }}<span class="" v-if="renewalState && flag == 'beta' "><img class="discount" src="../assets/css/svgs/discount.png"/></span></td>
                 </tr>
               </tbody>
             </table>
@@ -290,7 +290,7 @@
                     </th>
                     <th>{{ $formatCurrency(pPrice) }}</th>
                     <th>{{ $formatCurrency(fPayment) }}</th>
-                    <th>{{ $formatCurrency(rPayment) }}<span class="" v-if="renewalState"><img class="modal_discount" src="../assets/css/svgs/discount.png"/></span></th>
+                    <th>{{ $formatCurrency(rPayment) }}<span class="" v-if="renewalState && flag == 'beta'"><img class="modal_discount" src="../assets/css/svgs/discount.png"/></span></th>
                     <!-- <td class="font-weight-bold">Ikoyi</td> -->
                   </tr>
                 </tbody>
@@ -380,7 +380,8 @@ export default {
       discounts: null,
       eligible: false,
       serial: false,
-      renewalState:false
+      renewalState:false,
+			flag:localStorage.getItem("flag")
     };
   },
   async mounted() {

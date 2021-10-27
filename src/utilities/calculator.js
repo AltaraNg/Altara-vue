@@ -17,7 +17,7 @@ const calculate = (productPrice, data, params) => {
   const tempActualRepayment = +(total - downpayment).toFixed(2);
   var   biMonthlyRepayment = Math.floor((tempActualRepayment/count)/100)*100
   const actualRepayment = biMonthlyRepayment * count;
-   if(data.sales_category_id == 2 ){
+   if(data.sales_category_id == 2 && localStorage.getItem("flag") == "beta" ){
         var   rePayment = actualRepayment - (actualRepayment * 0.05)
     }else{
        var   rePayment = actualRepayment

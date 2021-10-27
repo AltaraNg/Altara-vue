@@ -61,8 +61,8 @@
 					</div>
 				</div>
 				<div class="col-4 mt-5 px-5">
-					<button class="reset-button p-2 rounded bg-default" @click="exportCsv">
-						<i class="fas fa-file-export"></i> Download
+					<button class="reset-button py-2 px-4 rounded bg-default" @click="exportCsv">
+						<i class="fas fa-file-export"></i> Download names
 					</button>
 				</div>
 			</div>
@@ -302,6 +302,8 @@
 			resetAction() {
 				delete this.searchQuery.fromDate;
 				delete this.searchQuery.toDate;
+				this.toDate = '';
+				this.fromDate = '';
 
 				this.fetchData();
 			},
@@ -401,7 +403,7 @@
 		max-width: 120px;
 	}
 	.reset-button{
-		margin-top: 9%;
+		margin-top: 8%;
 		float: right;
 	}
 </style>

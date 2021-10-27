@@ -78,6 +78,7 @@
 									valueType="format"
 									placeholder="Date"
 									:disabled-date="disabledRange"
+									:input-class="{ 'border-danger': showError && this.date == '', 'form-control': true }"
 								></date-picker>
 							</td>
 						</tr>
@@ -153,7 +154,7 @@
 					let response = await post(this.apiUrl.renewalList, data).catch(
 						(err) => {
 							if (err.response) {
-								this.err.push('Enter appropriate required fields');
+								this.err.push('Missing fields!!!');
 								this.$swal({
 									icon: 'error',
 									title: err.response.data.message,

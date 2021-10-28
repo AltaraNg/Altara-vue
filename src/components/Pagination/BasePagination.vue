@@ -96,6 +96,7 @@ export default {
       }
     },
     async fetchData(data) {
+      // this.pageParam.page = data
       this.$emit("fetchData", data);
       let param = this.$route.query
        param = await {...param, page: this.pageParam.page?? '', limit: this.pageParam.limit ?? ''};

@@ -280,13 +280,14 @@
 			});
 			this.getRenewalStatuses();
 			this.fetchDsas();
+			this.fetchStats();
 		},
 		methods: {
 			fetchStats(param = {}) {
 				let reParam = {
 					...param,
-					fromDate: this.fromDate ? this.fromDate : '',
-					toDate: this.toDate ? this.toDate : '',
+					fromDate: this.fromDate ? this.fromDate : this.searchQuery.fromDate ? this.searchQuery.fromDate : '',
+					toDate: this.toDate ? this.toDate : this.searchQuery.toDate ? this.searchQuery.toDate : '',
 					rollUp: true,
 					filterOrderbyBranch: true,
 					orderHasAtMostTwoPaymentsLeft: true,

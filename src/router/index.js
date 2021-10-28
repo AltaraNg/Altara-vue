@@ -63,6 +63,7 @@ const ProductForm = () => import('../views/LOG/product/form.vue');
 const ProductList = () => import('../views/LOG/product/products.vue');
 const Renewal = () => import('../views/FSL/renewal/renewal.vue');
 const RenewalNew = () => import('../views/FSL/renewal/renewalRevamped.vue');
+const DSAStats = () => import('../views/FSL/renewal/dsaStats.vue');
 const CashLogger = () => import('../views/FSL/cash_logger/cash_logger.vue');
 const PaymentLogger = () =>
 	import('../views/FSL/payment_logger/payment_logger.vue');
@@ -455,7 +456,13 @@ const router = new VueRouter({
 					path: 'renewal',
 					component: RenewalNew,
 					name: 'renewal-fsl',
-					meta: {tab: 'all'}
+					meta: {tab: 'all'},
+					
+				},
+				{
+					path: 'dsa-stats',
+					component: DSAStats,
+					name: 'dsa-stats-new',
 				},
 
 				{

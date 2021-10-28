@@ -49,7 +49,7 @@
 						<tr>
 							<th>
 								Owner
-								<span @click="editOwner" class="pointer text-warning">
+								<span @click="editOwner" class="pointer text-warning" v-if="role !== 18">
 									Edit
 								</span>
 							</th>
@@ -99,11 +99,16 @@
 			return {
 				edit: false,
 				apiUrl: {
-					dsas: `/api/get-users?role=18&limit=200`,
 					new_order: '/api/new_order/',
 				},
 				agent_id: '',
+				role:''
 			};
+		},
+
+		mounted() {
+			this.role = parseInt(localStorage.getItem('role'));
+
 		},
 
 		methods: {

@@ -2,31 +2,54 @@
 	<transition name="fade">
 		<div id="reminder" class="my-4 container-fluid">
 			<div class="row">
-				<stat-card class="col mx-5" :label="'Total'" :stat="meta.total">
-					<template v-slot:svg> <Total class="bi bi-bootstrap-fill"/></template>
-				</stat-card>
-				<stat-card class="col mx-5" :label="'Contacted'" :stat="meta.contacted">
-					<template v-slot:svg class="text-white"><People /></template>
-				</stat-card>
+				<div class="col mx-1">
+					<stat-card :label="'Total'" :stat="meta.total">
+						<template v-slot:svg>
+							<Total class="bi bi-bootstrap-fill"
+						/></template>
+					</stat-card>
+				</div>
+				<div class="col mx-1">
+					<stat-card :label="'Contacted'" :stat="meta.contacted">
+						<template v-slot:svg class="text-white"><People /></template>
+					</stat-card>
+				</div>
 
-				<stat-card
-					class="col mx-5"
-					:label="'Purchased/Renewed'"
-					:stat="meta.purchased_renewed"
-				>
-					<template v-slot:svg><Purchased /></template>
-				</stat-card>
-				<stat-card
-					class="col mx-5"
-					:label="'Interested'"
-					:stat="meta.interested"
-				>
-					<template v-slot:svg><Interested /></template>
-				</stat-card>
+				<div class="col mx-1">
+					<stat-card
+						:label="'Purchased/Renewed'"
+						:stat="meta.purchased_renewed"
+					>
+						<template v-slot:svg><Purchased /></template>
+					</stat-card>
+				</div>
+				<div class="col mx-1">
+					<stat-card
+						:label="'Interested'"
+						:stat="meta.interested"
+					>
+						<template v-slot:svg><Interested /></template>
+					</stat-card>
+				</div>
+				<div class="col mx-1">
+					<stat-card
+						:label="'Conversion Rate'"
+						:stat="conversionRate"
+					>
+						<template v-slot:svg><Interested /></template>
+					</stat-card>
+				</div>
+			</div>
+			<div class="text-right pointer ">
+				<router-link to="dsa-stats">
+				<span class="mr-3 bg-default rounded p-3">View DSA stats</span>
+				</router-link>
 			</div>
 			<div class="mt-5 mb-3 px-2 py-3 row">
 				<div class="col-8">
-					<h3>Filter by Date</h3>
+					<div class="row w-100">
+					<h3 class="col">Filter by Date</h3>
+					</div>
 					<div class="d-flex">
 						<div class="col">
 							<date-picker
@@ -61,7 +84,10 @@
 					</div>
 				</div>
 				<div class="col-4 mt-5 px-5">
-					<button class="reset-button py-2 px-4 rounded bg-default" @click="exportCsv">
+					<button
+						class="reset-button py-2 px-4 rounded bg-default"
+						@click="exportCsv"
+					>
 						<i class="fas fa-file-export"></i> Download names
 					</button>
 				</div>
@@ -89,8 +115,8 @@
 					</li>
 				</ul>
 			</div>
-			
-			<div v-if="orders.length > 0" >
+
+			<div v-if="orders.length > 0">
 				<div class="tab-content" id="tabContent">
 					<div
 						class="tab-pane fade show active"
@@ -98,7 +124,12 @@
 						role="tabpanel"
 						aria-labelledby="all-tab"
 					>
-						<renewal-table :customers="orders" :OId="OId" :statuses="statuses" :dsas="dsas"></renewal-table>
+						<renewal-table
+							:customers="orders"
+							:OId="OId"
+							:statuses="statuses"
+							:dsas="dsas"
+						></renewal-table>
 					</div>
 					<div
 						class="tab-pane fade show"
@@ -106,7 +137,12 @@
 						role="tabpanel"
 						aria-labelledby="not-contacted-tab"
 					>
-						<renewal-table :customers="orders" :OId="OId" :statuses="statuses" :dsas="dsas"></renewal-table>
+						<renewal-table
+							:customers="orders"
+							:OId="OId"
+							:statuses="statuses"
+							:dsas="dsas"
+						></renewal-table>
 					</div>
 					<div
 						class="tab-pane fade show"
@@ -114,7 +150,12 @@
 						role="tabpanel"
 						aria-labelledby="called-tab"
 					>
-						<renewal-table :customers="orders" :OId="OId" :statuses="statuses" :dsas="dsas"></renewal-table>
+						<renewal-table
+							:customers="orders"
+							:OId="OId"
+							:statuses="statuses"
+							:dsas="dsas"
+						></renewal-table>
 					</div>
 					<div
 						class="tab-pane fade show"
@@ -122,7 +163,12 @@
 						role="tabpanel"
 						aria-labelledby="successful-tab"
 					>
-						<renewal-table :customers="orders" :OId="OId" :statuses="statuses" :dsas="dsas"></renewal-table>
+						<renewal-table
+							:customers="orders"
+							:OId="OId"
+							:statuses="statuses"
+							:dsas="dsas"
+						></renewal-table>
 					</div>
 					<div
 						class="tab-pane fade show"
@@ -130,7 +176,12 @@
 						role="tabpanel"
 						aria-labelledby="interested-tab"
 					>
-						<renewal-table :customers="orders" :OId="OId" :statuses="statuses" :dsas="dsas"></renewal-table>
+						<renewal-table
+							:customers="orders"
+							:OId="OId"
+							:statuses="statuses"
+							:dsas="dsas"
+						></renewal-table>
 					</div>
 				</div>
 			</div>
@@ -139,16 +190,12 @@
 				<zero-state
 					:title="'No Renewal List'"
 					:message="'There are currrently no customer that can renew'"
-					
 				>
 					<template v-slot:image>
 						<img src="../../../assets/thumb-up.png" />
 					</template>
 				</zero-state>
 			</div>
-			
-
-			
 
 			<div v-if="pageParams && orders.length > 0">
 				<base-pagination :page-param="pageParams" @fetchData="fetchData">
@@ -207,8 +254,6 @@
 					renewalListExport: '/api/renewal/prompters/customer-list',
 					statuses: '/api/renewal/prompters/statuses',
 					dsas: `/api/get-users?role=18&limit=200`,
-
-
 				},
 				meta: {},
 				renewal: true,
@@ -217,12 +262,10 @@
 				currentTab: 'all',
 				statuses: [],
 				dsas: [],
-
 			};
 		},
 
-		async beforeMount() {
-			console.log(this.$route.query);
+		async mounted() {
 			if (localStorage.getItem('activeTab')) {
 				this.showCorrectTab();
 			} else {
@@ -238,6 +281,23 @@
 			this.fetchDsas();
 		},
 		methods: {
+
+			fetchStats(param = {}){
+				let reParam = {
+					...param,
+					fromDate: this.fromDate? this.fromDate : '',
+					toDate: this.toDate ? this.toDate: '',
+					rollUp: true,
+					filterOrderbyBranch: true,
+					orderHasAtMostTwoPaymentsLeft: true,
+					};
+				get(this.apiUrl.renewalList + queryParam(reParam))
+						.then(({ data }) => {
+							this.meta = data.data.meta;
+						})
+						.catch(() => Flash.setError('Error Fetching Renewal List'))
+						.finally(() => {});
+			},
 			fetchData() {
 				this.$LIPS(true);
 				this.pageParams.page = this.pageParams.page
@@ -254,13 +314,12 @@
 					limit: this.pageParams.limit,
 					...this.searchQuery,
 				};
-				this.currentTab === 'all' ? (param.rollUp = true) : delete param.rollUp;
+				this.currentTab === 'all' ? (param.rollUp = true) : this.fetchStats();
 				if (this.renewal === true) {
 					get(this.apiUrl.renewalList + queryParam(param))
 						.then(({ data }) => this.prepareList(data))
 						.catch(() => Flash.setError('Error Fetching Renewal List'))
-						.finally(() => {
-						});
+						.finally(() => {});
 				} else {
 					delete param.renewalList;
 					get(this.url + queryParam(param))
@@ -283,6 +342,8 @@
 			searchAction() {
 				this.searchQuery.fromDate = this.fromDate;
 				this.searchQuery.toDate = this.toDate;
+				 this.$router.replace({query: Object.assign({}, this.$route.query, this.searchQuery)})
+
 
 				this.fetchData();
 			},
@@ -312,16 +373,16 @@
 				this.$LIPS(true);
 				let statuses = await get(this.apiUrl?.statuses);
 				this.statuses = statuses.data?.data?.prompter_statuses;
-				this.statuses = this.statuses.filter(item => {
-					return item.name !== 'not contacted'
-				})
+				this.statuses = this.statuses.filter((item) => {
+					return item.name !== 'not contacted';
+				});
 				this.$LIPS(false);
 			},
 
 			async exportCsv() {
 				let param = {
 					filterOrderbyBranch: true,
-					orderHasAtMostTwoPaymentsLeft: true,					
+					orderHasAtMostTwoPaymentsLeft: true,
 					...this.searchQuery,
 				};
 				this.$LIPS(true);
@@ -395,6 +456,18 @@
 				this.$LIPS(false);
 			},
 		},
+
+		computed: {
+			conversionRate: function() {
+				if (this.meta.total) {
+					return (
+						Math.round((this.meta.purchased_renewed / this.meta.total) * 100) +
+						'%'
+					);
+				}
+				return '';
+			},
+		},
 	};
 </script>
 
@@ -402,7 +475,7 @@
 	.attendance-head .light-heading:nth-child(1) {
 		max-width: 120px;
 	}
-	.reset-button{
+	.reset-button {
 		margin-top: 8%;
 		float: right;
 	}

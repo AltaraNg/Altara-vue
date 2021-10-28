@@ -24,31 +24,25 @@
 					</stat-card>
 				</div>
 				<div class="col mx-1">
-					<stat-card
-						:label="'Interested'"
-						:stat="meta.interested"
-					>
+					<stat-card :label="'Interested'" :stat="meta.interested">
 						<template v-slot:svg><Interested /></template>
 					</stat-card>
 				</div>
 				<div class="col mx-1">
-					<stat-card
-						:label="'Conversion Rate'"
-						:stat="conversionRate"
-					>
+					<stat-card :label="'Conversion Rate'" :stat="conversionRate">
 						<template v-slot:svg><Interested /></template>
 					</stat-card>
 				</div>
 			</div>
 			<div class="text-right pointer ">
 				<router-link to="dsa-stats">
-				<span class="mr-3 bg-default rounded p-3">View DSA stats</span>
+					<span class="mr-3 bg-default rounded p-3">View DSA stats</span>
 				</router-link>
 			</div>
 			<div class="mt-5 mb-3 px-2 py-3 row">
 				<div class="col-8">
 					<div class="row w-100">
-					<h3 class="col">Filter by Date</h3>
+						<h3 class="col">Filter by Date</h3>
 					</div>
 					<div class="d-flex">
 						<div class="col">
@@ -104,7 +98,7 @@
 						<a
 							aria-selected="true"
 							class="nav-link"
-							:class="index === 0 && 'active'"
+							:class="{active : tab.alias === activeTab}"
 							data-toggle="tab"
 							:href="`#${tab.alias}`"
 							role="tab"
@@ -266,9 +260,16 @@
 		},
 
 		async mounted() {
-			if (localStorage.getItem('activeTab')) {
-				this.showCorrectTab();
+			let query = this.$route.query;
+			this.searchQuery = {
+				...this.searchQuery,
+				...query,
+			};
+			if (query.tab) {
+				this.activeTab = query.tab;
+				this.showCorrectTab(this.activeTab);
 			} else {
+				this.activeTab = "all"
 				await this.fetchData();
 			}
 			await this.$root.$on('feedback', (payload) => {
@@ -281,22 +282,21 @@
 			this.fetchDsas();
 		},
 		methods: {
-
-			fetchStats(param = {}){
+			fetchStats(param = {}) {
 				let reParam = {
 					...param,
-					fromDate: this.fromDate? this.fromDate : '',
-					toDate: this.toDate ? this.toDate: '',
+					fromDate: this.fromDate ? this.fromDate : '',
+					toDate: this.toDate ? this.toDate : '',
 					rollUp: true,
 					filterOrderbyBranch: true,
 					orderHasAtMostTwoPaymentsLeft: true,
-					};
+				};
 				get(this.apiUrl.renewalList + queryParam(reParam))
-						.then(({ data }) => {
-							this.meta = data.data.meta;
-						})
-						.catch(() => Flash.setError('Error Fetching Renewal List'))
-						.finally(() => {});
+					.then(({ data }) => {
+						this.meta = data.data.meta;
+					})
+					.catch(() => Flash.setError('Error Fetching Renewal List'))
+					.finally(() => {});
 			},
 			fetchData() {
 				this.$LIPS(true);
@@ -317,7 +317,11 @@
 				this.currentTab === 'all' ? (param.rollUp = true) : this.fetchStats();
 				if (this.renewal === true) {
 					get(this.apiUrl.renewalList + queryParam(param))
-						.then(({ data }) => this.prepareList(data))
+						.then(({ data }) => {
+							this.prepareList(data);
+							delete this.searchQuery.renewalPrompterStatus;
+							this.fetchStats(this.searchQuery);
+						})
 						.catch(() => Flash.setError('Error Fetching Renewal List'))
 						.finally(() => {});
 				} else {
@@ -334,16 +338,24 @@
 				// localStorage.setItem('activeTab', tab.alias);
 				this.currentTab = tab.alias;
 				this.searchQuery.renewalPrompterStatus = tab.link;
-				localStorage.setItem('activeTab', tab.alias);
+
+				// localStorage.setItem('activeTab', tab.alias);
+				this.searchQuery.tab = tab.alias;
+
+				this.$router.replace({
+					query: Object.assign({}, this.$route.query, this.searchQuery),
+				});
 
 				this.fetchData();
+				
 			},
 
 			searchAction() {
 				this.searchQuery.fromDate = this.fromDate;
 				this.searchQuery.toDate = this.toDate;
-				 this.$router.replace({query: Object.assign({}, this.$route.query, this.searchQuery)})
-
+				this.$router.replace({
+					query: Object.assign({}, this.$route.query, this.searchQuery),
+				});
 
 				this.fetchData();
 			},
@@ -403,8 +415,7 @@
 				}
 			},
 
-			showCorrectTab() {
-				let tab = localStorage.getItem('activeTab');
+			showCorrectTab(tab) {
 
 				let tabObject = this.tabs.find((item) => {
 					return item.alias === tab;

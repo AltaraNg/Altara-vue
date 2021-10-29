@@ -263,6 +263,12 @@
 
 		async mounted() {
 			this.$LIPS(true);
+			var date = new Date(),
+				y = date.getFullYear(),
+				m = date.getMonth();
+			var firstDay = new Date(y, m, 2).toISOString();
+			this.fromDate = firstDay.slice(0, 10);
+			this.searchAction();
 			
 			let query = this.$route.query;
 			this.searchQuery = {

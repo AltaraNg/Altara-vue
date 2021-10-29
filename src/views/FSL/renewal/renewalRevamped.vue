@@ -34,7 +34,7 @@
 					</stat-card>
 				</div>
 			</div>
-			<div class="text-right pointer ">
+			<div class="text-right pointer " v-if="role !== '18'">
 				<router-link to="dsa-stats">
 					<span class="mr-3 bg-default rounded p-3">View DSA stats</span>
 				</router-link>
@@ -257,7 +257,8 @@
 				currentTab: 'all',
 				statuses: [],
 				dsas: [],
-				isProcessing: true
+				isProcessing: true,
+				role: localStorage.getItem('role')
 			};
 		},
 

@@ -143,6 +143,11 @@ const router = new VueRouter({
 					name: 'renewal-fsl',
 					meta: {tab: 'all'}
 				},
+				{
+					path: 'dsa-stats',
+					component: DSAStats,
+					name: 'dsa-stats-new',
+				},
 			],
 		},
 		{

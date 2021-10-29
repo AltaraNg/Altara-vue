@@ -98,7 +98,7 @@
 						<a
 							aria-selected="true"
 							class="nav-link"
-							:class="{active : tab.alias === activeTab}"
+							:class="{ active: tab.alias === currentTab }"
 							data-toggle="tab"
 							:href="`#${tab.alias}`"
 							role="tab"
@@ -109,86 +109,87 @@
 					</li>
 				</ul>
 			</div>
-
-			<div v-if="orders.length > 0">
-				<div class="tab-content" id="tabContent">
-					<div
-						class="tab-pane fade show active"
-						id="all"
-						role="tabpanel"
-						aria-labelledby="all-tab"
-					>
-						<renewal-table
-							:customers="orders"
-							:OId="OId"
-							:statuses="statuses"
-							:dsas="dsas"
-						></renewal-table>
-					</div>
-					<div
-						class="tab-pane fade show"
-						id="nc"
-						role="tabpanel"
-						aria-labelledby="not-contacted-tab"
-					>
-						<renewal-table
-							:customers="orders"
-							:OId="OId"
-							:statuses="statuses"
-							:dsas="dsas"
-						></renewal-table>
-					</div>
-					<div
-						class="tab-pane fade show"
-						id="contacted"
-						role="tabpanel"
-						aria-labelledby="called-tab"
-					>
-						<renewal-table
-							:customers="orders"
-							:OId="OId"
-							:statuses="statuses"
-							:dsas="dsas"
-						></renewal-table>
-					</div>
-					<div
-						class="tab-pane fade show"
-						id="pr"
-						role="tabpanel"
-						aria-labelledby="successful-tab"
-					>
-						<renewal-table
-							:customers="orders"
-							:OId="OId"
-							:statuses="statuses"
-							:dsas="dsas"
-						></renewal-table>
-					</div>
-					<div
-						class="tab-pane fade show"
-						id="interested"
-						role="tabpanel"
-						aria-labelledby="interested-tab"
-					>
-						<renewal-table
-							:customers="orders"
-							:OId="OId"
-							:statuses="statuses"
-							:dsas="dsas"
-						></renewal-table>
+			<div v-if="isProcessing === false">
+				<div v-if="orders.length > 0" >
+					<div class="tab-content" id="tabContent">
+						<div
+							class="tab-pane fade show active"
+							id="all"
+							role="tabpanel"
+							aria-labelledby="all-tab"
+						>
+							<renewal-table
+								:customers="orders"
+								:OId="OId"
+								:statuses="statuses"
+								:dsas="dsas"
+							></renewal-table>
+						</div>
+						<div
+							class="tab-pane fade show"
+							id="nc"
+							role="tabpanel"
+							aria-labelledby="not-contacted-tab"
+						>
+							<renewal-table
+								:customers="orders"
+								:OId="OId"
+								:statuses="statuses"
+								:dsas="dsas"
+							></renewal-table>
+						</div>
+						<div
+							class="tab-pane fade show"
+							id="contacted"
+							role="tabpanel"
+							aria-labelledby="called-tab"
+						>
+							<renewal-table
+								:customers="orders"
+								:OId="OId"
+								:statuses="statuses"
+								:dsas="dsas"
+							></renewal-table>
+						</div>
+						<div
+							class="tab-pane fade show"
+							id="pr"
+							role="tabpanel"
+							aria-labelledby="successful-tab"
+						>
+							<renewal-table
+								:customers="orders"
+								:OId="OId"
+								:statuses="statuses"
+								:dsas="dsas"
+							></renewal-table>
+						</div>
+						<div
+							class="tab-pane fade show"
+							id="interested"
+							role="tabpanel"
+							aria-labelledby="interested-tab"
+						>
+							<renewal-table
+								:customers="orders"
+								:OId="OId"
+								:statuses="statuses"
+								:dsas="dsas"
+							></renewal-table>
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<div v-else class="mx-4">
-				<zero-state
-					:title="'No Renewal List'"
-					:message="'There are currrently no customer that can renew'"
-				>
-					<template v-slot:image>
-						<img src="../../../assets/thumb-up.png" />
-					</template>
-				</zero-state>
+				<div v-else class="mx-4">
+					<zero-state
+						:title="'No Renewal List'"
+						:message="'There are currrently no customer that can renew'"
+					>
+						<template v-slot:image>
+							<img src="../../../assets/thumb-up.png" />
+						</template>
+					</zero-state>
+				</div>
 			</div>
 
 			<div v-if="pageParams && orders.length > 0">
@@ -256,10 +257,13 @@
 				currentTab: 'all',
 				statuses: [],
 				dsas: [],
+				isProcessing: true
 			};
 		},
 
 		async mounted() {
+			this.$LIPS(true);
+			
 			let query = this.$route.query;
 			this.searchQuery = {
 				...this.searchQuery,
@@ -269,7 +273,7 @@
 				this.activeTab = query.tab;
 				this.showCorrectTab(this.activeTab);
 			} else {
-				this.activeTab = "all"
+				this.activeTab = 'all';
 				await this.fetchData();
 			}
 			await this.$root.$on('feedback', (payload) => {
@@ -286,8 +290,16 @@
 			fetchStats(param = {}) {
 				let reParam = {
 					...param,
-					fromDate: this.fromDate ? this.fromDate : this.searchQuery.fromDate ? this.searchQuery.fromDate : '',
-					toDate: this.toDate ? this.toDate : this.searchQuery.toDate ? this.searchQuery.toDate : '',
+					fromDate: this.fromDate
+						? this.fromDate
+						: this.searchQuery.fromDate
+						? this.searchQuery.fromDate
+						: '',
+					toDate: this.toDate
+						? this.toDate
+						: this.searchQuery.toDate
+						? this.searchQuery.toDate
+						: '',
 					rollUp: true,
 					filterOrderbyBranch: true,
 					orderHasAtMostTwoPaymentsLeft: true,
@@ -324,7 +336,9 @@
 							this.fetchStats(this.searchQuery);
 						})
 						.catch(() => Flash.setError('Error Fetching Renewal List'))
-						.finally(() => {});
+						.finally(() => {
+							this.isProcessing = false
+						});
 				} else {
 					delete param.renewalList;
 					get(this.url + queryParam(param))
@@ -348,38 +362,50 @@
 				});
 
 				this.fetchData();
-				
 			},
 
-			searchAction() {
+			async searchAction() {
+				this.$LIPS(true);
 				this.searchQuery.fromDate = this.fromDate;
 				this.searchQuery.toDate = this.toDate;
-				this.$router.replace({
-					query: Object.assign({}, this.$route.query, this.searchQuery),
-				});
+				this.pageParams.page = 1;
 
-				this.fetchData();
+				await this.fetchData();
+				this.$router.replace({
+					query: Object.assign({}, this.$route.query, {...this.searchQuery, page: this.pageParams.page}),
+				});
 			},
 
 			async fetchDsas() {
-				this.$LIPS(true);
 				try {
 					let agents = await get(this.apiUrl.dsas);
 					this.dsas = agents.data?.data?.data;
 				} catch (error) {
 					flash.setError(error);
 				} finally {
-					this.$LIPS(false);
 				}
 			},
 
-			resetAction() {
+			async resetAction() {
 				delete this.searchQuery.fromDate;
 				delete this.searchQuery.toDate;
+				console.log(this.searchQuery)
 				this.toDate = '';
 				this.fromDate = '';
+				this.pageParams.page = 1;
+				this.currentTab = "all"
 
-				this.fetchData();
+
+				let query = Object.assign({}, this.$route.query);
+				delete query.fromDate;
+				delete query.toDate;
+				query.tab = "all"
+				
+				this.$router.replace({query});
+				
+				await this.fetchData();
+				console.log(this.searchQuery)
+
 			},
 
 			async getRenewalStatuses() {
@@ -417,7 +443,6 @@
 			},
 
 			showCorrectTab(tab) {
-
 				let tabObject = this.tabs.find((item) => {
 					return item.alias === tab;
 				});
@@ -472,10 +497,8 @@
 		computed: {
 			conversionRate: function() {
 				if (this.meta.total) {
-					return (
-						Math.round((this.meta.purchased_renewed / this.meta.total) * 100) +
-						'%'
-					);
+					let ans = (this.meta.purchased_renewed / this.meta.total) * 100;
+					return ans.toFixed(2) + '%';
 				}
 				return '';
 			},

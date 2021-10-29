@@ -96,8 +96,12 @@ export default {
       }
     },
     async fetchData(data) {
+      if(data){
+        this.pageParam.page = data;
+      }
       // this.pageParam.page = data
       this.$emit("fetchData", data);
+      
       let param = this.$route.query
        param = await {...param, page: this.pageParam.page?? '', limit: this.pageParam.limit ?? ''};
         this.$router.replace({query: Object.assign({}, this.$route.query, param)})
@@ -106,7 +110,7 @@ export default {
   },
 
   created() {
-    this.pageParam.page = 1;
+   this.pageParam.page = this.pageParam.page ? this.pageParam.page : 1;
   },
 };
 </script>

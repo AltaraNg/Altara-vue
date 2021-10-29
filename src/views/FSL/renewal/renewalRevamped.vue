@@ -362,9 +362,10 @@
 
 				// localStorage.setItem('activeTab', tab.alias);
 				this.searchQuery.tab = tab.alias;
+				this.pageParams.page = 1;
 
 				this.$router.replace({
-					query: Object.assign({}, this.$route.query, this.searchQuery),
+					query: Object.assign({}, this.$route.query, {...this.searchQuery, page: this.pageParams.page}),
 				});
 
 				this.fetchData();

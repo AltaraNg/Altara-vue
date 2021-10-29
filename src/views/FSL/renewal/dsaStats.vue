@@ -1,8 +1,8 @@
 <template>
-    <div class="container-fluid mt-5 card">
-        <h4 class="h4">Top 10 DSAs In Renewal</h4>
-        <div>
-            <table class="table table-striped table-bordered table-hover table-condensed">
+    <div class="container-fluid mt-5 card mx-4">
+        <h4 class="h4 mx-3">Top 10 DSAs In Renewal</h4>
+        <div class="mx-3">
+            <table class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
                         <th v-for="header in headers">
@@ -17,6 +17,7 @@
                         <td>{{agent.agent_name}}</td>
                         <td>{{agent.number_sales}}</td>
                         <td>{{agent.total_renewals}}</td>
+                        <td>{{((agent.total_renewals / agent.number_sales) * 100).toFixed(2)}}</td>
 
                     </tr>
                 </tbody>
@@ -38,7 +39,7 @@ import flash from '../../../utilities/flash';
                 error: [],
 
                 headers: [
-                    "S/N", "Name", "Total Sales", "Total Renewals"
+                    "S/N", "Name", "Total Sales", "Total Renewals", "Conversion Rate (%)"
                 ],
                 agents: []
             }

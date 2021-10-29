@@ -43,7 +43,7 @@
 		<div class="mx-3 card">
 			<table
 				class="table table-striped table-bordered table-hover"
-				style="font-size: 12px;"
+				style="font-size: 14px;"
 			>
 				<thead>
 					<tr>
@@ -69,7 +69,7 @@
 										: 'progress-primary'
 								"
 							>
-								<span class="progress-badge">{{ getPercent(agent) }} %</span>
+								<span class="progress-badge font-weight-bold">{{ getPercent(agent) }} %</span>
 								<div class="progress">
 									<div
 										class="progress-bar"

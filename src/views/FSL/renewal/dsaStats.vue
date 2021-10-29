@@ -43,7 +43,7 @@
 		<div class="mx-3 card">
 			<table
 				class="table table-striped table-bordered table-hover"
-				style="font-size: 14px;"
+				style="font-size: 12px;"
 			>
 				<thead>
 					<tr>

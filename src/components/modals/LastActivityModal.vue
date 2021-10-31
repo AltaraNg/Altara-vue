@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="overflow-auto">
 		<div class="modal-header py-2">
 			<h4>All Activities</h4>
 			<a aria-label="Close" class="close py-1" data-dismiss="modal" @click="closeModal">
@@ -14,7 +14,7 @@
 
             </div>
 			<div class="table-responsive">
-				<table class="table table-bordered table-striped">
+				<table class="table table-bordered table-striped overflow-auto h-75">
 					<tbody>
 						<tr>
                             <th>S/N</th>

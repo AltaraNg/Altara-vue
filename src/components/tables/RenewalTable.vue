@@ -112,7 +112,14 @@
 			/>
 		</modal>
 
-		<modal name="last-activity" :height="'auto'" :clickToClose="false">
+		<modal
+			name="last-activity"
+			:height="'auto'"
+			:clickToClose="false"
+			:scrollable="true"
+			:reset="true"
+			:classes="'my-5'"
+		>
 			<last-activity-modal
 				:modalItem="selectedActivity"
 				@close="hide('last-activity')"
@@ -176,11 +183,11 @@
 			},
 
 			statuses: {
-				required: true
+				required: true,
 			},
 			dsas: {
-				required: true
-			}
+				required: true,
+			},
 		},
 		data() {
 			return {
@@ -237,7 +244,6 @@
 			viewActivity(order) {
 				if (order.last_renewal_prompter_activity) {
 					this.selectedActivity = order?.renewal_prompters?.data;
-					console.log(this.selectedActivity);
 					this.show('last-activity');
 				}
 			},

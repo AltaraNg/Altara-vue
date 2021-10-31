@@ -110,7 +110,7 @@
 				</ul>
 			</div>
 			<div v-if="isProcessing === false">
-				<div v-if="orders.length > 0" >
+				<div v-if="orders.length > 0">
 					<div class="tab-content" id="tabContent">
 						<div
 							class="tab-pane fade show active"
@@ -215,7 +215,6 @@
 	import ZeroState from '../../../components/ZeroState.vue';
 	import Flash from '../../../utilities/flash';
 	import BasePagination from '../../../components/Pagination/BasePagination.vue';
-	import { onMounted } from 'vue-demi';
 
 	export default {
 		components: {
@@ -258,20 +257,22 @@
 				statuses: [],
 				dsas: [],
 				isProcessing: true,
-				role: localStorage.getItem('role')
+				role: localStorage.getItem('role'),
 			};
 		},
 
 		async mounted() {
-			this.$LIPS(true);
 			var date = new Date(),
 				y = date.getFullYear(),
 				m = date.getMonth();
 			var firstDay = new Date(y, m, 2).toISOString();
-			this.fromDate = firstDay.slice(0, 10);
-			this.searchAction();
 			
+
 			let query = this.$route.query;
+			if(!query.fromDate){
+				this.fromDate = firstDay.slice(0, 10);
+				this.searchQuery.fromDate = this.fromDate
+			}
 			this.searchQuery = {
 				...this.searchQuery,
 				...query,
@@ -279,11 +280,12 @@
 			if (query.tab) {
 				this.activeTab = query.tab;
 				this.showCorrectTab(this.activeTab);
+				return
 			} else {
 				this.activeTab = 'all';
 				await this.fetchData();
 			}
-			await this.$root.$on('feedback', (payload) => {
+			this.$root.$on('feedback', (payload) => {
 				this.fetchData();
 			});
 			this.$root.$on('owner_updated', (payload) => {
@@ -292,13 +294,15 @@
 			this.getRenewalStatuses();
 			this.fetchDsas();
 			this.fetchStats();
+
 		},
 		methods: {
 			fetchStats(param = {}) {
+				let query = this.$route.query
 				let reParam = {
 					...param,
-					fromDate: this.fromDate
-						? this.fromDate
+					fromDate: query.fromDate
+						? query.fromDate
 						: this.searchQuery.fromDate
 						? this.searchQuery.fromDate
 						: '',
@@ -323,28 +327,30 @@
 				this.pageParams.page = this.pageParams.page
 					? this.pageParams.page
 					: this.$route.query.page;
-				this.pageParams.limit = this.pageParams.limit
-					? this.pageParams.limit
-					: this.$route.query.limit;
+				this.pageParams.per_page = this.pageParams.per_page
+					? this.pageParams.per_page
+					: this.$route.query.per_page;
 
 				let param = {
 					filterOrderbyBranch: true,
 					orderHasAtMostTwoPaymentsLeft: true,
-					page: this.pageParams.page,
-					limit: this.pageParams.limit,
 					...this.searchQuery,
+					page: this.pageParams.page,
+					per_page: this.pageParams.per_page,
+					
 				};
 				this.currentTab === 'all' ? (param.rollUp = true) : this.fetchStats();
 				if (this.renewal === true) {
+					this.$LIPS(true);
+
 					get(this.apiUrl.renewalList + queryParam(param))
 						.then(({ data }) => {
 							this.prepareList(data);
 							delete this.searchQuery.renewalPrompterStatus;
-							this.fetchStats(this.searchQuery);
 						})
 						.catch(() => Flash.setError('Error Fetching Renewal List'))
 						.finally(() => {
-							this.isProcessing = false
+							this.isProcessing = false;
 						});
 				} else {
 					delete param.renewalList;
@@ -366,21 +372,27 @@
 				this.pageParams.page = 1;
 
 				this.$router.replace({
-					query: Object.assign({}, this.$route.query, {...this.searchQuery, page: this.pageParams.page}),
+					query: Object.assign({}, this.$route.query, {
+						...this.searchQuery,
+						page: this.pageParams.page,
+					}),
 				});
 
 				this.fetchData();
+				
 			},
 
 			async searchAction() {
-				this.$LIPS(true);
 				this.searchQuery.fromDate = this.fromDate;
 				this.searchQuery.toDate = this.toDate;
 				this.pageParams.page = 1;
 
 				await this.fetchData();
 				this.$router.replace({
-					query: Object.assign({}, this.$route.query, {...this.searchQuery, page: this.pageParams.page}),
+					query: Object.assign({}, this.$route.query, {
+						...this.searchQuery,
+						page: this.pageParams.page,
+					}),
 				});
 			},
 
@@ -397,23 +409,21 @@
 			async resetAction() {
 				delete this.searchQuery.fromDate;
 				delete this.searchQuery.toDate;
-				console.log(this.searchQuery)
+				console.log(this.searchQuery);
 				this.toDate = '';
 				this.fromDate = '';
 				this.pageParams.page = 1;
-				this.currentTab = "all"
-
+				this.currentTab = 'all';
 
 				let query = Object.assign({}, this.$route.query);
-				delete query.fromDate;
+				query.fromDate = '';
 				delete query.toDate;
-				query.tab = "all"
-				
-				this.$router.replace({query});
-				
-				await this.fetchData();
-				console.log(this.searchQuery)
+				query.tab = 'all';
 
+				this.$router.replace({ query });
+
+				await this.fetchData();
+				console.log(this.searchQuery);
 			},
 
 			async getRenewalStatuses() {

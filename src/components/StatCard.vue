@@ -14,7 +14,7 @@
 			</div>
 		</div>
 		<div>
-			<p class="mb-0 overflow-auto" style="font-size: 14px;">{{ label }}</p>
+			<p class="mb-0 overflow-auto" style="font-size: 12px;">{{ label }}</p>
 		</div>
 	</div>
 </template>

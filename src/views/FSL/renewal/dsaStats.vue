@@ -93,7 +93,7 @@
 		</div>
 		<div v-else>
 			<zero-state
-				:title="'No Renewal List'"
+				:title="'No Agents List'"
 				:message="'There are currrently no agents to view'"
 			>
 				<template v-slot:image>

@@ -269,10 +269,13 @@
 			
 
 			let query = this.$route.query;
+			console.log(query)
 			if(!query.fromDate){
 				this.fromDate = firstDay.slice(0, 10);
 				this.searchQuery.fromDate = this.fromDate
 			}
+
+			
 			this.searchQuery = {
 				...this.searchQuery,
 				...query,
@@ -324,9 +327,9 @@
 			},
 			fetchData() {
 				this.$LIPS(true);
-				this.pageParams.page = this.pageParams.page
-					? this.pageParams.page
-					: this.$route.query.page;
+				this.pageParams.page = this.$route.query.page
+					? this.$route.query.page
+					: this.pageParams.page;
 				this.pageParams.per_page = this.pageParams.per_page
 					? this.pageParams.per_page
 					: this.$route.query.per_page;
@@ -339,6 +342,7 @@
 					per_page: this.pageParams.per_page,
 					
 				};
+				console.log(this.$route.query.page)
 				this.currentTab === 'all' ? (param.rollUp = true) : this.fetchStats();
 				if (this.renewal === true) {
 					this.$LIPS(true);
@@ -369,7 +373,13 @@
 
 				// localStorage.setItem('activeTab', tab.alias);
 				this.searchQuery.tab = tab.alias;
-				this.pageParams.page = 1;
+				if(tab.alias !== "all"){
+					this.pageParams.page = 1;
+				}
+				else{
+					this.pageParams.page = this.$route.query.page
+				}
+				
 
 				this.$router.replace({
 					query: Object.assign({}, this.$route.query, {

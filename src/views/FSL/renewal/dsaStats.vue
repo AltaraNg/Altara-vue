@@ -1,5 +1,5 @@
 <template>
-	<div class="container-fluid mt-5  mx-4">
+	<div class="container-fluid mt-5  mx-4" v-if="isProcessing === false">
 		<h3 class="h3 mx-3 my-2">Top 10 DSAs In Renewal</h3>
 
 		<div class="w-50 mx-0">
@@ -40,7 +40,7 @@
 			</div>
 		</div>
 
-		<div class="mx-3 card">
+		<div class="mx-3 card" v-if="agents.length > 0">
 			<table
 				class="table table-striped table-bordered table-hover"
 				style="font-size: 14px;"
@@ -69,15 +69,20 @@
 										: 'progress-primary'
 								"
 							>
-								<span class="progress-badge font-weight-bold">{{ getPercent(agent) }} %</span>
-								<div class="progress">
+								<span class="progress-badge font-weight-bold"
+									>{{ getPercent(agent) }} %</span
+								>
+								<div class="progress" style="height: 8px;">
 									<div
 										class="progress-bar"
 										role="progressbar"
 										:aria-valuenow="getPercent(agent)"
 										aria-valuemin="0"
 										aria-valuemax="100"
-										:style="{ 'width': getPercent(agent) + '%' }"
+										:style="{
+											'width': getPercent(agent) + '%',
+											'font-weight': '',
+										}"
 									></div>
 								</div>
 							</div>
@@ -85,6 +90,16 @@
 					</tr>
 				</tbody>
 			</table>
+		</div>
+		<div v-else>
+			<zero-state
+				:title="'No Agents List'"
+				:message="'There are currrently no agents to view'"
+			>
+				<template v-slot:image>
+					<img src="../../../assets/thumb-up.png" />
+				</template>
+			</zero-state>
 		</div>
 	</div>
 </template>
@@ -95,9 +110,11 @@
 	import DatePicker from 'vue2-datepicker';
 	import 'vue2-datepicker/index.css';
 	import queryParam from '../../../utilities/queryParam';
+	import ZeroState from '../../../components/ZeroState.vue';
 	export default {
 		components: {
 			DatePicker,
+			ZeroState,
 		},
 		data() {
 			return {
@@ -119,6 +136,7 @@
 				fromDate: '',
 				toDate: '',
 				searchQuery: {},
+				isProcessing: false,
 			};
 		},
 
@@ -140,6 +158,7 @@
 
 		methods: {
 			async fetchDsaStats() {
+                this.isProcessing = true
 				this.searchQuery = {
 					filterOrderbyBranch: true,
 					fromDate: this.fromDate,
@@ -154,6 +173,7 @@
 					})
 					.finally(() => {
 						this.$LIPS(false);
+                        this.isProcessing = false;
 					});
 				this.agents = list.data?.data?.renewal_prompter_agents_stat;
 			},

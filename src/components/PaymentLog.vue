@@ -555,7 +555,9 @@ export default {
         const fetchDiscounts = await get(
           this.apiUrls.discounts
         );
-        this.discounts = fetchDiscounts.data.data.data;
+        this.discounts = fetchDiscounts.data.data.data
+        this.discounts = this.discounts.filter((item)=> {
+          return item.id == 6 || item.id == 1});
         console.log(this.discounts)
       } catch (err) {
         this.$displayErrorMessage(err);
@@ -596,7 +598,6 @@ export default {
 
         // $(`#amortizationPreview`).modal("toggle");
       } catch (e) {
-        console.log(e)
         // this.$swal({
         //     icon: "error",
         //     title: "Plan is not available"

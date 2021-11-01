@@ -160,7 +160,7 @@
 			async fetchDsaStats() {
                 this.isProcessing = true
 				this.searchQuery = {
-                    orderHasTwoPaymentsLeft: true,
+                    orderHasAtMostTwoPaymentsLeft: true,
 					filterOrderByBranch: true,
 					fromDate: this.fromDate,
 					toDate: this.toDate,

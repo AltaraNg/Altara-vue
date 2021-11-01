@@ -53,7 +53,26 @@
                   </option>
                 </select>
               </div>
-
+              <div class="col form-group" v-show="renewalState">
+                <label for="amount" class="form-control-label"
+                  >Discounts</label
+                >
+                <select
+                  @change="getCalc()"
+                  class="custom-select w-100"
+                  v-model="salesLogForm.discount"
+                  v-validate="'required'"
+                >
+                  <option disabled selected="selected">Discounts</option>
+                  <option
+                    :value="type.id"
+                    :key="type.id"
+                    v-for="type in discounts"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
               <div class="col form-group">
                 <label for="amount" class="form-control-label">Owner</label>
                 <select
@@ -348,6 +367,7 @@ export default {
       repaymentDuration: [],
       repaymentCyclesopt: [],
       downPaymentRates: [],
+      discounts:[],
       orderTypes: [],
       businessTypes: [],
       amortization: [],
@@ -379,9 +399,11 @@ export default {
       discounts: null,
       eligible: false,
       serial: false,
+      renewalState: false,
     };
   },
   async mounted() {
+    this.watchSalesLogForm()
     this.checkIfDiscountElig();
     await this.getRepaymentDuration();
     await this.getSalesCategory();
@@ -391,6 +413,11 @@ export default {
     await this.getCalculation();
     await this.getDiscounts();
     await this.getOrderTypes();
+  },
+  watch:{
+      'salesLogForm.sales_category_id':function(newData, oldData){
+      this.watchSalesLogForm(newData)
+      }
   },
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
@@ -402,6 +429,13 @@ export default {
     }
   },
   methods: {
+    watchSalesLogForm(){
+      if(this.salesLogForm.sales_category_id == "2"){
+        this.renewalState = true
+      }else{
+        this.renewalState = false
+      }
+    },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"
         ? (this.customDateToggle = true)
@@ -437,6 +471,7 @@ export default {
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
+        discount_id: this.salesLogForm.discount,
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
       };
@@ -482,6 +517,7 @@ export default {
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
+        discount_id: this.salesLogForm.discount,
         owner_id: this.salesLogForm.owner_id,
       };
       this.salesLogForm.serial_number !== null
@@ -514,10 +550,22 @@ export default {
         this.$displayErrorMessage(err);
       }
     },
+    async getDiscounts() {
+      try {
+        const fetchDiscounts = await get(
+          this.apiUrls.discounts
+        );
+        this.discounts = fetchDiscounts.data.data.data;
+        console.log(this.discounts)
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
     getCalc() {
       try {
         this.salesLogForm.customer_id = this.customerId;
         const data0 = {
+          discount_id: this.salesLogForm.discount,
           ...this.salesLogForm,
           ...{
             branch_id: localStorage.getItem("branch_id"),
@@ -533,7 +581,7 @@ export default {
             x.repayment_duration_id === data0.repayment_duration_id.id
         )[0];
 
-        const { total, actualDownpayment, actualRepayment } = calculate(
+        const { total, actualDownpayment, rePayment } = calculate(
           this.selectedProduct.price,
           data0,
           data
@@ -542,12 +590,13 @@ export default {
         this.repaymentCircle = data0.repayment_cycle_id.value;
         this.rDuration = data0.repayment_duration_id.value;
         this.fPayment = actualDownpayment;
-        this.rPayment = actualRepayment;
+        this.rPayment = rePayment;
         this.pPrice = total;
         this.test1 = false;
 
         // $(`#amortizationPreview`).modal("toggle");
       } catch (e) {
+        console.log(e)
         // this.$swal({
         //     icon: "error",
         //     title: "Plan is not available"
@@ -648,6 +697,7 @@ export default {
     },
 
         async getUsers(salesCat){
+        this.getCalc()
         this.$LIPS(true);
           
           await get(`/api/sales-category/${salesCat}/roles`).then(res => {
@@ -676,17 +726,8 @@ export default {
                 this.$displayErrorMessage(err);
             }
         },
-        async getDiscounts(){
-            try{
-                const fetchDiscounts = await get(
-                    this.apiUrls.discounts
-                );
-                this.discounts = fetchDiscounts.data.data.data;
-            }catch(err){
-                this.$displayErrorMessage(err);
-            }
-        },
     async getUsers(salesCat) {
+      this.getCalc()
       this.$LIPS(true);
 
       await get(`/api/sales-category/${salesCat}/roles`).then((res) => {
@@ -715,15 +756,6 @@ export default {
         this.$displayErrorMessage(err);
       }
     },
-    async getDiscounts() {
-      try {
-        const fetchDiscounts = await get(this.apiUrls.discounts);
-        this.discounts = fetchDiscounts.data.data.data;
-      } catch (err) {
-        this.$displayErrorMessage(err);
-      }
-    },
-
     checkIfDiscountElig() {
       if (this.customer.new_orders.length > 0) {
         let arrLength = this.customer.new_orders.length;

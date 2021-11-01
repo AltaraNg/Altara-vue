@@ -25,6 +25,7 @@ const AllOverdue = () => import('../views/DVA/AllOverduePayment');
 const ReminderList = () => import('../views/DVA/ReminderList.vue');
 
 const Reminder = () => import('../views/DVA/reminder/reminder.vue');
+
 const Profile = () => import('../views/profile/Index.vue');
 const ProfileEdit = () => import('../views/profile/Edit.vue');
 const ProfileHome = () => import('../views/profile/HomePage.vue');
@@ -61,6 +62,8 @@ const CategoryList = () => import('../views/LOG/category/categories.vue');
 const ProductForm = () => import('../views/LOG/product/form.vue');
 const ProductList = () => import('../views/LOG/product/products.vue');
 const Renewal = () => import('../views/FSL/renewal/renewal.vue');
+const RenewalNew = () => import('../views/FSL/renewal/renewalRevamped.vue');
+const DSAStats = () => import('../views/FSL/renewal/dsaStats.vue');
 const CashLogger = () => import('../views/FSL/cash_logger/cash_logger.vue');
 const PaymentLogger = () =>
 	import('../views/FSL/payment_logger/payment_logger.vue');
@@ -133,6 +136,17 @@ const router = new VueRouter({
 					path: 'customer/create',
 					component: CustomerForm,
 					meta: { mode: 'register' },
+				},
+				{
+					path: 'renewal',
+					component: RenewalNew,
+					name: 'renewal-fsl',
+					meta: {tab: 'all'}
+				},
+				{
+					path: 'dsa-stats',
+					component: DSAStats,
+					name: 'dsa-stats-new',
 				},
 			],
 		},
@@ -441,6 +455,19 @@ const router = new VueRouter({
 					component: OrderList,
 					name: 'sales-fsl',
 					meta: { customSMS: true },
+				},
+
+				{
+					path: 'renewal',
+					component: RenewalNew,
+					name: 'renewal-fsl',
+					meta: {tab: 'all'},
+					
+				},
+				{
+					path: 'dsa-stats',
+					component: DSAStats,
+					name: 'dsa-stats-new',
 				},
 
 				{

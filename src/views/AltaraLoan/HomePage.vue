@@ -63,6 +63,12 @@ export default {
           url_c: "Check suitable plan for informal",
           desc: "Recommendation Service Informal",
         },
+        {
+						url: 'renewal',
+						title: 'Renewal list Revamped',
+						url_c: 'View Renewals',
+						desc: 'View renewal list!',
+					},
       ],
     };
   },

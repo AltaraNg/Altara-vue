@@ -29,12 +29,12 @@
 					</stat-card>
 				</div>
 				<div class="col mx-1">
-					<stat-card :label="'Conversion Rate'" :stat="conversionRate">
+					<stat-card :label="'Conversion Rate'" :stat="conversionRate ? conversionRate : '0%'">
 						<template v-slot:svg><Interested /></template>
 					</stat-card>
 				</div>
 			</div>
-			<div class="text-right pointer " v-if="role !== '18'">
+			<div class="text-right pointer " v-if="role !== '18' && role !== '42'">
 				<router-link to="dsa-stats">
 					<span class="mr-3 bg-default rounded p-3">View DSA stats</span>
 				</router-link>
@@ -294,8 +294,8 @@
 			this.$root.$on('owner_updated', (payload) => {
 				this.fetchData();
 			});
-			this.getRenewalStatuses();
-			this.fetchDsas();
+			await this.getRenewalStatuses();
+			await this.fetchDsas();
 			this.fetchStats();
 
 		},

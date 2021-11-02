@@ -416,6 +416,17 @@ const router = new VueRouter({
 					name: 'recommender-informal',
 					meta: { mode: 'create' },
 				},
+				{
+					path: 'renewal',
+					component: RenewalNew,
+					name: 'renewal-fsl',
+					meta: {tab: 'all'}
+				},
+				{
+					path: 'dsa-stats',
+					component: DSAStats,
+					name: 'dsa-stats-new',
+				},
 			],
 		},
 

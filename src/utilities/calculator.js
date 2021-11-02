@@ -1,4 +1,4 @@
-const calculate = (productPrice, data, params) => {
+const calculate = (productPrice, data, params, percentage_discount) => {
   const count = repaymentCount(
     data.repayment_duration_id.value,
     14
@@ -17,8 +17,8 @@ const calculate = (productPrice, data, params) => {
   const tempActualRepayment = +(total - downpayment).toFixed(2);
   var   biMonthlyRepayment = Math.round((tempActualRepayment/count)/100)*100
   const actualRepayment = biMonthlyRepayment * count;
-  if(data.sales_category_id == 2 && data.discount_id == 6 ){
-        var   rePayment = actualRepayment - (actualRepayment * 0.05)
+  if(data.sales_category_id == 2 && data.discount_id == "5% Discount" ){
+        var   rePayment = actualRepayment - (actualRepayment * percentage_discount/100)
     }else{
        var   rePayment = actualRepayment
     }

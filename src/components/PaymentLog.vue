@@ -53,7 +53,7 @@
                   </option>
                 </select>
               </div>
-              <div class="col form-group" v-show="renewalState">
+              <div class="col form-group" v-if="renewalState">
                 <label for="amount" class="form-control-label"
                   >Discounts</label
                 >
@@ -65,7 +65,7 @@
                 >
                   <option disabled selected="selected">Discounts</option>
                   <option
-                    :value="type.id"
+                    :value="type.name"
                     :key="type.id"
                     v-for="type in discounts"
                   >
@@ -251,8 +251,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="mt-3 mb-0">Order Information</h5>
-
-            <table class="table table-bordered">
+               <table class="table table-bordered">
               <tbody class="text-center">
                 <tr class="table-separator">
                   <th>Product Name</th>
@@ -270,10 +269,13 @@
 
                 <tr class="table-separator">
                   <th>Repayment</th>
-                  <td>{{ $formatCurrency(rPayment) }}</td>
+                  <td class="">{{ $formatCurrency(rPayment) }}</td>
                 </tr>
               </tbody>
             </table>
+            <div class="cover">           
+               <discount class="discount" v-if="renewalState && salesLogForm.discount == '5% Discount' && rPayment > 0" :percent= "selected_discount.percentage_discount"/>
+            </div>
           </div>
         </div>
       </div>
@@ -309,7 +311,7 @@
                     </th>
                     <th>{{ $formatCurrency(pPrice) }}</th>
                     <th>{{ $formatCurrency(fPayment) }}</th>
-                    <th>{{ $formatCurrency(rPayment) }}</th>
+                    <td class="">{{ $formatCurrency(rPayment) }}<div class="cover"><discount v-if="renewalState && salesLogForm.discount == '5% Discount' && rPayment > 0" :percent= "selected_discount.percentage_discount"/></div></td>
                     <!-- <td class="font-weight-bold">Ikoyi</td> -->
                   </tr>
                 </tbody>
@@ -354,10 +356,11 @@ import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
 import calculate from "../utilities/calculator";
 import Flash from "../utilities/flash";
+import discount from "./discount.vue"
 
 export default {
   props: { customerId: null, customer: null },
-  components: { AutoComplete },
+  components: { AutoComplete, discount },
   data() {
     return {
       error: {},
@@ -390,6 +393,7 @@ export default {
       },
       inputValue: "",
       selectedProduct: {},
+      selected_discount:{},
       fPayment: "",
       pPrice: "",
       rPayment: "",
@@ -431,6 +435,7 @@ export default {
   methods: {
     watchSalesLogForm(){
       if(this.salesLogForm.sales_category_id == "2"){
+        console.log(this.salesLogForm)
         this.renewalState = true
       }else{
         this.renewalState = false
@@ -471,7 +476,7 @@ export default {
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
-        discount_id: this.salesLogForm.discount,
+        discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
       };
@@ -517,7 +522,7 @@ export default {
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
-        discount_id: this.salesLogForm.discount,
+        discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
       };
       this.salesLogForm.serial_number !== null
@@ -556,9 +561,6 @@ export default {
           this.apiUrls.discounts
         );
         this.discounts = fetchDiscounts.data.data.data
-        this.discounts = this.discounts.filter((item)=> {
-          return item.id == 6 || item.id == 1});
-        console.log(this.discounts)
       } catch (err) {
         this.$displayErrorMessage(err);
       }
@@ -583,10 +585,12 @@ export default {
             x.repayment_duration_id === data0.repayment_duration_id.id
         )[0];
 
+        this.selected_discount = this.discounts.find((item)=> { return item.name == this.salesLogForm.discount})
         const { total, actualDownpayment, rePayment } = calculate(
           this.selectedProduct.price,
           data0,
-          data
+          data,
+          this.selected_discount?.percentage_discount
         );
 
         this.repaymentCircle = data0.repayment_cycle_id.value;
@@ -828,6 +832,15 @@ export default {
   color: forestgreen;
   display: block;
   float: right;
+}
+.discount{
+  left:130px
+}
+.cover{
+  display:flex;
+}
+.modal_discount{
+  
 }
 .serial {
   font-size: 8px;

@@ -330,6 +330,7 @@
 </template>
 
 <script>
+import businessTypesSlug from '../utilities/businessTypes'
 import { get, post } from "../utilities/api";
 import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
@@ -355,6 +356,7 @@ export default {
       salesCategories: [],
       test0: true,
       test1: true,
+      businessTypesSlug: businessTypesSlug,
       apiUrls: {
         repaymentDuration: `/api/repayment_duration`,
         orderType: `/api/order-types`,
@@ -670,7 +672,7 @@ export default {
                 );
                 this.businessTypes = fetchBusinessTypes.data.data.data;
                 this.businessTypes = this.businessTypes.filter(item => {
-                  return item.name.includes("Altara Credit")
+                  return item.slug.includes("ac")
                 });
             } catch (err) {
                 this.$displayErrorMessage(err);
@@ -709,7 +711,7 @@ export default {
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes);
         this.businessTypes = fetchBusinessTypes.data.data.data;
         this.businessTypes = this.businessTypes.filter((item) => {
-          return item.name.includes("Altara Credit");
+          return item.slug.includes("ac");
         });
       } catch (err) {
         this.$displayErrorMessage(err);

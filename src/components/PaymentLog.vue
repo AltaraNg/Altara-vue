@@ -407,6 +407,7 @@ export default {
       eligible: false,
       serial: false,
       renewalState: false,
+      flag:localStorage.getItem("flag")
     };
   },
   async mounted() {
@@ -437,7 +438,7 @@ export default {
   },
   methods: {
     watchSalesLogForm(){
-      if(this.salesLogForm.sales_category_id == "2"){
+      if(this.salesLogForm.sales_category_id == "2" && this.flag == 'beta'){
         this.renewalState = true
       }else{
         this.renewalState = false

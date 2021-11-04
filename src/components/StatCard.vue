@@ -1,17 +1,21 @@
 <template>
-	<div class="card pb-0 p-5 hover-zoom hover-shadow w-75">
-        <div class="row">
-		<div class="col-6 float-right pl-3">
-            <div class="mt-3 text-black-50 h3" style="font-weight:900; color:black;">
-				{{ stat }}
+	<div class="card p-5 hover-zoom hover-shadow">
+		<div class="row">
+			<div class="col">
+				<div
+					class="mt-3 text-black-50 h3"
+					style="font-weight:900; color:black;"
+				>
+					{{ stat }}
+				</div>
 			</div>
-			<p class="mb-0">{{ label }}</p>
+			<div class="col text-right my-auto">
+				<slot name="svg"></slot>
+			</div>
 		</div>
-		<div class="col-6 text-right my-auto">
-			<slot name="svg" class=""></slot>
-			
+		<div>
+			<p class="mb-0 overflow-auto" style="font-size: 12px;">{{ label }}</p>
 		</div>
-        </div>
 	</div>
 </template>
 

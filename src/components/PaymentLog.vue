@@ -53,7 +53,26 @@
                   </option>
                 </select>
               </div>
-
+              <div class="col form-group" v-if="renewalState">
+                <label for="amount" class="form-control-label"
+                  >Discounts</label
+                >
+                <select
+                  @change="getCalc()"
+                  class="custom-select w-100"
+                  v-model="salesLogForm.discount"
+                  v-validate="'required'"
+                >
+                  <option disabled selected="selected">Discounts</option>
+                  <option
+                    :value="type.slug"
+                    :key="type.id"
+                    v-for="type in discounts"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
               <div class="col form-group">
                 <label for="amount" class="form-control-label">Owner</label>
                 <select
@@ -232,8 +251,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="mt-3 mb-0">Order Information</h5>
-
-            <table class="table table-bordered">
+               <table class="table table-bordered">
               <tbody class="text-center">
                 <tr class="table-separator">
                   <th>Product Name</th>
@@ -251,10 +269,13 @@
 
                 <tr class="table-separator">
                   <th>Repayment</th>
-                  <td>{{ $formatCurrency(rPayment) }}</td>
+                  <td class="">{{ $formatCurrency(rPayment) }}</td>
                 </tr>
               </tbody>
             </table>
+            <div class="cover">           
+               <discount class="discount" v-if="renewalState && salesLogForm.discount == '5_discount' && rPayment > 0" :percent= "selected_discount.percentage_discount"/>
+            </div>
           </div>
         </div>
       </div>
@@ -290,8 +311,11 @@
                     </th>
                     <th>{{ $formatCurrency(pPrice) }}</th>
                     <th>{{ $formatCurrency(fPayment) }}</th>
-                    <th>{{ $formatCurrency(rPayment) }}</th>
-                    <!-- <td class="font-weight-bold">Ikoyi</td> -->
+                    <td class="">{{ $formatCurrency(rPayment) }}
+                    <div class="modal_cover">
+                      <discount class="modal_discount" v-if="renewalState && salesLogForm.discount == '5_discount' && rPayment > 0" :percent= "selected_discount.percentage_discount"/>
+                    </div>
+                     </td>                    <!-- <td class="font-weight-bold">Ikoyi</td> -->
                   </tr>
                 </tbody>
               </table>
@@ -335,10 +359,11 @@ import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
 import calculate from "../utilities/calculator";
 import Flash from "../utilities/flash";
+import discount from "./discount.vue"
 
 export default {
   props: { customerId: null, customer: null },
-  components: { AutoComplete },
+  components: { AutoComplete, discount },
   data() {
     return {
       error: {},
@@ -348,6 +373,7 @@ export default {
       repaymentDuration: [],
       repaymentCyclesopt: [],
       downPaymentRates: [],
+      discounts:[],
       orderTypes: [],
       businessTypes: [],
       amortization: [],
@@ -370,6 +396,7 @@ export default {
       },
       inputValue: "",
       selectedProduct: {},
+      selected_discount:{},
       fPayment: "",
       pPrice: "",
       rPayment: "",
@@ -379,9 +406,12 @@ export default {
       discounts: null,
       eligible: false,
       serial: false,
+      renewalState: false,
+      flag:localStorage.getItem("flag")
     };
   },
   async mounted() {
+    this.watchSalesLogForm()
     this.checkIfDiscountElig();
     await this.getRepaymentDuration();
     await this.getSalesCategory();
@@ -391,6 +421,11 @@ export default {
     await this.getCalculation();
     await this.getDiscounts();
     await this.getOrderTypes();
+  },
+  watch:{
+      'salesLogForm.sales_category_id':function(newData, oldData){
+      this.watchSalesLogForm(newData)
+      }
   },
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
@@ -402,6 +437,13 @@ export default {
     }
   },
   methods: {
+    watchSalesLogForm(){
+      if(this.salesLogForm.sales_category_id == "2" && this.flag == 'beta'){
+        this.renewalState = true
+      }else{
+        this.renewalState = false
+      }
+    },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"
         ? (this.customDateToggle = true)
@@ -437,6 +479,7 @@ export default {
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
+        discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
       };
@@ -482,6 +525,7 @@ export default {
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
+        discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
       };
       this.salesLogForm.serial_number !== null
@@ -514,10 +558,21 @@ export default {
         this.$displayErrorMessage(err);
       }
     },
+    async getDiscounts() {
+      try {
+        const fetchDiscounts = await get(
+          this.apiUrls.discounts
+        );
+        this.discounts = fetchDiscounts.data.data.data
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
     getCalc() {
       try {
         this.salesLogForm.customer_id = this.customerId;
         const data0 = {
+          discount_slug: this.salesLogForm.discount,
           ...this.salesLogForm,
           ...{
             branch_id: localStorage.getItem("branch_id"),
@@ -533,16 +588,18 @@ export default {
             x.repayment_duration_id === data0.repayment_duration_id.id
         )[0];
 
-        const { total, actualDownpayment, actualRepayment } = calculate(
+        this.selected_discount = this.discounts.find((item)=> { return item.slug == this.salesLogForm.discount})
+        const { total, actualDownpayment, rePayment } = calculate(
           this.selectedProduct.price,
           data0,
-          data
+          data,
+          this.selected_discount?.percentage_discount
         );
 
         this.repaymentCircle = data0.repayment_cycle_id.value;
         this.rDuration = data0.repayment_duration_id.value;
         this.fPayment = actualDownpayment;
-        this.rPayment = actualRepayment;
+        this.rPayment = rePayment;
         this.pPrice = total;
         this.test1 = false;
 
@@ -648,6 +705,7 @@ export default {
     },
 
         async getUsers(salesCat){
+        this.getCalc()
         this.$LIPS(true);
           
           await get(`/api/sales-category/${salesCat}/roles`).then(res => {
@@ -676,17 +734,8 @@ export default {
                 this.$displayErrorMessage(err);
             }
         },
-        async getDiscounts(){
-            try{
-                const fetchDiscounts = await get(
-                    this.apiUrls.discounts
-                );
-                this.discounts = fetchDiscounts.data.data.data;
-            }catch(err){
-                this.$displayErrorMessage(err);
-            }
-        },
     async getUsers(salesCat) {
+      this.getCalc()
       this.$LIPS(true);
 
       await get(`/api/sales-category/${salesCat}/roles`).then((res) => {
@@ -715,15 +764,6 @@ export default {
         this.$displayErrorMessage(err);
       }
     },
-    async getDiscounts() {
-      try {
-        const fetchDiscounts = await get(this.apiUrls.discounts);
-        this.discounts = fetchDiscounts.data.data.data;
-      } catch (err) {
-        this.$displayErrorMessage(err);
-      }
-    },
-
     checkIfDiscountElig() {
       if (this.customer.new_orders.length > 0) {
         let arrLength = this.customer.new_orders.length;
@@ -795,6 +835,25 @@ export default {
   color: forestgreen;
   display: block;
   float: right;
+}
+.discount{
+  left:130px
+}
+.cover{
+  display:flex;
+  position: relative;
+}
+.modal_discount{
+  top:0px;
+  right:0px;
+  position:absolute
+}
+.modal_cover{
+  margin-left: 100px;
+  top: -26px;
+  display:flex;
+  position: relative;
+
 }
 .serial {
   font-size: 8px;

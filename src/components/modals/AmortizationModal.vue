@@ -326,7 +326,7 @@ export default {
     },
 
     updateAmmo(armo, index) {
-      if(this.canEditAmmoPayment && this.standAlone === false){
+      if(this.canEditAmmoPayment){
          this.showModal = true;
       this.ammo_item = armo;
       this.ammoIndex = index;
@@ -437,4 +437,3 @@ export default {
   cursor: pointer;
 }
 </style>
-

@@ -65,7 +65,7 @@
                 >
                   <option disabled selected="selected">Discounts</option>
                   <option
-                    :value="type.name"
+                    :value="type.slug"
                     :key="type.id"
                     v-for="type in discounts"
                   >
@@ -274,7 +274,7 @@
               </tbody>
             </table>
             <div class="cover">           
-               <discount class="discount" v-if="renewalState && salesLogForm.discount == '5% Discount' && rPayment > 0" :percent= "selected_discount.percentage_discount"/>
+               <discount class="discount" v-if="renewalState && salesLogForm.discount == '5_discount' && rPayment > 0" :percent= "selected_discount.percentage_discount"/>
             </div>
           </div>
         </div>
@@ -311,8 +311,11 @@
                     </th>
                     <th>{{ $formatCurrency(pPrice) }}</th>
                     <th>{{ $formatCurrency(fPayment) }}</th>
-                    <td class="">{{ $formatCurrency(rPayment) }}<div class="cover"><discount v-if="renewalState && salesLogForm.discount == '5% Discount' && rPayment > 0" :percent= "selected_discount.percentage_discount"/></div></td>
-                    <!-- <td class="font-weight-bold">Ikoyi</td> -->
+                    <td class="">{{ $formatCurrency(rPayment) }}
+                    <div class="modal_cover">
+                      <discount class="modal_discount" v-if="renewalState && salesLogForm.discount == '5_discount' && rPayment > 0" :percent= "selected_discount.percentage_discount"/>
+                    </div>
+                     </td>                    <!-- <td class="font-weight-bold">Ikoyi</td> -->
                   </tr>
                 </tbody>
               </table>
@@ -435,7 +438,6 @@ export default {
   methods: {
     watchSalesLogForm(){
       if(this.salesLogForm.sales_category_id == "2"){
-        console.log(this.salesLogForm)
         this.renewalState = true
       }else{
         this.renewalState = false
@@ -569,7 +571,7 @@ export default {
       try {
         this.salesLogForm.customer_id = this.customerId;
         const data0 = {
-          discount_id: this.salesLogForm.discount,
+          discount_slug: this.salesLogForm.discount,
           ...this.salesLogForm,
           ...{
             branch_id: localStorage.getItem("branch_id"),
@@ -585,7 +587,7 @@ export default {
             x.repayment_duration_id === data0.repayment_duration_id.id
         )[0];
 
-        this.selected_discount = this.discounts.find((item)=> { return item.name == this.salesLogForm.discount})
+        this.selected_discount = this.discounts.find((item)=> { return item.slug == this.salesLogForm.discount})
         const { total, actualDownpayment, rePayment } = calculate(
           this.selectedProduct.price,
           data0,
@@ -838,9 +840,19 @@ export default {
 }
 .cover{
   display:flex;
+  position: relative;
 }
 .modal_discount{
-  
+  top:0px;
+  right:0px;
+  position:absolute
+}
+.modal_cover{
+  margin-left: 100px;
+  top: -26px;
+  display:flex;
+  position: relative;
+
 }
 .serial {
   font-size: 8px;

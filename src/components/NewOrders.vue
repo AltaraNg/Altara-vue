@@ -19,7 +19,7 @@
 							v-model="searchQuery.businessType"
 						>
 							<option :value="type.id" v-for="type in businessTypes">
-								{{ type.name }}
+								{{ businessTypesSlug[type.slug] }}
 							</option>
 						</select>
 					</div>
@@ -307,6 +307,7 @@
 	import Vue from 'vue';
 	import { get, post } from '../utilities/api';
 	import queryParam from '../utilities/queryParam';
+	import businessTypesSlug from '../utilities/businessTypes'
 	import { mapGetters, mapActions } from 'vuex';
 	import Vue2Filters from 'vue2-filters';
 	import NewOrderAmortization from './NewOrderAmortization';
@@ -354,6 +355,7 @@
 				businessTypes: [],
 				renewalStatus: null,
 				searchQuery: {},
+				businessTypesSlug: businessTypesSlug
 			};
 		},
 		methods: {
@@ -384,6 +386,7 @@
 			},
 
 			prepareList(response) {
+				console.log(businessTypesSlug);
 				let {
 					current_page,
 					first_page_url,

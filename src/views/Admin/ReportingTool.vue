@@ -32,7 +32,7 @@
 			<select name="business_type" class="custom-select flex-1" v-model="businessType" >
 				<option :value="''" selected>All Products</option>
 				<option :value="type.id" :key="type.id" v-for="type in businessTypes">
-					{{ type.name }}
+					{{ businessTypesSlug[type.slug] }}
 				</option>
 			</select>
 
@@ -214,6 +214,7 @@
 	import BarChart from '../../components/charts/BarChart.vue';
 	import PieChart from '../../components/charts/PieChart.vue';
 	import Flash from '../../utilities/flash';
+	import businessTypesSlug from '../../utilities/businessTypes'
 
 	export default {
 		components: {
@@ -236,6 +237,7 @@
 				sector: '',
 				branchesInfo: {},
 				orderTypes: {},
+				businessTypesSlug: businessTypesSlug,
 
 				apiUrls: {
 					getReports: '/api/order/reports',

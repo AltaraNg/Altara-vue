@@ -49,7 +49,7 @@
 						<tr>
 							<th>
 								Owner
-								<span @click="editOwner" class="pointer text-warning" v-if="role !== 18">
+								<span @click="editOwner" class="pointer text-warning" v-if="role !== 18 && role !== 42">
 									Edit
 								</span>
 							</th>

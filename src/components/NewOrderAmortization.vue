@@ -410,8 +410,8 @@ export default {
 </script>
 <style scoped>
 .amor-table {
-  width: 1092px;
-  overflow: scroll;
+  width:  70vw;
+  overflow-x: auto;
 }
 .green {
   color: #00a368;

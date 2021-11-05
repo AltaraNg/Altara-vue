@@ -114,11 +114,10 @@
 
 		<modal
 			name="last-activity"
+			:adaptive="true"
 			:height="'auto'"
-			:clickToClose="false"
-			:scrollable="true"
-			:reset="true"
-			:classes="'my-5'"
+			:clickToClose="false"			
+			:reset="true"			
 		>
 			<last-activity-modal
 				:modalItem="selectedActivity"
@@ -225,8 +224,7 @@
 						resizable: true,
 						draggable: true,
 						height: 'auto',
-						width: '80%',
-						scrollable: true,
+						width: '80%',						
 						clickToClose: false,
 					}
 				);

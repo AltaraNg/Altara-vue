@@ -1,5 +1,5 @@
 <template>
-	<div class="overflow-auto">
+	<div class="h-50">
 		<div class="modal-header py-2">
 			<h4>All Activities</h4>
 			<a aria-label="Close" class="close py-1" data-dismiss="modal" @click="closeModal">
@@ -8,13 +8,13 @@
 				</span>
 			</a>
 		</div>
-		<div class="modal-body px-5" v-if="modalItem.length > 0">
+		<div class="modal-body adjusted" v-if="modalItem.length > 0">
             <div class="">
                 <p>Sales logged by: <b>{{modalItem[0].attributes.owner}}</b></p>
 
             </div>
 			<div class="table-responsive">
-				<table class="table table-bordered table-striped overflow-auto h-75">
+				<table class="table table-bordered table-striped">
 					<tbody>
 						<tr>
                             <th>S/N</th>
@@ -37,7 +37,7 @@
 				</table>
 			</div>
 		</div>
-		<div class="modal-footer justify-content-center"></div>
+		
 	</div>
 </template>
 
@@ -55,4 +55,9 @@
     };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.adjusted {
+	height: 70vh;
+	overflow-y: auto;
+}
+</style>

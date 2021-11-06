@@ -186,8 +186,7 @@ class Order {
     }
 
     setDiscount() {
-        // this._discount = this.order.discount.name + " " + this.order.discount.percentage_discount;
-        this._discount = '';
+        this._discount = this.order.discount.name + " " + this.order.discount.percentage_discount;
     }
 
     /*getters*/

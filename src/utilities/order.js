@@ -143,7 +143,7 @@ class Order {
 
         /*discount amount*/
         let mFactor = this.count === 6 ? 0.5 : 1,
-            discount = this.order.discount,
+            discount = this.order?.discount,
             repaymentAsDiscount = discount > 0 ? (discount === 5 ? 1 : 2) : 0,
             discountAmount = vue.$roundDownAmt(repayment_amount * mFactor * repaymentAsDiscount);
         this._discountAmount = fmt(discountAmount);
@@ -186,8 +186,8 @@ class Order {
     }
 
     setDiscount() {
-        // this._discount = this.order.discount.name + " " + this.order.discount.percentage_discount;
-        this._discount = '';
+        this._discount = this.order?.discount?.name + " " + this.order?.discount?.percentage_discount;
+        // this._discount = '';
     }
 
     /*getters*/

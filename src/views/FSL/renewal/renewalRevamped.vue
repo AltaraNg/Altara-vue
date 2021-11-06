@@ -34,7 +34,7 @@
 					</stat-card>
 				</div>
 			</div>
-			<div class="text-right pointer " v-if="role !== '18' && role !== '42'">
+			<div class="text-right pointer " v-if="role !== roleList.dsa && role !== roleList.cash_loan_agent">
 				<router-link to="dsa-stats">
 					<span class="mr-3 bg-default rounded p-3">View DSA stats</span>
 				</router-link>
@@ -214,6 +214,7 @@
 	import queryParam from '../../../utilities/queryParam';
 	import ZeroState from '../../../components/ZeroState.vue';
 	import Flash from '../../../utilities/flash';
+	import Roles from '../../../utilities/roles';
 	import BasePagination from '../../../components/Pagination/BasePagination.vue';
 
 	export default {
@@ -230,6 +231,7 @@
 		},
 		data() {
 			return {
+				roleList: Roles,
 				tabs: [
 					{ name: 'All', alias: 'all', link: '' },
 					{ name: 'Not Contacted', alias: 'nc', link: 'not contacted' },
@@ -257,7 +259,7 @@
 				statuses: [],
 				dsas: [],
 				isProcessing: true,
-				role: localStorage.getItem('role'),
+				role: parseInt(localStorage.getItem('role')),
 			};
 		},
 

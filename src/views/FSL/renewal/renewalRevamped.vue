@@ -30,11 +30,11 @@
 				</div>
 				<div class="col mx-1">
 					<stat-card :label="'Conversion Rate'" :stat="conversionRate ? conversionRate : '0%'">
-						<template v-slot:svg><Interested /></template>
+						<template v-slot:svg><img src="../../../assets/download.png" alt="work"  style="height=100%"/></template>
 					</stat-card>
 				</div>
 			</div>
-			<div class="text-right pointer " v-if="role !== '18' && role !== '42'">
+			<div class="text-right pointer " v-if="role !== roleList.dsa && role !== roleList.cash_loan_agent">
 				<router-link to="dsa-stats">
 					<span class="mr-3 bg-default rounded p-3">View DSA stats</span>
 				</router-link>
@@ -214,6 +214,7 @@
 	import queryParam from '../../../utilities/queryParam';
 	import ZeroState from '../../../components/ZeroState.vue';
 	import Flash from '../../../utilities/flash';
+	import Roles from '../../../utilities/roles';
 	import BasePagination from '../../../components/Pagination/BasePagination.vue';
 
 	export default {
@@ -230,6 +231,7 @@
 		},
 		data() {
 			return {
+				roleList: Roles,
 				tabs: [
 					{ name: 'All', alias: 'all', link: '' },
 					{ name: 'Not Contacted', alias: 'nc', link: 'not contacted' },
@@ -257,7 +259,7 @@
 				statuses: [],
 				dsas: [],
 				isProcessing: true,
-				role: localStorage.getItem('role'),
+				role: parseInt(localStorage.getItem('role')),
 			};
 		},
 
@@ -460,7 +462,7 @@
 					let fileURL = window.URL.createObjectURL(new Blob([response.data]));
 					let fileLink = document.createElement('a');
 					fileLink.href = fileURL;
-					fileLink.setAttribute('download', 'file.csv');
+					fileLink.setAttribute('download', 'renewals.csv');
 					document.body.appendChild(fileLink);
 					fileLink.click();
 				} catch (error) {
@@ -484,6 +486,10 @@
 				this.$LIPS(true);
 				let statuses = await get(this.apiUrl.statuses);
 				this.statuses = statuses.data?.data?.prompter_statuses;
+
+				this.statuses= this.statuses.filter(item => {
+					return item.name !== 'not contacted'
+				})
 			},
 
 			prepareList(response) {

@@ -30,7 +30,7 @@
 				</div>
 				<div class="col mx-1">
 					<stat-card :label="'Conversion Rate'" :stat="conversionRate ? conversionRate : '0%'">
-						<template v-slot:svg><Interested /></template>
+						<template v-slot:svg><img src="../../../assets/download.png" alt="work"  style="height=100%"/></template>
 					</stat-card>
 				</div>
 			</div>
@@ -486,6 +486,10 @@
 				this.$LIPS(true);
 				let statuses = await get(this.apiUrl.statuses);
 				this.statuses = statuses.data?.data?.prompter_statuses;
+
+				this.statuses= this.statuses.filter(item => {
+					return item.name !== 'not contacted'
+				})
 			},
 
 			prepareList(response) {

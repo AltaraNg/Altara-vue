@@ -49,7 +49,7 @@
 						<tr>
 							<th>
 								Owner
-								<span @click="editOwner" class="pointer text-warning" v-if="role !== 18">
+								<span @click="editOwner" class="pointer text-warning" v-if="role !== roleList.dsa && role !== roleList.cash_loan_agent">
 									Edit
 								</span>
 							</th>
@@ -86,6 +86,7 @@
 	import moment from 'moment';
 	import { get, put } from '../../utilities/api';
 	import flash from '../../utilities/flash';
+	import Roles from '../../utilities/roles';
 	export default {
 		props: {
 			modalItem: {
@@ -102,7 +103,8 @@
 					new_order: '/api/new_order/',
 				},
 				agent_id: '',
-				role:''
+				role:'',
+				roleList: Roles
 			};
 		},
 

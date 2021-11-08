@@ -330,7 +330,6 @@
 </template>
 
 <script>
-import businessTypesSlug from '../utilities/businessTypes'
 import { get, post } from "../utilities/api";
 import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
@@ -356,7 +355,6 @@ export default {
       salesCategories: [],
       test0: true,
       test1: true,
-      businessTypesSlug: businessTypesSlug,
       apiUrls: {
         repaymentDuration: `/api/repayment_duration`,
         orderType: `/api/order-types`,

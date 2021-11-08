@@ -161,6 +161,7 @@
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
 								>
 									{{ order.sales_type.name }}
+										<discount v-if="showDiscount(order)" class="discount_badge" :percent="5"  />
 								</div>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
@@ -708,6 +709,7 @@
 	import PaymentLog from '../../../components/PaymentLog';
 	import DatePicker from 'vue2-datepicker';
 	import 'vue2-datepicker/index.css';
+	import Discount from '../../../components/discount.vue'
 
 	export default {
 		components: {
@@ -720,6 +722,7 @@
 			PaymentLog,
 			NewOrderAmortization,
 			DatePicker,
+			Discount
 		},
 		props: { logger: null },
 
@@ -803,7 +806,6 @@
 			},
 			async updateView(data) {
 				let { customer, user } = data;
-
 				if (!!customer.length) {
 					customer = customer[0];
 					!customer.document &&
@@ -1083,7 +1085,15 @@
 			newOrderItem(value) {
 				this.updateView(value);
 			},
+			showDiscount(order){                        
+                        if (order.sales_type.name == 'renewal(DSA)' && order?.order_discount?.slug == '5_discount'){
+                              return true
+                        }else{
+                            return false
+                        }
+                },
 		},
+
 
 		computed: {
 			...mapGetters([
@@ -1134,4 +1144,8 @@
 	.pointer {
 		cursor: pointer;
 	}
+	.discount_badge{
+		margin-left:10px;
+	}
+
 </style>

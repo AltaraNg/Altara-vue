@@ -483,7 +483,7 @@ export default {
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
       };
-      if (this.eligible) {
+      if (this.eligible && renewal) {
         data.discount = [renewal];
       }
       this.$validator.validateAll().then((result) => {

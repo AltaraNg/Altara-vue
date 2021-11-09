@@ -15,6 +15,22 @@
             <div class="card-body pl-4 pr-4 clearfix">
                 <form @submit.prevent="register">
                     <!--form section for register starts here-->
+                    <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                        <label>Contact Customer Reg ID <span class="text-success mx-4">OPTIONAL</span> </label>
+                        <input
+                                    class="form-control"
+                                    data-vv-name="customer_contact reg"
+                                    name="emp_name"
+                                    placeholder="Link reg number from sales app"
+                                    type="text"
+                                    v-model="cc_reg_id"
+                                    v-validate="'required|max:50'"
+                                    @blur="getCustomerDetails"
+                            />
+                            <small v-if="errors.first('cc_reg_id')">{{errors.first('cc_reg_id')}}</small>
+                       
+
+                    </div>
                     <div v-if="mode === 'register' || $store.getters.auth('DVAAccess')">
                         <h5>Employee Details</h5>
 
@@ -1904,6 +1920,7 @@
     import Flash from "../../utilities/flash";
     import {get, post} from "../../utilities/api";
     import Verification from "../DVA/verification/verification";
+import flash from '../../utilities/flash';
 
     export default {
         components: {Verification},
@@ -2039,6 +2056,7 @@
                     }
                 ],
                 mode: this.$route.meta.mode,
+                cc_reg_id: '',
                 user: {},
                 error: {},
                 states: {},
@@ -2188,6 +2206,25 @@
                     }
 
                 });
+            },
+
+            getCustomerDetails(){
+                this.$LIPS(true)
+                get(`/api/customer-contact/get-by-id/${this.cc_reg_id}`).then(res => {
+                    let customer = res.data.data;
+                    this.newCustomer.first_name = (customer.name).split(" ")[0]
+                    this.newCustomer.last_name = (customer.name).split(" ")[1]
+                    this.newCustomer.telephone = customer.phone
+                    this.newCustomer.email = customer.email
+
+                    console.log(customer);
+
+                }).catch(err => {
+                    flash.setError(err.status === 422 ? this.$displayErrorText("Reg Id does not exist") : e.message,
+                                        10000)
+                }).finally(() => {
+                    this.$LIPS(false);
+                })
             },
 
             setOccupation(name) {

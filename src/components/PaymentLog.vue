@@ -457,7 +457,7 @@ export default {
       this.eligible
         ? (renewal = this.discounts.find((item) => {
             return item.name === "renewal";
-          }).id)
+          })?.id)
         : (renewal = "");
         let orderType = this.orderTypes.find((item) => {
           return item.name === 'Altara Credit';

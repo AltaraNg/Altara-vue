@@ -2215,9 +2215,9 @@ import flash from '../../utilities/flash';
                     this.newCustomer.first_name = (customer.name).split(" ")[0]
                     this.newCustomer.last_name = (customer.name).split(" ")[1]
                     this.newCustomer.telephone = customer.phone
-                    this.newCustomer.email = customer.email
+                    this.newCustomer.email = customer.email;
+                    this.newCustomer.reg_id = this.cc_reg_id;
 
-                    console.log(customer);
 
                 }).catch(err => {
                     flash.setError(err.status === 422 ? this.$displayErrorText("Reg Id does not exist") : e.message,

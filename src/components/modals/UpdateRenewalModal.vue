@@ -89,7 +89,7 @@
 						type="submit"
 						value="Submit"
 						@click="submitStatus"
-						class="bg-default text-white float-right p-2 w-25 mr-2 h5"
+						class="bg-default text-white float-right p-2 w-25 h5"
 					/>
 				</div>
 			</div>

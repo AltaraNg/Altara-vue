@@ -44,7 +44,7 @@
 								<select
 									v-model="status"
 									name="status"
-									class="custom-control w-100 text-black"
+									class="form-control w-100 text-black"
 									:class="{ 'border-danger': showError && this.status == '' }"
 									required
 								>
@@ -62,7 +62,7 @@
 								<input
 									type="text"
 									v-model="feedback"
-									class="form-control"
+									class="form-control h-100"
 									placeholder="Enter Feedback"
 									required
 									:class="{ 'border-danger': showError && this.feedback == '' }"
@@ -89,7 +89,7 @@
 						type="submit"
 						value="Submit"
 						@click="submitStatus"
-						class="bg-success text-white float-right p-2 h5"
+						class="bg-default text-white float-right p-2 w-25 h5"
 					/>
 				</div>
 			</div>

@@ -4,14 +4,13 @@
 			<div class="row">
 				<div class="col mx-1">
 					<stat-card :label="'Total'" :stat="meta.total">
-						<template v-slot:svg>
-							<Total class="bi bi-bootstrap-fill"
-						/></template>
+						<template v-slot:svg><img src="../../../assets/new_stats.png" alt="work"  style="height=100%"/></template>
+						
 					</stat-card>
 				</div>
 				<div class="col mx-1">
 					<stat-card :label="'Contacted'" :stat="meta.contacted">
-						<template v-slot:svg class="text-white"><People /></template>
+						<template v-slot:svg><img src="../../../assets/download.png" alt="work"  style="height=100%"/></template>
 					</stat-card>
 				</div>
 
@@ -20,17 +19,18 @@
 						:label="'Purchased/Renewed'"
 						:stat="meta.purchased_renewed"
 					>
-						<template v-slot:svg><Purchased /></template>
+						<template v-slot:svg><img src="../../../assets/pic.png" alt="work"  style="height=100%"/></template>
+						
 					</stat-card>
 				</div>
 				<div class="col mx-1">
 					<stat-card :label="'Interested'" :stat="meta.interested">
-						<template v-slot:svg><Interested /></template>
+						<template v-slot:svg><img src="../../../assets/stat_red.png" alt="work"  style="height=100%"/></template>
 					</stat-card>
 				</div>
 				<div class="col mx-1">
 					<stat-card :label="'Conversion Rate'" :stat="conversionRate ? conversionRate : '0%'">
-						<template v-slot:svg><img src="../../../assets/download.png" alt="work"  style="height=100%"/></template>
+						<template v-slot:svg><img src="../../../assets/yellow_green.png" alt="work"  style="height=100%"/></template>
 					</stat-card>
 				</div>
 			</div>
@@ -371,7 +371,16 @@
 			switchTab(tab) {
 				// localStorage.setItem('activeTab', tab.alias);
 				this.currentTab = tab.alias;
-				this.searchQuery.renewalPrompterStatus = tab.link;
+				if (tab.alias === 'nc'){
+					delete this.searchQuery.renewalPrompterStatus;
+					this.searchQuery.unContactedRenewalPrompters = true
+				}
+				else{
+					this.searchQuery.renewalPrompterStatus = tab.link;
+					delete this.searchQuery.unContactedRenewalPrompters;
+
+
+				}
 
 				// localStorage.setItem('activeTab', tab.alias);
 				this.searchQuery.tab = tab.alias;

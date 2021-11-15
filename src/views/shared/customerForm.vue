@@ -15,13 +15,15 @@
             <div class="card-body pl-4 pr-4 clearfix">
                 <form @submit.prevent="register">
                     <!--form section for register starts here-->
+                    <h5>Prospects Reg ID</h5>
                     <div class="form-group col-md-4 px-md-3 px-1 float-left">
-                        <label>Contact Customer Reg ID <span class="text-success mx-4">OPTIONAL</span> </label>
+
+                        <label>Reg ID <span class="text-success mx-4">OPTIONAL</span> </label>
                         <input
                                     class="form-control"
                                     data-vv-name="customer_contact reg"
                                     name="emp_name"
-                                    placeholder="Link reg number from sales app"
+                                    placeholder="Reg ID from sales app"
                                     type="text"
                                     v-model="cc_reg_id"
                                     v-validate="'required|max:50'"

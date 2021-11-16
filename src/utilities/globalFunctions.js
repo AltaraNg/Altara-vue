@@ -45,6 +45,11 @@ Vue.prototype.$getCustomerFullName = (c, withMiddleName = false) =>
 
 };
 
+Vue.prototype.$prepareUncontacted = () => {
+    !store.getters.getUncontacted && get('api/renewal/prompters?filterOrderbyBranch=true&orderHasAtMostTwoPaymentsLeft=true&unContactedRenewalPrompters=true&tab=nc')
+        .then(r => store.dispatch('mutateUncontacted', r.data.data.renewal_prompters.total));
+};
+
 
 
 Vue.prototype.$getCustomerAddress = c =>

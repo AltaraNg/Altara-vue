@@ -23,11 +23,18 @@
                                     <router-link class="nav-link" to="/home"><i class="fas fa-home pr-1"></i> Home
                                     </router-link>
                                 </li>
+                                <li class="nav-item mt-2 position-relative pl-2" v-if="authState.role === roles.dsa || authState.role === roles.renewal_agent">
+                                    <router-link to="/dsa/renewal">
+                                    <div v-if="getUncontacted !== null" class="position-absolute bell-no font-weight-bold"> {{getUncontacted}}</div>
+                                    <div class="bell-style mt-2 "><i class="now-ui-icons ui-1_bell-53"></i></div>
+                                    </router-link>
+                                </li>
                                 <li class="nav-item dropdown" v-if="auth">
                                     <span aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
                                           data-toggle="dropdown" id="menu">
                                         <i class="now-ui-icons users_circle-08"></i> {{authState.user_name | capitalize}}
-                                    </span>
+                                        </span>
+                                    
                                     <div aria-labelledby="menu" class="dropdown-menu">
                                         <router-link class="dropdown-item p-4" to="/user/profile">
                                             <i class="now-ui-icons ui-1_settings-gear-63 pr-1"></i> My Profile
@@ -37,6 +44,7 @@
                                         </span>
                                     </div>
                                 </li>
+
                             </ul>
                         </div>
                     </div>
@@ -78,6 +86,7 @@
     import {mapGetters} from "vuex";
     import Auth from "./utilities/auth";
     import Flash from "./utilities/flash";
+    import roles from "./utilities/roles";
     import Loader from "./components/Loader.vue";
     import SideNav from "./components/SideNav.vue";
     import {interceptors, post} from "./utilities/api";
@@ -97,9 +106,11 @@
             return {
                 flash: Flash.state,
                 authState: Auth.state,
+                roles: roles
             };
         },
-        mounted(){
+        async mounted(){
+            await this.$prepareUncontacted();
             axios.interceptors.request.use((config) => {
             this.debouncer();
             return config;
@@ -134,13 +145,14 @@
             });
         },
         computed: {
-            ...mapGetters('ModalAccess', ['showCustomerManagerModal', 'showSMSModal']),
+            ...mapGetters('ModalAccess', ['showCustomerManagerModal', 'showSMSModal',]),
             auth() {
                 return this.authState.api_token && this.authState.user_id;
             },
             guest() {
                 return !this.auth;
             },
+            ...mapGetters(['getUncontacted'])
         },
         methods: {
             logout() {
@@ -172,3 +184,21 @@
         }
     };
 </script>
+<style>
+    .bell-style{
+        width: 100%;
+        height: 100%
+    }
+    .bell-no{
+        font-size: 10px;
+        top: 2px;
+  left: 15px;
+        color: red;
+
+
+    }
+    .bell-style i{
+        color: red;
+        font-size: 18px;
+    }
+</style>

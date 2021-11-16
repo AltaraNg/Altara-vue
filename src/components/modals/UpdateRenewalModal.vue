@@ -176,6 +176,7 @@
 					console.log(e);
 				} finally {
 					this.$LIPS(false);
+					this.$prepareUncontacted();
 				}
 			},
 			disabledRange: function(date) {

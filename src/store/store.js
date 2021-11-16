@@ -23,6 +23,7 @@ export const store = new Vuex.Store({
         years: getYears(),
         banks: null,
         states: null,
+        uncontacted: null,
         branches: null,
         paymentMethods: null,
         lifestyleBranches: [8]
@@ -77,6 +78,7 @@ export const store = new Vuex.Store({
         getYears: state => state.years,
         getStates: state => state.states,
         getMonths: state => state.months,
+        getUncontacted: state => state.uncontacted,
         getBranches: state => state.branches,
         getPaymentMethods: state => state.paymentMethods,
         getTypeaheadUsersList: state => state.typeaheadUsersList,
@@ -93,6 +95,7 @@ export const store = new Vuex.Store({
         mutateStates: (state, states) => Vue.set(state, 'states', states),
         mutateProfileAccess: (state, payload) => state.ProfileAccess.push(payload),
         mutateBranches: (state, branches) => Vue.set(state, 'branches', branches),
+        mutateUncontacted: (state, uncontacted) => Vue.set(state, 'uncontacted', uncontacted),
         mutatePaymentMethods: (state, paymentMethods) => Vue.set(state, 'paymentMethods', paymentMethods),
         mutateTypeaheadUsersList: (state, typeaheadUsersList) => Vue.set(state, 'typeaheadUsersList', typeaheadUsersList),
 
@@ -102,6 +105,7 @@ export const store = new Vuex.Store({
         mutateAuth: ({ commit }) => commit('mutateAuth'),
         mutateBanks: ({ commit }, banks) => commit('mutateBanks', banks),
         mutateStates: ({ commit }, states) => commit('mutateStates', states),
+        mutateUncontacted: ({ commit }, uncontacted) => commit('mutateUncontacted', uncontacted),
         mutateBranches: ({ commit }, branches) => commit('mutateBranches', branches),
         mutateProfileAccess: ({ commit }, payload) => commit('mutateProfileAccess', payload),
         mutatePaymentMethods: ({ commit }, paymentMethods) => commit('mutatePaymentMethods', paymentMethods),

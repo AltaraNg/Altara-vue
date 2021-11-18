@@ -23,7 +23,7 @@
                                     <router-link class="nav-link" to="/home"><i class="fas fa-home pr-1"></i> Home
                                     </router-link>
                                 </li>
-                                <li class="nav-item mt-2 position-relative pl-2" v-if="authState.role === roles.dsa || authState.role === roles.renewal_agent || authState.role === roles.dsa_captain">
+                                <li class="nav-item mt-2 position-relative pl-2" v-if="canView">
                                     <router-link to="/dsa/renewal?fromDate=&tab=nc&unContactedRenewalPrompters=true">
                                     <div v-if="getUncontacted !== null" class="position-absolute bell-no font-weight-bold"> {{getUncontacted}}</div>
                                     <div class="bell-style mt-2 "><i class="now-ui-icons ui-1_bell-53"></i></div>
@@ -109,6 +109,7 @@
                 roles: roles
             };
         },
+       
         async mounted(){
             await this.$prepareUncontacted();
             axios.interceptors.request.use((config) => {
@@ -151,6 +152,9 @@
             },
             guest() {
                 return !this.auth;
+            },
+            canView: function () {
+                return [roles.dsa_captain, roles.dsa, roles.cash_loan_agent].includes(this.authState.role);
             },
             ...mapGetters(['getUncontacted'])
         },

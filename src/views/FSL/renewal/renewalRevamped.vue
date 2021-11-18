@@ -351,7 +351,6 @@
 					get(this.apiUrl.renewalList + queryParam(param))
 						.then(({ data }) => {
 							this.prepareList(data);
-							delete this.searchQuery.renewalPrompterStatus;
 						})
 						.catch(() => Flash.setError('Error Fetching Renewal List'))
 						.finally(() => {

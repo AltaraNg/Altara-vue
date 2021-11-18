@@ -23,8 +23,8 @@
                                     <router-link class="nav-link" to="/home"><i class="fas fa-home pr-1"></i> Home
                                     </router-link>
                                 </li>
-                                <li class="nav-item mt-2 position-relative pl-2" v-if="authState.role === roles.dsa || authState.role === roles.renewal_agent">
-                                    <router-link to="/dsa/renewal">
+                                <li class="nav-item mt-2 position-relative pl-2" v-if="authState.role === roles.dsa || authState.role === roles.renewal_agent || authState.role === roles.dsa_captain">
+                                    <router-link to="/dsa/renewal?fromDate=&tab=nc&unContactedRenewalPrompters=true">
                                     <div v-if="getUncontacted !== null" class="position-absolute bell-no font-weight-bold"> {{getUncontacted}}</div>
                                     <div class="bell-style mt-2 "><i class="now-ui-icons ui-1_bell-53"></i></div>
                                     </router-link>
@@ -191,14 +191,27 @@
     }
     .bell-no{
         font-size: 10px;
-        top: 2px;
+        top: 0px;
   left: 15px;
         color: red;
+        animation-name: ping;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
 
 
     }
     .bell-style i{
         color: red;
         font-size: 18px;
+        
+    }
+
+    @keyframes ping {
+        0% {font-size: 5px;}
+        25% {font-size: 7px;}
+        50% {font-size: 8px;}
+        75% {font-size: 10px;}
+        100% {font-size: 12px;}
+
     }
 </style>

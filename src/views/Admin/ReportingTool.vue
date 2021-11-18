@@ -2,7 +2,7 @@
 	<div class="my-3 py-4" v-if="reports !== null">
 		<div class="space-between mb-5 px-4">
 			<h3 class="text-capitalize mb-0">dashboard</h3>
-			<button class="bg-default rounded py-2 px-4 h5" @click="exportReportCsv" >
+			<button class="bg-default rounded py-2 px-4 h5" @click="exportReportCsv">
 				<i class="fas fa-download mr-3"></i>Download
 			</button>
 		</div>
@@ -22,23 +22,33 @@
 				placeholder="To Date"
 			></date-picker>
 
-			<select name="order_type" class="custom-select flex-1" v-model="orderType" >
+			<select
+				name="order_type"
+				class="custom-select flex-1"
+				v-model="orderType"
+			>
 				<option :value="''" selected>All Order Types</option>
 				<option :value="type.id" :key="type.id" v-for="type in orderTypes">
 					{{ type.name }}
 				</option>
 			</select>
 
-			<select name="business_type" class="custom-select flex-1" v-model="businessType" >
+			<select
+				name="business_type"
+				class="custom-select flex-1"
+				v-model="businessType"
+			>
 				<option :value="''" selected>All Products</option>
 				<option :value="type.id" :key="type.id" v-for="type in businessTypes">
 					{{ type.name }}
 				</option>
 			</select>
 
-			
-
-			<select class="custom-select flex-1" v-model="sector" v-validate="'required'" >
+			<select
+				class="custom-select flex-1"
+				v-model="sector"
+				v-validate="'required'"
+			>
 				<option value="">All Sectors</option>
 				<option :value="'formal'">Formal</option>
 				<option :value="'informal'">Informal</option>
@@ -49,13 +59,12 @@
 				class="bg-default rounded ml-auto py-2 px-4"
 				@click="filterByDate"
 			>
-			<span class="h5" style="width: 5rem">
-				Filter
-			</span>
+				<span class="h5" style="width: 5rem">
+					Filter
+				</span>
 			</button>
 		</div>
 
-		
 		<div class="row px-4" v-if="reports !== null">
 			<stat-card
 				:stat="reports.meta.total_no_sales"
@@ -266,7 +275,15 @@
 					maintainAspectRatio: false,
 					legend: {
 						display: false,
-					},
+					},	
+					scales: {
+						yAxes: [{
+							display: true,
+							ticks: {
+								beginAtZero: true
+							}						
+						}]
+					}				
 				},
 				noOfSalesMadeOnEachProduct: null,
 				productPieData: {
@@ -339,7 +356,7 @@
 							barThickness: 12,
 							maxBarThickness: 16,
 							label: 'Number of sales',
-							data: this.getSalesPerBranch(),
+							data: this.getSalesPerBranch(),							
 							backgroundColor: [
 								'#e76f51',
 								'#457b9d',
@@ -643,14 +660,14 @@
 		display: flex;
 		flex-wrap: wrap;
 	}
-	.flex-1{
+	.flex-1 {
 		flex: 1 1 0%;
 	}
 	.space-between {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-	}	
+	}
 	.divider {
 		width: 100%;
 		border-top: 2px solid rgba(75, 85, 99, 0.54);

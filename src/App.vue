@@ -23,7 +23,7 @@
                                     <router-link class="nav-link" to="/home"><i class="fas fa-home pr-1"></i> Home
                                     </router-link>
                                 </li>
-                                <li class="nav-item mt-2 position-relative pl-2" v-if="canView">
+                                <li class="nav-item mt-2 position-relative pl-2" v-if="canView && flag === 'beta'">
                                     <router-link to="/dsa/renewal?fromDate=&tab=nc&unContactedRenewalPrompters=true">
                                     <div v-if="getUncontacted !== null" class="position-absolute bell-no font-weight-bold"> {{getUncontacted}}</div>
                                     <div class="bell-style mt-2 "><i class="now-ui-icons ui-1_bell-53"></i></div>
@@ -106,7 +106,8 @@
             return {
                 flash: Flash.state,
                 authState: Auth.state,
-                roles: roles
+                roles: roles,
+                flag: localStorage.getItem('flag')
             };
         },
        

@@ -93,7 +93,7 @@
 						class="col p-0 nav-item mb-0"
 						v-for="(tab, index) in tabs"
 						:key="index"
-						@click="switchTab(tab)"
+						@click="buttonPress(tab)"
 					>
 						<a
 							aria-selected="true"
@@ -344,7 +344,6 @@
 					per_page: this.pageParams.per_page,
 					
 				};
-				console.log(this.$route.query.page)
 				this.currentTab === 'all' ? (param.rollUp = true) : this.fetchStats();
 				if (this.renewal === true) {
 					this.$LIPS(true);
@@ -352,7 +351,6 @@
 					get(this.apiUrl.renewalList + queryParam(param))
 						.then(({ data }) => {
 							this.prepareList(data);
-							delete this.searchQuery.renewalPrompterStatus;
 						})
 						.catch(() => Flash.setError('Error Fetching Renewal List'))
 						.finally(() => {
@@ -368,6 +366,12 @@
 						});
 				}
 			},
+			buttonPress(tab){
+				this.pageParams.page = 1;
+				this.switchTab(tab);
+				
+			},
+
 			switchTab(tab) {
 				// localStorage.setItem('activeTab', tab.alias);
 				this.currentTab = tab.alias;
@@ -384,13 +388,12 @@
 
 				// localStorage.setItem('activeTab', tab.alias);
 				this.searchQuery.tab = tab.alias;
-				if(tab.alias !== "all"){
+				if(this.pageParams.page === 1){
 					this.pageParams.page = 1;
 				}
 				else{
 					this.pageParams.page = this.$route.query.page
 				}
-				
 
 				this.$router.replace({
 					query: Object.assign({}, this.$route.query, {
@@ -486,7 +489,6 @@
 					return item.alias === tab;
 				});
 
-				// this.$refs[tab]..classList.value = this.$refs[tab].$el.classList.value + 'active';
 
 				this.switchTab(tabObject);
 			},

@@ -2222,7 +2222,6 @@ import flash from '../../utilities/flash';
 
 
                 }).catch(err => {
-                    console.log(err);
                     flash.setError(err.status === 400 ? err.message : this.$displayErrorText("Reg Id does not exist"),
                                         10000);
 

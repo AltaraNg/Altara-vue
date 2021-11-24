@@ -380,6 +380,16 @@
             <button class="btn bg-default" @click="logSale()" type="submit">
               {{ useCreditCard ? "Pay" : "Confirm Transfer" }}
             </button>
+            <paystack
+              :amount="1000 * 100"
+              :email="email"
+              :paystackkey="paystackkey"
+              :reference="reference"
+              :callback="processPaymentPayStackPayment"
+              :close="closePayStackModal"
+            >
+              Make Payment
+            </paystack>
           </div>
         </div>
       </div>
@@ -395,10 +405,11 @@ import calculate from "../utilities/calculator";
 import Flash from "../utilities/flash";
 import discount from "./discount.vue";
 import { log } from "../utilities/log";
+import paystack from "vue-paystack";
 
 export default {
   props: { customerId: null, customer: null },
-  components: { AutoComplete, discount },
+  components: { AutoComplete, discount, paystack },
   data() {
     return {
       error: {},
@@ -445,6 +456,8 @@ export default {
       flag: localStorage.getItem("flag"),
       isAltaraPay: false,
       useCreditCard: true,
+      email: "realolamilekan@gmail.com",
+      paystackkey: "pk_test_fa7cd92ce73d3270844d87c62b4f102030e5135d"
     };
   },
   async mounted() {
@@ -471,7 +484,16 @@ export default {
         return !item.name.includes("plus");
       });
     },
+    reference() {
+      let text = "";
+      let possible =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      for (let i = 0; i < 10; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      return text;
+    }
   },
+  
   methods: {
     watchSalesLogForm() {
       if (this.salesLogForm.sales_category_id == "2" && this.flag == "beta") {
@@ -831,6 +853,13 @@ export default {
     toggleProductType() {
       this.isAltaraPay = !this.isAltaraPay;
     },
+    processPaymentPayStackPayment: (resp) => {
+      console.log(resp);
+      window.alert("Payment recieved")
+    },
+    closePayStackModal: () => {
+     console.log("You closed checkout page")
+    }
   },
 };
 </script>

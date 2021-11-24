@@ -377,18 +377,32 @@
             </div>
           </div>
           <div class="text-center">
-            <button class="btn bg-default" @click="logSale()" type="submit">
-              {{ useCreditCard ? "Pay" : "Confirm Transfer" }}
+            <p class="d-block text-danger">{{!transfer ? 'Push Button If Customer Transferred Payment' : 'Push Button To Pay With Credit Card'}} </p>
+            <div class="switch">
+              <input type="checkbox" id="switch" class="switch_input" v-model="transfer" /><label for="switch" class="switch_label"
+                ></label
+              ><br>
+      
+            </div>
+            <button
+              class="btn bg-default"
+              @click="logSale()"
+              type="submit"
+              v-if="transfer"
+            >
+              Confirm Transfer
             </button>
             <paystack
-              :amount="1000 * 100"
-              :email="email"
+              :amount="this.fPayment * 100"
+              :email="customer_email"
               :paystackkey="paystackkey"
               :reference="reference"
               :callback="processPaymentPayStackPayment"
               :close="closePayStackModal"
+              class="btn bg-default"
+              v-if="!transfer"
             >
-              Make Payment
+              Pay
             </paystack>
           </div>
         </div>
@@ -454,10 +468,11 @@ export default {
       serial: false,
       renewalState: false,
       flag: localStorage.getItem("flag"),
-      isAltaraPay: false,
-      useCreditCard: true,
-      email: "realolamilekan@gmail.com",
-      paystackkey: "pk_test_fa7cd92ce73d3270844d87c62b4f102030e5135d"
+      isAltaraPay: true,
+      useCreditCard: false,
+      transfer: false,
+      customer_email: this.customer.email || "somedefaultemail",
+      paystackkey: "pk_test_fa7cd92ce73d3270844d87c62b4f102030e5135d",
     };
   },
   async mounted() {
@@ -485,15 +500,16 @@ export default {
       });
     },
     reference() {
+      console.log(this.customer_email);
       let text = "";
       let possible =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       for (let i = 0; i < 10; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
-    }
+    },
   },
-  
+
   methods: {
     watchSalesLogForm() {
       if (this.salesLogForm.sales_category_id == "2" && this.flag == "beta") {
@@ -588,10 +604,6 @@ export default {
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
       };
-      console.log(
-        this.getPaymentMethods.find((data) => (data.name = "direct-debit"))
-      );
-      console.log("test", data);
       this.salesLogForm.serial_number !== null
         ? (data.serial_number = this.salesLogForm.serial_number)
         : "";
@@ -854,12 +866,15 @@ export default {
       this.isAltaraPay = !this.isAltaraPay;
     },
     processPaymentPayStackPayment: (resp) => {
-      console.log(resp);
-      window.alert("Payment recieved")
+      if (resp.status == "success" && resp.message == "Approved"){
+        console.log("payement made");
+        return  this.logSale();
+      }
+      
     },
     closePayStackModal: () => {
-     console.log("You closed checkout page")
-    }
+      console.log("You closed checkout page");
+    },
   },
 };
 </script>
@@ -929,5 +944,51 @@ export default {
   display: block;
   float: right;
   text-decoration: underline;
+}
+.switch{
+  display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.switch input[type="checkbox"] {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+}
+
+.switch label {
+ 	cursor: pointer;
+	text-indent: -9999px;
+	width: 50px;
+	height: 25px;
+	background: grey;
+	display: block;
+	border-radius: 10px;
+	position: relative;
+}
+
+.switch label:after {
+content: '';
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 20px;
+	height: 20px;
+	background: #fff;
+	border-radius: 10px;
+	transition: 0.3s;
+}
+
+.switch input:checked + label {
+  background: green;
+}
+
+.switch input:checked + label:after {
+  left: calc(100% - 5px);
+  transform: translateX(-80%);
+}
+
+.switch label:active:after {
+  width: 60px;
 }
 </style>

@@ -264,6 +264,9 @@
 		},
 
 		async mounted() {
+
+			await this.getRenewalStatuses();
+			await this.fetchDsas();
 			var date = new Date(),
 				y = date.getFullYear(),
 				m = date.getMonth();
@@ -296,8 +299,7 @@
 			this.$root.$on('owner_updated', (payload) => {
 				this.fetchData();
 			});
-			await this.getRenewalStatuses();
-			await this.fetchDsas();
+			
 			this.fetchStats();
 
 		},

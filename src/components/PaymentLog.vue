@@ -472,7 +472,7 @@ export default {
       useCreditCard: false,
       transfer: false,
       customer_email: this.customer.email || "somedefaultemail",
-      paystackkey: "pk_test_fa7cd92ce73d3270844d87c62b4f102030e5135d",
+      paystackkey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     };
   },
   async mounted() {

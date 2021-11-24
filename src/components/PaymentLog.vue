@@ -5,6 +5,24 @@
         <div class="card">
           <form class="card-body" @submit.prevent="previewAmortization">
             <div class="row">
+              <div class="col">
+                <button
+                  class="btn btn-md float-right"
+                  @click="toggleProductType"
+                  :class="[isAltaraPay ? 'bg-default' : 'bt-default']"
+                >
+                  Altara Pay
+                </button>
+                <button
+                  class="btn btn-md float-right mr-0"
+                  @click="toggleProductType"
+                  :class="[!isAltaraPay ? 'bg-default' : 'btn-default']"
+                >
+                  Altara Credit
+                </button>
+              </div>
+            </div>
+            <div class="row">
               <div class="form-group align-self-left text-capitalize col">
                 <label for="amount" class="form-control-label w-100"
                   >Product Name
@@ -54,9 +72,7 @@
                 </select>
               </div>
               <div class="col form-group" v-if="renewalState">
-                <label for="amount" class="form-control-label"
-                  >Discounts</label
-                >
+                <label for="amount" class="form-control-label">Discounts</label>
                 <select
                   @change="getCalc()"
                   class="custom-select w-100"
@@ -145,7 +161,7 @@
                 </select>
               </div>
 
-               <div class="col form-group">
+              <div class="col form-group">
                 <label for="amount" class="form-control-label"
                   >Downpayment Rates</label
                 >
@@ -166,7 +182,7 @@
                     {{ type.name }}
                   </option>
                 </select>
-              </div> 
+              </div>
               <div class="col form-group">
                 <label for="amount" class="form-control-label"
                   >Business Type</label
@@ -187,7 +203,7 @@
                   </option>
                 </select>
               </div>
-              <div class="col form-group">
+              <div class="col form-group" v-if="!isAltaraPay">
                 <label for="amount" class="form-control-label"
                   >Payment Method</label
                 >
@@ -209,7 +225,7 @@
                   </option>
                 </select>
               </div>
-              <div class="col form-group">
+              <div class="col form-group" v-if="!isAltaraPay">
                 <label for="amount" class="form-control-label">Bank</label>
                 <select
                   class="custom-select w-100"
@@ -251,7 +267,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="mt-3 mb-0">Order Information</h5>
-               <table class="table table-bordered">
+            <table class="table table-bordered">
               <tbody class="text-center">
                 <tr class="table-separator">
                   <th>Product Name</th>
@@ -273,8 +289,16 @@
                 </tr>
               </tbody>
             </table>
-            <div class="cover">           
-               <discount class="discount" v-if="renewalState && salesLogForm.discount == '5_discount' && rPayment > 0" :percent= "selected_discount.percentage_discount"/>
+            <div class="cover">
+              <discount
+                class="discount"
+                v-if="
+                  renewalState &&
+                  salesLogForm.discount == '5_discount' &&
+                  rPayment > 0
+                "
+                :percent="selected_discount.percentage_discount"
+              />
             </div>
           </div>
         </div>
@@ -311,11 +335,21 @@
                     </th>
                     <th>{{ $formatCurrency(pPrice) }}</th>
                     <th>{{ $formatCurrency(fPayment) }}</th>
-                    <td class="">{{ $formatCurrency(rPayment) }}
-                    <div class="modal_cover">
-                      <discount class="modal_discount" v-if="renewalState && salesLogForm.discount == '5_discount' && rPayment > 0" :percent= "selected_discount.percentage_discount"/>
-                    </div>
-                     </td>                    <!-- <td class="font-weight-bold">Ikoyi</td> -->
+                    <td class="">
+                      {{ $formatCurrency(rPayment) }}
+                      <div class="modal_cover">
+                        <discount
+                          class="modal_discount"
+                          v-if="
+                            renewalState &&
+                            salesLogForm.discount == '5_discount' &&
+                            rPayment > 0
+                          "
+                          :percent="selected_discount.percentage_discount"
+                        />
+                      </div>
+                    </td>
+                    <!-- <td class="font-weight-bold">Ikoyi</td> -->
                   </tr>
                 </tbody>
               </table>
@@ -344,7 +378,7 @@
           </div>
           <div class="text-center">
             <button class="btn bg-default" @click="logSale()" type="submit">
-              Log Sale
+              {{ useCreditCard ? "Pay" : "Confirm Transfer" }}
             </button>
           </div>
         </div>
@@ -359,7 +393,8 @@ import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
 import calculate from "../utilities/calculator";
 import Flash from "../utilities/flash";
-import discount from "./discount.vue"
+import discount from "./discount.vue";
+import { log } from "../utilities/log";
 
 export default {
   props: { customerId: null, customer: null },
@@ -373,7 +408,7 @@ export default {
       repaymentDuration: [],
       repaymentCyclesopt: [],
       downPaymentRates: [],
-      discounts:[],
+      discounts: [],
       orderTypes: [],
       businessTypes: [],
       amortization: [],
@@ -396,7 +431,7 @@ export default {
       },
       inputValue: "",
       selectedProduct: {},
-      selected_discount:{},
+      selected_discount: {},
       fPayment: "",
       pPrice: "",
       rPayment: "",
@@ -407,11 +442,13 @@ export default {
       eligible: false,
       serial: false,
       renewalState: false,
-      flag:localStorage.getItem("flag")
+      flag: localStorage.getItem("flag"),
+      isAltaraPay: false,
+      useCreditCard: true,
     };
   },
   async mounted() {
-    this.watchSalesLogForm()
+    this.watchSalesLogForm();
     this.checkIfDiscountElig();
     await this.getRepaymentDuration();
     await this.getSalesCategory();
@@ -422,26 +459,25 @@ export default {
     await this.getDiscounts();
     await this.getOrderTypes();
   },
-  watch:{
-      'salesLogForm.sales_category_id':function(newData, oldData){
-      this.watchSalesLogForm(newData)
-      }
+  watch: {
+    "salesLogForm.sales_category_id": function (newData, oldData) {
+      this.watchSalesLogForm(newData);
+    },
   },
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
-    getdownPaymentRates(){
-      return this.downPaymentRates.filter((item)=>{
-        return !(item.name.includes('plus')) 
-        
-      })
-    }
+    getdownPaymentRates() {
+      return this.downPaymentRates.filter((item) => {
+        return !item.name.includes("plus");
+      });
+    },
   },
   methods: {
-    watchSalesLogForm(){
-      if(this.salesLogForm.sales_category_id == "2" && this.flag == 'beta'){
-        this.renewalState = true
-      }else{
-        this.renewalState = false
+    watchSalesLogForm() {
+      if (this.salesLogForm.sales_category_id == "2" && this.flag == "beta") {
+        this.renewalState = true;
+      } else {
+        this.renewalState = false;
       }
     },
     customDate(event) {
@@ -459,9 +495,9 @@ export default {
             return item.name === "renewal";
           })?.id)
         : (renewal = "");
-        let orderType = this.orderTypes.find((item) => {
-          return item.name === 'Altara Credit';
-        })
+      let orderType = this.orderTypes.find((item) => {
+        return item.name === "Altara Credit";
+      });
       const data = {
         order_type_id: orderType.id,
         customer_id: this.customerId,
@@ -520,14 +556,20 @@ export default {
         down_payment_rate_id: this.salesLogForm.payment_type_id.id,
         custom_date: this.salesLogForm.custom_date,
         repayment: this.$formatMoney(this.rPayment),
-        bank_id: this.salesLogForm.bank_id,
+        bank_id: this.isAltaraPay ? 1 : this.salesLogForm.bank_id,
         product_price: this.$formatMoney(this.pPrice),
         payment_type_id: this.salesLogForm.payment_type_id.id,
-        payment_method_id: this.salesLogForm.payment_method_id,
+        payment_method_id: this.isAltaraPay
+          ? this.getPaymentMethods.find((el) => (el.name = "direct-debit")).id
+          : this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
       };
+      console.log(
+        this.getPaymentMethods.find((data) => (data.name = "direct-debit"))
+      );
+      console.log("test", data);
       this.salesLogForm.serial_number !== null
         ? (data.serial_number = this.salesLogForm.serial_number)
         : "";
@@ -560,10 +602,8 @@ export default {
     },
     async getDiscounts() {
       try {
-        const fetchDiscounts = await get(
-          this.apiUrls.discounts
-        );
-        this.discounts = fetchDiscounts.data.data.data
+        const fetchDiscounts = await get(this.apiUrls.discounts);
+        this.discounts = fetchDiscounts.data.data.data;
       } catch (err) {
         this.$displayErrorMessage(err);
       }
@@ -588,7 +628,9 @@ export default {
             x.repayment_duration_id === data0.repayment_duration_id.id
         )[0];
 
-        this.selected_discount = this.discounts.find((item)=> { return item.slug == this.salesLogForm.discount})
+        this.selected_discount = this.discounts.find((item) => {
+          return item.slug == this.salesLogForm.discount;
+        });
         const { total, actualDownpayment, rePayment } = calculate(
           this.selectedProduct.price,
           data0,
@@ -687,10 +729,8 @@ export default {
         const fetchDownPaymentRates = await get(this.apiUrls.downPaymentRates);
         this.downPaymentRates = fetchDownPaymentRates.data.data.data;
         this.downPaymentRates = this.downPaymentRates.sort((a, b) => {
-						return a.percent-b.percent;
-					});
-
-        
+          return a.percent - b.percent;
+        });
       } catch (err) {
         this.$displayErrorMessage(err);
       }
@@ -704,38 +744,36 @@ export default {
       }
     },
 
-        async getUsers(salesCat){
-        this.getCalc()
-        this.$LIPS(true);
-          
-          await get(`/api/sales-category/${salesCat}/roles`).then(res => {
-            this.users = this.mergeArrays(res.data.data);
-          });
-          
-          this.$LIPS(false);
-        },
-        mergeArrays(parent){
-          let result = [];
-          parent.forEach(elem => {
-            result = result.concat(elem.active_users);
-          })
-          return result;
-        },
-        async getBusinessTypes() {
-            try {
-                const fetchBusinessTypes = await get(
-                    this.apiUrls.businessTypes
-                );
-                this.businessTypes = fetchBusinessTypes.data.data.data;
-                this.businessTypes = this.businessTypes.filter(item => {
-                  return item.slug.includes("ac_")
-                });
-            } catch (err) {
-                this.$displayErrorMessage(err);
-            }
-        },
     async getUsers(salesCat) {
-      this.getCalc()
+      this.getCalc();
+      this.$LIPS(true);
+
+      await get(`/api/sales-category/${salesCat}/roles`).then((res) => {
+        this.users = this.mergeArrays(res.data.data);
+      });
+
+      this.$LIPS(false);
+    },
+    mergeArrays(parent) {
+      let result = [];
+      parent.forEach((elem) => {
+        result = result.concat(elem.active_users);
+      });
+      return result;
+    },
+    async getBusinessTypes() {
+      try {
+        const fetchBusinessTypes = await get(this.apiUrls.businessTypes);
+        this.businessTypes = fetchBusinessTypes.data.data.data;
+        this.businessTypes = this.businessTypes.filter((item) => {
+          return item.slug.includes("ac_");
+        });
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
+    async getUsers(salesCat) {
+      this.getCalc();
       this.$LIPS(true);
 
       await get(`/api/sales-category/${salesCat}/roles`).then((res) => {
@@ -790,6 +828,9 @@ export default {
     toggleSerial() {
       this.serial === true ? (this.serial = false) : (this.serial = true);
     },
+    toggleProductType() {
+      this.isAltaraPay = !this.isAltaraPay;
+    },
   },
 };
 </script>
@@ -836,24 +877,23 @@ export default {
   display: block;
   float: right;
 }
-.discount{
-  left:130px
+.discount {
+  left: 130px;
 }
-.cover{
-  display:flex;
+.cover {
+  display: flex;
   position: relative;
 }
-.modal_discount{
-  top:0px;
-  right:0px;
-  position:absolute
+.modal_discount {
+  top: 0px;
+  right: 0px;
+  position: absolute;
 }
-.modal_cover{
+.modal_cover {
   margin-left: 100px;
   top: -26px;
-  display:flex;
+  display: flex;
   position: relative;
-
 }
 .serial {
   font-size: 8px;

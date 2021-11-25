@@ -463,6 +463,7 @@ export default {
         getProduct: `/api/inventory`,
         discounts: `/api/discount`,
         salesCategoryUrl: `/api/sales_category`,
+        paystackkey: '/api/dd_k'
       },
       inputValue: "",
       selectedProduct: {},
@@ -482,7 +483,7 @@ export default {
       useCreditCard: false,
       transfer: false,
       customer_email: this.customer.email || "somedefaultemail",
-      paystackkey: "pk_test_XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      paystackkey: process.env.PAYSTACK_KEY,
     };
   },
   async mounted() {
@@ -521,6 +522,10 @@ export default {
   },
 
   methods: {
+
+
+
+
     watchSalesLogForm() {
       if (this.salesLogForm.sales_category_id == "2" && this.flag == "beta") {
         this.renewalState = true;
@@ -656,6 +661,7 @@ export default {
     },
     getCalc() {
       try {
+        console.log('e dey work');
         this.salesLogForm.customer_id = this.customerId;
         const data0 = {
           discount_slug: this.salesLogForm.discount,

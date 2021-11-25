@@ -245,10 +245,11 @@
                   </option>
                 </select>
               </div>
-              <!-- <div class="col form-group">
-                    <label for="amount" class="form-control-label">Down Payment</label>
-                    <input class="w-100 custom-select" name="amount" v-model="salesLogForm.down_payment" v-validate="'required'" type="number" placeholder="Enter Amount"/>
-              </div>-->
+              <div class="col form-group bor" v-if="isAltaraPay">
+                    <label for="amount" class="form-control-label">Card Expiry Date</label>
+                    <input class="w-100 custom-select" :class="{'border-danger' : cardError}" name="amount" v-model="card_expiry" v-validate="'required'" type="month" placeholder="Card Expiry Date" />
+                    <div v-if="cardError" class="small text-danger">The card cannot be accepted</div>
+              </div>
             </div>
             <br />
             <div class="text-center">
@@ -430,12 +431,15 @@ import Flash from "../utilities/flash";
 import discount from "./discount.vue";
 import { log } from "../utilities/log";
 import paystack from "vue-paystack";
+	import moment from 'moment';
+
 
 export default {
   props: { customerId: null, customer: null },
   components: { AutoComplete, discount, paystack },
   data() {
     return {
+      card_expiry: null,
       error: {},
       users: [],
       product: "",
@@ -473,6 +477,7 @@ export default {
       rPayment: "",
       repaymentCircle: "",
       rDuration: "",
+      cardError: false,
       customDateToggle: false,
       discounts: null,
       eligible: false,
@@ -483,7 +488,7 @@ export default {
       useCreditCard: false,
       transfer: false,
       customer_email: this.customer.email || "somedefaultemail",
-      paystackkey: process.env.PAYSTACK_KEY,
+      paystackkey: process.env.VUE_APP_PAYSTACK_KEY,
     };
   },
   async mounted() {
@@ -599,6 +604,7 @@ export default {
       });
     },
     async previewAmortization() {
+      this.cardError = false;
       this.salesLogForm.customer_id = this.customerId;
       const data = {
         customer_id: this.customerId,
@@ -621,9 +627,23 @@ export default {
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
       };
+      
       this.salesLogForm.serial_number !== null
         ? (data.serial_number = this.salesLogForm.serial_number)
         : "";
+
+      if(this.card_expiry){
+        let expiry_date = moment(this.card_expiry);
+        let duration = parseInt(this.salesLogForm.repayment_duration_id.value)
+        let allowed_date = moment().add(duration + 60, 'days');
+       
+        if (expiry_date.isBefore(allowed_date)){
+         console.log("The card's expiry date is not valid");
+         this.cardError = true;
+         return
+        };
+
+      }
       this.$validator.validateAll().then((result) => {
         if (result) {
           this.$LIPS(true);
@@ -884,10 +904,11 @@ export default {
     toggleSerial() {
       this.serial === true ? (this.serial = false) : (this.serial = true);
     },
-    toggleProductType() {
+    toggleProductType() {    
       this.transfer = false;
       this.getBusinessTypes();
       this.isAltaraPay = !this.isAltaraPay;
+      this.isAltaraPay? '' : this.card_expiry = null;
     },
     async processPaymentPayStackPayment(resp) {
       if (resp.status == "success" && resp.message == "Approved") {

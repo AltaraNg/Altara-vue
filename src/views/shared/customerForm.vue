@@ -22,11 +22,11 @@
                         <input
                                     class="form-control"
                                     data-vv-name="customer_contact reg"
-                                    name="emp_name"
+                                    name="cc_reg_id"
                                     placeholder="Reg ID from sales app"
                                     type="text"
                                     v-model="cc_reg_id"
-                                    v-validate="'required|max:50'"
+                                    v-validate="'max:50'"
                                     @blur="getCustomerDetails"
                             />
                             <small v-if="errors.first('cc_reg_id')">{{errors.first('cc_reg_id')}}</small>
@@ -2222,8 +2222,11 @@ import flash from '../../utilities/flash';
 
 
                 }).catch(err => {
-                    flash.setError(err.status === 422 ? this.$displayErrorText("Reg Id does not exist") : e.message,
-                                        10000)
+                    flash.setError(err.status === 400 ? err.message : this.$displayErrorText("Reg Id does not exist"),
+                                        10000);
+
+                    const field = this.$validator.fields.find({name: 'cc_reg_id'});
+                    field.setFlags({invalid : true})
                 }).finally(() => {
                     this.$LIPS(false);
                 })

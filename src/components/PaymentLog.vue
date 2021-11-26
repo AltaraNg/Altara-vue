@@ -379,7 +379,7 @@
               </div>
             </div>
           </div>
-          <div class="text-center">
+          <div class="text-center" v-if="isAltaraPay">
             <p class="d-block text-danger">
               {{
                 !transfer
@@ -415,6 +415,16 @@
             >
               Pay
             </paystack>
+          </div>
+          <div v-else class="text-center">
+            <button
+              class="btn bg-default"
+              @click="logSale()"
+              type="submit"
+              
+            >
+              Log Sale
+            </button>
           </div>
         </div>
       </div>
@@ -467,9 +477,17 @@ export default {
         getProduct: `/api/inventory`,
         discounts: `/api/discount`,
         salesCategoryUrl: `/api/sales_category`,
-        paystackkey: '/api/dd_k'
       },
       inputValue: "",
+      paymentGateways: [
+        {
+          id : 1,
+          name: 'paystack'},
+        {
+          id: 2,
+          name: 'remitta'
+        }
+      ],
       selectedProduct: {},
       selected_discount: {},
       fPayment: "",
@@ -579,6 +597,7 @@ export default {
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
       };
+      this.salesLogForm.payment_gateway_id ? data.payment_gateway_id = this.salesLogForm.payment_gateway_id : '';
       if (this.eligible && renewal) {
         data.discount = [renewal];
       }
@@ -912,7 +931,8 @@ export default {
     },
     async processPaymentPayStackPayment(resp) {
       if (resp.status == "success" && resp.message == "Approved") {
-        console.log("payement made");
+        this.salesLogForm.payment_gateway_id = this.paymentGateways.find(item => item.name === 'paystack').id        
+        console.log('is plenty',this.salesLogForm.payment_gateway_id)
         await this.logSale();
       }
     },

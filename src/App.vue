@@ -24,7 +24,7 @@
                                     </router-link>
                                 </li>
                                 <li class="nav-item mt-2 position-relative pl-2" v-if="canView && flag === 'beta'">
-                                    <router-link to="/dsa/renewal?fromDate=&tab=nc&unContactedRenewalPrompters=true">
+                                    <router-link :to="authState.role === roles.dsa ? '/dsa/renewal?fromDate=&tab=nc&unContactedRenewalPrompters=true' : '/cashloan/renewal?fromDate=&tab=nc&unContactedRenewalPrompters=true'">
                                     <div v-if="getUncontacted !== null" class="position-absolute bell-no font-weight-bold"> {{getUncontacted}}</div>
                                     <div class="bell-style mt-2 "><i class="now-ui-icons ui-1_bell-53"></i></div>
                                     </router-link>

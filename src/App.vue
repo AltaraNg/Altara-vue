@@ -42,7 +42,7 @@
 										"
 									>
 										<div
-											v-if="getUncontacted !== null"
+											v-if="getUncontacted !== null && getUncontacted > 0"
 											class="position-absolute bell-no font-weight-bold"
 										>
 											{{ getUncontacted }}

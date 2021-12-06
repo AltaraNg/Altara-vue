@@ -301,6 +301,9 @@
 		},
 
 		async mounted() {
+
+			await this.getRenewalStatuses();
+			await this.fetchDsas();
 			var date = new Date(),
 				y = date.getFullYear(),
 				m = date.getMonth();
@@ -333,6 +336,7 @@
 			await this.$prepareBranches();
 			await this.getRenewalStatuses();
 			await this.fetchDsas();
+			
 			this.fetchStats();
 		},
 		methods: {

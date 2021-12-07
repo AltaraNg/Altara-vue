@@ -4,13 +4,22 @@
 			<div class="row">
 				<div class="col mx-1">
 					<stat-card :label="'Total'" :stat="meta.total">
-						<template v-slot:svg><img src="../../../assets/new_stats.png" alt="work"  style="height=100%"/></template>
-						
+						<template v-slot:svg
+							><img
+								src="../../../assets/new_stats.png"
+								alt="work"
+								style="height=100%"
+						/></template>
 					</stat-card>
 				</div>
 				<div class="col mx-1">
 					<stat-card :label="'Contacted'" :stat="meta.contacted">
-						<template v-slot:svg><img src="../../../assets/download.png" alt="work"  style="height=100%"/></template>
+						<template v-slot:svg
+							><img
+								src="../../../assets/download.png"
+								alt="work"
+								style="height=100%"
+						/></template>
 					</stat-card>
 				</div>
 
@@ -19,22 +28,39 @@
 						:label="'Purchased/Renewed'"
 						:stat="meta.purchased_renewed"
 					>
-						<template v-slot:svg><img src="../../../assets/pic.png" alt="work"  style="height=100%"/></template>
-						
+						<template v-slot:svg
+							><img src="../../../assets/pic.png" alt="work" style="height=100%"
+						/></template>
 					</stat-card>
 				</div>
 				<div class="col mx-1">
 					<stat-card :label="'Interested'" :stat="meta.interested">
-						<template v-slot:svg><img src="../../../assets/stat_red.png" alt="work"  style="height=100%"/></template>
+						<template v-slot:svg
+							><img
+								src="../../../assets/stat_red.png"
+								alt="work"
+								style="height=100%"
+						/></template>
 					</stat-card>
 				</div>
 				<div class="col mx-1">
-					<stat-card :label="'Conversion Rate'" :stat="conversionRate ? conversionRate : '0%'">
-						<template v-slot:svg><img src="../../../assets/yellow_green.png" alt="work"  style="height=100%"/></template>
+					<stat-card
+						:label="'Conversion Rate'"
+						:stat="conversionRate ? conversionRate : '0%'"
+					>
+						<template v-slot:svg
+							><img
+								src="../../../assets/yellow_green.png"
+								alt="work"
+								style="height=100%"
+						/></template>
 					</stat-card>
 				</div>
 			</div>
-			<div class="text-right pointer " v-if="role !== roleList.dsa && role !== roleList.cash_loan_agent">
+			<div
+				class="text-right pointer "
+				v-if="role !== roleList.dsa && role !== roleList.cash_loan_agent"
+			>
 				<router-link to="dsa-stats">
 					<span class="mr-3 bg-default rounded p-3">View DSA stats</span>
 				</router-link>
@@ -42,7 +68,7 @@
 			<div class="mt-5 mb-3 px-2 py-3 row">
 				<div class="col-8">
 					<div class="row w-100">
-						<h3 class="col">Filter by Date</h3>
+						<h3 class="col">Filters</h3>
 					</div>
 					<div class="d-flex">
 						<div class="col">
@@ -60,6 +86,14 @@
 								valueType="format"
 								placeholder="Date To"
 							></date-picker>
+						</div>
+						<div class="col" v-if="canView">
+							<select v-model="branch" class="custom-select" name="branch" id="branch">
+								<option selected value="" disabled>--Select Showroom--</option>
+								<option :value="branch.id" v-for="branch in getBranches">
+									{{ branch.name }}
+								</option>
+							</select>
 						</div>
 						<div class="col d-flex">
 							<button
@@ -201,6 +235,8 @@
 </template>
 
 <script>
+	import { mapGetters } from 'vuex';
+
 	import StatCard from '../../../components/StatCard.vue';
 	import RenewalTable from '../../../components/tables/RenewalTable.vue';
 
@@ -252,6 +288,7 @@
 					dsas: `/api/get-users?role=18&limit=200`,
 				},
 				meta: {},
+				branch: '',
 				renewal: true,
 				statuses: '',
 				OId: 1,
@@ -264,20 +301,20 @@
 		},
 
 		async mounted() {
+
+			await this.getRenewalStatuses();
+			await this.fetchDsas();
 			var date = new Date(),
 				y = date.getFullYear(),
 				m = date.getMonth();
 			var firstDay = new Date(y, m, 2).toISOString();
-			
 
 			let query = this.$route.query;
-			console.log(query)
-			if(!query.fromDate){
+			if (!query.fromDate) {
 				this.fromDate = firstDay.slice(0, 10);
-				this.searchQuery.fromDate = this.fromDate
+				this.searchQuery.fromDate = this.fromDate;
 			}
 
-			
 			this.searchQuery = {
 				...this.searchQuery,
 				...query,
@@ -285,7 +322,7 @@
 			if (query.tab) {
 				this.activeTab = query.tab;
 				this.showCorrectTab(this.activeTab);
-				return
+				return;
 			} else {
 				this.activeTab = 'all';
 				await this.fetchData();
@@ -296,14 +333,15 @@
 			this.$root.$on('owner_updated', (payload) => {
 				this.fetchData();
 			});
+			await this.$prepareBranches();
 			await this.getRenewalStatuses();
 			await this.fetchDsas();
+			
 			this.fetchStats();
-
 		},
 		methods: {
 			fetchStats(param = {}) {
-				let query = this.$route.query
+				let query = this.$route.query;
 				let reParam = {
 					...param,
 					fromDate: query.fromDate
@@ -342,7 +380,6 @@
 					...this.searchQuery,
 					page: this.pageParams.page,
 					per_page: this.pageParams.per_page,
-					
 				};
 				this.currentTab === 'all' ? (param.rollUp = true) : this.fetchStats();
 				if (this.renewal === true) {
@@ -366,33 +403,28 @@
 						});
 				}
 			},
-			buttonPress(tab){
+			buttonPress(tab) {
 				this.pageParams.page = 1;
 				this.switchTab(tab);
-				
 			},
 
 			switchTab(tab) {
 				// localStorage.setItem('activeTab', tab.alias);
 				this.currentTab = tab.alias;
-				if (tab.alias === 'nc'){
+				if (tab.alias === 'nc') {
 					delete this.searchQuery.renewalPrompterStatus;
-					this.searchQuery.unContactedRenewalPrompters = true
-				}
-				else{
+					this.searchQuery.unContactedRenewalPrompters = true;
+				} else {
 					this.searchQuery.renewalPrompterStatus = tab.link;
 					delete this.searchQuery.unContactedRenewalPrompters;
-
-
 				}
 
 				// localStorage.setItem('activeTab', tab.alias);
 				this.searchQuery.tab = tab.alias;
-				if(this.pageParams.page === 1){
+				if (this.pageParams.page === 1) {
 					this.pageParams.page = 1;
-				}
-				else{
-					this.pageParams.page = this.$route.query.page
+				} else {
+					this.pageParams.page = this.$route.query.page;
 				}
 
 				this.$router.replace({
@@ -403,12 +435,12 @@
 				});
 
 				this.fetchData();
-				
 			},
 
 			async searchAction() {
 				this.searchQuery.fromDate = this.fromDate;
 				this.searchQuery.toDate = this.toDate;
+				this.searchQuery.branch = this.branch;
 				this.pageParams.page = 1;
 
 				await this.fetchData();
@@ -433,21 +465,23 @@
 			async resetAction() {
 				delete this.searchQuery.fromDate;
 				delete this.searchQuery.toDate;
-				console.log(this.searchQuery);
+				delete this.searchQuery.branch;
 				this.toDate = '';
 				this.fromDate = '';
+				this.branch = '';
 				this.pageParams.page = 1;
 				this.currentTab = 'all';
 
 				let query = Object.assign({}, this.$route.query);
 				query.fromDate = '';
 				delete query.toDate;
+				delete query.branch;
+
 				query.tab = 'all';
 
 				this.$router.replace({ query });
 
 				await this.fetchData();
-				console.log(this.searchQuery);
 			},
 
 			async getRenewalStatuses() {
@@ -489,7 +523,6 @@
 					return item.alias === tab;
 				});
 
-
 				this.switchTab(tabObject);
 			},
 
@@ -498,9 +531,9 @@
 				let statuses = await get(this.apiUrl.statuses);
 				this.statuses = statuses.data?.data?.prompter_statuses;
 
-				this.statuses= this.statuses.filter(item => {
-					return item.name !== 'not contacted'
-				})
+				this.statuses = this.statuses.filter((item) => {
+					return item.name !== 'not contacted';
+				});
 			},
 
 			prepareList(response) {
@@ -547,6 +580,16 @@
 				}
 				return '';
 			},
+			canView: function() {
+				return [
+					Roles.president,
+					Roles.software_engineering_lead,
+					Roles.software_engineer,
+					Roles.general_manager,
+					Roles.coordinator,
+				].includes(this.role);
+			},
+			...mapGetters(['getBranches']),
 		},
 	};
 </script>

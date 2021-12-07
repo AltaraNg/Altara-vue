@@ -225,7 +225,7 @@
 					: '/dsa/renewal?fromDate=&tab=nc&unContactedRenewalPrompters=true';
 			},
 			canView: function() {
-				return [roles.dsa_captain, roles.dsa, roles.cash_loan_agent].includes(
+				return [roles.dsa_captain, roles.dsa, roles.cash_loan_agent, roles.rent_agent].includes(
 					this.authState.role
 				);
 			},

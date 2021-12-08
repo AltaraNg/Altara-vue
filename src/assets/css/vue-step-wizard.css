@@ -34,30 +34,29 @@
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 .step-pills .step-item {
-  background-color: #87b9d8;
+  background-color: #074a746c;
   border-radius: 10px;
-  padding: 5px 20px;
   list-style-type: none;
-  padding: 0.5rem 1.5rem;
+  padding: 1rem 1.5rem;
 }
 .step-pills .step-item a {
   text-decoration: none;
   color: #7b7b7b;
 }
 .step-pills .step-item.active {
-  border: 1px solid #074a74;
-  background-color: #074a74;
+  border: 1px solid #074a74a8;
+  background-color: #074a74a8;
 }
 .step-pills .step-item.validated {
   border: 1px solid #074a74;
+  background-color: #074a74;
 }
 .step-body {
-  background-color: #fff;
+ 
   margin-left: auto;
-  -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  padding: 1.2rem;
 }
-.step-body,
+
 .step-footer {
   padding: 1rem;
   border-radius: 1rem;
@@ -95,7 +94,7 @@
   padding: 1.3rem 2.25rem;
 }
 .step-button-previous:disabled {
-  background-color: #707172;
+  background-color: #919191;
   padding: 1.3rem 2.25rem;
 }
 .step-button-submit {

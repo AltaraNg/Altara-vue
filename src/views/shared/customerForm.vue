@@ -41,6 +41,291 @@
                 errors.first("cc_reg_id")
               }}</small>
             </div>
+            <div
+              class="form-group m-top"
+              v-if="mode === 'register' || $store.getters.auth('DVAAccess')"
+            >
+              <h5>Employee Details</h5>
+
+              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                <label>Employee Name</label>
+                <input
+                  class="form-control"
+                  data-vv-name="employee name"
+                  disabled
+                  name="emp_name"
+                  placeholder="Enter Employee name here"
+                  type="text"
+                  v-model="newCustomer.employee_name"
+                  v-validate="'required|max:50'"
+                />
+                <small v-if="errors.first('emp_name')">{{
+                  errors.first("emp_name")
+                }}</small>
+              </div>
+
+              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                <label>Employee ID (Staff ID)</label>
+                <input
+                  class="form-control"
+                  data-vv-as="employee phone number"
+                  disabled
+                  name="employee_id"
+                  placeholder="Enter Employee number here"
+                  type="text"
+                  v-model="newCustomer.employee_id"
+                  v-validate="'required'"
+                />
+                <small v-if="errors.first('employee_id')">{{
+                  errors.first("employee_id")
+                }}</small>
+              </div>
+
+              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                <label>Date</label>
+                <input
+                  class="form-control"
+                  data-vv-as="Date of Registration"
+                  disabled
+                  name="date_of_registration"
+                  type="date"
+                  v-model="newCustomer.date_of_registration"
+                  v-validate="'required'"
+                />
+                <small v-if="errors.first('date_of_registration')"
+                  >{{ errors.first("date_of_registration") }}
+                </small>
+              </div>
+
+              <div class="spaceAfter"></div>
+              <h5>Customer Personal Details</h5>
+
+              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                <label>First Name</label>
+                <input
+                  class="form-control"
+                  data-vv-as="first name"
+                  name="first_name"
+                  placeholder="Enter First name here.."
+                  type="text"
+                  v-model="newCustomer.first_name"
+                  v-validate="'required|max:25'"
+                />
+                <small v-if="errors.first('first_name')">{{
+                  errors.first("first_name")
+                }}</small>
+              </div>
+
+              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                <label>Middle Name</label>
+                <input
+                  class="form-control"
+                  placeholder="Enter Middle name here.."
+                  type="text"
+                  v-model="newCustomer.middle_name"
+                />
+              </div>
+
+              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                <label>Last Name</label>
+                <input
+                  class="form-control"
+                  data-vv-as="last name"
+                  name="last_name"
+                  placeholder="Enter Last name here.."
+                  type="text"
+                  v-model="newCustomer.last_name"
+                  v-validate="'required|max:25'"
+                />
+                <small v-if="errors.first('last_name')">{{
+                  errors.first("last_name")
+                }}</small>
+              </div>
+
+              <div class="spaceAfter"></div>
+
+              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                <label class="w-100 float-left">Gender</label>
+                <div
+                  class="radio p-0 col-md-6 col-6 float-left"
+                  v-for="(sex, index) in gender"
+                  :key="index"
+                >
+                  <input
+                    :id="sex"
+                    :value="sex"
+                    name="gender"
+                    type="radio"
+                    v-model="newCustomer.gender"
+                    v-validate="'required'"
+                  />
+                  <label :for="sex">{{ sex }}</label>
+                </div>
+                <small v-if="errors.first('gender')">{{
+                  errors.first("gender")
+                }}</small>
+              </div>
+
+              <div class="form-group col-md-8 px-md-3 px-1 float-left row">
+                <div class="col-6">
+                  <label>Phone Number</label>
+                  <input
+                    class="form-control"
+                    name="telephone"
+                    placeholder="Enter Phone number here.."
+                    type="tel"
+                    v-model="newCustomer.telephone"
+                    v-validate="'required|numeric|max:11|min:11'"
+                  />
+                  <small v-if="errors.first('telephone')">{{
+                    errors.first("telephone")
+                  }}</small>
+                  <small v-if="error.telephone">{{ error.telephone[0] }}</small>
+                </div>
+                <div class="col-6">
+                  <label>Email</label>
+                  <input
+                    class="form-control"
+                    name="email"
+                    placeholder="Enter Email.."
+                    type="email"
+                    v-model="newCustomer.email"
+                    v-validate="'required|email'"
+                  />
+                  <small v-if="errors.first('email')">{{
+                    errors.first("email")
+                  }}</small>
+                  <small v-if="error.email">{{ error.email[0] }}</small>
+                </div>
+              </div>
+
+              <div class="spaceAfter"></div>
+              <!-- </div> -->
+              <!--form section for register stops here-->
+
+              <!--form section for register and update starts here-->
+              <h5>Address</h5>
+
+              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                <label>Street Name</label>
+                <input
+                  class="form-control"
+                  data-vv-as="street name"
+                  name="street_name"
+                  placeholder="Enter street name here.."
+                  type="text"
+                  v-model="newCustomer.add_street"
+                  v-validate="'required|max:25'"
+                />
+                <small v-if="errors.first('street_name')">{{
+                  errors.first("street_name")
+                }}</small>
+              </div>
+
+              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                <label>House Number</label>
+                <input
+                  class="form-control"
+                  data-vv-as="house number"
+                  name="house_number"
+                  placeholder="Enter House number here.."
+                  type="text"
+                  v-model="newCustomer.add_houseno"
+                  v-validate="'required'"
+                />
+                <small v-if="errors.first('house_number')">{{
+                  errors.first("house_number")
+                }}</small>
+              </div>
+
+              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                <label>Nearest Bus Stop</label>
+                <input
+                  class="form-control"
+                  data-vv-as="nearest bus stop"
+                  name="nearest_bus_stop"
+                  placeholder="Enter nearest bus stop here.."
+                  type="text"
+                  v-model="newCustomer.add_nbstop"
+                  v-validate="'required'"
+                />
+                <small v-if="errors.first('nearest_bus_stop')">{{
+                  errors.first("nearest_bus_stop")
+                }}</small>
+              </div>
+
+              <div class="spaceAfter"></div>
+
+              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                <label>Area</label>
+                <input
+                  class="form-control"
+                  name="area"
+                  placeholder="Enter area here.."
+                  type="text"
+                  v-model="newCustomer.area_address"
+                  v-validate="'required|max:25'"
+                />
+                <small v-if="errors.first('area')">{{
+                  errors.first("area")
+                }}</small>
+              </div>
+
+              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                <label>City</label>
+                <input
+                  class="form-control"
+                  name="city"
+                  placeholder="Enter city here.."
+                  type="text"
+                  v-model="newCustomer.city"
+                  v-validate="'required|max:25'"
+                />
+                <small v-if="errors.first('city')">{{
+                  errors.first("city")
+                }}</small>
+              </div>
+
+              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                <label>State</label>
+                <select
+                  class="custom-select w-100"
+                  data-vv-validate-on="blur"
+                  name="state"
+                  v-model="newCustomer.state"
+                  v-validate="'required'"
+                >
+                  <option value>select state</option>
+                  <option
+                    v-bind:value="state.name"
+                    v-for="(state, index) in states"
+                    :key="index"
+                  >
+                    {{ state.name }}
+                  </option>
+                </select>
+                <small v-if="errors.first('state')">{{
+                  errors.first("state")
+                }}</small>
+              </div>
+
+              <div class="spaceAfter"></div>
+
+              <div class="form-group col-md-12 px-md-3 px-1 float-left">
+                <label>Describe Location</label>
+                <textarea
+                  class="form-control col-sm-12"
+                  placeholder="Describe the Location"
+                  rows="1"
+                  v-model="newCustomer.add_addinfo_description"
+                ></textarea>
+              </div>
+
+              <div class="spaceAfter"></div>
+            </div>
+            <!--form section for register and update stops here-->
+
+            <!--form section for register and update stops here-->
           </tab-content>
           <tab-content title="Contact Address">
             <div class="form-group">
@@ -49,8 +334,12 @@
                 type="text"
                 class="form-control"
                 placeholder="Enter your Company / Organization name"
-                v-model="companyName"
+                v-model="formData.companyName"
+                :class="hasError('companyName') ? 'is-invalid' : ''"
               />
+              <div v-if="hasError('companyName')" class="invalid-feedback">
+            <div class="error" v-if="!$v.formData.companyName.required">Please provide a valid company Name.</div>
+        </div>
             </div>
           </tab-content>
           <tab-content title="Household Info">
@@ -60,7 +349,7 @@
                 type="text"
                 class="form-control"
                 placeholder="Enter your Company / Organization name"
-                v-model="companyName"
+                v-model="formData.companyName"
               />
             </div>
           </tab-content>
@@ -71,7 +360,7 @@
                 type="text"
                 class="form-control"
                 placeholder="Enter your Company / Organization name"
-                v-model="companyName"
+                v-model="formData.companyName"
               />
             </div>
           </tab-content>
@@ -81,7 +370,10 @@
   </div>
 </template>
 <script>
-import { FormWizard, TabContent } from "vue-step-wizard";
+import { required } from "vuelidate/lib/validators";
+import { email } from "vuelidate/lib/validators";
+import { numeric } from "vuelidate/lib/validators";
+import { FormWizard, TabContent, ValidationHelper } from "vue-step-wizard";
 import "../../assets/css/vue-step-wizard.css";
 import { Message } from "../../utilities/sms";
 import { log } from "../../utilities/log";
@@ -92,11 +384,14 @@ import flash from "../../utilities/flash";
 
 export default {
   components: { Verification, FormWizard, TabContent },
+  mixins: [ValidationHelper],
   data() {
     return {
-      fullName: "",
+      formData:{
+        fullName: "",
       companyName: "",
       referral: "",
+      },
       occupations: [
         {
           id: 1,
@@ -296,6 +591,20 @@ export default {
       occName: [],
       isActive: false,
       isOther: false,
+       validationRules: [
+         {
+          //  newCudstomer:{required}
+         },
+         {
+           companyName:{required}
+         },
+         {
+
+         },
+         {
+           
+         }
+       ]
     };
   },
   methods: {
@@ -473,5 +782,8 @@ export default {
 
 hr.my-4 + span.occupation-option {
   margin-left: 0;
+}
+.m-top {
+  margin-top: 30px;
 }
 </style>

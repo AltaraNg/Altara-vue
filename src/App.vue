@@ -33,8 +33,7 @@
 									</router-link>
 								</li>
 								<li
-									class="nav-item mt-2 position-relative pl-2"
-									v-if="canView && flag === 'beta'"
+									class="nav-item mt-2 position-relative pl-2"									
 								>
 									<router-link
 										:to="
@@ -160,8 +159,7 @@
 			return {
 				flash: Flash.state,
 				authState: Auth.state,
-				roles: roles,
-				flag: localStorage.getItem('flag'),
+				roles: roles,				
 			};
 		},
 

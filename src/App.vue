@@ -159,8 +159,7 @@
 			return {
 				flash: Flash.state,
 				authState: Auth.state,
-				roles: roles,
-				flag: localStorage.getItem('flag'),
+				roles: roles,				
 			};
 		},
 

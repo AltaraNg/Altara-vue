@@ -534,7 +534,6 @@ export default {
       });
     },
     reference() {
-      console.log(this.customer_email);
       let text = "";
       let possible =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -657,7 +656,6 @@ export default {
         let allowed_date = moment().add(duration + 60, 'days');
        
         if (expiry_date.isBefore(allowed_date)){
-         console.log("The card's expiry date is not valid");
          this.cardError = true;
          return
         };
@@ -700,7 +698,6 @@ export default {
     },
     getCalc() {
       try {
-        console.log('e dey work');
         this.salesLogForm.customer_id = this.customerId;
         const data0 = {
           discount_slug: this.salesLogForm.discount,
@@ -856,7 +853,6 @@ export default {
       try {
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes);
         this.businessTypes = fetchBusinessTypes.data.data.data;
-        // console.log(fetchBusinessTypes);
         this.businessTypes = this.businessTypes.filter((item) => {
           if (this.isAltaraPay) {
             return item.slug.includes("ap_");
@@ -886,17 +882,6 @@ export default {
         a["full_name"].localeCompare(b["full_name"])
       );
     },
-    // async getBusinessTypes() {
-    //   try {
-    //     const fetchBusinessTypes = await get(this.apiUrls.businessTypes);
-    //     this.businessTypes = fetchBusinessTypes.data.data.data;
-    //     this.businessTypes = this.businessTypes.filter((item) => {
-    //       return item.slug.includes("ac_");
-    //     });
-    //   } catch (err) {
-    //     this.$displayErrorMessage(err);
-    //   }
-    // },
     checkIfDiscountElig() {
       if (this.customer.new_orders.length > 0) {
         let arrLength = this.customer.new_orders.length;
@@ -931,13 +916,11 @@ export default {
     },
     async processPaymentPayStackPayment(resp) {
       if (resp.status == "success" && resp.message == "Approved") {
-        this.salesLogForm.payment_gateway_id = this.paymentGateways.find(item => item.name === 'paystack').id        
-        console.log('is plenty',this.salesLogForm.payment_gateway_id)
+        this.salesLogForm.payment_gateway_id = this.paymentGateways.find(item => item.name === 'paystack').id
         await this.logSale();
       }
     },
     closePayStackModal: () => {
-      console.log("You closed checkout page");
     },
   },
 };

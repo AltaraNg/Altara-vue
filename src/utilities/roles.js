@@ -41,5 +41,6 @@ export default {
     renewal_agent: 43,
     dsa_referral: 44,
     dsa_renewal: 45,
-    freelance_captain: 46
+    freelance_captain: 46,
+    rent_agent: 47
 };

@@ -27,10 +27,10 @@ export const store = new Vuex.Store({
         branches: null,
         paymentMethods: null,
         lifestyleBranches: [8]
-        /*note this is different from other number used in the array
-        below, this one is the id of the lifestyle branches
-        the others below are role id for users*/
-        ,
+            /*note this is different from other number used in the array
+            below, this one is the id of the lifestyle branches
+            the others below are role id for users*/
+            ,
         loader: true,
         ProfileAccess: [],
         ProfileEditAccess: [],
@@ -43,11 +43,11 @@ export const store = new Vuex.Store({
         DSALead: [...admin, 15],
         DSACaptain: [...admin, 15, 17, 29, 46, 32, 46],
         AdminAccess: [...admin],
-        DSAAccess: [...admin, 15, 17, 18, 29, 44, 45, 32, 46],
+        DSAAccess: [...admin, 15, 17, 18, 29, 44, 45, 32, 46, 47],
         DVALead: [...admin, 13, 16, 22, 32],
         DVAAccess: [...admin, 13, 16, 21, 22, 23, 32],
         HRMAccess: [...admin, 6, 7, 32],
-        peoplesOps: [...admin, 6, 7,],
+        peoplesOps: [...admin, 6, 7, ],
         FSLLead: [...admin, 11, 32],
         supervisor: [...admin, 11, 14],
         FSLAccess: [...admin, 11, 14, 19, 32],
@@ -71,7 +71,8 @@ export const store = new Vuex.Store({
             { id: '10', name: "October" },
             { id: '11', name: "November" },
             { id: '12', name: "December" },
-        ]
+        ],
+
     },
     getters: {
         getBanks: state => state.banks,
@@ -83,7 +84,8 @@ export const store = new Vuex.Store({
         getPaymentMethods: state => state.paymentMethods,
         getTypeaheadUsersList: state => state.typeaheadUsersList,
         auth: state => role => state[role].includes(state.authRole),
-        getAuthUserDetails: state => ({ userId: state.user_id, roleId: state.authRole, apiToken: state.api_token })
+        getAuthUserDetails: state => ({ userId: state.user_id, roleId: state.authRole, apiToken: state.api_token }),
+
     },
     mutations: {
         mutateAuth: state => {
@@ -99,7 +101,7 @@ export const store = new Vuex.Store({
         mutatePaymentMethods: (state, paymentMethods) => Vue.set(state, 'paymentMethods', paymentMethods),
         mutateTypeaheadUsersList: (state, typeaheadUsersList) => Vue.set(state, 'typeaheadUsersList', typeaheadUsersList),
 
-        TOGGLE_LOADER: (state, data) => Vue.set(state, 'loader', data)
+        TOGGLE_LOADER: (state, data) => Vue.set(state, 'loader', data),
     },
     actions: {
         mutateAuth: ({ commit }) => commit('mutateAuth'),
@@ -113,6 +115,6 @@ export const store = new Vuex.Store({
 
 
         toggleLoader: ({ commit }, bool) => commit('TOGGLE_LOADER', bool)
-        // TODO:: cleanup
+            // TODO:: cleanup
     }
 });

@@ -36,6 +36,7 @@
 .step-pills .step-item {
   background-color: #074a746c;
   border-radius: 10px;
+  position: relative;
   list-style-type: none;
   padding: 1rem 1.5rem;
 }
@@ -118,3 +119,14 @@
 .tabLabel {
   color: #fff;
 }
+.check{
+  margin-left: 0.7rem;
+   margin-right: 0.7rem;
+   width: 1.5rem;
+  height:1.5rem;
+  display: none;
+}
+.check.validated{
+  display: inline-block;
+}
+

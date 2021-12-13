@@ -53,6 +53,26 @@
                 />
               </div>
 
+              <div class="col form-group" v-if="isAltaraPay">
+                <label for="amount" class="form-control-label"
+                  >Collection Channel</label
+                >
+                <select                 
+                  class="custom-select w-100"
+                  v-model="salesLogForm.payment_gateway_id"
+                  v-validate="'required'"
+                >
+                  <option disabled selected="selected">Collection Channel</option>
+                  <option
+                    :value="type.id"
+                    :key="type.id"
+                    v-for="type in paymentGateways"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
+
               <div class="col form-group">
                 <label for="amount" class="form-control-label"
                   >Sales Category</label
@@ -121,7 +141,7 @@
                   <option
                     :value="type"
                     :key="type.id"
-                    v-for="type in repaymentCyclesopt"
+                    v-for="type in repaymentCycleFiltered"
                   >
                     {{ type.name }}
                   </option>
@@ -179,7 +199,7 @@
                   <option
                     :value="type"
                     :key="type.id"
-                    v-for="type in getdownPaymentRates"
+                    v-for="type in downPaymentRatesFiltered"
                   >
                     {{ type.name }}
                   </option>
@@ -509,7 +529,7 @@ export default {
       paystackkey: process.env.VUE_APP_PAYSTACK_KEY,
     };
   },
-  async mounted() {
+  async beforeMount() {
     this.watchSalesLogForm();
     this.checkIfDiscountElig();
     await this.getRepaymentDuration();
@@ -528,10 +548,14 @@ export default {
   },
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
-    getdownPaymentRates() {
-      return this.downPaymentRates.filter((item) => {
-        return !item.name.includes("plus");
-      });
+    downPaymentRatesFiltered() {
+
+      let result = [];
+     this.isAltaraPay ? result = this.downPaymentRates : result = 
+      this.downPaymentRates.filter(item => {
+        return !item.name.includes("plus")
+      })
+      return result;
     },
     reference() {
       let text = "";
@@ -541,6 +565,14 @@ export default {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
     },
+     
+     repaymentCycleFiltered(){
+       let newArray = [];
+       this.isAltaraPay ? newArray = this.repaymentCyclesopt.filter(item => {
+         return item.name !== "monthly"
+       }) : newArray = this.repaymentCyclesopt       
+       return newArray;
+     }
   },
 
   methods: {

@@ -54,6 +54,7 @@
 						customer.last_renewal_prompter_activity ? true : false
 					"
 					@click="viewActivity(customer)"
+					v-if="mode === 'renewal'"
 				>
 					{{
 						customer.last_renewal_prompter_activity
@@ -69,6 +70,7 @@
 						customer.last_renewal_prompter_activity ? true : false
 					"
 					@click="viewActivity(customer)"
+					v-if="mode === 'renewal'"
 				>
 					{{
 						customer.last_renewal_prompter_activity
@@ -83,6 +85,7 @@
 					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center "
 					data-hoverable="true"
 					@click="updateStatus(customer)"
+					v-if="mode === 'renewal'"
 				>
 					<i class="far fa-edit text-success"></i>
 				</div>
@@ -187,6 +190,12 @@
 			dsas: {
 				required: true,
 			},
+
+			mode: {
+				type: String,
+				required: false,
+				default: 'renewal'
+			}
 		},
 		data() {
 			return {

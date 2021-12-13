@@ -262,6 +262,9 @@
 								:OId="OId"
 								:statuses="statuses"
 								:dsas="dsas"
+								:mode="'collections'"
+								:headings="headings"
+
 							></renewal-table>
 						</div>
 						<div
@@ -275,6 +278,9 @@
 								:OId="OId"
 								:statuses="statuses"
 								:dsas="dsas"
+								:mode="'collections'"
+								:headings="headings"
+
 							></renewal-table>
 						</div>
 						<div
@@ -288,6 +294,10 @@
 								:OId="OId"
 								:statuses="statuses"
 								:dsas="dsas"
+								:mode="'collections'"
+								:headings="headings"
+
+
 							></renewal-table>
 						</div>
 						<div
@@ -301,6 +311,10 @@
 								:OId="OId"
 								:statuses="statuses"
 								:dsas="dsas"
+								:mode="'collections'"
+								:headings="headings"
+
+
 							></renewal-table>
 						</div>
 						<div
@@ -314,6 +328,10 @@
 								:OId="OId"
 								:statuses="statuses"
 								:dsas="dsas"
+								:mode="'collections'"
+								:headings="headings"
+
+
 							></renewal-table>
 						</div>
 					</div>
@@ -393,10 +411,572 @@
 				fromDate: null,
 				toDate: null,
 				pageParams: {},
-				searchQuery: () => {
-                    return {}
+				searchQuery: {},
+				orders: [
+					{
+                "id": 5,
+                "order_number": "AT602D4A40D8",
+                "product_id": 89,
+                "product": {
+                    "id": 89,
+                    "name": "Itel P36-1gb",
+                    "brand": "Polystar",
+                    "category": "Freezers",
+                    "retail_price": "33500",
+                    "img_url": null,
+                    "feature": "",
+                    "product_type": "Lifestyle",
+                    "is_active": 1,
+                    "user": "Admin",
+                    "inventories": {},
+                    "created_at": "2021-02-12 15:17:34"
                 },
-				orders: [],
+                "product_name": "Itel P36-1gb",
+                "serial_number": null,
+                "repayment_duration": "six_months",
+                "repayment_cycle": "bi_monthly",
+                "customer_id": 19677,
+                "customer_name": "Abass Muyideen",
+                "customer_phone": "08074452561",
+                "customer_email": "abassmuy@gmail.com",
+                "business_type": "Altara Credit Products",
+                "status": "Completed",
+                "branch": "Challenge",
+                "product_price": 55394.3,
+                "down_payment": 11000,
+                "repayment": 44394.3,
+                "discount": [],
+                "single_repayment": 3600,
+                "custom_date": null,
+                "amortization": [
+                    {
+                        "id": 13,
+                        "new_order_id": 5,
+                        "expected_payment_date": "2021-03-03",
+                        "actual_payment_date": "2021-03-02",
+                        "expected_amount": 3600,
+                        "actual_amount": 3600,
+                        "created_at": "2021-02-17 16:54:25",
+                        "updated_at": "2021-03-02 15:29:56"
+                    },
+                    {
+                        "id": 14,
+                        "new_order_id": 5,
+                        "expected_payment_date": "2021-03-17",
+                        "actual_payment_date": "2021-03-10",
+                        "expected_amount": 3600,
+                        "actual_amount": 3600,
+                        "created_at": "2021-02-17 16:54:25",
+                        "updated_at": "2021-03-10 16:25:59"
+                    },
+                    {
+                        "id": 15,
+                        "new_order_id": 5,
+                        "expected_payment_date": "2021-03-31",
+                        "actual_payment_date": "2021-03-18",
+                        "expected_amount": 3600,
+                        "actual_amount": 3600,
+                        "created_at": "2021-02-17 16:54:25",
+                        "updated_at": "2021-03-18 10:39:57"
+                    },
+                    {
+                        "id": 16,
+                        "new_order_id": 5,
+                        "expected_payment_date": "2021-04-14",
+                        "actual_payment_date": "2021-03-24",
+                        "expected_amount": 3600,
+                        "actual_amount": 3600,
+                        "created_at": "2021-02-17 16:54:25",
+                        "updated_at": "2021-03-24 14:28:05"
+                    },
+                    {
+                        "id": 17,
+                        "new_order_id": 5,
+                        "expected_payment_date": "2021-04-28",
+                        "actual_payment_date": "2021-04-07",
+                        "expected_amount": 3600,
+                        "actual_amount": 3600,
+                        "created_at": "2021-02-17 16:54:25",
+                        "updated_at": "2021-04-07 16:11:02"
+                    },
+                    {
+                        "id": 18,
+                        "new_order_id": 5,
+                        "expected_payment_date": "2021-05-12",
+                        "actual_payment_date": "2021-04-15",
+                        "expected_amount": 3600,
+                        "actual_amount": 3600,
+                        "created_at": "2021-02-17 16:54:25",
+                        "updated_at": "2021-04-15 16:15:26"
+                    },
+                    {
+                        "id": 19,
+                        "new_order_id": 5,
+                        "expected_payment_date": "2021-05-26",
+                        "actual_payment_date": "2021-04-28",
+                        "expected_amount": 3600,
+                        "actual_amount": 3600,
+                        "created_at": "2021-02-17 16:54:25",
+                        "updated_at": "2021-04-28 14:02:00"
+                    },
+                    {
+                        "id": 20,
+                        "new_order_id": 5,
+                        "expected_payment_date": "2021-06-09",
+                        "actual_payment_date": "2021-06-03",
+                        "expected_amount": 3600,
+                        "actual_amount": 3600,
+                        "created_at": "2021-02-17 16:54:25",
+                        "updated_at": "2021-06-03 15:12:39"
+                    },
+                    {
+                        "id": 21,
+                        "new_order_id": 5,
+                        "expected_payment_date": "2021-06-23",
+                        "actual_payment_date": "2021-06-16",
+                        "expected_amount": 3600,
+                        "actual_amount": 3600,
+                        "created_at": "2021-02-17 16:54:25",
+                        "updated_at": "2021-06-16 15:37:58"
+                    },
+                    {
+                        "id": 22,
+                        "new_order_id": 5,
+                        "expected_payment_date": "2021-07-07",
+                        "actual_payment_date": "2021-07-01",
+                        "expected_amount": 3600,
+                        "actual_amount": 3600,
+                        "created_at": "2021-02-17 16:54:25",
+                        "updated_at": "2021-07-01 16:29:32"
+                    },
+                    {
+                        "id": 23,
+                        "new_order_id": 5,
+                        "expected_payment_date": "2021-07-21",
+                        "actual_payment_date": "2021-07-29",
+                        "expected_amount": 3600,
+                        "actual_amount": 1800,
+                        "created_at": "2021-02-17 16:54:25",
+                        "updated_at": "2021-07-29 13:46:42"
+                    },
+                    {
+                        "id": 24,
+                        "new_order_id": 5,
+                        "expected_payment_date": "2021-08-04",
+                        "actual_payment_date": "2021-07-29",
+                        "expected_amount": 3600,
+                        "actual_amount": 1800,
+                        "created_at": "2021-02-17 16:54:25",
+                        "updated_at": "2021-07-29 13:46:54"
+                    }
+                ],
+                "notifications": [],
+                "order_payment_method": null,
+                "customer": {
+                    "id": 19677,
+                    "employee_name": "Olaleye Olalekan Rotimi",
+                    "user_id": 161,
+                    "managed_by": null,
+                    "employee_id": "AC/C/168/19",
+                    "date_of_registration": "2020-07-11",
+                    "branch_id": 2,
+                    "first_name": "Abass",
+                    "middle_name": "Abass.",
+                    "last_name": "Muyideen",
+                    "add_nbstop": "odo oba",
+                    "add_street": "ori aje",
+                    "area_address": "odo oba",
+                    "add_houseno": "s7/218",
+                    "add_addinfo_description": "ibadan",
+                    "city": "ibadan",
+                    "state": "Oyo",
+                    "telephone": "08074452561",
+                    "email": "abassmuy@gmail.com",
+                    "gender": "male",
+                    "date_of_birth": "1984-08-05T23:00:00.000Z",
+                    "civil_status": "married",
+                    "occupation": "Manufacturing laborer",
+                    "year_together": 10,
+                    "type_of_home": "rented",
+                    "no_of_rooms": "more than Two room",
+                    "duration_of_residence": 7,
+                    "people_in_household": 4,
+                    "number_of_work": 3,
+                    "depend_on_you": 2,
+                    "number_of_children": 2,
+                    "level_of_education": "secondary",
+                    "visit_hour_from": "07:21",
+                    "visit_hour_to": "19:00",
+                    "loan_from_institution": "no",
+                    "loan_amount": null,
+                    "did_you_pay_back": null,
+                    "employment_status": "formal",
+                    "working_individual_Phone_number": "08074452561",
+                    "name_of_company_or_business": "Eagle flour",
+                    "cadd_nbstop": "toll gate",
+                    "cadd_addinfo": "ibadan",
+                    "company_city": "ibadan",
+                    "company_state": "Oyo",
+                    "company_telno": "08074452561",
+                    "receive_income_means": null,
+                    "post_in_company": null,
+                    "days_of_work": "Monday Tuesday Wednesday Thursday Friday monday thursday tuesday friday wednesday",
+                    "market_name": "toll gate",
+                    "bank_account": "Yes",
+                    "monthly_gains": "70000",
+                    "years_of_existence_or_work_duration": "between 4 - 9 years",
+                    "comp_street_name": "zartech",
+                    "comp_house_no": "09",
+                    "comp_area": "ibadan",
+                    "current_sal_or_business_income": "80000",
+                    "payment_period": null,
+                    "cvisit_hour_from": "10:25",
+                    "cvisit_hour_to": "20:00",
+                    "nextofkin_first_name": "Gbadamosi",
+                    "nextofkin_middle_name": ".",
+                    "nextofkin_last_name": "Olawale",
+                    "nextofkin_relationship": "sibling",
+                    "nextofkin_gender": "male",
+                    "nextofkin_telno": "08071077735",
+                    "nextofkin_work_duration": "between 4 - 9 years",
+                    "work_guarantor_first_name": "Akeem",
+                    "work_guarantor_middle_name": ".",
+                    "work_guarantor_last_name": "Olawuyi",
+                    "work_guarantor_relationship": "neighbouring worker",
+                    "guaadd_nbstop": "odo oba",
+                    "guaadd_street": "ola mummy",
+                    "guaadd_houseno": "19",
+                    "guaadd_addinfo": "ibadan",
+                    "gua_area": "odo oba",
+                    "work_guarantor_city": "ibadan",
+                    "work_guarantor_state": "Oyo",
+                    "work_guarantor_gender": "male",
+                    "work_guarantor_telno": "08126863654",
+                    "work_guarantor_work_duration": "between 4 - 9 years",
+                    "personal_guarantor_first_name": "Gbadamosi",
+                    "personal_guarantor_middle_name": "Akeem.",
+                    "personal_guarantor_last_name": "Olawale",
+                    "personal_guarantor_relationship": "friend",
+                    "personal_guarantor_city": "ibadan",
+                    "personal_guarantor_state": "Oyo",
+                    "pguaadd_nbstop": "odo oba",
+                    "pguaadd_street": "ola mummy",
+                    "pguaadd_houseno": "31",
+                    "pguaadd_addinfo": "ibadan",
+                    "pgua_area": "odo oba",
+                    "personal_guarantor_gender": "male",
+                    "personal_guarantor_telno": "08071077735",
+                    "personal_guarantor_work_duration": "between 4 - 9 years",
+                    "what_product_do_you_need": "maxi tv",
+                    "what_do_you_need_it_for": "Personal",
+                    "created_at": "2020-07-11 09:33:52",
+                    "updated_at": "2020-07-11 09:33:52",
+                    "reg_id": null
+                },
+                "order_date": "2021-10-17",
+                "owner": "Olawunmi Titilayo Yinka",
+                "sales_type": {
+                    "id": 2,
+                    "name": "renewal(DSA)",
+                    "created_at": null,
+                    "updated_at": null
+                },
+                "branch_id": 2,
+                "owner_id": 618,
+                "down_payment_rate": "twenty plus two",
+                "payment_gateway": null,
+                "order_type": "Altara Credit",
+                "renewal_prompters": {
+                    "data": [
+                        {
+                            "id": 1,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "contacted",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Oladeji Omodamola Oluwagbemisola",
+                                "branch": "Challenge",
+                                "feedback": "done",
+                                "created_at": "2021-10-20T08:57:49.000000Z",
+                                "updated_at": "2021-10-20T08:57:49.000000Z"
+                            }
+                        },
+                        {
+                            "id": 2,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "renewed",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Oladeji Omodamola Oluwagbemisola",
+                                "branch": "Challenge",
+                                "feedback": "done",
+                                "created_at": "2021-10-20T20:48:45.000000Z",
+                                "updated_at": "2021-10-20T20:48:45.000000Z"
+                            }
+                        },
+                        {
+                            "id": 3,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "renewed",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Oladeji Omodamola Oluwagbemisola",
+                                "branch": "Challenge",
+                                "feedback": "good",
+                                "created_at": "2021-10-20T20:49:40.000000Z",
+                                "updated_at": "2021-10-20T20:49:40.000000Z"
+                            }
+                        },
+                        {
+                            "id": 4,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "interested",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Oladeji Omodamola Oluwagbemisola",
+                                "branch": "Challenge",
+                                "feedback": "go away",
+                                "created_at": "2021-10-20T22:21:54.000000Z",
+                                "updated_at": "2021-10-20T22:21:54.000000Z"
+                            }
+                        },
+                        {
+                            "id": 5,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "contacted",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Oladeji Omodamola Oluwagbemisola",
+                                "branch": "Challenge",
+                                "feedback": "done",
+                                "created_at": "2021-10-21T08:33:41.000000Z",
+                                "updated_at": "2021-10-21T08:33:41.000000Z"
+                            }
+                        },
+                        {
+                            "id": 10,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "contacted",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Oladeji Omodamola Oluwagbemisola",
+                                "branch": "Challenge",
+                                "feedback": "yes",
+                                "created_at": "2021-10-22T03:15:03.000000Z",
+                                "updated_at": "2021-10-22T03:15:03.000000Z"
+                            }
+                        },
+                        {
+                            "id": 15,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "contacted",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Oladeji Omodamola Oluwagbemisola",
+                                "branch": "Challenge",
+                                "feedback": "yes",
+                                "created_at": "2021-10-22T03:57:15.000000Z",
+                                "updated_at": "2021-10-22T03:57:15.000000Z"
+                            }
+                        },
+                        {
+                            "id": 16,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "renewed",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Oladeji Omodamola Oluwagbemisola",
+                                "branch": "Challenge",
+                                "feedback": "good",
+                                "created_at": "2021-10-22T03:57:49.000000Z",
+                                "updated_at": "2021-10-22T03:57:49.000000Z"
+                            }
+                        },
+                        {
+                            "id": 17,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "contacted",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Oladeji Omodamola Oluwagbemisola",
+                                "branch": "Challenge",
+                                "feedback": "yes",
+                                "created_at": "2021-10-22T04:02:48.000000Z",
+                                "updated_at": "2021-10-22T04:02:48.000000Z"
+                            }
+                        },
+                        {
+                            "id": 18,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "contacted",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Oladeji Omodamola Oluwagbemisola",
+                                "branch": "Challenge",
+                                "feedback": "goodds",
+                                "created_at": "2021-10-22T04:12:34.000000Z",
+                                "updated_at": "2021-10-22T04:12:34.000000Z"
+                            }
+                        },
+                        {
+                            "id": 20,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "interested",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Olaosebikan",
+                                "branch": "Challenge",
+                                "feedback": "okay",
+                                "created_at": "2021-10-22T09:01:40.000000Z",
+                                "updated_at": "2021-10-22T09:01:40.000000Z"
+                            }
+                        },
+                        {
+                            "id": 21,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "interested",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Olaosebikan",
+                                "branch": "Challenge",
+                                "feedback": "okay",
+                                "created_at": "2021-10-22T09:02:44.000000Z",
+                                "updated_at": "2021-10-22T09:02:44.000000Z"
+                            }
+                        },
+                        {
+                            "id": 24,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "renewed",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Olaosebikan",
+                                "branch": "Challenge",
+                                "feedback": "okay yes",
+                                "created_at": "2021-10-23T14:56:40.000000Z",
+                                "updated_at": "2021-10-23T14:56:40.000000Z"
+                            }
+                        },
+                        {
+                            "id": 29,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "contacted",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Oladeji Omodamola Oluwagbemisola",
+                                "branch": "Challenge",
+                                "feedback": "good",
+                                "created_at": "2021-10-27T12:49:52.000000Z",
+                                "updated_at": "2021-10-27T12:49:52.000000Z"
+                            }
+                        },
+                        {
+                            "id": 30,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "interested",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Olaosebikan",
+                                "branch": "Challenge",
+                                "feedback": "ok",
+                                "created_at": "2021-10-27T13:18:32.000000Z",
+                                "updated_at": "2021-10-27T13:18:32.000000Z"
+                            }
+                        },
+                        {
+                            "id": 32,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "contacted",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Olaosebikan",
+                                "branch": "Challenge",
+                                "feedback": "okay",
+                                "created_at": "2021-10-27T14:17:53.000000Z",
+                                "updated_at": "2021-10-27T14:17:53.000000Z"
+                            }
+                        },
+                        {
+                            "id": 35,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "interested",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Olaosebikan",
+                                "branch": "Challenge",
+                                "feedback": "soon",
+                                "created_at": "2021-10-29T14:55:44.000000Z",
+                                "updated_at": "2021-10-29T14:55:44.000000Z"
+                            }
+                        },
+                        {
+                            "id": 44,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "renewed",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Olaosebikan",
+                                "branch": "Challenge",
+                                "feedback": "yah",
+                                "created_at": "2021-11-01T14:16:05.000000Z",
+                                "updated_at": "2021-11-01T14:16:05.000000Z"
+                            }
+                        },
+                        {
+                            "id": 72,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "contacted",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Olaosebikan",
+                                "branch": "Challenge",
+                                "feedback": "ok",
+                                "created_at": "2021-11-23T13:12:40.000000Z",
+                                "updated_at": "2021-11-23T13:12:40.000000Z"
+                            }
+                        },
+                        {
+                            "id": 82,
+                            "attributes": {
+                                "order_id": 5,
+                                "renewal_prompter_status": "renewed",
+                                "owner": "Olawunmi Titilayo Yinka",
+                                "creator": "Olaosebikan",
+                                "branch": "Challenge",
+                                "feedback": "yes o",
+                                "created_at": "2021-12-06T15:31:44.000000Z",
+                                "updated_at": "2021-12-06T15:31:44.000000Z"
+                            }
+                        }
+                    ]
+                },
+                "last_renewal_prompter_activity": {
+                    "id": 82,
+                    "attributes": {
+                        "order_id": 5,
+                        "renewal_prompter_status": "renewed",
+                        "owner": "Olawunmi Titilayo Yinka",
+                        "creator": "Olaosebikan",
+                        "branch": "Challenge",
+                        "feedback": "yes o",
+                        "created_at": "2021-12-06T15:31:44.000000Z",
+                        "updated_at": "2021-12-06T15:31:44.000000Z"
+                    }
+                },
+                "order_discount": null
+            },
+				],
+
+				headings: [
+					'S/N',
+					'Order Number',
+					'Customer Info Summary',
+					'Total Amount Owed/Amount Left',
+					'Feedback',
+					'Date',
+
+					'Actions',
+				],
 				apiUrl: {
 					renewalList: '/api/renewal/prompters',
 					statuses: '/api/renewal/prompters/statuses',
@@ -430,17 +1010,17 @@
 				this.searchQuery.fromDate = this.fromDate;
 			}
 
-			this.searchQuery = {
-				...this.searchQuery,
-				...query,
-			};
+			// this.searchQuery = {
+			// 	...this.searchQuery,
+			// 	...query,
+			// };
 			if (query.tab) {
 				this.activeTab = query.tab;
 				this.showCorrectTab(this.activeTab);
 				return;
 			} else {
 				this.activeTab = 'all';
-				await this.fetchData();
+				// await this.fetchData();
 			}
 			this.$root.$on('feedback', (payload) => {
 				this.fetchData();
@@ -448,9 +1028,9 @@
 			this.$root.$on('owner_updated', (payload) => {
 				this.fetchData();
 			});
-			await this.getRenewalStatuses();
-			await this.fetchDsas();
-			this.fetchStats();
+			// await this.getRenewalStatuses();
+			// await this.fetchDsas();
+			// this.fetchStats();
 		},
 		methods: {
 			fetchStats(param = {}) {

@@ -49,7 +49,7 @@
 						<tr>
 							<th>
 								Owner
-								<span @click="editOwner" class="pointer text-warning" v-if="role !== roleList.dsa && role !== roleList.cash_loan_agent">
+								<span @click="editOwner" class="pointer text-warning" v-if="!cannotEdit">
 									Edit
 								</span>
 							</th>
@@ -104,13 +104,23 @@
 				},
 				agent_id: '',
 				role:'',
-				roleList: Roles
 			};
 		},
 
 		mounted() {
 			this.role = parseInt(localStorage.getItem('role'));
 
+		},
+
+		computed: {
+			cannotEdit: function(){
+				return [
+					Roles.dsa,
+					Roles.rent_agent,
+					Roles.cash_loan_agent,
+					Roles.renewal_agent					
+				].includes(this.role);
+			}
 		},
 
 		methods: {

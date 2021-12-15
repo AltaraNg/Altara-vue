@@ -33,7 +33,8 @@
 									</router-link>
 								</li>
 								<li
-									class="nav-item mt-2 position-relative pl-2"									
+									class="nav-item mt-2 position-relative pl-2"
+									v-if="getUncontacted !== null && getUncontacted > 0 && canView"									
 								>
 									<router-link
 										:to="
@@ -41,7 +42,7 @@
 										"
 									>
 										<div
-											v-if="getUncontacted !== null && getUncontacted > 0"
+											
 											class="position-absolute bell-no font-weight-bold"
 										>
 											{{ getUncontacted }}

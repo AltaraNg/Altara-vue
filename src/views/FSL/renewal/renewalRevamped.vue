@@ -59,7 +59,7 @@
 			</div>
 			<div
 				class="text-right pointer "
-				v-if="role !== roleList.dsa && role !== roleList.cash_loan_agent"
+				v-if="canView"
 			>
 				<router-link to="dsa-stats">
 					<span class="mr-3 bg-default rounded p-3">View DSA stats</span>

@@ -36,7 +36,7 @@
               <th>{{ order.product.name }}</th>
               <th>{{ order.owner }}</th>
               <th>{{ order.serial_number }}</th>
-              <th>{{ order.order_type }}</th>
+              <th>{{ order.payment_gateway ? "Altara Pay" : "Altara Credit" }}</th>
               <th class="text-capitalize">{{ order.down_payment_rate }} percent</th>
               <th>{{ order.payment_gateway }}</th>
               <td class="font-weight-bold">{{ order.branch }}</td>

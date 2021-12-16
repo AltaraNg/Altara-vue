@@ -594,7 +594,7 @@
 					Roles.software_engineer,
 					Roles.general_manager,
 					Roles.coordinator,
-					Roles.dsa_captain,
+					Roles.dsa_captain
 				].includes(this.role);
 			},
 			...mapGetters(['getBranches']),

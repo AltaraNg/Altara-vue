@@ -217,7 +217,7 @@
                 >
                   <option disabled selected="selected">Business Type</option>
                   <option
-                    :value="type.id"
+                    :value="type"
                     :key="type.id"
                     v-for="type in businessTypes"
                   >
@@ -456,7 +456,7 @@
 import { get, post } from "../utilities/api";
 import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
-import calculate from "../utilities/calculator";
+import {calculate, cashLoan} from "../utilities/calculator";
 import Flash from "../utilities/flash";
 import discount from "./discount.vue";
 import { log } from "../utilities/log";
@@ -611,7 +611,7 @@ export default {
         inventory_id: this.selectedProduct.id,
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
         repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
-        business_type_id: this.salesLogForm.business_type_id,
+        business_type_id: this.salesLogForm.business_type_id.id,
         branch_id: localStorage.getItem("branch_id"),
         down_payment: this.fPayment,
         custom_date: this.salesLogForm.custom_date,
@@ -661,7 +661,7 @@ export default {
         inventory_id: this.selectedProduct.id,
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
         repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
-        business_type_id: this.salesLogForm.business_type_id,
+        business_type_id: this.salesLogForm.business_type_id.id,
         branch_id: localStorage.getItem("branch_id"),
         down_payment: this.$formatMoney(this.fPayment),
         down_payment_rate_id: this.salesLogForm.payment_type_id.id,
@@ -743,7 +743,7 @@ export default {
         const caly = this.calculation;
         const data = caly.filter(
           (x) =>
-            x.business_type_id === data0.business_type_id &&
+            x.business_type_id === data0.business_type_id?.id &&
             x.down_payment_rate_id === data0.payment_type_id.id &&
             x.repayment_duration_id === data0.repayment_duration_id.id
         )[0];
@@ -751,12 +751,23 @@ export default {
         this.selected_discount = this.discounts.find((item) => {
           return item.slug == this.salesLogForm.discount;
         });
-        const { total, actualDownpayment, rePayment } = calculate(
+
+        console.log(data0);
+
+        const { total, actualDownpayment, rePayment } = 
+        data0.business_type_id.slug.includes('cash_loan') || 
+        data0.business_type_id.slug.includes('rentals') ? 
+        cashLoan(
           this.selectedProduct.price,
           data0,
-          data,
-          this.selected_discount?.percentage_discount
-        );
+          data          
+        ) : 
+        calculate(this.selectedProduct.price,
+        data0,
+        data,
+        this.selected_discount?.percentage_discount);
+
+        console.log(rePayment);
 
         this.repaymentCircle = data0.repayment_cycle_id.value;
         this.rDuration = data0.repayment_duration_id.value;
@@ -765,7 +776,6 @@ export default {
         this.pPrice = total;
         this.test1 = false;
 
-        // $(`#amortizationPreview`).modal("toggle");
       } catch (e) {
         // this.$swal({
         //     icon: "error",

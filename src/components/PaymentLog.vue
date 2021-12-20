@@ -752,7 +752,6 @@ export default {
           return item.slug == this.salesLogForm.discount;
         });
 
-        console.log(data0);
 
         const { total, actualDownpayment, rePayment } = 
         data0.business_type_id.slug.includes('cash_loan') || 
@@ -767,7 +766,6 @@ export default {
         data,
         this.selected_discount?.percentage_discount);
 
-        console.log(rePayment);
 
         this.repaymentCircle = data0.repayment_cycle_id.value;
         this.rDuration = data0.repayment_duration_id.value;

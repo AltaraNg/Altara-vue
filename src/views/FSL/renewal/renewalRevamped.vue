@@ -57,10 +57,7 @@
 					</stat-card>
 				</div>
 			</div>
-			<div
-				class="text-right pointer "
-				v-if="canView"
-			>
+			<div class="text-right pointer " v-if="canView">
 				<router-link to="dsa-stats">
 					<span class="mr-3 bg-default rounded p-3">View DSA stats</span>
 				</router-link>
@@ -301,7 +298,6 @@
 		},
 
 		async mounted() {
-
 			await this.getRenewalStatuses();
 			await this.fetchDsas();
 			var date = new Date(),
@@ -336,7 +332,7 @@
 			await this.$prepareBranches();
 			await this.getRenewalStatuses();
 			await this.fetchDsas();
-			
+
 			this.fetchStats();
 		},
 		methods: {
@@ -353,6 +349,12 @@
 						? this.toDate
 						: this.searchQuery.toDate
 						? this.searchQuery.toDate
+						: '',
+
+					branch: this.branch
+						? this.branch
+						: this.searchQuery.branch
+						? this.searchQuery.branch
 						: '',
 					rollUp: true,
 					filterOrderbyBranch: true,

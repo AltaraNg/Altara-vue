@@ -53,6 +53,26 @@
                 />
               </div>
 
+              <div class="col form-group" v-if="isAltaraPay">
+                <label for="amount" class="form-control-label"
+                  >Collection Channel</label
+                >
+                <select                 
+                  class="custom-select w-100"
+                  v-model="salesLogForm.payment_gateway_id"
+                  v-validate="'required'"
+                >
+                  <option disabled selected="selected">Collection Channel</option>
+                  <option
+                    :value="type.id"
+                    :key="type.id"
+                    v-for="type in paymentGateways"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
+
               <div class="col form-group">
                 <label for="amount" class="form-control-label"
                   >Sales Category</label
@@ -121,7 +141,7 @@
                   <option
                     :value="type"
                     :key="type.id"
-                    v-for="type in repaymentCyclesopt"
+                    v-for="type in repaymentCycleFiltered"
                   >
                     {{ type.name }}
                   </option>
@@ -179,7 +199,7 @@
                   <option
                     :value="type"
                     :key="type.id"
-                    v-for="type in getdownPaymentRates"
+                    v-for="type in downPaymentRatesFiltered"
                   >
                     {{ type.name }}
                   </option>
@@ -197,7 +217,7 @@
                 >
                   <option disabled selected="selected">Business Type</option>
                   <option
-                    :value="type.id"
+                    :value="type"
                     :key="type.id"
                     v-for="type in businessTypes"
                   >
@@ -436,7 +456,7 @@
 import { get, post } from "../utilities/api";
 import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
-import calculate from "../utilities/calculator";
+import {calculate, cashLoan} from "../utilities/calculator";
 import Flash from "../utilities/flash";
 import discount from "./discount.vue";
 import { log } from "../utilities/log";
@@ -509,7 +529,7 @@ export default {
       paystackkey: process.env.VUE_APP_PAYSTACK_KEY,
     };
   },
-  async mounted() {
+  async beforeMount() {
     this.watchSalesLogForm();
     this.checkIfDiscountElig();
     await this.getRepaymentDuration();
@@ -528,10 +548,14 @@ export default {
   },
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
-    getdownPaymentRates() {
-      return this.downPaymentRates.filter((item) => {
-        return !item.name.includes("plus");
-      });
+    downPaymentRatesFiltered() {
+
+      let result = [];
+     this.isAltaraPay ? result = this.downPaymentRates : result = 
+      this.downPaymentRates.filter(item => {
+        return !item.name.includes("plus")
+      })
+      return result;
     },
     reference() {
       let text = "";
@@ -541,6 +565,14 @@ export default {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
     },
+     
+     repaymentCycleFiltered(){
+       let newArray = [];
+       this.isAltaraPay ? newArray = this.repaymentCyclesopt.filter(item => {
+         return item.name !== "monthly"
+       }) : newArray = this.repaymentCyclesopt       
+       return newArray;
+     }
   },
 
   methods: {
@@ -579,7 +611,7 @@ export default {
         inventory_id: this.selectedProduct.id,
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
         repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
-        business_type_id: this.salesLogForm.business_type_id,
+        business_type_id: this.salesLogForm.business_type_id.id,
         branch_id: localStorage.getItem("branch_id"),
         down_payment: this.fPayment,
         custom_date: this.salesLogForm.custom_date,
@@ -629,7 +661,7 @@ export default {
         inventory_id: this.selectedProduct.id,
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
         repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
-        business_type_id: this.salesLogForm.business_type_id,
+        business_type_id: this.salesLogForm.business_type_id.id,
         branch_id: localStorage.getItem("branch_id"),
         down_payment: this.$formatMoney(this.fPayment),
         down_payment_rate_id: this.salesLogForm.payment_type_id.id,
@@ -711,7 +743,7 @@ export default {
         const caly = this.calculation;
         const data = caly.filter(
           (x) =>
-            x.business_type_id === data0.business_type_id &&
+            x.business_type_id === data0.business_type_id?.id &&
             x.down_payment_rate_id === data0.payment_type_id.id &&
             x.repayment_duration_id === data0.repayment_duration_id.id
         )[0];
@@ -719,12 +751,21 @@ export default {
         this.selected_discount = this.discounts.find((item) => {
           return item.slug == this.salesLogForm.discount;
         });
-        const { total, actualDownpayment, rePayment } = calculate(
+
+
+        const { total, actualDownpayment, rePayment } = 
+        data0.business_type_id.slug.includes('cash_loan') || 
+        data0.business_type_id.slug.includes('rentals') ? 
+        cashLoan(
           this.selectedProduct.price,
           data0,
-          data,
-          this.selected_discount?.percentage_discount
-        );
+          data          
+        ) : 
+        calculate(this.selectedProduct.price,
+        data0,
+        data,
+        this.selected_discount?.percentage_discount);
+
 
         this.repaymentCircle = data0.repayment_cycle_id.value;
         this.rDuration = data0.repayment_duration_id.value;
@@ -733,7 +774,6 @@ export default {
         this.pPrice = total;
         this.test1 = false;
 
-        // $(`#amortizationPreview`).modal("toggle");
       } catch (e) {
         // this.$swal({
         //     icon: "error",

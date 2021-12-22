@@ -87,7 +87,7 @@
 								placeholder="Date To"
 							></date-picker>
 						</div>
-						<div class="col" v-if="canView">
+						<div class="col" v-if="canFilter">
 							<select v-model="branch" class="custom-select" name="branch" id="branch">
 								<option selected value="" disabled>--Select Showroom--</option>
 								<option :value="branch.id" v-for="branch in getBranches">
@@ -588,6 +588,15 @@
 					Roles.general_manager,
 					Roles.coordinator,
 					Roles.dsa_captain
+				].includes(this.role);
+			},
+			canFilter: function() {
+				return [
+					Roles.president,
+					Roles.software_engineering_lead,
+					Roles.software_engineer,
+					Roles.general_manager,
+					Roles.coordinator,
 				].includes(this.role);
 			},
 			...mapGetters(['getBranches']),

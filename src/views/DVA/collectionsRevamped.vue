@@ -78,11 +78,7 @@
 							v-validate="'required'"
 						>
 							<option disabled selected="selected">Sectors</option>
-							<option
-								:value="type.name"
-								:key="type.id"
-								v-for="type in sectors"
-							>
+							<option :value="type.name" :key="type.id" v-for="type in sectors">
 								{{ type.name }}
 							</option>
 						</select>
@@ -353,9 +349,8 @@
 				orders: [],
 
 				sectors: [
-					{id: 1, name: 'formal'},
-					{id: 2, name: 'informal'},
-
+					{ id: 1, name: 'formal' },
+					{ id: 2, name: 'informal' },
 				],
 
 				headings: [
@@ -468,7 +463,9 @@
 					page: this.pageParams.page,
 					per_page: this.pageParams.per_page,
 				};
-				this.currentTab === 'all' ? param.recollection = 'all' : this.fetchStats();
+				this.currentTab === 'all'
+					? (param.recollection = 'all')
+					: this.fetchStats();
 				if (this.renewal === true) {
 					this.$LIPS(true);
 
@@ -635,7 +632,6 @@
 					console.log('I got here');
 					const fetchBusinessTypes = await get(this.apiUrl.businessTypes);
 					this.businessTypes = fetchBusinessTypes.data.data.data;
-					
 				} catch (err) {
 					this.$displayErrorMessage(err);
 				}
@@ -645,7 +641,6 @@
 				try {
 					const fetchSalesCategories = await get(this.apiUrl.salesCategoryUrl);
 					this.salesCategories = fetchSalesCategories.data.data.data;
-					
 				} catch (err) {
 					this.$displayErrorMessage(err);
 				}

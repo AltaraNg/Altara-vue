@@ -32,10 +32,8 @@
 					data-hoverable="true"
 					@click="viewCustomer(customer)"
 					v-if="mode === 'collections'"
-
 				>
 					{{ customer.customer.id }}
-					
 				</div>
 
 				<div
@@ -43,7 +41,6 @@
 					data-hoverable="true"
 					@click="viewCustomer(customer)"
 					v-if="mode === 'renewal'"
-
 				>
 					ID: {{ customer.customer ? customer.customer.id : '' }}-{{
 						customer.customer ? customer.customer.employment_status : '' || ''
@@ -53,7 +50,6 @@
 					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
 					data-hoverable="true"
 					@click="viewAmmo(customer)"
-
 				>
 					{{
 						(customer.repayment - calcDebt(customer.amortization))
@@ -66,30 +62,39 @@
 					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
 					data-hoverable="true"
 					v-if="mode === 'collections'"
-
 				>
-					{{customer.general_feedbacks[0] || "N/A"}}
+					{{ customer.general_feedbacks[0] || 'N/A' }}
 				</div>
 
 				<div
 					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
 					data-hoverable="true"
 					v-if="mode === 'collections'"
-
 				>
-					{{customer.general_feedbacks[0]? customer.general_feedbacks[0].date : " N/A"}}
+					{{
+						customer.general_feedbacks[0]
+							? customer.general_feedbacks[0].date
+							: ' N/A'
+					}}
 				</div>
-
 
 				<div
 					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
 					data-hoverable="true"
 					v-if="mode === 'collections'"
-
-				> 
-					<img src="../../assets/css/svgs/bell.svg" alt="bell" class="mx-4" title="Send Notification" />
-					<img src="../../assets/css/svgs/circle.svg" alt="plus"  @click="addFeedbackModal" title="Add Feedback"/>
-
+				>
+					<img
+						src="../../assets/css/svgs/bell.svg"
+						alt="bell"
+						class="mx-4"
+						title="Send Notification"
+					/>
+					<img
+						src="../../assets/css/svgs/circle.svg"
+						alt="plus"
+						@click="addFeedbackModal"
+						title="Add Feedback"
+					/>
 				</div>
 
 				<div
@@ -159,7 +164,7 @@
 			/>
 		</modal>
 
-		<modal name="add-feedback" :height="'auto'" :clickToClose="false" >
+		<modal name="add-feedback" :height="'auto'" :clickToClose="false">
 			<add-feedback-modal
 				:modalItem="selectedOrderRenew"
 				@close="hide('add-feedback')"
@@ -171,8 +176,8 @@
 			name="last-activity"
 			:adaptive="true"
 			:height="'auto'"
-			:clickToClose="false"			
-			:reset="true"			
+			:clickToClose="false"
+			:reset="true"
 		>
 			<last-activity-modal
 				:modalItem="selectedActivity"
@@ -203,7 +208,7 @@
 			OrderInfoModal,
 			UpdateRenewalModal,
 			LastActivityModal,
-			AddFeedbackModal
+			AddFeedbackModal,
 		},
 		props: {
 			headings: {
@@ -249,8 +254,8 @@
 			mode: {
 				type: String,
 				required: false,
-				default: 'renewal'
-			}
+				default: 'renewal',
+			},
 		},
 		data() {
 			return {
@@ -288,7 +293,7 @@
 						resizable: true,
 						draggable: true,
 						height: 'auto',
-						width: '80%',						
+						width: '80%',
 						clickToClose: false,
 					}
 				);
@@ -310,7 +315,7 @@
 				}
 			},
 
-			addFeedbackModal(){
+			addFeedbackModal() {
 				this.show('add-feedback');
 			},
 			updateStatus(order) {

@@ -23,7 +23,7 @@
 					{{ customer.order_number }}
 					<i
 						class="fas fa-exclamation-circle text-success p-1"
-						v-if="calcDebt(customer.amortization) === 0"
+						v-if="calcDebt(customer.amortization) === 0 && mode === 'renewal'"
 					></i>
 				</div>
 
@@ -31,6 +31,16 @@
 					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
 					data-hoverable="true"
 					@click="viewCustomer(customer)"
+					v-if="mode === 'collections'"
+				>
+					{{ customer.customer.id }}
+				</div>
+
+				<div
+					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
+					data-hoverable="true"
+					@click="viewCustomer(customer)"
+					v-if="mode === 'renewal'"
 				>
 					ID: {{ customer.customer ? customer.customer.id : '' }}-{{
 						customer.customer ? customer.customer.employment_status : '' || ''
@@ -50,10 +60,50 @@
 
 				<div
 					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
+					data-hoverable="true"
+					v-if="mode === 'collections'"
+				>
+					{{ customer.general_feedbacks[0] || 'N/A' }}
+				</div>
+
+				<div
+					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
+					data-hoverable="true"
+					v-if="mode === 'collections'"
+				>
+					{{
+						customer.general_feedbacks[0]
+							? customer.general_feedbacks[0].date
+							: ' N/A'
+					}}
+				</div>
+
+				<div
+					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
+					data-hoverable="true"
+					v-if="mode === 'collections'"
+				>
+					<img
+						src="../../assets/css/svgs/bell.svg"
+						alt="bell"
+						class="mx-4"
+						title="Send Notification"
+					/>
+					<img
+						src="../../assets/css/svgs/circle.svg"
+						alt="plus"
+						@click="addFeedbackModal"
+						title="Add Feedback"
+					/>
+				</div>
+
+				<div
+					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
 					:data-hoverable="
 						customer.last_renewal_prompter_activity ? true : false
 					"
 					@click="viewActivity(customer)"
+					v-if="mode === 'renewal'"
 				>
 					{{
 						customer.last_renewal_prompter_activity
@@ -69,6 +119,7 @@
 						customer.last_renewal_prompter_activity ? true : false
 					"
 					@click="viewActivity(customer)"
+					v-if="mode === 'renewal'"
 				>
 					{{
 						customer.last_renewal_prompter_activity
@@ -83,6 +134,7 @@
 					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center "
 					data-hoverable="true"
 					@click="updateStatus(customer)"
+					v-if="mode === 'renewal'"
 				>
 					<i class="far fa-edit text-success"></i>
 				</div>
@@ -112,12 +164,20 @@
 			/>
 		</modal>
 
+		<modal name="add-feedback" :height="'auto'" :clickToClose="false">
+			<add-feedback-modal
+				:modalItem="selectedOrderRenew"
+				@close="hide('add-feedback')"
+				:statuses="statuses"
+			/>
+		</modal>
+
 		<modal
 			name="last-activity"
 			:adaptive="true"
 			:height="'auto'"
-			:clickToClose="false"			
-			:reset="true"			
+			:clickToClose="false"
+			:reset="true"
 		>
 			<last-activity-modal
 				:modalItem="selectedActivity"
@@ -135,6 +195,8 @@
 	import OrderInfoModal from '../modals/OrderInfoModal.vue';
 	import UpdateRenewalModal from '../modals/UpdateRenewalModal.vue';
 	import LastActivityModal from '../modals/LastActivityModal.vue';
+	import AddFeedbackModal from '../modals/AddFeedbackModal.vue';
+
 	import moment from 'moment';
 
 	Vue.use(Vue2Filters);
@@ -146,6 +208,7 @@
 			OrderInfoModal,
 			UpdateRenewalModal,
 			LastActivityModal,
+			AddFeedbackModal,
 		},
 		props: {
 			headings: {
@@ -187,6 +250,12 @@
 			dsas: {
 				required: true,
 			},
+
+			mode: {
+				type: String,
+				required: false,
+				default: 'renewal',
+			},
 		},
 		data() {
 			return {
@@ -224,7 +293,7 @@
 						resizable: true,
 						draggable: true,
 						height: 'auto',
-						width: '80%',						
+						width: '80%',
 						clickToClose: false,
 					}
 				);
@@ -244,6 +313,10 @@
 					this.selectedActivity = order?.renewal_prompters?.data;
 					this.show('last-activity');
 				}
+			},
+
+			addFeedbackModal() {
+				this.show('add-feedback');
 			},
 			updateStatus(order) {
 				this.selectedOrderRenew = order;

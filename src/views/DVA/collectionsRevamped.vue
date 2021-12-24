@@ -77,11 +77,11 @@
 							v-model="searchQuery.sector"
 							v-validate="'required'"
 						>
-							<option disabled selected="selected">Payment Method</option>
+							<option disabled selected="selected">Sectors</option>
 							<option
-								:value="type.id"
+								:value="type.name"
 								:key="type.id"
-								v-for="type in businessTypes"
+								v-for="type in sectors"
 							>
 								{{ type.name }}
 							</option>
@@ -103,11 +103,11 @@
 							v-model="searchQuery.saleType"
 							v-validate="'required'"
 						>
-							<option disabled selected="selected">Payment Method</option>
+							<option disabled selected="selected">Sales Type</option>
 							<option
 								:value="type.id"
 								:key="type.id"
-								v-for="type in businessTypes"
+								v-for="type in salesCategories"
 							>
 								{{ type.name }}
 							</option>
@@ -318,7 +318,7 @@
 					{
 						name: 'All',
 						alias: 'all',
-						link: '',
+						link: 'all',
 						title: 'List of all reminders and collection',
 					},
 					{
@@ -352,6 +352,12 @@
 				searchQuery: {},
 				orders: [],
 
+				sectors: [
+					{id: 1, name: 'formal'},
+					{id: 2, name: 'informal'},
+
+				],
+
 				headings: [
 					'S/N',
 					'Order Number',
@@ -364,16 +370,16 @@
 				apiUrl: {
 					generateList: 'api/recollection/regenerate/list',
 					collection: '/api/recollection',
-					statuses: '/api/renewal/prompters/statuses',
-					renewalListExport: '/api/renewal/prompters/customer-list',
-					statuses: '/api/renewal/prompters/statuses',
 					dsas: `/api/get-users?role=18&limit=200`,
+					salesCategoryUrl: `/api/sales_category`,
+					businessTypes: `/api/business_type`,
 				},
 				meta: {},
 				renewal: true,
 				statuses: '',
 				OId: 1,
 				businessTypes: [],
+				salesCategories: [],
 				currentTab: 'all',
 				statuses: [],
 				dsas: [],
@@ -417,7 +423,8 @@
 			});
 			await this.$prepareBranches();
 
-			// await this.getRenewalStatuses();
+			await this.getBusinessTypes();
+			await this.getSalesCategories();
 			// await this.fetchDsas();
 			// this.fetchStats();
 		},
@@ -461,7 +468,7 @@
 					page: this.pageParams.page,
 					per_page: this.pageParams.per_page,
 				};
-				// this.currentTab === 'all' ? (param.rollUp = true) : this.fetchStats();
+				this.currentTab === 'all' ? param.recollection = 'all' : this.fetchStats();
 				if (this.renewal === true) {
 					this.$LIPS(true);
 
@@ -513,6 +520,7 @@
 			},
 
 			async searchAction() {
+				this.$LIPS(true);
 				this.searchQuery.fromDate = this.fromDate;
 				this.searchQuery.toDate = this.toDate;
 				this.pageParams.page = 1;
@@ -611,17 +619,39 @@
 			async generateList() {
 				this.$LIPS(true);
 				let result = await get(this.apiUrl.generateList);
-				result.then(() => {
-					console.log('All good')
-				}).catch(err => {
-					console.log(err)
-				}).finally(() => {
-					this.$LIPS(false);
-				})
+				result
+					.then(() => {
+						console.log('All good');
+					})
+					.catch((err) => {
+						console.log(err);
+					})
+					.finally(() => {
+						this.$LIPS(false);
+					});
+			},
+			async getBusinessTypes() {
+				try {
+					console.log('I got here');
+					const fetchBusinessTypes = await get(this.apiUrl.businessTypes);
+					this.businessTypes = fetchBusinessTypes.data.data.data;
+					
+				} catch (err) {
+					this.$displayErrorMessage(err);
+				}
+			},
+
+			async getSalesCategories() {
+				try {
+					const fetchSalesCategories = await get(this.apiUrl.salesCategoryUrl);
+					this.salesCategories = fetchSalesCategories.data.data.data;
+					
+				} catch (err) {
+					this.$displayErrorMessage(err);
+				}
 			},
 
 			prepareList(response) {
-				console.log(response);
 				response.data.meta ? (this.meta = response.data.meta) : '';
 				let {
 					current_page,

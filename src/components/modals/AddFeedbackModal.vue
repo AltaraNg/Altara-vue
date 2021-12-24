@@ -18,7 +18,7 @@
 		</div>
 		<div class="modal-body pl-5 py-5">
             <form>
-                <textarea cols="92" rows="8" placeholder="add feedback..." class="p-3"/>
+                <textarea cols="92" rows="8" placeholder="add feedback..." class="p-3" v-model="feedback"/>
 
                 <div class="form-group my-2">
                     <div>
@@ -28,11 +28,11 @@
 							class="w-50"
 							v-model="date"
 							valueType="format"
-							placeholder="Date From"
+							placeholder="Date Followed up ..."
 						></date-picker>
                 </div>
 
-                <button class="btn float-right bg-default mb-3">Add Feedback</button>
+                <button class="btn float-right bg-default mb-3" @click="addFeedback">Add Feedback</button>
             </form>
 
         </div>
@@ -62,8 +62,7 @@
 			return {
 				showError: false,
 				apiUrl: {
-					renewalList: '/api/renewal/prompters',
-					statuses: '/api/renewal/prompters/statuses',
+					feedback: '/api/recollection/feedback',
 				},
 				feedback: '',
 				status: '',
@@ -78,23 +77,16 @@
 				this.$emit('close');
 			},
 
-			async submitStatus() {
-				try {
-					if (this.feedback === '' || !this.status) {
-						this.showError = true;
-					}
+			async addFeedback() {
+				try {					
 					let data = {
 						order_id: this.modalItem?.id,
-						renewal_prompter_status_id: this.status?.id,
+						follow_up_date: this.date,
 						feedback: this.feedback,
 					};
-					this.status?.name === 'interested'
-						? (data.promised_date = this.date)
-						: '';
-
 					this.$LIPS(true);
 
-					let response = await post(this.apiUrl.renewalList, data).catch(
+					let response = await post(this.apiUrl.feedback, data).catch(
 						(err) => {
 							if (err.response) {
 								this.err.push('Missing fields!!!');

@@ -57,12 +57,14 @@
                 <label for="amount" class="form-control-label"
                   >Collection Channel</label
                 >
-                <select                 
+                <select
                   class="custom-select w-100"
                   v-model="salesLogForm.payment_gateway_id"
                   v-validate="'required'"
                 >
-                  <option disabled selected="selected">Collection Channel</option>
+                  <option disabled selected="selected">
+                    Collection Channel
+                  </option>
                   <option
                     :value="type.id"
                     :key="type.id"
@@ -266,9 +268,21 @@
                 </select>
               </div>
               <div class="col form-group bor" v-if="isAltaraPay">
-                    <label for="amount" class="form-control-label">Card Expiry Date</label>
-                    <input class="w-100 custom-select" :class="{'border-danger' : cardError}" name="amount" v-model="card_expiry" v-validate="'required'" type="month" placeholder="Card Expiry Date" />
-                    <div v-if="cardError" class="small text-danger">The card cannot be accepted</div>
+                <label for="amount" class="form-control-label"
+                  >Card Expiry Date</label
+                >
+                <input
+                  class="w-100 custom-select"
+                  :class="{ 'border-danger': cardError }"
+                  name="amount"
+                  v-model="card_expiry"
+                  v-validate="'required'"
+                  type="month"
+                  placeholder="Card Expiry Date"
+                />
+                <div v-if="cardError" class="small text-danger">
+                  The card cannot be accepted
+                </div>
               </div>
             </div>
             <br />
@@ -437,12 +451,7 @@
             </paystack>
           </div>
           <div v-else class="text-center">
-            <button
-              class="btn bg-default"
-              @click="logSale()"
-              type="submit"
-              
-            >
+            <button class="btn bg-default" @click="logSale()" type="submit">
               Log Sale
             </button>
           </div>
@@ -456,13 +465,13 @@
 import { get, post } from "../utilities/api";
 import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
-import {calculate, cashLoan} from "../utilities/calculator";
+import { calculate, cashLoan } from "../utilities/calculator";
 import Flash from "../utilities/flash";
 import discount from "./discount.vue";
 import { log } from "../utilities/log";
 import paystack from "vue-paystack";
-	import moment from 'moment';
-
+import moment from "moment";
+import axios from "axios";
 
 export default {
   props: { customerId: null, customer: null },
@@ -497,16 +506,18 @@ export default {
         getProduct: `/api/inventory`,
         discounts: `/api/discount`,
         salesCategoryUrl: `/api/sales_category`,
+        verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
       },
       inputValue: "",
       paymentGateways: [
         {
-          id : 1,
-          name: 'paystack'},
+          id: 1,
+          name: "paystack",
+        },
         {
           id: 2,
-          name: 'remitta'
-        }
+          name: "remitta",
+        },
       ],
       selectedProduct: {},
       selected_discount: {},
@@ -527,6 +538,8 @@ export default {
       transfer: false,
       customer_email: this.customer.email || "somedefaultemail",
       paystackkey: process.env.VUE_APP_PAYSTACK_KEY,
+      paystackReference: null,
+      newOrderId: null,
     };
   },
   async beforeMount() {
@@ -549,12 +562,12 @@ export default {
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
     downPaymentRatesFiltered() {
-
       let result = [];
-     this.isAltaraPay ? result = this.downPaymentRates : result = 
-      this.downPaymentRates.filter(item => {
-        return !item.name.includes("plus")
-      })
+      this.isAltaraPay
+        ? (result = this.downPaymentRates)
+        : (result = this.downPaymentRates.filter((item) => {
+            return !item.name.includes("plus");
+          }));
       return result;
     },
     reference() {
@@ -565,21 +578,19 @@ export default {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
     },
-     
-     repaymentCycleFiltered(){
-       let newArray = [];
-       this.isAltaraPay ? newArray = this.repaymentCyclesopt.filter(item => {
-         return item.name !== "monthly"
-       }) : newArray = this.repaymentCyclesopt       
-       return newArray;
-     }
+
+    repaymentCycleFiltered() {
+      let newArray = [];
+      this.isAltaraPay
+        ? (newArray = this.repaymentCyclesopt.filter((item) => {
+            return item.name !== "monthly";
+          }))
+        : (newArray = this.repaymentCyclesopt);
+      return newArray;
+    },
   },
 
   methods: {
-
-
-
-
     watchSalesLogForm() {
       if (this.salesLogForm.sales_category_id == "2" && this.flag == "beta") {
         this.renewalState = true;
@@ -621,14 +632,18 @@ export default {
         down_payment_rate_id: this.salesLogForm.payment_type_id.id,
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.isAltaraPay
-          ? this.transfer ?  this.getPaymentMethods.find((el) => (el.name = "transfer")).id  : this.getPaymentMethods.find((el) => (el.name = "direct-debit")).id
+          ? this.transfer
+            ? this.getPaymentMethods.find((el) => (el.name = "transfer")).id
+            : this.getPaymentMethods.find((el) => (el.name = "direct-debit")).id
           : this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
       };
-      this.salesLogForm.payment_gateway_id ? data.payment_gateway_id = this.salesLogForm.payment_gateway_id : '';
+      this.salesLogForm.payment_gateway_id
+        ? (data.payment_gateway_id = this.salesLogForm.payment_gateway_id)
+        : "";
       if (this.eligible && renewal) {
         data.discount = [renewal];
       }
@@ -637,6 +652,7 @@ export default {
           this.$LIPS(true);
           post(this.apiUrls.createOrder, data)
             .then((res) => {
+              this.newOrderId = res.data.data.id;
               this.$LIPS(false);
               $(`#amortizationPreview`).modal("toggle");
 
@@ -645,6 +661,7 @@ export default {
                 title: "Sale Successfully Logged",
               });
               this.$emit("done");
+              return res;
             })
             .catch(() => {
               this.$LIPS(false);
@@ -677,21 +694,20 @@ export default {
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
       };
-      
+
       this.salesLogForm.serial_number !== null
         ? (data.serial_number = this.salesLogForm.serial_number)
         : "";
 
-      if(this.card_expiry){
+      if (this.card_expiry) {
         let expiry_date = moment(this.card_expiry);
-        let duration = parseInt(this.salesLogForm.repayment_duration_id.value)
-        let allowed_date = moment().add(duration + 60, 'days');
-       
-        if (expiry_date.isBefore(allowed_date)){
-         this.cardError = true;
-         return
-        };
+        let duration = parseInt(this.salesLogForm.repayment_duration_id.value);
+        let allowed_date = moment().add(duration + 60, "days");
 
+        if (expiry_date.isBefore(allowed_date)) {
+          this.cardError = true;
+          return;
+        }
       }
       this.$validator.validateAll().then((result) => {
         if (result) {
@@ -752,21 +768,16 @@ export default {
           return item.slug == this.salesLogForm.discount;
         });
 
-
-
-        const { total, actualDownpayment, rePayment } = 
-        data0.business_type_id.slug.includes('cash_loan') || 
-        data0.business_type_id.slug.includes('ap_rentals') ? 
-        cashLoan(
-          this.selectedProduct.price,
-          data0,
-          data          
-        ) : 
-        calculate(this.selectedProduct.price,
-        data0,
-        data,
-        this.selected_discount?.percentage_discount);
-
+        const { total, actualDownpayment, rePayment } =
+          data0.business_type_id.slug.includes("cash_loan") ||
+          data0.business_type_id.slug.includes("ap_rentals")
+            ? cashLoan(this.selectedProduct.price, data0, data)
+            : calculate(
+                this.selectedProduct.price,
+                data0,
+                data,
+                this.selected_discount?.percentage_discount
+              );
 
         this.repaymentCircle = data0.repayment_cycle_id.value;
         this.rDuration = data0.repayment_duration_id.value;
@@ -774,7 +785,6 @@ export default {
         this.rPayment = rePayment;
         this.pPrice = total;
         this.test1 = false;
-
       } catch (e) {
         // this.$swal({
         //     icon: "error",
@@ -949,19 +959,41 @@ export default {
     toggleSerial() {
       this.serial === true ? (this.serial = false) : (this.serial = true);
     },
-    toggleProductType() {    
+    toggleProductType() {
       this.transfer = false;
       this.getBusinessTypes();
       this.isAltaraPay = !this.isAltaraPay;
-      this.isAltaraPay? '' : this.card_expiry = null;
+      this.isAltaraPay ? "" : (this.card_expiry = null);
     },
     async processPaymentPayStackPayment(resp) {
+      this.paystackReference = resp.reference;
       if (resp.status == "success" && resp.message == "Approved") {
-        this.salesLogForm.payment_gateway_id = this.paymentGateways.find(item => item.name === 'paystack').id
-        await this.logSale();
+        this.salesLogForm.payment_gateway_id = this.paymentGateways.find(
+          (item) => item.name === "paystack"
+        ).id;
+        await this.verifyPaystackPayment()
+          .then((data) => {
+            if (data.status && data.message =="Verification successful") {
+              this.salesLogForm.authorization_code =
+              data.data.authorization.authorization_code;
+              this.logSale();
+            }
+          })
+          .catch((error) => {
+             this.$displayErrorMessage(error);
+          });
       }
     },
-    closePayStackModal: () => {
+    closePayStackModal: () => {},
+    async verifyPaystackPayment() {
+      const url = `${this.apiUrls.verifyPaymentUrl}${this.paystackReference}`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${process.env.VUE_APP_PAYSTACK_SECRET_KEY}`,
+        },
+      });
+      return response.json();
     },
   },
 };

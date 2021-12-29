@@ -468,10 +468,8 @@ import AutoComplete from "./AutoComplete.vue";
 import { calculate, cashLoan } from "../utilities/calculator";
 import Flash from "../utilities/flash";
 import discount from "./discount.vue";
-import { log } from "../utilities/log";
 import paystack from "vue-paystack";
 import moment from "moment";
-import axios from "axios";
 
 export default {
   props: { customerId: null, customer: null },

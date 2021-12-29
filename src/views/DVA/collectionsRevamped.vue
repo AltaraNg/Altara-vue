@@ -1,9 +1,9 @@
 <template>
 	<transition name="fade">
 		<div id="reminder" class="my-4 container-fluid">
-			<div class="row mt-5">
-				<div class="col mx-1">
-					<stat-card :label="'Total'" :stat="'200'">
+			<div class="d-flex gap-3 mt-5 justify-content-center">
+				<div class="mx-5">
+					<stat-card :label="'Total'" :stat="meta.stats.totalAmountOwed">
 						<template v-slot:svg
 							><img
 								src="../../assets/new_stats.png"
@@ -12,7 +12,7 @@
 						/></template>
 					</stat-card>
 				</div>
-				<div class="col mx-1">
+				<div class="mx-5">
 					<stat-card :label="'Total Amount Recovered'" :stat="'200'">
 						<template v-slot:svg
 							><img
@@ -22,6 +22,9 @@
 						/></template>
 					</stat-card>
 				</div>
+			</div>
+			<div v-if="canGenerateList">
+				<button class="bg-default p-2" @click="generateList">Generate List </button>
 			</div>
 
 			<div class="mt-5 mb-3 px-2 py-3 card">
@@ -616,16 +619,19 @@
 			async generateList() {
 				this.$LIPS(true);
 				let result = await get(this.apiUrl.generateList);
-				result
-					.then(() => {
-						console.log('All good');
+				if(result.data.status === 'success'){
+					this.$swal({
+						icon: 'success',
+						title: 'List generated successfully'
 					})
-					.catch((err) => {
-						console.log(err);
+				}else{
+					this.$swal({
+						icon: 'error',
+						title: 'Unable to generate list'
 					})
-					.finally(() => {
-						this.$LIPS(false);
-					});
+				}
+				this.$LIPS(false);
+				
 			},
 			async getBusinessTypes() {
 				try {
@@ -689,6 +695,10 @@
 					return ans.toFixed(2) + '%';
 				}
 				return '';
+			},
+
+			canGenerateList: function(){
+				return this.role === Roles.business_analyst
 			},
 
 			...mapGetters(['getBranches']),

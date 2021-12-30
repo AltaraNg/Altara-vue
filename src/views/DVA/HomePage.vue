@@ -57,6 +57,12 @@ export default {
           desc: "View all due collection!",
         },
         {
+          url: "reminder/collection-new",
+          title: "Collections Revamped",
+          url_c: "View collections",
+          desc: "View all due collection!",
+        },
+        {
           url: "reminder/recovery",
           title: "Recovery list",
           url_c: "View Recoveries",

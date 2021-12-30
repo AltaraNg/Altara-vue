@@ -649,6 +649,7 @@ export default {
       this.salesLogForm.payment_gateway_id
         ? (data.payment_gateway_id = this.salesLogForm.payment_gateway_id)
         : "";
+      data.authorization_code = this.salesLogForm?.authorization_code;
       if (this.eligible && renewal) {
         data.discount = [renewal];
       }
@@ -668,7 +669,7 @@ export default {
               this.$emit("done");
               return res;
             })
-            .catch(() => {
+            .catch((err) => {
               this.$LIPS(false);
               Flash.setError("Error: " + err.message);
             });

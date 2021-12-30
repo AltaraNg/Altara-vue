@@ -3,7 +3,7 @@
 		<div id="reminder" class="my-4 container-fluid">
 			<div class="d-flex gap-3 mt-5 justify-content-center">
 				<div class="mx-5">
-					<stat-card :label="'Total'" :stat="meta.stats.totalAmountOwed">
+					<stat-card :label="'Total'" :stat="$formatCurrency(meta.stats.totalAmountOwed)">
 						<template v-slot:svg
 							><img
 								src="../../assets/new_stats.png"
@@ -12,7 +12,7 @@
 						/></template>
 					</stat-card>
 				</div>
-				<div class="mx-5">
+				<div class="mx-5" v-show="false">
 					<stat-card :label="'Total Amount Recovered'" :stat="'200'">
 						<template v-slot:svg
 							><img

@@ -19,7 +19,7 @@
 		<div class="modal-body pl-5 py-5">
 			<form>
 				<textarea
-					cols="92"
+					cols="80"
 					rows="8"
 					placeholder="add feedback..."
 					class="p-3"

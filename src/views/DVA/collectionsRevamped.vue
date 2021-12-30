@@ -70,7 +70,7 @@
 
 					<div class="col form-group">
 						<label for="branch" class="form-control-label">ORDER ID</label>
-						<input type="text" class="form-control" />
+						<input type="text" class="form-control" v-model="searchQuery.order_id" />
 					</div>
 					<div class="col form-group">
 						<label for="business_type" class="form-control-label">SECTOR</label>
@@ -91,7 +91,7 @@
 				<div class="d-flex px-3">
 					<div class="col form-group">
 						<label for="branch" class="form-control-label">CUSTOMER ID</label>
-						<input type="text" class="form-control" />
+						<input type="text" class="form-control" v-model="searchQuery.customer_id"/>
 					</div>
 
 					<div class="col form-group">
@@ -383,6 +383,7 @@
 				dsas: [],
 				isProcessing: true,
 				role: parseInt(localStorage.getItem('role')),
+				
 			};
 		},
 
@@ -545,17 +546,25 @@
 			},
 
 			async resetAction() {
-				delete this.searchQuery.fromDate;
+				var date = new Date(),
+				y = date.getFullYear(),
+				m = date.getMonth();
+				var firstDay = new Date(y, m, 2).toISOString();
+				this.searchQuery.fromDate = firstDay.slice(0,10);
 				delete this.searchQuery.toDate;
-				console.log(this.searchQuery);
+				delete this.searchQuery.branch;
+				delete this.searchQuery.business_type;
+
 				this.toDate = '';
-				this.fromDate = '';
+				this.fromDate = firstDay.slice(0,10);
 				this.pageParams.page = 1;
 				this.currentTab = 'all';
 
 				let query = Object.assign({}, this.$route.query);
-				query.fromDate = '';
+				query.fromDate = firstDay.slice(0,10);
 				delete query.toDate;
+				delete query.branch;
+				delete query.business_type;
 				query.tab = 'all';
 
 				this.$router.replace({ query });

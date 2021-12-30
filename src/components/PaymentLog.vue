@@ -1,9 +1,13 @@
 <template>
   <div style="margin-left: 5rem; margin-right: 5rem">
+    
     <div class="row">
       <div class="col-md">
         <div class="card">
           <form class="card-body" @submit.prevent="previewAmortization">
+            <div class="text-center">
+      <h2>{{compHeader}}</h2>
+    </div>
             <div class="row">
               <div class="col">
                 <button
@@ -576,16 +580,19 @@ export default {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
     },
+     
+     repaymentCycleFiltered(){
+       let newArray = [];
+       this.isAltaraPay ? newArray = this.repaymentCyclesopt.filter(item => {
+         return item.name !== "monthly"
+       }) : newArray = this.repaymentCyclesopt       
+       return newArray;
+     },
 
-    repaymentCycleFiltered() {
-      let newArray = [];
-      this.isAltaraPay
-        ? (newArray = this.repaymentCyclesopt.filter((item) => {
-            return item.name !== "monthly";
-          }))
-        : (newArray = this.repaymentCyclesopt);
-      return newArray;
-    },
+     compHeader(){
+       return this.isAltaraPay? "Altara Pay Log Form" : "Altara Credit Log Form"
+     }
+
   },
 
   methods: {

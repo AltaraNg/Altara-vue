@@ -753,9 +753,10 @@ export default {
         });
 
 
+
         const { total, actualDownpayment, rePayment } = 
         data0.business_type_id.slug.includes('cash_loan') || 
-        data0.business_type_id.slug.includes('rentals') ? 
+        data0.business_type_id.slug.includes('ap_rentals') ? 
         cashLoan(
           this.selectedProduct.price,
           data0,

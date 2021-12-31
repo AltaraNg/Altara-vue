@@ -13,7 +13,7 @@
 					</stat-card>
 				</div>
 				<div class="mx-5" >
-					<stat-card :label="'Total Amount Owed'" :stat="$formatCurrency(meta.stats.totalAmountOwed)">
+					<stat-card :label="'Total Amount Owed'" :stat="meta.stats.totalAmountOwed ? $formatCurrency(meta.stats.totalAmountOwed) : $formatCurrency('0')">
 						<template v-slot:svg
 							><img
 								src="../../assets/download.png"
@@ -553,7 +553,7 @@
 				delete this.searchQuery.branch;
 				delete this.searchQuery.business_type;
 				delete this.searchQuery.CustomerId;
-				delete this.searchQuery.orderId;
+				delete this.searchQuery.orderNumber;
 				delete this.searchQuery.salesCategory;
 				delete this.searchQuery.sector;
 			
@@ -570,7 +570,7 @@
 				delete query.branch;
 				delete query.business_type;
 				delete query.CustomerId;
-				delete query.orderId;
+				delete query.orderNumber;
 				delete query.salesCategory;
 				delete query.sector;
 				query.tab = 'all';

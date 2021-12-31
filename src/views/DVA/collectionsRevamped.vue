@@ -13,7 +13,7 @@
 					</stat-card>
 				</div>
 				<div class="mx-5" >
-					<stat-card :label="'Total Amount Owed'" :stat="meta.stats.totalAmountOwed ? $formatCurrency(meta.stats.totalAmountOwed) : $formatCurrency(0)">
+					<stat-card :label="'Total Amount Owed'" :stat="meta.stats.totalAmountOwed ? $formatCurrency(meta.stats.totalAmountOwed) : $formatCurrency('0')">
 						<template v-slot:svg
 							><img
 								src="../../assets/download.png"

@@ -83,12 +83,7 @@
 					data-hoverable="true"
 					v-if="mode === 'collections'"
 				>
-					<img
-						src="../../assets/css/svgs/bell.svg"
-						alt="bell"
-						class="mx-4"
-						title="Send Notification"
-					/>
+				
 					<img
 						src="../../assets/css/svgs/circle.svg"
 						alt="plus"

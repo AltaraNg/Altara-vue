@@ -70,7 +70,7 @@
 
 					<div class="col form-group">
 						<label for="branch" class="form-control-label">ORDER ID</label>
-						<input type="text" class="form-control" v-model="searchQuery.order_id" />
+						<input type="text" class="form-control" v-model="searchQuery.orderNumber" />
 					</div>
 					<div class="col form-group">
 						<label for="business_type" class="form-control-label">SECTOR</label>
@@ -91,7 +91,7 @@
 				<div class="d-flex px-3">
 					<div class="col form-group">
 						<label for="branch" class="form-control-label">CUSTOMER ID</label>
-						<input type="text" class="form-control" v-model="searchQuery.customer_id"/>
+						<input type="text" class="form-control" v-model="searchQuery.CustomerId"/>
 					</div>
 
 					<div class="col form-group">
@@ -99,7 +99,7 @@
 						<select
 							name="branch"
 							class="custom-select w-100"
-							v-model="searchQuery.saleType"
+							v-model="searchQuery.salesCategory"
 							v-validate="'required'"
 						>
 							<option disabled selected="selected">Sales Type</option>
@@ -521,9 +521,7 @@
 			},
 
 			async searchAction() {
-				this.$LIPS(true);
-				this.searchQuery.fromDate = this.fromDate;
-				this.searchQuery.toDate = this.toDate;
+				this.$LIPS(true);				
 				this.pageParams.page = 1;
 
 				await this.fetchData();
@@ -554,6 +552,12 @@
 				delete this.searchQuery.toDate;
 				delete this.searchQuery.branch;
 				delete this.searchQuery.business_type;
+				delete this.searchQuery.CustomerId;
+				delete this.searchQuery.orderId;
+				delete this.searchQuery.salesCategory;
+				delete this.searchQuery.sector;
+			
+
 
 				this.toDate = '';
 				this.fromDate = firstDay.slice(0,10);
@@ -565,6 +569,10 @@
 				delete query.toDate;
 				delete query.branch;
 				delete query.business_type;
+				delete query.CustomerId;
+				delete query.orderId;
+				delete query.salesCategory;
+				delete query.sector;
 				query.tab = 'all';
 
 				this.$router.replace({ query });

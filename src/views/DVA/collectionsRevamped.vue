@@ -715,7 +715,8 @@
 			},
 
 			canGenerateList: function(){
-				return this.role === Roles.business_analyst
+				let flag = localStorage.getItem('flag')
+				return flag === 'beta'
 			},
 
 			...mapGetters(['getBranches']),

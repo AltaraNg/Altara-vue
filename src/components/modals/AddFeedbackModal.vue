@@ -26,16 +26,29 @@
 					v-model="feedback"
 				/>
 
-				<div class="form-group my-2">
+				<div class="d-flex">
+
+				<div class="form-group my-2 mr-5">
 					<div>
 						<label class="form-control-label">Followup Date</label>
 					</div>
 					<date-picker
-						class="w-50"
+						class="w-100"
 						v-model="date"
 						valueType="format"
 						placeholder="Date Followed up ..."
 					></date-picker>
+				</div>
+				<div class="form-group my-2 ml-5">
+					<div>
+						<label class="form-control-label">Reason</label>
+					</div>
+					<select v-model="reason" class="custom-select">
+						<option v-for="item in statuses" :value="item.id">
+							{{item.name}}
+						</option>
+					</select>
+				</div>
 				</div>
 
 				<button class="btn float-right bg-default mb-3" @click="addFeedback">
@@ -72,7 +85,7 @@
 					feedback: '/api/recollection/feedback',
 				},
 				feedback: '',
-				status: '',
+				reason: '',
 				date: '',
 				currentDate: new Date(),
 				err: [],

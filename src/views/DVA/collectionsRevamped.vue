@@ -1,7 +1,7 @@
 <template>
 	<transition name="fade">
 		<div id="reminder" class="my-4 container-fluid">
-			<div class="d-flex gap-3 mt-5 justify-content-center">
+			<div class="d-flex gap-3 mt-5 justify-content-center" v-if="isProcessing === false">
 				<div class="mx-5">
 					<stat-card :label="'Total number of sales'" :stat="pageParams.total">
 						<template v-slot:svg
@@ -116,7 +116,7 @@
 						<div><label class="form-control-label">DATE PURCHASED</label></div>
 						<date-picker
 							class="w-100"
-							v-model="searchQuery.fromDate"
+							v-model="fromDate"
 							valueType="format"
 							placeholder="Date From"
 						></date-picker>
@@ -192,7 +192,7 @@
 							<renewal-table
 								:customers="orders"
 								:OId="OId"
-								:statuses="statuses"
+								:statuses="reasons"
 								:dsas="dsas"
 								:mode="'collections'"
 								:headings="headings"
@@ -207,7 +207,7 @@
 							<renewal-table
 								:customers="orders"
 								:OId="OId"
-								:statuses="statuses"
+								:statuses="reasons"
 								:dsas="dsas"
 								:mode="'collections'"
 								:headings="headings"
@@ -222,7 +222,7 @@
 							<renewal-table
 								:customers="orders"
 								:OId="OId"
-								:statuses="statuses"
+								:statuses="reasons"
 								:dsas="dsas"
 								:mode="'collections'"
 								:headings="headings"
@@ -237,7 +237,7 @@
 							<renewal-table
 								:customers="orders"
 								:OId="OId"
-								:statuses="statuses"
+								:statuses="reasons"
 								:dsas="dsas"
 								:mode="'collections'"
 								:headings="headings"
@@ -252,7 +252,7 @@
 							<renewal-table
 								:customers="orders"
 								:OId="OId"
-								:statuses="statuses"
+								:statuses="reasons"
 								:dsas="dsas"
 								:mode="'collections'"
 								:headings="headings"
@@ -350,6 +350,7 @@
 				pageParams: {},
 				searchQuery: {},
 				orders: [],
+				reasons: [],
 
 				sectors: [
 					{ id: 1, name: 'formal' },
@@ -371,6 +372,7 @@
 					dsas: `/api/get-users?role=18&limit=200`,
 					salesCategoryUrl: `/api/sales_category`,
 					businessTypes: `/api/business_type`,
+					feedbackReasonsUrl: '/api/general/reasons/collection'
 				},
 				meta: {},
 				renewal: true,
@@ -396,16 +398,15 @@
 			var firstDay = new Date(y, m, 2).toISOString();
 
 			let query = this.$route.query;
-			console.log(query);
 			if (!query.fromDate) {
 				this.fromDate = firstDay.slice(0, 10);
 				this.searchQuery.fromDate = this.fromDate;
 			}
 
-			// this.searchQuery = {
-			// 	...this.searchQuery,
-			// 	...query,
-			// };
+			this.searchQuery = {
+				...this.searchQuery,
+				...query,
+			};
 			if (query.tab) {
 				this.activeTab = query.tab;
 				this.showCorrectTab(this.activeTab);
@@ -424,6 +425,7 @@
 
 			await this.getBusinessTypes();
 			await this.getSalesCategories();
+			await this.getReasons();
 			// await this.fetchDsas();
 			// this.fetchStats();
 		},
@@ -523,6 +525,7 @@
 			async searchAction() {
 				this.$LIPS(true);				
 				this.pageParams.page = 1;
+				this.searchQuery.fromDate = this.fromDate;
 
 				await this.fetchData();
 				this.$router.replace({
@@ -578,7 +581,6 @@
 				this.$router.replace({ query });
 
 				await this.fetchData();
-				console.log(this.searchQuery);
 			},
 
 			async getRenewalStatuses() {
@@ -652,7 +654,6 @@
 			},
 			async getBusinessTypes() {
 				try {
-					console.log('I got here');
 					const fetchBusinessTypes = await get(this.apiUrl.businessTypes);
 					this.businessTypes = fetchBusinessTypes.data.data.data;
 				} catch (err) {
@@ -664,6 +665,15 @@
 				try {
 					const fetchSalesCategories = await get(this.apiUrl.salesCategoryUrl);
 					this.salesCategories = fetchSalesCategories.data.data.data;
+				} catch (err) {
+					this.$displayErrorMessage(err);
+				}
+			},
+
+			async getReasons() {
+				try {
+					const reasons = await get(this.apiUrl.feedbackReasonsUrl);
+					this.reasons = reasons?.data?.data?.data;
 				} catch (err) {
 					this.$displayErrorMessage(err);
 				}

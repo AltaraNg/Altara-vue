@@ -673,7 +673,7 @@
 			async getReasons() {
 				try {
 					const reasons = await get(this.apiUrl.feedbackReasonsUrl);
-					this.reasons = reasons.data.data.data;
+					this.reasons = reasons?.data?.data?.data;
 				} catch (err) {
 					this.$displayErrorMessage(err);
 				}

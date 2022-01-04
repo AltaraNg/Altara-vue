@@ -535,7 +535,7 @@ export default {
       serial: false,
       renewalState: false,
       flag: localStorage.getItem("flag"),
-      isAltaraPay: true,
+      isAltaraPay: false,
       useCreditCard: false,
       transfer: false,
       customer_email: this.customer.email || "somedefaultemail",
@@ -618,9 +618,12 @@ export default {
             return item.name === "renewal";
           })?.id)
         : (renewal = "");
-      let orderType = this.orderTypes.find((item) => {
-        return item.name === "Altara Credit";
+        let orderType = '';
+        orderType = this.orderTypes.find((item) => {
+              return item.name === this.isAltaraPay ? "Altara Pay" : "Altara Credit";
       });
+      
+     
       const data = {
         order_type_id: orderType.id,
         customer_id: this.customerId,
@@ -970,6 +973,7 @@ export default {
       this.getBusinessTypes();
       this.isAltaraPay = !this.isAltaraPay;
       this.isAltaraPay ? "" : (this.card_expiry = null);
+      this.salesLogForm = {};
     },
     async processPaymentPayStackPayment(resp) {
       this.paystackReference = resp.reference;

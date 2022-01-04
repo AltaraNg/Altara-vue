@@ -619,15 +619,10 @@ export default {
           })?.id)
         : (renewal = "");
         let orderType = '';
-        if(this.isAltaraPay){
-           orderType = this.orderTypes.find((item) => {
-              return item.name === "Altara Pay";
+        orderType = this.orderTypes.find((item) => {
+              return item.name === this.isAltaraPay ? "Altara Pay" : "Altara Credit";
       });
-        }else{
-           orderType = this.orderTypes.find((item) => {
-        return item.name === "Altara Credit";
-      });
-        }
+      
      
       const data = {
         order_type_id: orderType.id,

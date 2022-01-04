@@ -12,7 +12,7 @@
 						/></template>
 					</stat-card>
 				</div>
-				<div class="mx-5" >
+				<!-- <div class="mx-5" >
 					<stat-card :label="'Total Amount Owed'" :stat="meta.stats.totalAmountOwed ? $formatCurrency(meta.stats.totalAmountOwed) : $formatCurrency('0')">
 						<template v-slot:svg
 							><img
@@ -21,7 +21,7 @@
 								style="height=100%"
 						/></template>
 					</stat-card>
-				</div>
+				</div> -->
 			</div>
 			<div v-if="canGenerateList">
 				<button class="bg-default p-2" @click="generateList">Generate List </button>
@@ -372,7 +372,7 @@
 					dsas: `/api/get-users?role=18&limit=200`,
 					salesCategoryUrl: `/api/sales_category`,
 					businessTypes: `/api/business_type`,
-					feedbackReasonsUrl: '/api/general/reasons/collection'
+					feedbackReasonsUrl: '/api/general/reasons/recollection'
 				},
 				meta: {},
 				renewal: true,
@@ -415,12 +415,10 @@
 				this.activeTab = 'all';
 				await this.fetchData();
 			}
-			this.$root.$on('feedback', (payload) => {
+			this.$root.$on('fetchOrders', () => {
 				this.fetchData();
 			});
-			this.$root.$on('owner_updated', (payload) => {
-				this.fetchData();
-			});
+			
 			await this.$prepareBranches();
 
 			await this.getBusinessTypes();

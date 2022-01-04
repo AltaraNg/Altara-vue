@@ -60,20 +60,21 @@
 
 				<div
 					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
-					data-hoverable="true"
+					:data-hoverable="customer.general_feedbacks[0] !== undefined"
 					v-if="mode === 'collections'"
+					@click="generalFeedback(customer)"
 				>
-					{{ customer.general_feedbacks[0] || 'N/A' }}
+					{{ customer.general_feedbacks[0]? customer.general_feedbacks[customer.general_feedbacks.length - 1].feedback : 'N/A' }}
 				</div>
 
 				<div
 					class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
-					data-hoverable="true"
+					data-hoverable="false"
 					v-if="mode === 'collections'"
 				>
 					{{
 						customer.general_feedbacks[0]
-							? customer.general_feedbacks[0].date
+							? customer.general_feedbacks[customer.general_feedbacks.length - 1].follow_up_date
 							: ' N/A'
 					}}
 				</div>
@@ -87,7 +88,7 @@
 					<img
 						src="../../assets/css/svgs/circle.svg"
 						alt="plus"
-						@click="addFeedbackModal"
+						@click="addFeedbackModal(customer)"
 						title="Add Feedback"
 					/>
 				</div>
@@ -161,9 +162,15 @@
 
 		<modal name="add-feedback" :height="'auto'" :clickToClose="false">
 			<add-feedback-modal
-				:modalItem="selectedOrderRenew"
+				:modalItem="selectedOrderFeedback"
 				@close="hide('add-feedback')"
 				:statuses="statuses"
+			/>
+		</modal>
+		<modal name="general-feedbacks" :height="'auto'" :clickToClose="false">
+			<general-feedback-modal
+				:modalItem="selectedOrderGen"
+				@close="hide('general-feedbacks')"
 			/>
 		</modal>
 
@@ -191,6 +198,7 @@
 	import UpdateRenewalModal from '../modals/UpdateRenewalModal.vue';
 	import LastActivityModal from '../modals/LastActivityModal.vue';
 	import AddFeedbackModal from '../modals/AddFeedbackModal.vue';
+	import GeneralFeedbackModal from '../modals/GeneralFeedbackModal.vue'
 
 	import moment from 'moment';
 
@@ -204,6 +212,7 @@
 			UpdateRenewalModal,
 			LastActivityModal,
 			AddFeedbackModal,
+			GeneralFeedbackModal
 		},
 		props: {
 			headings: {
@@ -259,6 +268,8 @@
 				selectedOrderRenew: '',
 				selectedActivity: '',
 				debt: false,
+				selectedOrderFeedback: '',
+				selectedOrderGen: '',
 			};
 		},
 
@@ -310,8 +321,16 @@
 				}
 			},
 
-			addFeedbackModal() {
+			addFeedbackModal(order) {
+				this.selectedOrderFeedback = order;
+
 				this.show('add-feedback');
+
+			},
+
+			generalFeedback(order){
+				this.selectedOrderGen = order;
+				this.show('general-feedbacks')
 			},
 			updateStatus(order) {
 				this.selectedOrderRenew = order;

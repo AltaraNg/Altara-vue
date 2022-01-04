@@ -17,13 +17,14 @@
 			</a>
 		</div>
 		<div class="modal-body pl-5 py-5">
-			<form>
+			<div >
 				<textarea
 					cols="80"
 					rows="8"
-					placeholder="add feedback..."
-					class="p-3"
+					placeholder="Add feedback..."
+					class="p-3 text-black"
 					v-model="feedback"
+					style="font-size: 14px"
 				/>
 
 				<div class="d-flex">
@@ -43,9 +44,9 @@
 					<div>
 						<label class="form-control-label">Reason</label>
 					</div>
-					<select v-model="reason" class="custom-select">
+					<select v-model="reason" class="custom-select w-75">
 						<option v-for="item in statuses" :value="item.id">
-							{{item.name}}
+							{{item.reason}}
 						</option>
 					</select>
 				</div>
@@ -54,7 +55,7 @@
 				<button class="btn float-right bg-default mb-3" @click="addFeedback">
 					Add Feedback
 				</button>
-			</form>
+			</div>
 		</div>
 
 		<div class="modal-footer justify-content-center"></div>
@@ -87,7 +88,6 @@
 				feedback: '',
 				reason: '',
 				date: '',
-				currentDate: new Date(),
 				err: [],
 			};
 		},
@@ -100,41 +100,39 @@
 			async addFeedback() {
 				try {
 					let data = {
-						order_id: this.modalItem?.id,
+						new_order_id: this.modalItem?.id,
 						follow_up_date: this.date,
 						feedback: this.feedback,
+						reason_id: this.reason,
+						data: {}
 					};
 					this.$LIPS(true);
 
-					let response = await post(this.apiUrl.feedback, data).catch((err) => {
-						if (err.response) {
-							this.err.push('Missing fields!!!');
-							this.$swal({
-								icon: 'error',
-								title: err.response.data.message,
-							});
-						}
-					});
-
-					if (response.data.status === 'success') {
-						this.showError = false;
+					const response = await post(this.apiUrl.feedback, data);
+					if (response.data.status === 'success'){
 						this.$swal({
 							icon: 'success',
-							title: 'Logged feedback successfully',
+							title: 'Feedback added Successfully'
 						});
-						this.$root.$emit('feedback', this.status.name);
+						this.$root.$emit('fetchOrders');
+
+						this.closeModal();
+					}else{
+						this.$swal({
+							icon: 'error',
+							title: 'There was a problem in adding feedback'
+						})
 					}
-					this.closeModal();
+
+					
 				} catch (e) {
 					console.log(e);
 				} finally {
 					this.$LIPS(false);
-					this.$prepareUncontacted();
+
 				}
 			},
-			disabledRange: function(date) {
-				return date < new Date();
-			},
+		
 		},
 	};
 </script>

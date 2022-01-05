@@ -52,7 +52,9 @@ Vue.prototype.$prepareUncontacted = () => {
 };
 
 Vue.prototype.$humanizeDate = (date) => {
-    return moment(date).fromNow();
+
+    let formatted = moment(date);
+    return moment(formatted).fromNow();
 }
 
 

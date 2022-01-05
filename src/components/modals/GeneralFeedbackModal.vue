@@ -27,7 +27,7 @@
                             <td>{{item.created_by}}</td>
                             <td>{{item.reason}}</td>
                             <td>{{item.feedback}}</td>
-                            <td>{{$humanizeDate(item.follow_up_date)}}</td>
+                            <td>{{item.follow_up_date}}</td>
 
                         </tr>
 					</tbody>

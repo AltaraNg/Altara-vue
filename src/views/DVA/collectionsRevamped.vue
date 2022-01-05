@@ -149,7 +149,7 @@
 
 					<button
 						class="my-auto py-4 h2 rounded mx-2 mr-5 bg-default px-5 w-25"
-						@click="resetAction"
+						@click="exportCsv"
 					>
 						<i class="fas fa-download mx-2"></i>
 						Export

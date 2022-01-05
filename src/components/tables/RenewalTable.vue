@@ -74,7 +74,7 @@
 				>
 					{{
 						customer.general_feedbacks[0]
-							? customer.general_feedbacks[customer.general_feedbacks.length - 1].follow_up_date
+							? $humanizeDate(customer.general_feedbacks[customer.general_feedbacks.length - 1].created_at)
 							: ' N/A'
 					}}
 				</div>

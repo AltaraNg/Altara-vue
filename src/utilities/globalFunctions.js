@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Flash from './flash';
 import {store} from '../store/store';
 import {get} from './api'
+import moment from 'moment';
 
 
 /**custom made vue filters
@@ -49,6 +50,10 @@ Vue.prototype.$prepareUncontacted = () => {
     !store.getters.getUncontacted && get('api/renewal/prompters?filterOrderbyBranch=true&orderHasAtMostTwoPaymentsLeft=true&unContactedRenewalPrompters=true&tab=nc')
         .then(r => store.dispatch('mutateUncontacted', r.data.data.renewal_prompters.total));
 };
+
+Vue.prototype.$humanizeDate = (date) => {
+    return moment(date).fromNow();
+}
 
 
 

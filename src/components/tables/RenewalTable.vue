@@ -64,7 +64,7 @@
 					v-if="mode === 'collections'"
 					@click="generalFeedback(customer)"
 				>
-					{{ customer.general_feedbacks[0]? customer.general_feedbacks[customer.general_feedbacks.length - 1].feedback : 'N/A' }}
+					{{ customer.general_feedbacks[0]? customer.general_feedbacks[customer.general_feedbacks.length - 1].feedback  : 'N/A' | truncate(50) }}
 				</div>
 
 				<div

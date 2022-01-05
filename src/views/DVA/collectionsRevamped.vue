@@ -372,7 +372,8 @@
 					dsas: `/api/get-users?role=18&limit=200`,
 					salesCategoryUrl: `/api/sales_category`,
 					businessTypes: `/api/business_type`,
-					feedbackReasonsUrl: '/api/general/reasons/recollection'
+					feedbackReasonsUrl: '/api/general/reasons/recollection',
+					exportCsv: '/api/recollection/export/list'
 				},
 				meta: {},
 				renewal: true,
@@ -592,15 +593,13 @@
 			},
 
 			async exportCsv() {
-				let param = {
-					filterOrderbyBranch: true,
-					orderHasAtMostTwoPaymentsLeft: true,
+				let param = {					
 					...this.searchQuery,
 				};
 				this.$LIPS(true);
 				try {
 					const response = await get(
-						this.apiUrl.renewalListExport + queryParam(param)
+						this.apiUrl.exportCsv + queryParam(param)
 					);
 					let fileURL = window.URL.createObjectURL(new Blob([response.data]));
 					let fileLink = document.createElement('a');

@@ -57,10 +57,7 @@
 					</stat-card>
 				</div>
 			</div>
-			<div
-				class="text-right pointer "
-				v-if="role !== roleList.dsa && role !== roleList.cash_loan_agent"
-			>
+			<div class="text-right pointer " v-if="canView">
 				<router-link to="dsa-stats">
 					<span class="mr-3 bg-default rounded p-3">View DSA stats</span>
 				</router-link>
@@ -87,7 +84,7 @@
 								placeholder="Date To"
 							></date-picker>
 						</div>
-						<div class="col" v-if="canView">
+						<div class="col" v-if="canFilter">
 							<select v-model="branch" class="custom-select" name="branch" id="branch">
 								<option selected value="" disabled>--Select Showroom--</option>
 								<option :value="branch.id" v-for="branch in getBranches">
@@ -301,7 +298,6 @@
 		},
 
 		async mounted() {
-
 			await this.getRenewalStatuses();
 			await this.fetchDsas();
 			var date = new Date(),
@@ -336,7 +332,7 @@
 			await this.$prepareBranches();
 			await this.getRenewalStatuses();
 			await this.fetchDsas();
-			
+
 			this.fetchStats();
 		},
 		methods: {
@@ -353,6 +349,12 @@
 						? this.toDate
 						: this.searchQuery.toDate
 						? this.searchQuery.toDate
+						: '',
+
+					branch: this.branch
+						? this.branch
+						: this.searchQuery.branch
+						? this.searchQuery.branch
 						: '',
 					rollUp: true,
 					filterOrderbyBranch: true,
@@ -581,6 +583,16 @@
 				return '';
 			},
 			canView: function() {
+				return [
+					Roles.president,
+					Roles.software_engineering_lead,
+					Roles.software_engineer,
+					Roles.general_manager,
+					Roles.coordinator,
+					Roles.dsa_captain
+				].includes(this.role);
+			},
+			canFilter: function() {
 				return [
 					Roles.president,
 					Roles.software_engineering_lead,

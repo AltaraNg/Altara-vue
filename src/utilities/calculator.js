@@ -30,6 +30,8 @@ const repaymentCount = (days, cycle) => {
   const result = days / cycle;
   if (result >= 24) {
     return 24;
+  } else if (result >= 18) {
+    return 18;
   } else if (result >= 12) {
     return 12;
   }
@@ -39,5 +41,22 @@ const repaymentCount = (days, cycle) => {
   return 3;
 };
 
+const cashLoan = (productPrice, data, params) => {
+  const count = repaymentCount(
+    data.repayment_duration_id.value,
+    14
+  );
+  const actualDownpayment = (data.payment_type_id.percent / 100) * productPrice;
+  const residual = productPrice - actualDownpayment;
+  const principal = residual / count;
+  const interest = (params.interest / 100) * residual;
+  const tempActualRepayment = (principal + interest) * count;
+  var biMonthlyRepayment = Math.round(tempActualRepayment / count / 100) * 100;
+  const rePayment = biMonthlyRepayment * count;
+  let total = Math.ceil((actualDownpayment + rePayment) / 100) * 100;
+  total = rePayment + actualDownpayment;
+  return { total, actualDownpayment, rePayment };
+}
 
-export default calculate;
+
+export {calculate, cashLoan};

@@ -1,9 +1,33 @@
 <template>
   <div style="margin-left: 5rem; margin-right: 5rem">
+    
     <div class="row">
       <div class="col-md">
         <div class="card">
           <form class="card-body" @submit.prevent="previewAmortization">
+            <div class="text-center">
+      <h2>{{compHeader}}</h2>
+    </div>
+            <div class="row">
+              <div class="col">
+                <button
+                  class="btn btn-md float-right"
+                  @click="toggleProductType"
+                  :class="[isAltaraPay ? 'bg-default' : 'bt-default']"
+                  type="button"
+                >
+                  Altara Pay
+                </button>
+                <button
+                  class="btn btn-md float-right mr-0"
+                  @click="toggleProductType"
+                  :class="[!isAltaraPay ? 'bg-default' : 'btn-default']"
+                  type="button"
+                >
+                  Altara Credit
+                </button>
+              </div>
+            </div>
             <div class="row">
               <div class="form-group align-self-left text-capitalize col">
                 <label for="amount" class="form-control-label w-100"
@@ -33,6 +57,28 @@
                 />
               </div>
 
+              <div class="col form-group" v-if="isAltaraPay">
+                <label for="amount" class="form-control-label"
+                  >Collection Channel</label
+                >
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.payment_gateway_id"
+                  v-validate="'required'"
+                >
+                  <option disabled selected="selected">
+                    Collection Channel
+                  </option>
+                  <option
+                    :value="type.id"
+                    :key="type.id"
+                    v-for="type in paymentGateways"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
+
               <div class="col form-group">
                 <label for="amount" class="form-control-label"
                   >Sales Category</label
@@ -54,9 +100,7 @@
                 </select>
               </div>
               <div class="col form-group" v-if="renewalState">
-                <label for="amount" class="form-control-label"
-                  >Discounts</label
-                >
+                <label for="amount" class="form-control-label">Discounts</label>
                 <select
                   @change="getCalc()"
                   class="custom-select w-100"
@@ -103,7 +147,7 @@
                   <option
                     :value="type"
                     :key="type.id"
-                    v-for="type in repaymentCyclesopt"
+                    v-for="type in repaymentCycleFiltered"
                   >
                     {{ type.name }}
                   </option>
@@ -145,7 +189,7 @@
                 </select>
               </div>
 
-               <div class="col form-group">
+              <div class="col form-group">
                 <label for="amount" class="form-control-label"
                   >Downpayment Rates</label
                 >
@@ -161,12 +205,12 @@
                   <option
                     :value="type"
                     :key="type.id"
-                    v-for="type in getdownPaymentRates"
+                    v-for="type in downPaymentRatesFiltered"
                   >
                     {{ type.name }}
                   </option>
                 </select>
-              </div> 
+              </div>
               <div class="col form-group">
                 <label for="amount" class="form-control-label"
                   >Business Type</label
@@ -179,7 +223,7 @@
                 >
                   <option disabled selected="selected">Business Type</option>
                   <option
-                    :value="type.id"
+                    :value="type"
                     :key="type.id"
                     v-for="type in businessTypes"
                   >
@@ -187,7 +231,7 @@
                   </option>
                 </select>
               </div>
-              <div class="col form-group">
+              <div class="col form-group" v-if="!isAltaraPay">
                 <label for="amount" class="form-control-label"
                   >Payment Method</label
                 >
@@ -209,7 +253,7 @@
                   </option>
                 </select>
               </div>
-              <div class="col form-group">
+              <div class="col form-group" v-if="!isAltaraPay">
                 <label for="amount" class="form-control-label">Bank</label>
                 <select
                   class="custom-select w-100"
@@ -227,10 +271,23 @@
                   </option>
                 </select>
               </div>
-              <!-- <div class="col form-group">
-                    <label for="amount" class="form-control-label">Down Payment</label>
-                    <input class="w-100 custom-select" name="amount" v-model="salesLogForm.down_payment" v-validate="'required'" type="number" placeholder="Enter Amount"/>
-              </div>-->
+              <div class="col form-group bor" v-if="isAltaraPay">
+                <label for="amount" class="form-control-label"
+                  >Card Expiry Date</label
+                >
+                <input
+                  class="w-100 custom-select"
+                  :class="{ 'border-danger': cardError }"
+                  name="amount"
+                  v-model="card_expiry"
+                  v-validate="'required'"
+                  type="month"
+                  placeholder="Card Expiry Date"
+                />
+                <div v-if="cardError" class="small text-danger">
+                  The card cannot be accepted
+                </div>
+              </div>
             </div>
             <br />
             <div class="text-center">
@@ -251,7 +308,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="mt-3 mb-0">Order Information</h5>
-               <table class="table table-bordered">
+            <table class="table table-bordered">
               <tbody class="text-center">
                 <tr class="table-separator">
                   <th>Product Name</th>
@@ -273,8 +330,16 @@
                 </tr>
               </tbody>
             </table>
-            <div class="cover">           
-               <discount class="discount" v-if="renewalState && salesLogForm.discount == '5_discount' && rPayment > 0" :percent= "selected_discount.percentage_discount"/>
+            <div class="cover">
+              <discount
+                class="discount"
+                v-if="
+                  renewalState &&
+                  salesLogForm.discount == '5_discount' &&
+                  rPayment > 0
+                "
+                :percent="selected_discount.percentage_discount"
+              />
             </div>
           </div>
         </div>
@@ -311,11 +376,21 @@
                     </th>
                     <th>{{ $formatCurrency(pPrice) }}</th>
                     <th>{{ $formatCurrency(fPayment) }}</th>
-                    <td class="">{{ $formatCurrency(rPayment) }}
-                    <div class="modal_cover">
-                      <discount class="modal_discount" v-if="renewalState && salesLogForm.discount == '5_discount' && rPayment > 0" :percent= "selected_discount.percentage_discount"/>
-                    </div>
-                     </td>                    <!-- <td class="font-weight-bold">Ikoyi</td> -->
+                    <td class="">
+                      {{ $formatCurrency(rPayment) }}
+                      <div class="modal_cover">
+                        <discount
+                          class="modal_discount"
+                          v-if="
+                            renewalState &&
+                            salesLogForm.discount == '5_discount' &&
+                            rPayment > 0
+                          "
+                          :percent="selected_discount.percentage_discount"
+                        />
+                      </div>
+                    </td>
+                    <!-- <td class="font-weight-bold">Ikoyi</td> -->
                   </tr>
                 </tbody>
               </table>
@@ -342,7 +417,44 @@
               </div>
             </div>
           </div>
-          <div class="text-center">
+          <div class="text-center" v-if="isAltaraPay">
+            <p class="d-block text-danger">
+              {{
+                !transfer
+                  ? "Push Button If Customer Transferred Payment"
+                  : "Push Button To Pay With Credit Card"
+              }}
+            </p>
+            <div class="switch">
+              <input
+                type="checkbox"
+                id="switch"
+                class="switch_input"
+                v-model="transfer"
+              /><label for="switch" class="switch_label"></label><br />
+            </div>
+            <button
+              class="btn bg-default"
+              @click="logSale()"
+              type="submit"
+              v-if="transfer"
+            >
+              Confirm Transfer
+            </button>
+            <paystack
+              :amount="this.fPayment * 100"
+              :email="customer_email"
+              :paystackkey="paystackkey"
+              :reference="reference"
+              :callback="processPaymentPayStackPayment"
+              :close="closePayStackModal"
+              class="btn bg-default"
+              v-if="!transfer"
+            >
+              Pay
+            </paystack>
+          </div>
+          <div v-else class="text-center">
             <button class="btn bg-default" @click="logSale()" type="submit">
               Log Sale
             </button>
@@ -357,15 +469,18 @@
 import { get, post } from "../utilities/api";
 import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
-import calculate from "../utilities/calculator";
+import { calculate, cashLoan } from "../utilities/calculator";
 import Flash from "../utilities/flash";
-import discount from "./discount.vue"
+import discount from "./discount.vue";
+import paystack from "vue-paystack";
+import moment from "moment";
 
 export default {
   props: { customerId: null, customer: null },
-  components: { AutoComplete, discount },
+  components: { AutoComplete, discount, paystack },
   data() {
     return {
+      card_expiry: null,
       error: {},
       users: [],
       product: "",
@@ -373,7 +488,7 @@ export default {
       repaymentDuration: [],
       repaymentCyclesopt: [],
       downPaymentRates: [],
-      discounts:[],
+      discounts: [],
       orderTypes: [],
       businessTypes: [],
       amortization: [],
@@ -393,25 +508,44 @@ export default {
         getProduct: `/api/inventory`,
         discounts: `/api/discount`,
         salesCategoryUrl: `/api/sales_category`,
+        verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
       },
       inputValue: "",
+      paymentGateways: [
+        {
+          id: 1,
+          name: "paystack",
+        },
+        {
+          id: 2,
+          name: "remitta",
+        },
+      ],
       selectedProduct: {},
-      selected_discount:{},
+      selected_discount: {},
       fPayment: "",
       pPrice: "",
       rPayment: "",
       repaymentCircle: "",
       rDuration: "",
+      cardError: false,
       customDateToggle: false,
       discounts: null,
       eligible: false,
       serial: false,
       renewalState: false,
-      flag:localStorage.getItem("flag")
+      flag: localStorage.getItem("flag"),
+      isAltaraPay: false,
+      useCreditCard: false,
+      transfer: false,
+      customer_email: this.customer.email || "somedefaultemail",
+      paystackkey: process.env.VUE_APP_PAYSTACK_KEY,
+      paystackReference: null,
+      newOrderId: null,
     };
   },
-  async mounted() {
-    this.watchSalesLogForm()
+  async beforeMount() {
+    this.watchSalesLogForm();
     this.checkIfDiscountElig();
     await this.getRepaymentDuration();
     await this.getSalesCategory();
@@ -422,26 +556,51 @@ export default {
     await this.getDiscounts();
     await this.getOrderTypes();
   },
-  watch:{
-      'salesLogForm.sales_category_id':function(newData, oldData){
-      this.watchSalesLogForm(newData)
-      }
+  watch: {
+    "salesLogForm.sales_category_id": function (newData, oldData) {
+      this.watchSalesLogForm(newData);
+    },
   },
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
-    getdownPaymentRates(){
-      return this.downPaymentRates.filter((item)=>{
-        return !(item.name.includes('plus')) 
-        
-      })
-    }
+    downPaymentRatesFiltered() {
+      let result = [];
+      this.isAltaraPay
+        ? (result = this.downPaymentRates)
+        : (result = this.downPaymentRates.filter((item) => {
+            return !item.name.includes("plus");
+          }));
+      return result;
+    },
+    reference() {
+      let text = "";
+      let possible =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      for (let i = 0; i < 10; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      return text;
+    },
+     
+     repaymentCycleFiltered(){
+       let newArray = [];
+       this.isAltaraPay ? newArray = this.repaymentCyclesopt.filter(item => {
+         return item.name !== "monthly"
+       }) : newArray = this.repaymentCyclesopt       
+       return newArray;
+     },
+
+     compHeader(){
+       return this.isAltaraPay? "Altara Pay" : "Altara Credit"
+     }
+
   },
+
   methods: {
-    watchSalesLogForm(){
-      if(this.salesLogForm.sales_category_id == "2" && this.flag == 'beta'){
-        this.renewalState = true
-      }else{
-        this.renewalState = false
+    watchSalesLogForm() {
+      if (this.salesLogForm.sales_category_id == "2" && this.flag == "beta") {
+        this.renewalState = true;
+      } else {
+        this.renewalState = false;
       }
     },
     customDate(event) {
@@ -459,30 +618,41 @@ export default {
             return item.name === "renewal";
           })?.id)
         : (renewal = "");
-        let orderType = this.orderTypes.find((item) => {
-          return item.name === 'Altara Credit';
-        })
+        let orderType = '';
+        orderType = this.orderTypes.find((item) => {
+              return item.name === this.isAltaraPay ? "Altara Pay" : "Altara Credit";
+      });
+      
+     
       const data = {
         order_type_id: orderType.id,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
         repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
-        business_type_id: this.salesLogForm.business_type_id,
+        business_type_id: this.salesLogForm.business_type_id.id,
         branch_id: localStorage.getItem("branch_id"),
         down_payment: this.fPayment,
         custom_date: this.salesLogForm.custom_date,
         repayment: this.rPayment,
-        bank_id: this.salesLogForm.bank_id,
+        bank_id: this.isAltaraPay ? 1 : this.salesLogForm.bank_id,
         product_price: this.$formatMoney(this.pPrice),
         down_payment_rate_id: this.salesLogForm.payment_type_id.id,
         payment_type_id: this.salesLogForm.payment_type_id.id,
-        payment_method_id: this.salesLogForm.payment_method_id,
+        payment_method_id: this.isAltaraPay
+          ? this.transfer
+            ? this.getPaymentMethods.find((el) => (el.name = "transfer")).id
+            : this.getPaymentMethods.find((el) => (el.name = "direct-debit")).id
+          : this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
       };
+      this.salesLogForm.payment_gateway_id
+        ? (data.payment_gateway_id = this.salesLogForm.payment_gateway_id)
+        : "";
+      data.authorization_code = this.salesLogForm?.authorization_code;
       if (this.eligible && renewal) {
         data.discount = [renewal];
       }
@@ -491,6 +661,7 @@ export default {
           this.$LIPS(true);
           post(this.apiUrls.createOrder, data)
             .then((res) => {
+              this.newOrderId = res.data.data.id;
               this.$LIPS(false);
               $(`#amortizationPreview`).modal("toggle");
 
@@ -499,8 +670,9 @@ export default {
                 title: "Sale Successfully Logged",
               });
               this.$emit("done");
+              return res;
             })
-            .catch(() => {
+            .catch((err) => {
               this.$LIPS(false);
               Flash.setError("Error: " + err.message);
             });
@@ -508,29 +680,44 @@ export default {
       });
     },
     async previewAmortization() {
+      this.cardError = false;
       this.salesLogForm.customer_id = this.customerId;
       const data = {
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
         repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
-        business_type_id: this.salesLogForm.business_type_id,
+        business_type_id: this.salesLogForm.business_type_id.id,
         branch_id: localStorage.getItem("branch_id"),
         down_payment: this.$formatMoney(this.fPayment),
         down_payment_rate_id: this.salesLogForm.payment_type_id.id,
         custom_date: this.salesLogForm.custom_date,
         repayment: this.$formatMoney(this.rPayment),
-        bank_id: this.salesLogForm.bank_id,
+        bank_id: this.isAltaraPay ? 1 : this.salesLogForm.bank_id,
         product_price: this.$formatMoney(this.pPrice),
         payment_type_id: this.salesLogForm.payment_type_id.id,
-        payment_method_id: this.salesLogForm.payment_method_id,
+        payment_method_id: this.isAltaraPay
+          ? this.getPaymentMethods.find((el) => (el.name = "direct-debit")).id
+          : this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
       };
+
       this.salesLogForm.serial_number !== null
         ? (data.serial_number = this.salesLogForm.serial_number)
         : "";
+
+      if (this.card_expiry) {
+        let expiry_date = moment(this.card_expiry);
+        let duration = parseInt(this.salesLogForm.repayment_duration_id.value);
+        let allowed_date = moment().add(duration + 60, "days");
+
+        if (expiry_date.isBefore(allowed_date)) {
+          this.cardError = true;
+          return;
+        }
+      }
       this.$validator.validateAll().then((result) => {
         if (result) {
           this.$LIPS(true);
@@ -560,10 +747,8 @@ export default {
     },
     async getDiscounts() {
       try {
-        const fetchDiscounts = await get(
-          this.apiUrls.discounts
-        );
-        this.discounts = fetchDiscounts.data.data.data
+        const fetchDiscounts = await get(this.apiUrls.discounts);
+        this.discounts = fetchDiscounts.data.data.data;
       } catch (err) {
         this.$displayErrorMessage(err);
       }
@@ -583,18 +768,25 @@ export default {
         const caly = this.calculation;
         const data = caly.filter(
           (x) =>
-            x.business_type_id === data0.business_type_id &&
+            x.business_type_id === data0.business_type_id?.id &&
             x.down_payment_rate_id === data0.payment_type_id.id &&
             x.repayment_duration_id === data0.repayment_duration_id.id
         )[0];
 
-        this.selected_discount = this.discounts.find((item)=> { return item.slug == this.salesLogForm.discount})
-        const { total, actualDownpayment, rePayment } = calculate(
-          this.selectedProduct.price,
-          data0,
-          data,
-          this.selected_discount?.percentage_discount
-        );
+        this.selected_discount = this.discounts.find((item) => {
+          return item.slug == this.salesLogForm.discount;
+        });
+
+        const { total, actualDownpayment, rePayment } =
+          data0.business_type_id.slug.includes("cash_loan") ||
+          data0.business_type_id.slug.includes("ap_rentals")
+            ? cashLoan(this.selectedProduct.price, data0, data)
+            : calculate(
+                this.selectedProduct.price,
+                data0,
+                data,
+                this.selected_discount?.percentage_discount
+              );
 
         this.repaymentCircle = data0.repayment_cycle_id.value;
         this.rDuration = data0.repayment_duration_id.value;
@@ -602,8 +794,6 @@ export default {
         this.rPayment = rePayment;
         this.pPrice = total;
         this.test1 = false;
-
-        // $(`#amortizationPreview`).modal("toggle");
       } catch (e) {
         // this.$swal({
         //     icon: "error",
@@ -687,10 +877,8 @@ export default {
         const fetchDownPaymentRates = await get(this.apiUrls.downPaymentRates);
         this.downPaymentRates = fetchDownPaymentRates.data.data.data;
         this.downPaymentRates = this.downPaymentRates.sort((a, b) => {
-						return a.percent-b.percent;
-					});
-
-        
+          return a.percent - b.percent;
+        });
       } catch (err) {
         this.$displayErrorMessage(err);
       }
@@ -704,38 +892,39 @@ export default {
       }
     },
 
-        async getUsers(salesCat){
-        this.getCalc()
-        this.$LIPS(true);
-          
-          await get(`/api/sales-category/${salesCat}/roles`).then(res => {
-            this.users = this.mergeArrays(res.data.data);
-          });
-          
-          this.$LIPS(false);
-        },
-        mergeArrays(parent){
-          let result = [];
-          parent.forEach(elem => {
-            result = result.concat(elem.active_users);
-          })
-          return result;
-        },
-        async getBusinessTypes() {
-            try {
-                const fetchBusinessTypes = await get(
-                    this.apiUrls.businessTypes
-                );
-                this.businessTypes = fetchBusinessTypes.data.data.data;
-                this.businessTypes = this.businessTypes.filter(item => {
-                  return item.slug.includes("ac_")
-                });
-            } catch (err) {
-                this.$displayErrorMessage(err);
-            }
-        },
     async getUsers(salesCat) {
-      this.getCalc()
+      this.getCalc();
+      this.$LIPS(true);
+
+      await get(`/api/sales-category/${salesCat}/roles`).then((res) => {
+        this.users = this.mergeArrays(res.data.data);
+      });
+
+      this.$LIPS(false);
+    },
+    mergeArrays(parent) {
+      let result = [];
+      parent.forEach((elem) => {
+        result = result.concat(elem.active_users);
+      });
+      return result;
+    },
+    async getBusinessTypes() {
+      try {
+        const fetchBusinessTypes = await get(this.apiUrls.businessTypes);
+        this.businessTypes = fetchBusinessTypes.data.data.data;
+        this.businessTypes = this.businessTypes.filter((item) => {
+          if (this.isAltaraPay) {
+            return item.slug.includes("ap_");
+          }
+          return item.slug.includes("ac_");
+        });
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
+    async getUsers(salesCat) {
+      this.getCalc();
       this.$LIPS(true);
 
       await get(`/api/sales-category/${salesCat}/roles`).then((res) => {
@@ -752,17 +941,6 @@ export default {
       return result.sort((a, b) =>
         a["full_name"].localeCompare(b["full_name"])
       );
-    },
-    async getBusinessTypes() {
-      try {
-        const fetchBusinessTypes = await get(this.apiUrls.businessTypes);
-        this.businessTypes = fetchBusinessTypes.data.data.data;
-        this.businessTypes = this.businessTypes.filter((item) => {
-          return item.slug.includes("ac_");
-        });
-      } catch (err) {
-        this.$displayErrorMessage(err);
-      }
     },
     checkIfDiscountElig() {
       if (this.customer.new_orders.length > 0) {
@@ -789,6 +967,43 @@ export default {
 
     toggleSerial() {
       this.serial === true ? (this.serial = false) : (this.serial = true);
+    },
+    toggleProductType() {
+      this.transfer = false;
+      this.getBusinessTypes();
+      this.isAltaraPay = !this.isAltaraPay;
+      this.isAltaraPay ? "" : (this.card_expiry = null);
+      this.salesLogForm = {};
+    },
+    async processPaymentPayStackPayment(resp) {
+      this.paystackReference = resp.reference;
+      if (resp.status == "success" && resp.message == "Approved") {
+        this.salesLogForm.payment_gateway_id = this.paymentGateways.find(
+          (item) => item.name === "paystack"
+        ).id;
+        await this.verifyPaystackPayment()
+          .then((data) => {
+            if (data.status && data.message =="Verification successful") {
+              this.salesLogForm.authorization_code =
+              data.data.authorization.authorization_code;
+              this.logSale();
+            }
+          })
+          .catch((error) => {
+             this.$displayErrorMessage(error);
+          });
+      }
+    },
+    closePayStackModal: () => {},
+    async verifyPaystackPayment() {
+      const url = `${this.apiUrls.verifyPaymentUrl}${this.paystackReference}`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${process.env.VUE_APP_PAYSTACK_SECRET_KEY}`,
+        },
+      });
+      return response.json();
     },
   },
 };
@@ -836,29 +1051,74 @@ export default {
   display: block;
   float: right;
 }
-.discount{
-  left:130px
+.discount {
+  left: 130px;
 }
-.cover{
-  display:flex;
+.cover {
+  display: flex;
   position: relative;
 }
-.modal_discount{
-  top:0px;
-  right:0px;
-  position:absolute
+.modal_discount {
+  top: 0px;
+  right: 0px;
+  position: absolute;
 }
-.modal_cover{
+.modal_cover {
   margin-left: 100px;
   top: -26px;
-  display:flex;
+  display: flex;
   position: relative;
-
 }
 .serial {
   font-size: 8px;
   display: block;
   float: right;
   text-decoration: underline;
+}
+.switch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.switch input[type="checkbox"] {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+}
+
+.switch label {
+  cursor: pointer;
+  text-indent: -9999px;
+  width: 50px;
+  height: 25px;
+  background: grey;
+  display: block;
+  border-radius: 10px;
+  position: relative;
+}
+
+.switch label:after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.switch input:checked + label {
+  background: green;
+}
+
+.switch input:checked + label:after {
+  left: calc(100% - 5px);
+  transform: translateX(-80%);
+}
+
+.switch label:active:after {
+  width: 60px;
 }
 </style>

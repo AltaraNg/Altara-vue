@@ -590,7 +590,7 @@ export default {
      },
 
      compHeader(){
-       return this.isAltaraPay? "Altara Pay Log Form" : "Altara Credit Log Form"
+       return this.isAltaraPay? "Altara Pay" : "Altara Credit"
      }
 
   },

@@ -429,31 +429,7 @@
 			// this.fetchStats();
 		},
 		methods: {
-			fetchStats(param = {}) {
-				let query = this.$route.query;
-				let reParam = {
-					...param,
-					fromDate: query.fromDate
-						? query.fromDate
-						: this.searchQuery.fromDate
-						? this.searchQuery.fromDate
-						: '',
-					toDate: this.toDate
-						? this.toDate
-						: this.searchQuery.toDate
-						? this.searchQuery.toDate
-						: '',
-					rollUp: true,
-					filterOrderbyBranch: true,
-					orderHasAtMostTwoPaymentsLeft: true,
-				};
-				get(this.apiUrl.renewalList + queryParam(reParam))
-					.then(({ data }) => {
-						this.meta = data.data.meta;
-					})
-					.catch(() => Flash.setError('Error Fetching Renewal List'))
-					.finally(() => {});
-			},
+			
 			fetchData() {
 				this.$LIPS(true);
 				this.pageParams.page = this.$route.query.page
@@ -470,7 +446,7 @@
 				};
 				this.currentTab === 'all'
 					? (param.recollection = 'all')
-					: this.fetchStats();
+					: '';
 				if (this.renewal === true) {
 					this.$LIPS(true);
 
@@ -596,6 +572,7 @@
 				let param = {					
 					...this.searchQuery,
 				};
+				this.currentTab === 'all' ? param.recollection = 'all' : ''
 				this.$LIPS(true);
 				try {
 					const response = await get(

@@ -109,8 +109,7 @@
 				></pie-chart>
 			</div>
 		</div>
-		<div class="my-4 mx-3 w-100 pt-3">
-			<!-- table -->
+		<!-- <div class="my-4 mx-3 w-100 pt-3">
 			<div class="mx-auto my-auto w-100 text-center">
 				<h4 class="my-3 font-weight-bold h4"><u>Showroom Statistics</u></h4>
 			</div>
@@ -159,8 +158,8 @@
 					</tbody>
 				</table>
 			</div>
-		</div>
-		<div class="container-fluid h-75" v-show="productPieData">
+		</div> -->
+		<!-- <div class="container-fluid h-75" v-show="productPieData">
 			<div class="card">
 				<h3 class="mx-5 my-5">Products Statistics</h3>
 				<div class="card-body">
@@ -190,7 +189,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 		<div class="container-fluid" v-show="productPieData">
 			<div class="card">
 				<h3 class="mx-5 my-5">Order By Day Statistics</h3>
@@ -398,7 +397,7 @@
 			},
 			getPieChartData() {
 				this.pieData = {
-					labels: ['Altara Cash', 'Altara Pay'],
+					labels: ['Active Orders', 'Inactive Orders'],
 					datasets: [
 						{
 							barPercentage: 1,

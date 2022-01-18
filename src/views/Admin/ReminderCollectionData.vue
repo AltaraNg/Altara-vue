@@ -1,11 +1,11 @@
 <template>
 	<div class="my-3 py-4" v-if="reports !== null">
-		<div class="space-between mb-5 px-4">
+		<!-- <div class="space-between mb-5 px-4">
 			<h3 class="text-capitalize mb-0">Reminder And Collection Charts</h3>
 			<button class="bg-default rounded py-2 px-4 h5" @click="exportReportCsv">
 				<i class="fas fa-download mr-3"></i>Download
 			</button>
-		</div>
+		</div> -->
 
 		<div class="center my-2 flex px-4" style="gap: 10px">
 			<date-picker
@@ -46,14 +46,14 @@
 
 			<select
 				class="custom-select flex-1"
-				v-model="sector"
+				v-model="branch"
 				v-validate="'required'"
 			>
-				<option value="">All Sectors</option>
-				<option :value="'formal'">Formal</option>
-				<option :value="'informal'">Informal</option>
+				<option value="">Showroom</option>
+				<option :value="branch.id" v-for="branch in getBranches">{{branch.name}}</option>
 			</select>
 		</div>
+		
 		<div class="flex mt-3 mb-5 px-4 ">
 			<button
 				class="bg-default rounded ml-auto py-2 px-4"
@@ -65,29 +65,35 @@
 			</button>
 		</div>
 
+		<div class="text-center">
+			<h3 v-if="branch === ''">All Branches</h3>
+			<h3 v-else>Branch: {{getBranches.find(item => item.id === branch).name}}</h3>
+		</div>
+
 		<div class="row px-4" v-if="reports !== null">
 			<stat-card
 				:stat="totalNumberOfSales"
-				class="col mx-4 w-50 bg-default text-white"
+				class="col mx-4 w-50 bg-white"
 				:label="'Total Number of Sales'"
 			>
-				<template v-slot:svg> <Sales /> </template>
+				<template v-slot:svg><img src="../../assets/sales.png" width="100" height="100" alt="img" /></template>
 			</stat-card>
 			<stat-card
 				:stat="$formatCurrency(amountCollected)"
-				class="col mx-4 w-50 bg-success text-white"
+				class="col mx-4 w-50 bg-transparent font-weight-bold"
 				:icon="'fas fa-dolly-flatbed'"
-				:label="'Collection Successful'"
+				:label="'Amount Paid'"
 			>
-				<template v-slot:svg> <Revenue /> </template>
+				<template v-slot:svg> <img src="../../assets/money.png" width="100" height="100" alt="img" /></template>
 			</stat-card>
 			<stat-card
 				:stat="$formatCurrency(amountOwed)"
-				class="col mx-4 w-50 bg-warning text-white"
+				class="col mx-4 w-50 bg-warning text-white font-weight-bold"
 				:label="'Amount Owed'"
 				:icon="'fas fa-dolly-flatbed'"
 			>
-				<template v-slot:svg> <Total /> </template>
+				<template v-slot:svg> <img src="../../assets/another.png" width="100" height="100" alt="img" /></template>
+
 			</stat-card>
 		</div>
 
@@ -99,7 +105,7 @@
 					v-if="loaded"
 				></bar-chart>
 			</div> -->
-			<div class="card col ml-3 py-2 bg-info" v-if="reports">
+			<div class="card col ml-3 py-2" v-if="reports">
 				<pie-chart
 					:chart-data="pieData"
 					:options="pieData.options"
@@ -108,7 +114,7 @@
 				></pie-chart>
 			</div>
 
-			<div class="card col ml-3 py-2 bg-white" v-if="reports">
+			<div class="card col ml-3 py-2" v-if="reports">
 				<polar-chart
 					:chart-data="polarData"
 					:options="polarData.options"
@@ -144,6 +150,8 @@
 	import { get, byMethod } from '../../utilities/api';
 	import Sales from '../../assets/css/svgs/sales.vue';
 	import Revenue from '../../assets/css/svgs/revenue.vue';
+	import { mapGetters } from 'vuex';
+
 	import Total from '../../assets/css/svgs/total.vue';
 	import DatePicker from 'vue2-datepicker';
 	import 'vue2-datepicker/index.css';
@@ -261,6 +269,7 @@
 				loaded: false,
 				sums: {},
 				businessTypes: {},
+				branch: ''
 			};
 		},
 		async mounted() {
@@ -275,6 +284,7 @@
 			// this.drawProductPieChart();
 			// this.getBarChartData();
 			// this.getOrderBarChartData();
+			this.$prepareBranches();
 			this.getBusinessTypes();
 			this.getOrderTypes();
 			this.loaded = true;
@@ -338,7 +348,8 @@
 						title: {
 							text: "Order Categories",
 							display: true,
-							color: 'white'
+							color: ['#ffffff']
+							
 					}},
 
 					datasets: [
@@ -347,7 +358,7 @@
 							barThickness: 12,
 							maxBarThickness: 16,
 							data: this.getPieData(),
-							backgroundColor: ['#ffffff', '#115A71', '#CC210A'],
+							backgroundColor: ['#e2e612', '#e6091c', '#2ad413'],
 						},
 					],
 				};
@@ -355,12 +366,12 @@
 
 			getPolarChartData() {
 				this.polarData = {
-					labels: ['order <= 30 days', '30 days < order <= 45 days  ', '45 days < order'],
+					labels: ['1-30 days overdue', '30-45 days overdue  ', '>45 days overdue'],
 					options: {
 						title: {
-							text: "By Days Defaulted",
+							text: "Overdue Days",
 							display: true,
-							color: 'white'
+							color: '#ffffff'
 					}},
 					datasets: [
 						{
@@ -368,7 +379,7 @@
 							barThickness: 12,
 							maxBarThickness: 16,
 							data: this.getPolarData(),
-							backgroundColor: ['#CC210A', '#CC5A71'],
+							backgroundColor: ['#179c4a', '#de811d', '#d9112f'],
 						},
 					],
 				};
@@ -387,7 +398,7 @@
 				this.query.fromDate = this.fromDate;
 				this.query.toDate = this.toDate;
 				this.query.businessType = this.businessType;
-				this.query.sector = this.sector;
+				this.query.branch = this.branch;
 				this.query.orderType = this.orderType;
 				try {
 					const report = await byMethod(
@@ -629,6 +640,10 @@
 				});
 			},
 		},
+		computed: {
+			...mapGetters(['getBranches']),
+
+		}
 	};
 </script>
 

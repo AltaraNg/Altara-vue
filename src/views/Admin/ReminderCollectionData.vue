@@ -65,12 +65,12 @@
 			</button>
 		</div>
 
-		<div class="text-center font-weight-bold">
+		<div class="text-center font-weight-bold text-black h5">
 			<h3 v-if="branch === ''">All Branches</h3>
 			<h3 v-else>Branch: {{getBranches.find(item => item.id === branch).name}}</h3>
 		</div>
 
-		<div class="row px-4" v-if="reports !== null">
+		<div class="row px-4 h-auto" v-if="reports !== null">
 			<stat-card-new
 				:stat="totalNumberOfSales"
 				class="col mx-4  w-50 font-weight-bold bg-custom3"
@@ -106,7 +106,7 @@
 					v-if="loaded"
 				></bar-chart>
 			</div> -->
-			<div class="card col ml-3 py-2" v-if="reports">
+			<div class="card col p-5" v-if="reports">
 				<pie-chart
 					:chart-data="pieData"
 					:options="pieData.options"
@@ -115,7 +115,7 @@
 				></pie-chart>
 			</div>
 
-			<div class="card col ml-3 py-2" v-if="reports">
+			<div class="card col ml-5 p-5" v-if="reports">
 				<polar-chart
 					:chart-data="polarData"
 					:options="polarData.options"
@@ -353,7 +353,13 @@
 							display: true,
 							color: ['#ffffff']
 							
-					}},
+					},
+					layout:{
+						padding: 0
+					},
+					maintainAspectRatio: false
+						
+					},
 
 					datasets: [
 						{
@@ -375,7 +381,12 @@
 							text: "Overdue Days",
 							display: true,
 							color: '#ffffff'
-					}},
+					},
+					layout:{
+						padding: 0
+					},
+					maintainAspectRatio: false
+					},
 					datasets: [
 						{
 							barPercentage: 1,

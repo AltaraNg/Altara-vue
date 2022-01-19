@@ -65,7 +65,7 @@
 			</button>
 		</div>
 
-		<div class="text-center">
+		<div class="text-center font-weight-bold">
 			<h3 v-if="branch === ''">All Branches</h3>
 			<h3 v-else>Branch: {{getBranches.find(item => item.id === branch).name}}</h3>
 		</div>
@@ -76,7 +76,7 @@
 				class="col mx-4  w-50 font-weight-bold bg-custom3"
 				:label="'Total Number of Sales'"
 			>
-				<template v-slot:svg><img src="../../assets/css/svgs//sale-svgrepo-com.svg" width="100" height="100" alt="img" /></template>
+				<template v-slot:svg><img src="../../assets/css/svgs//sale-svgrepo-com.svg" width="100" height="100" alt="img" class="float-right" /></template>
 			</stat-card-new>
 			<stat-card-new
 				:stat="$formatCurrency(amountCollected)"
@@ -85,7 +85,7 @@
 				:icon="'fas fa-dolly-flatbed'"
 				:label="'Amount Paid'"
 			>
-				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-com.svg" width="100" height="100" /> </template>
+				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-com.svg" width="100" height="100"  class="float-right"/> </template>
 			</stat-card-new>
 			<stat-card-new
 				:stat="$formatCurrency(amountOwed)"
@@ -93,7 +93,7 @@
 				:label="'Amount Owed'"
 				:icon="'fas fa-dolly-flatbed'"
 			>
-				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-2.svg" width="100" height="100" alt="img" /></template>
+				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-2.svg" width="100" height="100" alt="img" class="float-right"/></template>
 
 			</stat-card-new>
 		</div>

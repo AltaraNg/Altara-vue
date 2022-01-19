@@ -1,19 +1,17 @@
 <template>
-	<div class="card text-center py-4 rounded-circle">
-		
-			<slot name="svg" class="card-img-top rounded-circle"></slot>
+	<div class="card py-4 rounded-circle d-flex">
+		<div class="col float-right"><slot name="svg" class="card-img-top rounded-circle float-right">"></slot></div>
 
-			<div class="card-body text-white font-weight-bold" style="border-radius: 50%">
-				<h3>
-			{{ stat }}
-		</h3>
-					{{ label }}
-
-			</div>
-		
-		
-				
+		<div
+			class="card-body text-white font-weight-bold col"
+			style="border-radius: 50%"
+		>
+			<h3>
+				{{ stat }}
+			</h3>
+			{{ label }}
 		</div>
+	</div>
 </template>
 
 <script>

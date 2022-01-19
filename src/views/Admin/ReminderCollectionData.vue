@@ -71,33 +71,34 @@
 		</div>
 
 		<div class="row px-4" v-if="reports !== null">
-			<stat-card
+			<stat-card-new
 				:stat="totalNumberOfSales"
-				class="col mx-4 w-50 bg-white"
+				class="col mx-4  w-50 font-weight-bold bg-custom3"
 				:label="'Total Number of Sales'"
 			>
-				<template v-slot:svg><img src="../../assets/sales.png" width="100" height="100" alt="img" /></template>
-			</stat-card>
-			<stat-card
+				<template v-slot:svg><img src="../../assets/css/svgs//sale-svgrepo-com.svg" width="100" height="100" alt="img" /></template>
+			</stat-card-new>
+			<stat-card-new
 				:stat="$formatCurrency(amountCollected)"
-				class="col mx-4 w-50 bg-transparent font-weight-bold"
+				class="col mx-4 w-50 font-weight-bold bg-custom1"
+				
 				:icon="'fas fa-dolly-flatbed'"
 				:label="'Amount Paid'"
 			>
-				<template v-slot:svg> <img src="../../assets/money.png" width="100" height="100" alt="img" /></template>
-			</stat-card>
-			<stat-card
+				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-com.svg" width="100" height="100" /> </template>
+			</stat-card-new>
+			<stat-card-new
 				:stat="$formatCurrency(amountOwed)"
-				class="col mx-4 w-50 bg-warning text-white font-weight-bold"
+				class="col mx-4 w-50 font-weight-bold bg-custom2"
 				:label="'Amount Owed'"
 				:icon="'fas fa-dolly-flatbed'"
 			>
-				<template v-slot:svg> <img src="../../assets/another.png" width="100" height="100" alt="img" /></template>
+				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-2.svg" width="100" height="100" alt="img" /></template>
 
-			</stat-card>
+			</stat-card-new>
 		</div>
 
-		<div class="my-3 space-between px-4 w-100 text-center ">
+		<div class="my-3 space-between px-4 w-100 text-center">
 			<!-- <div class="card col mr-3 py-2" v-if="reports">
 				<bar-chart
 					:chart-data="barData"
@@ -147,6 +148,7 @@
 
 <script>
 	import StatCard from '../../components/StatCard.vue';
+	import StatCardNew from '../../components/StatCardNew.vue';
 	import { get, byMethod } from '../../utilities/api';
 	import Sales from '../../assets/css/svgs/sales.vue';
 	import Revenue from '../../assets/css/svgs/revenue.vue';
@@ -164,6 +166,7 @@
 	export default {
 		components: {
 			StatCard,
+			StatCardNew,
 			DatePicker,
 			BarChart,
 			PieChart,
@@ -672,5 +675,15 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+	.bg-custom1{
+		background-image:  linear-gradient(yellow, black);
+	}
+
+	.bg-custom2{
+		background-image:  linear-gradient(black,#063D60);
+	}
+	.bg-custom3{
+		background-image:  linear-gradient(green, black);
 	}
 </style>

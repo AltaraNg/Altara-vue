@@ -36,11 +36,11 @@
               <th>{{ order.product.name }}</th>
               <th>{{ order.owner }}</th>
               <th>{{ order.serial_number }}</th>
-              <th>{{ order.payment_gateway ? "Altara Pay" : "Altara Credit" }}</th>
+              <th>{{ order.business_type}}</th>
               <th class="text-capitalize">{{ order.down_payment_rate }} percent</th>
               <th>{{ order.payment_gateway }}</th>
               <td class="font-weight-bold">{{ order.branch }}</td>
-              <td class="font-wight-bold td-back">ok</td>
+              <td class="font-weight-bold td-back">ok</td>
               <!-- <td
                         :class="getOrderStatusClass(getOrderStatus(order))"
                         class="font-weight-bold"

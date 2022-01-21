@@ -290,7 +290,8 @@
               </div>
             </div>
             <br />
-            <div class="text-center">
+            <div>
+               <div class="text-center">
               <button
                 class="btn bg-default"
                 :disabled="test1"
@@ -301,6 +302,18 @@
               </button>
               <br />
             </div>
+              <div class="text-right">
+              <button
+                class="btn bg-info"
+                type="submit"
+                @click="showCollectionModal"
+              >
+                Collection Data
+              </button>
+              <br />
+            </div>
+            </div>
+           
           </form>
         </div>
       </div>
@@ -462,6 +475,18 @@
         </div>
       </div>
     </div>
+    
+		<modal
+			name="verification-collection-data"
+			:adaptive="true"
+			:height="'auto'"
+			:clickToClose="true"
+			:reset="true"
+		>
+			<verification-collection-data   v-on:close="closeCollectionModal" @verificationCollectionDataPassed="collectCollectionVerificationData"
+			
+			/>
+		</modal>
   </div>
 </template>
 
@@ -470,6 +495,7 @@ import { get, post } from "../utilities/api";
 import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
 import { calculate, cashLoan } from "../utilities/calculator";
+import VerificationCollectionData from "./modals/VerificationCollectionData"
 import Flash from "../utilities/flash";
 import discount from "./discount.vue";
 import paystack from "vue-paystack";
@@ -477,7 +503,7 @@ import moment from "moment";
 
 export default {
   props: { customerId: null, customer: null },
-  components: { AutoComplete, discount, paystack },
+  components: { AutoComplete, discount, paystack,VerificationCollectionData },
   data() {
     return {
       card_expiry: null,
@@ -995,6 +1021,16 @@ export default {
       }
     },
     closePayStackModal: () => {},
+    showCollectionModal() {
+     this.$modal.show('verification-collection-data');
+    },
+     closeCollectionModal() {
+      this.$modal.hide('verification-collection-data')
+    },
+    collectCollectionVerificationData(data){
+      console.log('fromparent: ', data);
+      this.closeCollectionModal();
+    },
     async verifyPaystackPayment() {
       const url = `${this.apiUrls.verifyPaymentUrl}${this.paystackReference}`;
       const response = await fetch(url, {

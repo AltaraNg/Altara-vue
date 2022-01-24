@@ -23,28 +23,34 @@
         <div class="form-group col-md-4">
           <label for="salary_day_1">Salary Day 1</label>
           <input
-            type="text"
+            type="number"
             class="form-control"
             placeholder="Salary Day 1"
             v-model="verificationCollectionData.salary_day_1"
+            min="1"
+            max="31"
           />
         </div>
         <div class="form-group col-md-4">
           <label for="salary_day_2">Salary Day 2</label>
           <input
-            type="text"
+            type="number"
             class="form-control"
             placeholder="Salary Day 2"
             v-model="verificationCollectionData.salary_day_2"
+            min="1"
+            max="31"
           />
         </div>
         <div class="form-group col-md-4">
           <label for="salary_day_3">Salary Day 3</label>
           <input
-            type="text"
+            type="number"
             class="form-control"
             placeholder="Salary Day 3"
             v-model="verificationCollectionData.salary_day_3"
+            min="1"
+            max="31"
           />
         </div>
       </div>
@@ -99,7 +105,6 @@
               {{ item }}
             </option>
           </select>
-         
         </div>
       </div>
       <div class="form-row mt-5">
@@ -119,7 +124,6 @@
               {{ item }}
             </option>
           </select>
-      
         </div>
         <div class="form-group col-md-6">
           <label for="credit_point_status">Credit Point Status</label>
@@ -144,7 +148,7 @@
     <div class="modal-footer">
       <button
         type="button"
-        class="btn btn-primary"
+        class="btn  bg-default"
         @click="sendCollectionVerificationData"
       >
         Save changes
@@ -239,7 +243,7 @@ export default {
       if (!this.verificationCollectionData.credit_point_status) {
         this.formErrors.push("Please select the credit point status");
       }
-     
+
       e.preventDefault();
       return false;
     },

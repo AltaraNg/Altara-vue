@@ -301,7 +301,7 @@
                 </button>
                 <br />
               </div>
-              <div class="text-right">
+              <div class="text-right" v-if="isAltaraPay">
                 <button
                   class="btn  bg-default"
                   type="submit"

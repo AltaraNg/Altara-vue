@@ -342,6 +342,7 @@ export default {
     save() {
       this.$LIPS(true);
       const updateData = {
+        user_id: localStorage.getItem('user_id'),
         actual_amount: this.ammo_item.actual_amount,
         actual_payment_date: this.ammo_item.actual_payment_date,
         expected_payment_date: this.ammo_item.expected_payment_date,
@@ -352,7 +353,7 @@ export default {
         .then((res) => {
           this.$swal({
             icon: "success",
-            title: "Armotization Updated Successfully",
+            title: "Amortization Updated Successfully",
           });
           this.amortizationData[this.ammoIndex] = res.data.data;
           this.$LIPS(false);

@@ -1,13 +1,12 @@
 <template>
   <div style="margin-left: 5rem; margin-right: 5rem">
-    
     <div class="row">
       <div class="col-md">
         <div class="card">
           <form class="card-body" @submit.prevent="previewAmortization">
             <div class="text-center">
-      <h2>{{compHeader}}</h2>
-    </div>
+              <h2>{{ compHeader }}</h2>
+            </div>
             <div class="row">
               <div class="col">
                 <button
@@ -290,16 +289,28 @@
               </div>
             </div>
             <br />
-            <div class="text-center">
-              <button
-                class="btn bg-default"
-                :disabled="test1"
-                type="submit"
-                v-on:click="getCalc()"
-              >
-                View Amortization
-              </button>
-              <br />
+            <div>
+              <div class="text-center">
+                <button
+                  class="btn bg-default"
+                  :disabled="test1"
+                  type="submit"
+                  v-on:click="getCalc()"
+                >
+                  View Amortization
+                </button>
+                <br />
+              </div>
+              <div class="text-right" v-if="isAltaraPay">
+                <button
+                  class="btn  bg-default"
+                  type="submit"
+                  @click="showCollectionModal"
+                >
+                  Collection Data
+                </button>
+                <br />
+              </div>
             </div>
           </form>
         </div>
@@ -462,6 +473,19 @@
         </div>
       </div>
     </div>
+
+    <modal
+      name="verification-collection-data"
+      :adaptive="true"
+      :height="'auto'"
+      :clickToClose="true"
+      :reset="true"
+    >
+      <verification-collection-data
+        v-on:close="closeCollectionModal"
+        @verificationCollectionDataPassed="collectCollectionVerificationData"
+      />
+    </modal>
   </div>
 </template>
 
@@ -470,6 +494,7 @@ import { get, post } from "../utilities/api";
 import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
 import { calculate, cashLoan } from "../utilities/calculator";
+import VerificationCollectionData from "./modals/VerificationCollectionData";
 import Flash from "../utilities/flash";
 import discount from "./discount.vue";
 import paystack from "vue-paystack";
@@ -477,7 +502,7 @@ import moment from "moment";
 
 export default {
   props: { customerId: null, customer: null },
-  components: { AutoComplete, discount, paystack },
+  components: { AutoComplete, discount, paystack, VerificationCollectionData },
   data() {
     return {
       card_expiry: null,
@@ -542,6 +567,7 @@ export default {
       paystackkey: process.env.VUE_APP_PAYSTACK_KEY,
       paystackReference: null,
       newOrderId: null,
+      CollectionVerificationData: null,
     };
   },
   async beforeMount() {
@@ -580,19 +606,20 @@ export default {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
     },
-     
-     repaymentCycleFiltered(){
-       let newArray = [];
-       this.isAltaraPay ? newArray = this.repaymentCyclesopt.filter(item => {
-         return item.name !== "monthly"
-       }) : newArray = this.repaymentCyclesopt       
-       return newArray;
-     },
 
-     compHeader(){
-       return this.isAltaraPay? "Altara Pay" : "Altara Credit"
-     }
+    repaymentCycleFiltered() {
+      let newArray = [];
+      this.isAltaraPay
+        ? (newArray = this.repaymentCyclesopt.filter((item) => {
+            return item.name !== "monthly";
+          }))
+        : (newArray = this.repaymentCyclesopt);
+      return newArray;
+    },
 
+    compHeader() {
+      return this.isAltaraPay ? "Altara Pay" : "Altara Credit";
+    },
   },
 
   methods: {
@@ -618,12 +645,11 @@ export default {
             return item.name === "renewal";
           })?.id)
         : (renewal = "");
-        let orderType = '';
-        orderType = this.orderTypes.find((item) => {
-              return item.name === this.isAltaraPay ? "Altara Pay" : "Altara Credit";
+      let orderType = "";
+      orderType = this.orderTypes.find((item) => {
+        return item.name === this.isAltaraPay ? "Altara Pay" : "Altara Credit";
       });
-      
-     
+
       const data = {
         order_type_id: orderType.id,
         customer_id: this.customerId,
@@ -648,6 +674,7 @@ export default {
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
+        collection_verification_data: this.CollectionVerificationData,
       };
       this.salesLogForm.payment_gateway_id
         ? (data.payment_gateway_id = this.salesLogForm.payment_gateway_id)
@@ -983,18 +1010,28 @@ export default {
         ).id;
         await this.verifyPaystackPayment()
           .then((data) => {
-            if (data.status && data.message =="Verification successful") {
+            if (data.status && data.message == "Verification successful") {
               this.salesLogForm.authorization_code =
-              data.data.authorization.authorization_code;
+                data.data.authorization.authorization_code;
               this.logSale();
             }
           })
           .catch((error) => {
-             this.$displayErrorMessage(error);
+            this.$displayErrorMessage(error);
           });
       }
     },
     closePayStackModal: () => {},
+    showCollectionModal() {
+      this.$modal.show("verification-collection-data");
+    },
+    closeCollectionModal() {
+      this.$modal.hide("verification-collection-data");
+    },
+    collectCollectionVerificationData(data) {
+      this.CollectionVerificationData = data;
+      this.closeCollectionModal();
+    },
     async verifyPaystackPayment() {
       const url = `${this.apiUrls.verifyPaymentUrl}${this.paystackReference}`;
       const response = await fetch(url, {

@@ -26,7 +26,7 @@
               <th>Collection Channel</th>
               <th>Branch</th>
               <th>Status</th>
-             
+
             </tr>
             <tr>
               <td class="font-weight-bold">
@@ -396,14 +396,14 @@ export default {
   },
   computed: {
     ...mapGetters([
-     
+
       "auth",
       "getAuthUserDetails",
     ]),
 
     canEditAmmoPayment() {
       if (this.auth("FSLLead") || this.auth("DVALead")) return true;
-     
+
     },
   }
 };

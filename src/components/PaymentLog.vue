@@ -806,7 +806,7 @@ export default {
 
         const { total, actualDownpayment, rePayment } =
           data0.business_type_id.slug.includes("cash_loan") ||
-          data0.business_type_id.slug.includes("ap_rentals")
+          data0.business_type_id.slug.includes("ap_rentals") || data0.business_type_id.slug.includes("ap_super")
             ? cashLoan(this.selectedProduct.price, data0, data)
             : calculate(
                 this.selectedProduct.price,

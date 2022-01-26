@@ -146,7 +146,7 @@
     <div class="modal-footer">
       <button
         type="button"
-        class="btn  bg-default"
+        class="btn bg-default"
         @click="sendCollectionVerificationData"
       >
         Save changes
@@ -169,29 +169,15 @@ export default {
     modalItem: {
       required: false,
     },
+    verificationCollectionData: Object,
+    proof_of_credits: Array,
+    address_visited: Array,
+    guarantor_signed: Array,
+    credit_report_status: Array,
+    credit_point_status: Array,
   },
   data() {
     return {
-      verificationCollectionData: {
-        salary_day_1: 0,
-        salary_day_2: 0,
-        salary_day_3: 0,
-        proof_of_credit: "SMS Alert Screenshot",
-        guarantor_signed: "No",
-        address_visited: "No",
-        credit_report_status: "No",
-        credit_point_status: "Bad",
-      },
-      proof_of_credits: [
-        "SMS Alert Screenshot",
-        "E-statement",
-        "Stamped-statement",
-        "Bank App History Screenshot",
-      ],
-      guarantor_signed: ["2 - Yes", "1 - Yes", "No"],
-      address_visited: ["Yes", "No"],
-      credit_report_status: ["Bad", "Fair", "No", "Good"],
-      credit_point_status: ["Bad", "Average", "Good"],
       formErrors: [],
     };
   },
@@ -206,10 +192,11 @@ export default {
           this.verificationCollectionData
         );
       }
+
     },
     checkForm(e) {
       const formIsValid = Object.values(this.verificationCollectionData).every(
-        (element) => element != null
+        (element) => !!element
       );
       if (formIsValid) {
         return true;

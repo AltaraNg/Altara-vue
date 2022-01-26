@@ -26,7 +26,7 @@
               <th>Collection Channel</th>
               <th>Branch</th>
               <th>Status</th>
-             
+
             </tr>
             <tr>
               <td class="font-weight-bold">
@@ -36,11 +36,11 @@
               <th>{{ order.product.name }}</th>
               <th>{{ order.owner }}</th>
               <th>{{ order.serial_number }}</th>
-              <th>{{ order.payment_gateway ? "Altara Pay" : "Altara Credit" }}</th>
+              <th>{{ order.business_type}}</th>
               <th class="text-capitalize">{{ order.down_payment_rate }} percent</th>
               <th>{{ order.payment_gateway }}</th>
               <td class="font-weight-bold">{{ order.branch }}</td>
-              <td class="font-wight-bold td-back">ok</td>
+              <td class="font-weight-bold td-back">ok</td>
               <!-- <td
                         :class="getOrderStatusClass(getOrderStatus(order))"
                         class="font-weight-bold"
@@ -342,6 +342,7 @@ export default {
     save() {
       this.$LIPS(true);
       const updateData = {
+        user_id: localStorage.getItem('user_id'),
         actual_amount: this.ammo_item.actual_amount,
         actual_payment_date: this.ammo_item.actual_payment_date,
         expected_payment_date: this.ammo_item.expected_payment_date,
@@ -352,7 +353,7 @@ export default {
         .then((res) => {
           this.$swal({
             icon: "success",
-            title: "Armotization Updated Successfully",
+            title: "Amortization Updated Successfully",
           });
           this.amortizationData[this.ammoIndex] = res.data.data;
           this.$LIPS(false);
@@ -396,14 +397,14 @@ export default {
   },
   computed: {
     ...mapGetters([
-     
+
       "auth",
       "getAuthUserDetails",
     ]),
 
     canEditAmmoPayment() {
       if (this.auth("FSLLead") || this.auth("DVALead")) return true;
-     
+
     },
   }
 };

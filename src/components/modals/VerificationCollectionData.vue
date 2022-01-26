@@ -115,7 +115,6 @@
             id="address_visited"
             v-model="verificationCollectionData.credit_report_status"
           >
-            <option disabled value="">Choose credit status?</option>
             <option
               v-for="(item, index) in credit_report_status"
               :key="index"
@@ -133,7 +132,6 @@
             v-model="verificationCollectionData.credit_point_status"
             required
           >
-            <option disabled value="">Choose credit point status?</option>
             <option
               v-for="(item, index) in credit_point_status"
               :key="index"
@@ -166,7 +164,6 @@
 </template>
 
 <script>
-import { log } from "../../utilities/log";
 export default {
   props: {
     modalItem: {
@@ -176,16 +173,15 @@ export default {
   data() {
     return {
       verificationCollectionData: {
-        salary_day_1: null,
-        salary_day_2: null,
-        salary_day_3: null,
-        proof_of_credit: null,
-        guarantor_signed: null,
-        address_visited: null,
-        credit_report_status: null,
-        credit_point_status: null,
+        salary_day_1: 0,
+        salary_day_2: 0,
+        salary_day_3: 0,
+        proof_of_credit: "SMS Alert Screenshot",
+        guarantor_signed: "No",
+        address_visited: "No",
+        credit_report_status: "No",
+        credit_point_status: "Bad",
       },
-      selected_proof_of_credit: "Choose Proof Of Credit",
       proof_of_credits: [
         "SMS Alert Screenshot",
         "E-statement",

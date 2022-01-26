@@ -92,6 +92,17 @@
 								</option>
 							</select>
 						</div>
+						<div class="col" >
+							<select v-model="businessTypeGroup" class="custom-select" name="product" id="product">
+								<option selected value="" disabled>--Select Product--</option>
+								<option value="product">
+									Altara Product
+								</option>
+								<option value="cash">
+									Cash Loan
+								</option>
+							</select>
+						</div>
 						<div class="col d-flex">
 							<button
 								class="my-auto p-2 mx-2 h4  rounded bg-default w-100"
@@ -292,6 +303,7 @@
 				currentTab: 'all',
 				statuses: [],
 				dsas: [],
+				businessTypeGroup: '',
 				isProcessing: true,
 				role: parseInt(localStorage.getItem('role')),
 			};
@@ -443,6 +455,7 @@
 				this.searchQuery.fromDate = this.fromDate;
 				this.searchQuery.toDate = this.toDate;
 				this.searchQuery.branch = this.branch;
+				this.searchQuery.businessTypeGroup = this.businessTypeGroup;
 				this.pageParams.page = 1;
 
 				await this.fetchData();
@@ -468,9 +481,11 @@
 				delete this.searchQuery.fromDate;
 				delete this.searchQuery.toDate;
 				delete this.searchQuery.branch;
+				delete this.searchQuery.businessTypeGroup;
 				this.toDate = '';
 				this.fromDate = '';
 				this.branch = '';
+				this.businessTypeGroup = '';
 				this.pageParams.page = 1;
 				this.currentTab = 'all';
 

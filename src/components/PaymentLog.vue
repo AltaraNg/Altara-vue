@@ -303,8 +303,8 @@
               </div>
               <div class="text-right" v-if="isAltaraPay">
                 <button
-                  class="btn  bg-default"
-                  type="submit"
+                  class="btn bg-default"
+                  type="button"
                   @click="showCollectionModal"
                 >
                   Collection Data
@@ -479,11 +479,17 @@
       :adaptive="true"
       :height="'auto'"
       :clickToClose="true"
-      :reset="true"
+      :reset="false"
     >
       <verification-collection-data
         v-on:close="closeCollectionModal"
         @verificationCollectionDataPassed="collectCollectionVerificationData"
+        :verificationCollectionData="verificationCollectionData"
+        :proof_of_credits="proof_of_credits"
+        :guarantor_signed="guarantor_signed"
+        :address_visited="address_visited"
+        :credit_report_status="credit_report_status"
+        :credit_point_status="credit_point_status"
       />
     </modal>
   </div>
@@ -567,7 +573,26 @@ export default {
       paystackkey: process.env.VUE_APP_PAYSTACK_KEY,
       paystackReference: null,
       newOrderId: null,
-      CollectionVerificationData: null,
+      verificationCollectionData: {
+        salary_day_1: 32,
+        salary_day_2: 32,
+        salary_day_3: 32,
+        proof_of_credit: "SMS Alert Screenshot",
+        guarantor_signed: "No",
+        address_visited: "No",
+        credit_report_status: "No",
+        credit_point_status: "Bad",
+      },
+      proof_of_credits: [
+        "SMS Alert Screenshot",
+        "E-statement",
+        "Stamped-statement",
+        "Bank App History Screenshot",
+      ],
+      guarantor_signed: ["2 - Yes", "1 - Yes", "No"],
+      address_visited: ["Yes", "No"],
+      credit_report_status: ["Bad", "Fair", "No", "Good"],
+      credit_point_status: ["Bad", "Average", "Good"],
     };
   },
   async beforeMount() {
@@ -676,6 +701,7 @@ export default {
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
       };
+      console.log(data);
       this.salesLogForm.payment_gateway_id
         ? (data.payment_gateway_id = this.salesLogForm.payment_gateway_id)
         : "";
@@ -806,7 +832,8 @@ export default {
 
         const { total, actualDownpayment, rePayment } =
           data0.business_type_id.slug.includes("cash_loan") ||
-          data0.business_type_id.slug.includes("ap_rentals") || data0.business_type_id.slug.includes("ap_super")
+          data0.business_type_id.slug.includes("ap_rentals") ||
+          data0.business_type_id.slug.includes("ap_super")
             ? cashLoan(this.selectedProduct.price, data0, data)
             : calculate(
                 this.selectedProduct.price,

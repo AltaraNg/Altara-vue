@@ -270,7 +270,7 @@
                   </option>
                 </select>
               </div>
-              <div class="col form-group bor" v-if="isAltaraPay">
+              <div class="col form-group bor" v-if="isAltaraPay  && salesLogForm.payment_gateway_id != 2">
                 <label for="amount" class="form-control-label"
                   >Card Expiry Date</label
                 >
@@ -574,9 +574,9 @@ export default {
       paystackReference: null,
       newOrderId: null,
       verificationCollectionData: {
-        salary_day_1: 32,
-        salary_day_2: 32,
-        salary_day_3: 32,
+        salary_day_1: 1,
+        salary_day_2: 1,
+        salary_day_3: 1,
         proof_of_credit: "SMS Alert Screenshot",
         guarantor_signed: "No",
         address_visited: "No",

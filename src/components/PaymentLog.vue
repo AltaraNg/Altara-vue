@@ -106,7 +106,7 @@
                   v-model="salesLogForm.discount"
                   v-validate="'required'"
                 >
-                  <option disabled selected="selected">Discounts</option>
+                  <option value="0" selected="selected">0% Discount</option>
                   <option
                     :value="type.slug"
                     :key="type.id"
@@ -565,7 +565,6 @@ export default {
       eligible: false,
       serial: false,
       renewalState: false,
-      flag: localStorage.getItem("flag"),
       isAltaraPay: false,
       useCreditCard: false,
       transfer: false,
@@ -649,7 +648,7 @@ export default {
 
   methods: {
     watchSalesLogForm() {
-      if (this.salesLogForm.sales_category_id == "2" && this.flag == "beta") {
+      if (this.salesLogForm.sales_category_id == "2") {
         this.renewalState = true;
       } else {
         this.renewalState = false;

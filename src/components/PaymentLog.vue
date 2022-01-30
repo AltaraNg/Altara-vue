@@ -1,13 +1,12 @@
 <template>
   <div style="margin-left: 5rem; margin-right: 5rem">
-    
     <div class="row">
       <div class="col-md">
         <div class="card">
           <form class="card-body" @submit.prevent="previewAmortization">
             <div class="text-center">
-      <h2>{{compHeader}}</h2>
-    </div>
+              <h2>{{ compHeader }}</h2>
+            </div>
             <div class="row">
               <div class="col">
                 <button
@@ -107,7 +106,7 @@
                   v-model="salesLogForm.discount"
                   v-validate="'required'"
                 >
-                  <option disabled selected="selected">Discounts</option>
+                  <option value="0" selected="selected">0% Discount</option>
                   <option
                     :value="type.slug"
                     :key="type.id"
@@ -271,7 +270,7 @@
                   </option>
                 </select>
               </div>
-              <div class="col form-group bor" v-if="isAltaraPay">
+              <div class="col form-group bor" v-if="isAltaraPay  && salesLogForm.payment_gateway_id != 2">
                 <label for="amount" class="form-control-label"
                   >Card Expiry Date</label
                 >
@@ -290,16 +289,28 @@
               </div>
             </div>
             <br />
-            <div class="text-center">
-              <button
-                class="btn bg-default"
-                :disabled="test1"
-                type="submit"
-                v-on:click="getCalc()"
-              >
-                View Amortization
-              </button>
-              <br />
+            <div>
+              <div class="text-center">
+                <button
+                  class="btn bg-default"
+                  :disabled="test1"
+                  type="submit"
+                  v-on:click="getCalc()"
+                >
+                  View Amortization
+                </button>
+                <br />
+              </div>
+              <div class="text-right" v-if="isAltaraPay">
+                <button
+                  class="btn bg-default"
+                  type="button"
+                  @click="showCollectionModal"
+                >
+                  Collection Data
+                </button>
+                <br />
+              </div>
             </div>
           </form>
         </div>
@@ -462,6 +473,25 @@
         </div>
       </div>
     </div>
+
+    <modal
+      name="verification-collection-data"
+      :adaptive="true"
+      :height="'auto'"
+      :clickToClose="true"
+      :reset="false"
+    >
+      <verification-collection-data
+        v-on:close="closeCollectionModal"
+        @verificationCollectionDataPassed="collectCollectionVerificationData"
+        :verificationCollectionData="verificationCollectionData"
+        :proof_of_credits="proof_of_credits"
+        :guarantor_signed="guarantor_signed"
+        :address_visited="address_visited"
+        :credit_report_status="credit_report_status"
+        :credit_point_status="credit_point_status"
+      />
+    </modal>
   </div>
 </template>
 
@@ -470,6 +500,7 @@ import { get, post } from "../utilities/api";
 import { mapGetters } from "vuex";
 import AutoComplete from "./AutoComplete.vue";
 import { calculate, cashLoan } from "../utilities/calculator";
+import VerificationCollectionData from "./modals/VerificationCollectionData";
 import Flash from "../utilities/flash";
 import discount from "./discount.vue";
 import paystack from "vue-paystack";
@@ -477,7 +508,7 @@ import moment from "moment";
 
 export default {
   props: { customerId: null, customer: null },
-  components: { AutoComplete, discount, paystack },
+  components: { AutoComplete, discount, paystack, VerificationCollectionData },
   data() {
     return {
       card_expiry: null,
@@ -534,7 +565,6 @@ export default {
       eligible: false,
       serial: false,
       renewalState: false,
-      flag: localStorage.getItem("flag"),
       isAltaraPay: false,
       useCreditCard: false,
       transfer: false,
@@ -542,6 +572,26 @@ export default {
       paystackkey: process.env.VUE_APP_PAYSTACK_KEY,
       paystackReference: null,
       newOrderId: null,
+      verificationCollectionData: {
+        salary_day_1: 1,
+        salary_day_2: 1,
+        salary_day_3: 1,
+        proof_of_credit: "SMS Alert Screenshot",
+        guarantor_signed: "No",
+        address_visited: "No",
+        credit_report_status: "No",
+        credit_point_status: "Bad",
+      },
+      proof_of_credits: [
+        "SMS Alert Screenshot",
+        "E-statement",
+        "Stamped-statement",
+        "Bank App History Screenshot",
+      ],
+      guarantor_signed: ["2 - Yes", "1 - Yes", "No"],
+      address_visited: ["Yes", "No"],
+      credit_report_status: ["Bad", "Fair", "No", "Good"],
+      credit_point_status: ["Bad", "Average", "Good"],
     };
   },
   async beforeMount() {
@@ -580,24 +630,25 @@ export default {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
     },
-     
-     repaymentCycleFiltered(){
-       let newArray = [];
-       this.isAltaraPay ? newArray = this.repaymentCyclesopt.filter(item => {
-         return item.name !== "monthly"
-       }) : newArray = this.repaymentCyclesopt       
-       return newArray;
-     },
 
-     compHeader(){
-       return this.isAltaraPay? "Altara Pay" : "Altara Credit"
-     }
+    repaymentCycleFiltered() {
+      let newArray = [];
+      this.isAltaraPay
+        ? (newArray = this.repaymentCyclesopt.filter((item) => {
+            return item.name !== "monthly";
+          }))
+        : (newArray = this.repaymentCyclesopt);
+      return newArray;
+    },
 
+    compHeader() {
+      return this.isAltaraPay ? "Altara Pay" : "Altara Credit";
+    },
   },
 
   methods: {
     watchSalesLogForm() {
-      if (this.salesLogForm.sales_category_id == "2" && this.flag == "beta") {
+      if (this.salesLogForm.sales_category_id == "2") {
         this.renewalState = true;
       } else {
         this.renewalState = false;
@@ -618,12 +669,11 @@ export default {
             return item.name === "renewal";
           })?.id)
         : (renewal = "");
-        let orderType = '';
-        orderType = this.orderTypes.find((item) => {
-              return item.name === this.isAltaraPay ? "Altara Pay" : "Altara Credit";
+      let orderType = "";
+      orderType = this.orderTypes.find((item) => {
+        return item.name === this.isAltaraPay ? "Altara Pay" : "Altara Credit";
       });
-      
-     
+
       const data = {
         order_type_id: orderType.id,
         customer_id: this.customerId,
@@ -648,7 +698,9 @@ export default {
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
+        collection_verification_data: this.CollectionVerificationData,
       };
+      console.log(data);
       this.salesLogForm.payment_gateway_id
         ? (data.payment_gateway_id = this.salesLogForm.payment_gateway_id)
         : "";
@@ -779,7 +831,8 @@ export default {
 
         const { total, actualDownpayment, rePayment } =
           data0.business_type_id.slug.includes("cash_loan") ||
-          data0.business_type_id.slug.includes("ap_rentals")
+          data0.business_type_id.slug.includes("ap_rentals") ||
+          data0.business_type_id.slug.includes("ap_super")
             ? cashLoan(this.selectedProduct.price, data0, data)
             : calculate(
                 this.selectedProduct.price,
@@ -983,18 +1036,28 @@ export default {
         ).id;
         await this.verifyPaystackPayment()
           .then((data) => {
-            if (data.status && data.message =="Verification successful") {
+            if (data.status && data.message == "Verification successful") {
               this.salesLogForm.authorization_code =
-              data.data.authorization.authorization_code;
+                data.data.authorization.authorization_code;
               this.logSale();
             }
           })
           .catch((error) => {
-             this.$displayErrorMessage(error);
+            this.$displayErrorMessage(error);
           });
       }
     },
     closePayStackModal: () => {},
+    showCollectionModal() {
+      this.$modal.show("verification-collection-data");
+    },
+    closeCollectionModal() {
+      this.$modal.hide("verification-collection-data");
+    },
+    collectCollectionVerificationData(data) {
+      this.CollectionVerificationData = data;
+      this.closeCollectionModal();
+    },
     async verifyPaystackPayment() {
       const url = `${this.apiUrls.verifyPaymentUrl}${this.paystackReference}`;
       const response = await fetch(url, {

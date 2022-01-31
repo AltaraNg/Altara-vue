@@ -110,7 +110,7 @@
                     :value="type.slug"
                     :key="type.id"
                     v-for="type in discounts"
-                    :selected="type.slug == '0_discount'"
+                    
                   >
                     {{ type.name }}
                   </option>
@@ -511,12 +511,13 @@ export default {
   components: { AutoComplete, discount, paystack, VerificationCollectionData },
   data() {
     return {
-      selectedDiscount:"0% Discount",
       card_expiry: null,
       error: {},
       users: [],
       product: "",
-      salesLogForm: {},
+      salesLogForm: {
+        discount:"0_discount"
+      },
       repaymentDuration: [],
       repaymentCyclesopt: [],
       downPaymentRates: [],

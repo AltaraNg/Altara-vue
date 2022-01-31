@@ -1094,7 +1094,7 @@
                         }
                 },
 				percentage(order){
-				return order?.order_discount.percentage_discount
+				return order?.order_discount?.percentage_discount
 			},
 		},
 

@@ -106,7 +106,7 @@
                   v-model="salesLogForm.discount"
                   v-validate="'required'"
                 >
-                  <option value="0" selected="selected">0% Discount</option>
+                  
                   <option
                     :value="type.slug"
                     :key="type.id"
@@ -346,7 +346,7 @@
                 class="discount"
                 v-if="
                   renewalState &&
-                  salesLogForm.discount == '5_discount' &&
+                  salesLogForm.discount !== '0_discount'  &&
                   rPayment > 0
                 "
                 :percent="selected_discount.percentage_discount"
@@ -394,7 +394,7 @@
                           class="modal_discount"
                           v-if="
                             renewalState &&
-                            salesLogForm.discount == '5_discount' &&
+                            salesLogForm.discount !== '0_discount' &&
                             rPayment > 0
                           "
                           :percent="selected_discount.percentage_discount"
@@ -700,7 +700,6 @@ export default {
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
       };
-      console.log(data);
       this.salesLogForm.payment_gateway_id
         ? (data.payment_gateway_id = this.salesLogForm.payment_gateway_id)
         : "";

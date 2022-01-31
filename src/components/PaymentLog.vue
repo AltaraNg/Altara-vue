@@ -106,11 +106,11 @@
                   v-model="salesLogForm.discount"
                   v-validate="'required'"
                 >
-                  
                   <option
                     :value="type.slug"
                     :key="type.id"
                     v-for="type in discounts"
+                    :selected="type.slug == '0_discount'"
                   >
                     {{ type.name }}
                   </option>
@@ -511,6 +511,7 @@ export default {
   components: { AutoComplete, discount, paystack, VerificationCollectionData },
   data() {
     return {
+      selectedDiscount:"0% Discount",
       card_expiry: null,
       error: {},
       users: [],
@@ -800,6 +801,9 @@ export default {
       try {
         const fetchDiscounts = await get(this.apiUrls.discounts);
         this.discounts = fetchDiscounts.data.data.data;
+        this.discounts = this.discounts.sort((a, b) => {
+          return a.percentage_discount - b.percentage_discount;
+        });
       } catch (err) {
         this.$displayErrorMessage(err);
       }
@@ -931,6 +935,7 @@ export default {
         this.downPaymentRates = this.downPaymentRates.sort((a, b) => {
           return a.percent - b.percent;
         });
+        
       } catch (err) {
         this.$displayErrorMessage(err);
       }

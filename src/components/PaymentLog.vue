@@ -106,11 +106,11 @@
                   v-model="salesLogForm.discount"
                   v-validate="'required'"
                 >
-                  <option value="0" selected="selected">0% Discount</option>
                   <option
                     :value="type.slug"
                     :key="type.id"
                     v-for="type in discounts"
+                    
                   >
                     {{ type.name }}
                   </option>
@@ -346,7 +346,7 @@
                 class="discount"
                 v-if="
                   renewalState &&
-                  salesLogForm.discount == '5_discount' &&
+                  salesLogForm.discount !== '0_discount'  &&
                   rPayment > 0
                 "
                 :percent="selected_discount.percentage_discount"
@@ -394,7 +394,7 @@
                           class="modal_discount"
                           v-if="
                             renewalState &&
-                            salesLogForm.discount == '5_discount' &&
+                            salesLogForm.discount !== '0_discount' &&
                             rPayment > 0
                           "
                           :percent="selected_discount.percentage_discount"
@@ -515,7 +515,9 @@ export default {
       error: {},
       users: [],
       product: "",
-      salesLogForm: {},
+      salesLogForm: {
+        discount:"0_discount"
+      },
       repaymentDuration: [],
       repaymentCyclesopt: [],
       downPaymentRates: [],
@@ -700,7 +702,6 @@ export default {
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
       };
-      console.log(data);
       this.salesLogForm.payment_gateway_id
         ? (data.payment_gateway_id = this.salesLogForm.payment_gateway_id)
         : "";
@@ -801,6 +802,9 @@ export default {
       try {
         const fetchDiscounts = await get(this.apiUrls.discounts);
         this.discounts = fetchDiscounts.data.data.data;
+        this.discounts = this.discounts.sort((a, b) => {
+          return a.percentage_discount - b.percentage_discount;
+        });
       } catch (err) {
         this.$displayErrorMessage(err);
       }
@@ -932,6 +936,7 @@ export default {
         this.downPaymentRates = this.downPaymentRates.sort((a, b) => {
           return a.percent - b.percent;
         });
+        
       } catch (err) {
         this.$displayErrorMessage(err);
       }

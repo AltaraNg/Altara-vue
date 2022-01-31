@@ -17,11 +17,12 @@ const calculate = (productPrice, data, params, percentage_discount) => {
   const tempActualRepayment = +(total - downpayment).toFixed(2);
   var   biMonthlyRepayment = Math.round((tempActualRepayment/count)/100)*100
   const actualRepayment = biMonthlyRepayment * count;
-  if(data.sales_category_id == 2 && data.discount_slug == "5_discount" ){
-        var   rePayment = actualRepayment - (actualRepayment * percentage_discount/100)
-    }else{
-       var   rePayment = actualRepayment
-    }
+  if (data.sales_category_id == 2 && percentage_discount > 0) {
+    var rePayment =
+      actualRepayment - (actualRepayment * percentage_discount) / 100;
+  } else {
+    var rePayment = actualRepayment;
+  }
   total = actualRepayment + actualDownpayment ;
   
   return { total, actualDownpayment, rePayment };

@@ -19,6 +19,10 @@
                         desc: 'View daily report',
                     },
                     
+                     {
+                        url: 'reminder-reporting', title: 'Reminder and Collection Charts', url_c: 'View reminder report',
+                        desc: 'View reminder report',
+                    },
                 ]
             }
         }

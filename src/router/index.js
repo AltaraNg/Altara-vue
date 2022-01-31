@@ -85,6 +85,8 @@ const AltaraLoanHome = () => import('../views/AltaraLoan/HomePage.vue');
 const Admin = () => import('../views/Admin/Index.vue');
 const AdminHome = () => import('../views/Admin/HomePage.vue');
 const ReportingTool = () => import('../views/Admin/ReportingTool.vue');
+const ReminderReportingTool = () => import('../views/Admin/ReminderCollectionData.vue');
+
 
 
 
@@ -163,7 +165,9 @@ const router = new VueRouter({
 					name: 'AdminHome',
 				},
 
-				{path: 'reporting', component: ReportingTool, name: 'ReportingTool'}
+				{path: 'reporting', component: ReportingTool, name: 'ReportingTool'},
+				{path: 'reminder-reporting', component: ReminderReportingTool, name: 'ReminderReporting'}
+
 				
 			]
 

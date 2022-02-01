@@ -50,10 +50,12 @@
 				v-validate="'required'"
 			>
 				<option value="">Showroom</option>
-				<option :value="branch.id" v-for="branch in getBranches">{{branch.name}}</option>
+				<option :value="branch.id" v-for="branch in getBranches">{{
+					branch.name
+				}}</option>
 			</select>
 		</div>
-		
+
 		<div class="flex mt-3 mb-5 px-4 ">
 			<button
 				class="bg-default rounded ml-auto py-2 px-4"
@@ -67,7 +69,9 @@
 
 		<div class="text-center font-weight-bold text-black h5">
 			<h3 v-if="branch === ''">All Branches</h3>
-			<h3 v-else>Branch: {{getBranches.find(item => item.id === branch).name}}</h3>
+			<h3 v-else>
+				Branch: {{ getBranches.find((item) => item.id === branch).name }}
+			</h3>
 		</div>
 
 		<div class="row px-4 h-auto" v-if="reports !== null">
@@ -76,16 +80,29 @@
 				class="col mx-4  w-50 font-weight-bold bg-custom3"
 				:label="'Total Number of Sales'"
 			>
-				<template v-slot:svg><img src="../../assets/css/svgs//sale-svgrepo-com.svg" width="100" height="100" alt="img" class="float-right" /></template>
+				<template v-slot:svg
+					><img
+						src="../../assets/css/svgs//sale-svgrepo-com.svg"
+						width="100"
+						height="100"
+						alt="img"
+						class="float-right"
+				/></template>
 			</stat-card-new>
 			<stat-card-new
 				:stat="$formatCurrency(amountCollected)"
 				class="col mx-4 w-50 font-weight-bold bg-custom1"
-				
 				:icon="'fas fa-dolly-flatbed'"
 				:label="'Amount Paid'"
 			>
-				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-com.svg" width="100" height="100"  class="float-right"/> </template>
+				<template v-slot:svg>
+					<img
+						src="../../assets/css/svgs//money-svgrepo-com.svg"
+						width="100"
+						height="100"
+						class="float-right"
+					/>
+				</template>
 			</stat-card-new>
 			<stat-card-new
 				:stat="$formatCurrency(amountOwed)"
@@ -93,8 +110,14 @@
 				:label="'Amount Owed'"
 				:icon="'fas fa-dolly-flatbed'"
 			>
-				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-2.svg" width="100" height="100" alt="img" class="float-right"/></template>
-
+				<template v-slot:svg>
+					<img
+						src="../../assets/css/svgs//money-svgrepo-2.svg"
+						width="100"
+						height="100"
+						alt="img"
+						class="float-right"
+				/></template>
 			</stat-card-new>
 		</div>
 
@@ -124,7 +147,7 @@
 				></polar-chart>
 			</div>
 		</div>
-		
+
 		<!-- <div class="container-fluid" v-show="productPieData">
 			<div class="card">
 				<h3 class="mx-5 my-5">Order By Day Statistics</h3>
@@ -173,7 +196,7 @@
 			Sales,
 			Revenue,
 			Total,
-			PolarChart
+			PolarChart,
 		},
 		data() {
 			return {
@@ -217,15 +240,17 @@
 					maintainAspectRatio: false,
 					legend: {
 						display: false,
-					},	
+					},
 					scales: {
-						yAxes: [{
-							display: true,
-							ticks: {
-								beginAtZero: true
-							}						
-						}]
-					}				
+						yAxes: [
+							{
+								display: true,
+								ticks: {
+									beginAtZero: true,
+								},
+							},
+						],
+					},
 				},
 				noOfSalesMadeOnEachProduct: null,
 				totalNumberOfSales: null,
@@ -272,7 +297,7 @@
 				loaded: false,
 				sums: {},
 				businessTypes: {},
-				branch: ''
+				branch: '',
 			};
 		},
 		async mounted() {
@@ -304,7 +329,7 @@
 							barThickness: 12,
 							maxBarThickness: 16,
 							label: 'Number of sales',
-							data: this.getSalesPerBranch(),							
+							data: this.getSalesPerBranch(),
 							backgroundColor: [
 								'#e76f51',
 								'#457b9d',
@@ -349,16 +374,38 @@
 					labels: ['Active Orders', 'Inactive Orders', 'Completed Orders'],
 					options: {
 						title: {
-							text: "Order Categories",
+							text: 'Order Categories',
 							display: true,
-							color: ['#ffffff']
-							
-					},
-					layout:{
-						padding: 0
-					},
-					maintainAspectRatio: false
-						
+							color: ['#ffffff'],
+						},
+
+						tooltips: {
+							callbacks: {
+								label: function(tooltipItem, data) {
+									var indice = tooltipItem.index;
+									var percent = (
+										(data.datasets[0].data[indice] /
+											(data.datasets[0].data[0] +
+												data.datasets[0].data[1] +
+												data.datasets[0].data[2])) *
+											100
+									);
+									return (
+										data.labels[indice] +
+										': ' +
+										data.datasets[0].data[indice] +
+										' (' +
+										Number.parseFloat(percent).toFixed(2) +
+										'%)'
+									);
+								},
+							},
+						},
+
+						layout: {
+							padding: 0,
+						},
+						maintainAspectRatio: false,
 					},
 
 					datasets: [
@@ -375,17 +422,43 @@
 
 			getPolarChartData() {
 				this.polarData = {
-					labels: ['1-30 days overdue', '30-45 days overdue  ', '>45 days overdue'],
+					labels: [
+						'1-30 days overdue',
+						'30-45 days overdue  ',
+						'>45 days overdue',
+					],
 					options: {
 						title: {
-							text: "Overdue Days",
+							text: 'Overdue Days',
 							display: true,
-							color: '#ffffff'
-					},
-					layout:{
-						padding: 0
-					},
-					maintainAspectRatio: false
+							color: '#ffffff',
+						},
+						tooltips: {
+							callbacks: {
+								label: function(tooltipItem, data) {
+									var indice = tooltipItem.index;
+									var percent = (
+										(data.datasets[0].data[indice] /
+											(data.datasets[0].data[0] +
+												data.datasets[0].data[1] +
+												data.datasets[0].data[2])) *
+											100
+									);
+									return (
+										data.labels[indice] +
+										': ' +
+										data.datasets[0].data[indice] +
+										' (' +
+										Number.parseFloat(percent).toFixed(2) +
+										'%)'
+									);
+								},
+							},
+						},
+						layout: {
+							padding: 0,
+						},
+						maintainAspectRatio: false,
 					},
 					datasets: [
 						{
@@ -398,13 +471,12 @@
 					],
 				};
 			},
-			getPolarData () {
+			getPolarData() {
 				const orderStatus = this.reports?.meta?.stats?.overdueRange;
 				return [
 					orderStatus['1_30'],
 					orderStatus['31_45'],
 					orderStatus['45_above'],
-
 				];
 			},
 			async getReport() {
@@ -422,7 +494,9 @@
 						this.query
 					);
 					this.reports = report.data.data;
-					this.totalNumberOfSales = Object.values(this.reports?.meta?.stats?.ordersStatusCount).reduce((a,b) => a+b);
+					this.totalNumberOfSales = Object.values(
+						this.reports?.meta?.stats?.ordersStatusCount
+					).reduce((a, b) => a + b);
 					this.amountOwed = this.reports?.meta?.stats?.amountOwed;
 					this.amountCollected = this.reports?.meta?.stats?.amountReceived;
 
@@ -493,12 +567,7 @@
 			getPieData() {
 				const orderStatus = this.reports?.meta?.stats?.ordersStatusCount;
 				console.log(orderStatus);
-				return [
-					orderStatus.active,
-					orderStatus.inactive,
-					orderStatus.complete,
-
-				];
+				return [orderStatus.active, orderStatus.inactive, orderStatus.complete];
 			},
 
 			getSalesPerBranch() {
@@ -656,8 +725,7 @@
 		},
 		computed: {
 			...mapGetters(['getBranches']),
-
-		}
+		},
 	};
 </script>
 
@@ -687,14 +755,14 @@
 		align-items: center;
 		justify-content: center;
 	}
-	.bg-custom1{
-		background-image:  linear-gradient(yellow, black);
+	.bg-custom1 {
+		background-image: linear-gradient(yellow, black);
 	}
 
-	.bg-custom2{
-		background-image:  linear-gradient(black,#063D60);
+	.bg-custom2 {
+		background-image: linear-gradient(black, #063d60);
 	}
-	.bg-custom3{
-		background-image:  linear-gradient(green, black);
+	.bg-custom3 {
+		background-image: linear-gradient(green, black);
 	}
 </style>

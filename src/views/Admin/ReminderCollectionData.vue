@@ -50,12 +50,10 @@
 				v-validate="'required'"
 			>
 				<option value="">Showroom</option>
-				<option :value="branch.id" v-for="branch in getBranches">{{
-					branch.name
-				}}</option>
+				<option :value="branch.id" v-for="branch in getBranches">{{branch.name}}</option>
 			</select>
 		</div>
-
+		
 		<div class="flex mt-3 mb-5 px-4 ">
 			<button
 				class="bg-default rounded ml-auto py-2 px-4"
@@ -69,9 +67,7 @@
 
 		<div class="text-center font-weight-bold text-black h5">
 			<h3 v-if="branch === ''">All Branches</h3>
-			<h3 v-else>
-				Branch: {{ getBranches.find((item) => item.id === branch).name }}
-			</h3>
+			<h3 v-else>Branch: {{getBranches.find(item => item.id === branch).name}}</h3>
 		</div>
 
 		<div class="row px-4 h-auto" v-if="reports !== null">
@@ -80,29 +76,16 @@
 				class="col mx-4  w-50 font-weight-bold bg-custom3"
 				:label="'Total Number of Sales'"
 			>
-				<template v-slot:svg
-					><img
-						src="../../assets/css/svgs//sale-svgrepo-com.svg"
-						width="100"
-						height="100"
-						alt="img"
-						class="float-right"
-				/></template>
+				<template v-slot:svg><img src="../../assets/css/svgs//sale-svgrepo-com.svg" width="100" height="100" alt="img" class="float-right" /></template>
 			</stat-card-new>
 			<stat-card-new
 				:stat="$formatCurrency(amountCollected)"
 				class="col mx-4 w-50 font-weight-bold bg-custom1"
+				
 				:icon="'fas fa-dolly-flatbed'"
 				:label="'Amount Paid'"
 			>
-				<template v-slot:svg>
-					<img
-						src="../../assets/css/svgs//money-svgrepo-com.svg"
-						width="100"
-						height="100"
-						class="float-right"
-					/>
-				</template>
+				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-com.svg" width="100" height="100"  class="float-right"/> </template>
 			</stat-card-new>
 			<stat-card-new
 				:stat="$formatCurrency(amountOwed)"
@@ -110,14 +93,8 @@
 				:label="'Amount Owed'"
 				:icon="'fas fa-dolly-flatbed'"
 			>
-				<template v-slot:svg>
-					<img
-						src="../../assets/css/svgs//money-svgrepo-2.svg"
-						width="100"
-						height="100"
-						alt="img"
-						class="float-right"
-				/></template>
+				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-2.svg" width="100" height="100" alt="img" class="float-right"/></template>
+
 			</stat-card-new>
 		</div>
 
@@ -147,7 +124,7 @@
 				></polar-chart>
 			</div>
 		</div>
-
+		
 		<!-- <div class="container-fluid" v-show="productPieData">
 			<div class="card">
 				<h3 class="mx-5 my-5">Order By Day Statistics</h3>
@@ -196,7 +173,7 @@
 			Sales,
 			Revenue,
 			Total,
-			PolarChart,
+			PolarChart
 		},
 		data() {
 			return {
@@ -240,17 +217,15 @@
 					maintainAspectRatio: false,
 					legend: {
 						display: false,
-					},
+					},	
 					scales: {
-						yAxes: [
-							{
-								display: true,
-								ticks: {
-									beginAtZero: true,
-								},
-							},
-						],
-					},
+						yAxes: [{
+							display: true,
+							ticks: {
+								beginAtZero: true
+							}						
+						}]
+					}				
 				},
 				noOfSalesMadeOnEachProduct: null,
 				totalNumberOfSales: null,
@@ -297,7 +272,7 @@
 				loaded: false,
 				sums: {},
 				businessTypes: {},
-				branch: '',
+				branch: ''
 			};
 		},
 		async mounted() {
@@ -329,7 +304,7 @@
 							barThickness: 12,
 							maxBarThickness: 16,
 							label: 'Number of sales',
-							data: this.getSalesPerBranch(),
+							data: this.getSalesPerBranch(),							
 							backgroundColor: [
 								'#e76f51',
 								'#457b9d',
@@ -567,7 +542,12 @@
 			getPieData() {
 				const orderStatus = this.reports?.meta?.stats?.ordersStatusCount;
 				console.log(orderStatus);
-				return [orderStatus.active, orderStatus.inactive, orderStatus.complete];
+				return [
+					orderStatus.active,
+					orderStatus.inactive,
+					orderStatus.complete,
+
+				];
 			},
 
 			getSalesPerBranch() {
@@ -725,7 +705,8 @@
 		},
 		computed: {
 			...mapGetters(['getBranches']),
-		},
+
+		}
 	};
 </script>
 
@@ -755,14 +736,14 @@
 		align-items: center;
 		justify-content: center;
 	}
-	.bg-custom1 {
-		background-image: linear-gradient(yellow, black);
+	.bg-custom1{
+		background-image:  linear-gradient(yellow, black);
 	}
 
-	.bg-custom2 {
-		background-image: linear-gradient(black, #063d60);
+	.bg-custom2{
+		background-image:  linear-gradient(black,#063D60);
 	}
-	.bg-custom3 {
-		background-image: linear-gradient(green, black);
+	.bg-custom3{
+		background-image:  linear-gradient(green, black);
 	}
 </style>

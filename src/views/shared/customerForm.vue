@@ -34,7 +34,7 @@
 
                     </div>
                     <div v-if="mode === 'register' || $store.getters.auth('DVAAccess')">
-                        <h5>Employee Details</h5>
+                        <h5>User Details</h5>
 
                         <div class="form-group col-md-4 px-md-3 px-1 float-left">
                             <label>Employee Name</label>

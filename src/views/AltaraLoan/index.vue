@@ -1,8 +1,8 @@
 <template>
   <div class="px-md-4 px-2">
     <app-navigation
-      :pageTitle="'Cash Loan'"
-      :pageTitleSmall="'Cash Loan'"
+      :pageTitle="'E-Loan'"
+      :pageTitleSmall="'E-Loan'"
       :previous="{ path: $routerHistory.previous().path }"
       :forward="{ path: $routerHistory.next().path }"
     />

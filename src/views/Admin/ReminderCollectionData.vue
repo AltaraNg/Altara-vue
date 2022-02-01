@@ -349,7 +349,7 @@
 					labels: ['Active Orders', 'Inactive Orders', 'Completed Orders'],
 					options: {
 						title: {
-							text: 'Order Categories',
+							text: ['Order Categories', 'Chart describing number of active', 'inactive and completed orders per selected period of time'],
 							display: true,
 							color: ['#ffffff'],
 						},
@@ -404,7 +404,7 @@
 					],
 					options: {
 						title: {
-							text: 'Overdue Days',
+							text: ['Overdue Days', 'Chart of how many days overdue for missed payments'],
 							display: true,
 							color: '#ffffff',
 						},

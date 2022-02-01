@@ -837,7 +837,7 @@ export default {
           data0.business_type_id.slug.includes("cash_loan") ||
           data0.business_type_id.slug.includes("ap_rentals") ||
           data0.business_type_id.slug.includes("ap_super")
-            ? cashLoan(this.selectedProduct.price, data0, data)
+            ? cashLoan(this.selectedProduct.price, data0, data, this.selected_discount?.percentage_discount)
             : calculate(
                 this.selectedProduct.price,
                 data0,
@@ -852,6 +852,7 @@ export default {
         this.pPrice = total;
         this.test1 = false;
       } catch (e) {
+        console.log(e)
         // this.$swal({
         //     icon: "error",
         //     title: "Plan is not available"

@@ -124,11 +124,7 @@
                     v-if="!$v.formData.newCustomer.first_name.required"
                   >Please provide a First Name.
                   </div>
-                  <div
-                    class="error"
-                    v-if="!$v.formData.newCustomer.first_name.minLength"
-                  >Minimum length of name is two
-                  </div>
+                  
                 </div>
                 <small v-if="errors.first('first_name')">
                   {{
@@ -155,15 +151,17 @@
                   name="last_name"
                   placeholder="Enter Last name here.."
                   type="text"
-                  v-model="newCustomer.last_name"
+                  v-model="formData.newCustomer.last_name"
                   v-validate="'required|max:25'"
-                  :class="hasError('newCustomer.last_name') ? 'is-invalid' : ''"
+                  :class="memberHasError('newCustomer.last_name') ? 'is-invalid' : ''"
                 />
-                <div v-if="hasError('newCustomer.last_name')" class="invalid-feedback">
+                <div v-if="memberHasError('newCustomer.last_name')" class="invalid-feedback">
                   <div
                     class="error"
-                    v-if="!$v.newCustomer.last_name.required"
-                  >Please provide a First Name.</div>
+                    v-if="!$v.formData.newCustomer.last_name.required"
+                  >Please provide a Last Name.
+                  </div>
+                  
                 </div>
                 <small v-if="errors.first('last_name')">
                   {{
@@ -1463,19 +1461,18 @@ export default {
         cc_reg_id: "",
         new_customer_fname: "",
         newCustomer: {
-          first_name: ""
+          first_name: "",
+          last_name: ""
         }
       },
       validationRules: [
         {
           // cc_reg_id: { required },
           newCustomer: {
-            first_name: {
-              required,
-              minLength: minLength(2)
-            },
+            first_name: {required},
+            last_name: { required },
           }
-          // last_name: { required },
+          
         },
         {
           // companyName: { required },

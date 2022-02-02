@@ -64,6 +64,7 @@ const ProductList = () => import('../views/LOG/product/products.vue');
 const Renewal = () => import('../views/FSL/renewal/renewal.vue');
 const RenewalNew = () => import('../views/FSL/renewal/renewalRevamped.vue');
 const DSAStats = () => import('../views/FSL/renewal/dsaStats.vue');
+const CollectionsNew = () => import('../views/DVA/collectionsRevamped.vue');
 const CashLogger = () => import('../views/FSL/cash_logger/cash_logger.vue');
 const PaymentLogger = () =>
 	import('../views/FSL/payment_logger/payment_logger.vue');
@@ -84,6 +85,8 @@ const AltaraLoanHome = () => import('../views/AltaraLoan/HomePage.vue');
 const Admin = () => import('../views/Admin/Index.vue');
 const AdminHome = () => import('../views/Admin/HomePage.vue');
 const ReportingTool = () => import('../views/Admin/ReportingTool.vue');
+const ReminderReportingTool = () => import('../views/Admin/ReminderCollectionData.vue');
+
 
 
 
@@ -162,7 +165,9 @@ const router = new VueRouter({
 					name: 'AdminHome',
 				},
 
-				{path: 'reporting', component: ReportingTool, name: 'ReportingTool'}
+				{path: 'reporting', component: ReportingTool, name: 'ReportingTool'},
+				{path: 'reminder-reporting', component: ReminderReportingTool, name: 'ReminderReporting'}
+
 				
 			]
 
@@ -266,6 +271,12 @@ const router = new VueRouter({
 					component: Reminder,
 					name: 'collection',
 					meta: { mode: 'collection' },
+				},
+
+				{
+					path: 'reminder/collection-new',
+					component: CollectionsNew,
+					name: 'collections',
 				},
 				{
 					path: 'reminder/recovery',

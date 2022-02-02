@@ -1,18 +1,15 @@
 <template>
-	<div class="card hover-zoom hover-shadow">
-		<div class="card-body">
-			<div class="d-flex media">
-				<div class="media-body">
-					<h3>
-						{{ stat }}
-					</h3>
-					<span class="text-muted">{{ label }}</span>
-				</div>
+	<div class="card py-4 rounded-circle d-flex">
+		<div class="col float-right"><slot name="svg" class="card-img-top rounded-circle float-right">"></slot></div>
 
-				<div class="align-self-center">
-					<slot name="svg"></slot>
-				</div>
-			</div>
+		<div
+			class="card-body text-white font-weight-bold col"
+			style="border-radius: 50%"
+		>
+			<h3>
+				{{ stat }}
+			</h3>
+			{{ label }}
 		</div>
 	</div>
 </template>

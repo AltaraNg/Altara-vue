@@ -1,10 +1,6 @@
 <template>
   <div class="clearfix pt-md-3 pt-2" id="customerRegister">
-    <verification
-      :action="'update'"
-      @update="updateCustomer"
-      v-if="mode === 'update'"
-    />
+    <verification :action="'update'" @update="updateCustomer" v-if="mode === 'update'" />
     <div
       class="card"
       v-if="(newCustomer.id && mode === 'update') || mode === 'register'"
@@ -23,13 +19,14 @@
         <form-wizard
           @onComplete="register"
           class="form-group m-top"
-          v-if="(mode === 'register' || $store.getters.auth('DVAAccess')) && !registered "
+          v-if="(mode === 'register' || $store.getters.auth('DVAAccess')) && !registered"
         >
           <tab-content title="Account Info" :selected="true">
             <div class="form-group">
               <h5>Prospects Reg ID</h5>
-              <label
-                >Reg ID <span class="text-success mx-4">OPTIONAL</span>
+              <label>
+                Reg ID
+                <span class="text-success mx-4">OPTIONAL</span>
               </label>
               <input
                 class="form-control"
@@ -41,9 +38,11 @@
                 v-validate="'max:50'"
                 @blur="getCustomerDetails"
               />
-              <small v-if="errors.first('cc_reg_id')">{{
-                errors.first("cc_reg_id")
-              }}</small>
+              <small v-if="errors.first('cc_reg_id')">
+                {{
+                  errors.first("cc_reg_id")
+                }}
+              </small>
             </div>
             <div>
               <h5>Employee Details</h5>
@@ -60,9 +59,12 @@
                   v-model="newCustomer.employee_name"
                   v-validate="'required|max:50'"
                 />
-                <small v-if="errors.first('emp_name')">{{
-                  errors.first("emp_name")
-                }}</small>
+               
+                <small v-if="errors.first('emp_name')">
+                  {{
+                    errors.first("emp_name")
+                  }}
+                </small>
               </div>
 
               <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -77,9 +79,11 @@
                   v-model="newCustomer.employee_id"
                   v-validate="'required'"
                 />
-                <small v-if="errors.first('employee_id')">{{
-                  errors.first("employee_id")
-                }}</small>
+                <small v-if="errors.first('employee_id')">
+                  {{
+                    errors.first("employee_id")
+                  }}
+                </small>
               </div>
 
               <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -93,9 +97,9 @@
                   v-model="newCustomer.date_of_registration"
                   v-validate="'required'"
                 />
-                <small v-if="errors.first('date_of_registration')"
-                  >{{ errors.first("date_of_registration") }}
-                </small>
+                <small
+                  v-if="errors.first('date_of_registration')"
+                >{{ errors.first("date_of_registration") }}</small>
               </div>
 
               <div class="spaceAfter"></div>
@@ -109,21 +113,28 @@
                   name="first_name"
                   placeholder="Enter First name here.."
                   type="text"
-                  v-model="newCustomer.first_name"
+                  v-model="formData.newCustomer.first_name"
                   v-validate="'required|max:25'"
-                  :class="hasError('newCustomer.first_name') ? 'is-invalid' : ''"
+                  :class="memberHasError('newCustomer.first_name') ? 'is-invalid' : ''"
                 />
-                <div
-                  v-if="hasError('newCustomer.first_name')"
-                  class="invalid-feedback"
-                >
-                  <div class="error" v-if="!$v.newCustomer.first_name.required">
-                    Please provide a First Name.
+                 <!-- <div class="error" v-if="!$v.formData.newCustomer.first_name.minLength ">Field is required.</div> -->
+                <div v-if="memberHasError('newCustomer.first_name')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.first_name.required"
+                  >Please provide a First Name.
+                  </div>
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.first_name.minLength"
+                  >Minimum length of name is two
                   </div>
                 </div>
-                <small v-if="errors.first('first_name')">{{
-                  errors.first("first_name")
-                }}</small>
+                <small v-if="errors.first('first_name')">
+                  {{
+                    errors.first("first_name")
+                  }}
+                </small>
               </div>
 
               <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -148,17 +159,17 @@
                   v-validate="'required|max:25'"
                   :class="hasError('newCustomer.last_name') ? 'is-invalid' : ''"
                 />
-                <div
-                  v-if="hasError('newCustomer.last_name')"
-                  class="invalid-feedback"
-                >
-                  <div class="error" v-if="!$v.newCustomer.last_name.required">
-                    Please provide a First Name.
-                  </div>
+                <div v-if="hasError('newCustomer.last_name')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.newCustomer.last_name.required"
+                  >Please provide a First Name.</div>
                 </div>
-                <small v-if="errors.first('last_name')">{{
-                  errors.first("last_name")
-                }}</small>
+                <small v-if="errors.first('last_name')">
+                  {{
+                    errors.first("last_name")
+                  }}
+                </small>
               </div>
 
               <div class="spaceAfter"></div>
@@ -173,9 +184,11 @@
                   v-model="newCustomer.telephone"
                   v-validate="'required|numeric|max:11|min:11'"
                 />
-                <small v-if="errors.first('telephone')">{{
-                  errors.first("telephone")
-                }}</small>
+                <small v-if="errors.first('telephone')">
+                  {{
+                    errors.first("telephone")
+                  }}
+                </small>
                 <small v-if="error.telephone">{{ error.telephone[0] }}</small>
               </div>
               <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -188,9 +201,11 @@
                   v-model="newCustomer.email"
                   v-validate="'required|email'"
                 />
-                <small v-if="errors.first('email')">{{
-                  errors.first("email")
-                }}</small>
+                <small v-if="errors.first('email')">
+                  {{
+                    errors.first("email")
+                  }}
+                </small>
                 <small v-if="error.email">{{ error.email[0] }}</small>
               </div>
               <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -203,9 +218,11 @@
                   v-model="newCustomer.date_of_birth"
                   v-validate="'required'"
                 />
-                <small v-if="errors.first('date_of_birth')">{{
-                  errors.first("date_of_birth")
-                }}</small>
+                <small v-if="errors.first('date_of_birth')">
+                  {{
+                    errors.first("date_of_birth")
+                  }}
+                </small>
               </div>
 
               <div class="spaceAfter"></div>
@@ -228,9 +245,11 @@
                   />
                   <label :for="status">{{ status }}</label>
                 </div>
-                <small v-if="errors.first('civil_status')">{{
-                  errors.first("civil_status")
-                }}</small>
+                <small v-if="errors.first('civil_status')">
+                  {{
+                    errors.first("civil_status")
+                  }}
+                </small>
               </div>
 
               <div
@@ -247,18 +266,16 @@
                   v-model="newCustomer.year_together"
                   v-validate="'required|numeric|max:2'"
                 />
-                <small v-if="errors.first('years_together')">{{
-                  errors.first("years_together")
-                }}</small>
+                <small v-if="errors.first('years_together')">
+                  {{
+                    errors.first("years_together")
+                  }}
+                </small>
               </div>
               <div class="spaceAfter"></div>
               <div class="form-group col-md-4 px-md-3 px-1 float-left">
                 <label class="w-100 float-left">Gender</label>
-                <div
-                  class="radio pl-1 float-left"
-                  v-for="(sex, index) in gender"
-                  :key="index"
-                >
+                <div class="radio pl-1 float-left" v-for="(sex, index) in gender" :key="index">
                   <input
                     class="form-control"
                     :id="sex"
@@ -270,15 +287,15 @@
                   />
                   <label :for="sex">{{ sex }}</label>
                 </div>
-                <small v-if="errors.first('gender')">{{
-                  errors.first("gender")
-                }}</small>
+                <small v-if="errors.first('gender')">
+                  {{
+                    errors.first("gender")
+                  }}
+                </small>
               </div>
 
               <div class="form-group col-md-8 px-md-3 px-1 float-left">
-                <label class="w-100 float-left pl-1"
-                  >Highest Level of Education</label
-                >
+                <label class="w-100 float-left pl-1">Highest Level of Education</label>
                 <div
                   class="radio pl-1 pr-3 float-left"
                   v-for="(highestLevel, index) in highestLevelOfEdu"
@@ -295,9 +312,11 @@
                   />
                   <label :for="highestLevel">{{ highestLevel }}</label>
                 </div>
-                <small v-if="errors.first('highestLevel')">{{
-                  errors.first("highestLevel")
-                }}</small>
+                <small v-if="errors.first('highestLevel')">
+                  {{
+                    errors.first("highestLevel")
+                  }}
+                </small>
               </div>
             </div>
           </tab-content>
@@ -317,9 +336,11 @@
                   v-model="newCustomer.add_street"
                   v-validate="'required|max:25'"
                 />
-                <small v-if="errors.first('street_name')">{{
-                  errors.first("street_name")
-                }}</small>
+                <small v-if="errors.first('street_name')">
+                  {{
+                    errors.first("street_name")
+                  }}
+                </small>
               </div>
 
               <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -333,9 +354,11 @@
                   v-model="newCustomer.add_houseno"
                   v-validate="'required'"
                 />
-                <small v-if="errors.first('house_number')">{{
-                  errors.first("house_number")
-                }}</small>
+                <small v-if="errors.first('house_number')">
+                  {{
+                    errors.first("house_number")
+                  }}
+                </small>
               </div>
               <div class="form-group col-md-4 px-md-3 px-1 float-left">
                 <label>Nearest Bus Stop</label>
@@ -348,9 +371,11 @@
                   v-model="newCustomer.add_nbstop"
                   v-validate="'required'"
                 />
-                <small v-if="errors.first('nearest_bus_stop')">{{
-                  errors.first("nearest_bus_stop")
-                }}</small>
+                <small v-if="errors.first('nearest_bus_stop')">
+                  {{
+                    errors.first("nearest_bus_stop")
+                  }}
+                </small>
               </div>
 
               <div class="spaceAfter"></div>
@@ -365,9 +390,11 @@
                   v-model="newCustomer.area_address"
                   v-validate="'required|max:25'"
                 />
-                <small v-if="errors.first('area')">{{
-                  errors.first("area")
-                }}</small>
+                <small v-if="errors.first('area')">
+                  {{
+                    errors.first("area")
+                  }}
+                </small>
               </div>
 
               <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -380,9 +407,11 @@
                   v-model="newCustomer.city"
                   v-validate="'required|max:25'"
                 />
-                <small v-if="errors.first('city')">{{
-                  errors.first("city")
-                }}</small>
+                <small v-if="errors.first('city')">
+                  {{
+                    errors.first("city")
+                  }}
+                </small>
               </div>
 
               <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -399,13 +428,13 @@
                     v-bind:value="state.name"
                     v-for="(state, index) in states"
                     :key="index"
-                  >
-                    {{ state.name }}
-                  </option>
+                  >{{ state.name }}</option>
                 </select>
-                <small v-if="errors.first('state')">{{
-                  errors.first("state")
-                }}</small>
+                <small v-if="errors.first('state')">
+                  {{
+                    errors.first("state")
+                  }}
+                </small>
               </div>
 
               <div class="spaceAfter"></div>
@@ -435,9 +464,9 @@
                   v-model="newCustomer.duration_of_residence"
                   v-validate="'required|numeric|max:2'"
                 />
-                <small v-if="errors.first('duration_of_residence')"
-                  >{{ errors.first("duration_of_residence") }}
-                </small>
+                <small
+                  v-if="errors.first('duration_of_residence')"
+                >{{ errors.first("duration_of_residence") }}</small>
               </div>
               <div class="form-group col-md-4 px-md-3 px-1 float-left">
                 <label>How many people live in your household?</label>
@@ -450,9 +479,9 @@
                   v-model="newCustomer.people_in_household"
                   v-validate="'required|numeric|max:2'"
                 />
-                <small v-if="errors.first('number_in_household')"
-                  >{{ errors.first("number_in_household") }}
-                </small>
+                <small
+                  v-if="errors.first('number_in_household')"
+                >{{ errors.first("number_in_household") }}</small>
               </div>
               <div class="form-group col-md-4 px-md-3 px-1 float-left">
                 <label>How many people depend on you?</label>
@@ -465,9 +494,11 @@
                   v-model="newCustomer.depend_on_you"
                   v-validate="'required|numeric|max:2'"
                 />
-                <small v-if="errors.first('no_depend_on_you')">{{
-                  errors.first("no_depend_on_you")
-                }}</small>
+                <small v-if="errors.first('no_depend_on_you')">
+                  {{
+                    errors.first("no_depend_on_you")
+                  }}
+                </small>
               </div>
               <div class="spaceAfter"></div>
               <div class="form-group col-md-4 float-left">
@@ -481,9 +512,11 @@
                   v-model="newCustomer.number_of_work"
                   v-validate="'required|numeric|max:2'"
                 />
-                <small v-if="errors.first('how_many_work')">{{
-                  errors.first("how_many_work")
-                }}</small>
+                <small v-if="errors.first('how_many_work')">
+                  {{
+                    errors.first("how_many_work")
+                  }}
+                </small>
               </div>
               <div class="form-group col-md-4 float-left">
                 <label>Time Available for Visit</label>
@@ -496,9 +529,11 @@
                   v-model="newCustomer.visit_hour_from"
                   v-validate="'required'"
                 />
-                <small v-if="errors.first('time_from')">{{
-                  errors.first("time_from")
-                }}</small>
+                <small v-if="errors.first('time_from')">
+                  {{
+                    errors.first("time_from")
+                  }}
+                </small>
               </div>
 
               <div class="form-group col-md-4 float-left">
@@ -512,9 +547,11 @@
                   v-model="newCustomer.visit_hour_to"
                   v-validate="'required'"
                 />
-                <small v-if="errors.first('time_to')">{{
-                  errors.first("time_to")
-                }}</small>
+                <small v-if="errors.first('time_to')">
+                  {{
+                    errors.first("time_to")
+                  }}
+                </small>
               </div>
               <div class="spaceAfter"></div>
               <div class="form-group col-md-6 px-md-3 px-1 float-left">
@@ -535,9 +572,11 @@
                   />
                   <label :for="typeOfHome">{{ typeOfHome }}</label>
                 </div>
-                <small v-if="errors.first('typeOfHome')">{{
-                  errors.first("typeOfHome")
-                }}</small>
+                <small v-if="errors.first('typeOfHome')">
+                  {{
+                    errors.first("typeOfHome")
+                  }}
+                </small>
               </div>
 
               <div class="form-group col-md-6 px-md-3 px-1 float-left">
@@ -558,9 +597,11 @@
                   />
                   <label :for="noOfRoom">{{ noOfRoom }}</label>
                 </div>
-                <small v-if="errors.first('noOfRoom')">{{
-                  errors.first("noOfRoom")
-                }}</small>
+                <small v-if="errors.first('noOfRoom')">
+                  {{
+                    errors.first("noOfRoom")
+                  }}
+                </small>
               </div>
               <div class="spaceAfter"></div>
               <h5>Next of Kin</h5>
@@ -576,9 +617,11 @@
                   v-model="newCustomer.nextofkin_first_name"
                   v-validate="'required|max:25'"
                 />
-                <small v-if="errors.first('NOK_first_name')">{{
-                  errors.first("NOK_first_name")
-                }}</small>
+                <small v-if="errors.first('NOK_first_name')">
+                  {{
+                    errors.first("NOK_first_name")
+                  }}
+                </small>
               </div>
 
               <div class="form-group col-md-6 px-md-3 px-1 float-left">
@@ -602,9 +645,11 @@
                   v-model="newCustomer.nextofkin_last_name"
                   v-validate="'required|max:25'"
                 />
-                <small v-if="errors.first('NOK_last_name')">{{
-                  errors.first("NOK_last_name")
-                }}</small>
+                <small v-if="errors.first('NOK_last_name')">
+                  {{
+                    errors.first("NOK_last_name")
+                  }}
+                </small>
               </div>
 
               <div class="form-group col-md-6 px-md-3 px-1 float-left">
@@ -618,9 +663,11 @@
                   v-model="newCustomer.nextofkin_telno"
                   v-validate="'required|numeric|max:11|min:11'"
                 />
-                <small v-if="errors.first('NOK_phone_number')">{{
-                  errors.first("NOK_phone_number")
-                }}</small>
+                <small v-if="errors.first('NOK_phone_number')">
+                  {{
+                    errors.first("NOK_phone_number")
+                  }}
+                </small>
               </div>
               <div class="spaceAfter"></div>
             </div>
@@ -632,22 +679,18 @@
 
               <div class="form-group mb-5 col-md-12 px-md-3 px-1 float-left">
                 <div class="form-group col-md-3 px-md-3 px-1 mt-2 float-left">
-                  <label> Employment Status</label>
+                  <label>Employment Status</label>
                   <select
                     class="custom-select w-100"
                     v-model="newCustomer.employment_status"
                     v-validate="'required'"
                     name="emp"
                   >
-                    <option value="informal(business)">
-                      informal(business)
-                    </option>
+                    <option value="informal(business)">informal(business)</option>
                     <option value="formal">formal</option>
                     <option value="unemployed">unemployed</option>
                   </select>
-                  <small v-if="errors.has('emp')">
-                    {{ errors.first("emp") }}
-                  </small>
+                  <small v-if="errors.has('emp')">{{ errors.first("emp") }}</small>
                 </div>
                 <br />
                 <span
@@ -656,10 +699,9 @@
                   class="badge badge-primary occupation-title"
                   @click="checkOccupation(occupation.id)"
                   :data-id="occupation.id"
-                  >{{ occupation.jobType }}</span
-                >
-                &nbsp;
+                >{{ occupation.jobType }}</span>
 
+                &nbsp;
                 <hr class="my-4" />
 
                 <span
@@ -669,19 +711,10 @@
                   :key="index"
                   class="badge badge-default occupation-option"
                   :data-name="name"
-                  >{{ name }}</span
-                >
+                >{{ name }}</span>
                 &nbsp;
-                <div
-                  class="
-                    form-group
-                    col-md-3 col-12
-                    px-md-3 px-1
-                    mt-2
-                    float-left
-                  "
-                >
-                  <label> Occupation</label>
+                <div class="form-group col-md-3 col-12 px-md-3 px-1 mt-2 float-left">
+                  <label>Occupation</label>
                   <input
                     class="form-control"
                     name="occ"
@@ -692,9 +725,7 @@
                     v-model="newCustomer.occupation"
                   />
                 </div>
-                <small v-if="errors.has('occ')">
-                  {{ errors.first("occ") }}
-                </small>
+                <small v-if="errors.has('occ')">{{ errors.first("occ") }}</small>
               </div>
 
               <transition name="fade">
@@ -705,10 +736,10 @@
                   "
                 >
                   <div class="form-group col-md-6 px-md-3 px-1 float-left">
-                    <label
-                      >Phone number of working/business individual in
-                      household</label
-                    >
+                    <label>
+                      Phone number of working/business individual in
+                      household
+                    </label>
                     <input
                       class="form-control"
                       data-vv-as="office phone"
@@ -719,9 +750,11 @@
                       v-model="newCustomer.working_individual_Phone_number"
                       v-validate="'required|numeric|max:11|min:11'"
                     />
-                    <small v-if="errors.first('office_phone')">{{
-                      errors.first("office_phone")
-                    }}</small>
+                    <small v-if="errors.first('office_phone')">
+                      {{
+                        errors.first("office_phone")
+                      }}
+                    </small>
                   </div>
 
                   <div class="form-group col-md-6 px-md-3 px-1 float-left">
@@ -736,9 +769,11 @@
                       v-model="newCustomer.name_of_company_or_business"
                       v-validate="'required|max:100'"
                     />
-                    <small v-if="errors.first('name_of_firm')">{{
-                      errors.first("name_of_firm")
-                    }}</small>
+                    <small v-if="errors.first('name_of_firm')">
+                      {{
+                        errors.first("name_of_firm")
+                      }}
+                    </small>
                   </div>
 
                   <div class="spaceBetween"></div>
@@ -755,9 +790,7 @@
                       v-model="newCustomer.current_sal_or_business_income"
                       v-validate="'required'"
                     />
-                    <small v-if="errors.has('current_salary')"
-                      >{{ errors.first("current_salary") }}
-                    </small>
+                    <small v-if="errors.has('current_salary')">{{ errors.first("current_salary") }}</small>
                   </div>
 
                   <div class="form-group col-md-6 px-md-3 px-1 float-left">
@@ -773,9 +806,7 @@
                   <div class="spaceBetween"></div>
 
                   <div class="form-group col-md-6 px-md-3 px-1 float-left">
-                    <label class="w-100 float-left pl-1"
-                      >How do you receive salary?</label
-                    >
+                    <label class="w-100 float-left pl-1">How do you receive salary?</label>
                     <div
                       class="radio pl-1 pr-3 float-left"
                       v-for="(means, index) in receiveIncomeMeans"
@@ -792,9 +823,11 @@
                       />
                       <label :for="means">{{ means }}</label>
                     </div>
-                    <small v-if="errors.first('means')">{{
-                      errors.first("means")
-                    }}</small>
+                    <small v-if="errors.first('means')">
+                      {{
+                        errors.first("means")
+                      }}
+                    </small>
                   </div>
 
                   <div class="form-group col-md-6 px-md-3 px-1 float-left">
@@ -815,9 +848,11 @@
                       />
                       <label :for="period">{{ period }}</label>
                     </div>
-                    <small v-if="errors.first('period')">{{
-                      errors.first("period")
-                    }}</small>
+                    <small v-if="errors.first('period')">
+                      {{
+                        errors.first("period")
+                      }}
+                    </small>
                   </div>
 
                   <div class="spaceBetween"></div>
@@ -837,13 +872,9 @@
                         :value="duration"
                         v-for="(duration, index) in durations"
                         :key="index"
-                      >
-                        {{ duration }}
-                      </option>
+                      >{{ duration }}</option>
                     </select>
-                    <small v-if="errors.first('work_duration')"
-                      >{{ errors.first("work_duration") }}
-                    </small>
+                    <small v-if="errors.first('work_duration')">{{ errors.first("work_duration") }}</small>
                   </div>
 
                   <div class="form-group col-md-9 px-md-3 px-1 float-left">
@@ -864,9 +895,11 @@
                       />
                       <label :for="day">{{ day }}</label>
                     </div>
-                    <small v-if="errors.first('days_of_work')">{{
-                      errors.first("days_of_work")
-                    }}</small>
+                    <small v-if="errors.first('days_of_work')">
+                      {{
+                        errors.first("days_of_work")
+                      }}
+                    </small>
                   </div>
 
                   <div class="spaceAfter"></div>
@@ -915,9 +948,9 @@
                       v-model="newCustomer.cadd_nbstop"
                       v-validate="'required|max:50'"
                     />
-                    <small v-if="errors.first('office_nearest_bus_stop')"
-                      >{{ errors.first("office_nearest_bus_stop") }}
-                    </small>
+                    <small
+                      v-if="errors.first('office_nearest_bus_stop')"
+                    >{{ errors.first("office_nearest_bus_stop") }}</small>
                   </div>
 
                   <div class="spaceBetween"></div>
@@ -933,9 +966,11 @@
                       v-model="newCustomer.comp_area"
                       v-validate="'required|max:50'"
                     />
-                    <small v-if="errors.first('company_area')">{{
-                      errors.first("company_area")
-                    }}</small>
+                    <small v-if="errors.first('company_area')">
+                      {{
+                        errors.first("company_area")
+                      }}
+                    </small>
                   </div>
 
                   <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -949,9 +984,11 @@
                       v-model="newCustomer.company_city"
                       v-validate="'required|max:50'"
                     />
-                    <small v-if="errors.first('company_city')">{{
-                      errors.first("company_city")
-                    }}</small>
+                    <small v-if="errors.first('company_city')">
+                      {{
+                        errors.first("company_city")
+                      }}
+                    </small>
                   </div>
 
                   <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -969,13 +1006,9 @@
                         :value="state.name"
                         v-for="(state, index) in states"
                         :key="index"
-                      >
-                        {{ state.name }}
-                      </option>
+                      >{{ state.name }}</option>
                     </select>
-                    <small v-if="errors.first('company_state')"
-                      >{{ errors.first("company_state") }}
-                    </small>
+                    <small v-if="errors.first('company_state')">{{ errors.first("company_state") }}</small>
                   </div>
 
                   <div class="spaceBetween"></div>
@@ -991,9 +1024,9 @@
                       v-model="newCustomer.company_telno"
                       v-validate="'required|numeric|max:11|min:11'"
                     />
-                    <small v-if="errors.first('company_phone_number')"
-                      >{{ errors.first("company_phone_number") }}
-                    </small>
+                    <small
+                      v-if="errors.first('company_phone_number')"
+                    >{{ errors.first("company_phone_number") }}</small>
                   </div>
 
                   <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -1006,9 +1039,9 @@
                       v-model="newCustomer.cvisit_hour_from"
                       v-validate="'required'"
                     />
-                    <small v-if="errors.first('available_from')"
-                      >{{ errors.first("available_from") }}
-                    </small>
+                    <small
+                      v-if="errors.first('available_from')"
+                    >{{ errors.first("available_from") }}</small>
                   </div>
 
                   <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -1021,9 +1054,11 @@
                       v-model="newCustomer.cvisit_hour_to"
                       v-validate="'required'"
                     />
-                    <small v-if="errors.first('available_to')">{{
-                      errors.first("available_to")
-                    }}</small>
+                    <small v-if="errors.first('available_to')">
+                      {{
+                        errors.first("available_to")
+                      }}
+                    </small>
                   </div>
 
                   <div class="spaceBetween"></div>
@@ -1046,10 +1081,10 @@
                   "
                 >
                   <div class="form-group col-md-6 px-md-3 px-1 float-left">
-                    <label
-                      >Phone number of working/business individual in
-                      household</label
-                    >
+                    <label>
+                      Phone number of working/business individual in
+                      household
+                    </label>
                     <input
                       class="form-control"
                       data-vv-as="office phone"
@@ -1060,9 +1095,11 @@
                       v-model="newCustomer.working_individual_Phone_number"
                       v-validate="'required|numeric|max:11|min:11'"
                     />
-                    <small v-if="errors.first('office_phone')">{{
-                      errors.first("office_phone")
-                    }}</small>
+                    <small v-if="errors.first('office_phone')">
+                      {{
+                        errors.first("office_phone")
+                      }}
+                    </small>
                   </div>
 
                   <div class="form-group col-md-6 px-md-3 px-1 float-left">
@@ -1077,9 +1114,11 @@
                       v-model="newCustomer.name_of_company_or_business"
                       v-validate="'required|max:100'"
                     />
-                    <small v-if="errors.first('name_of_firm')">{{
-                      errors.first("name_of_firm")
-                    }}</small>
+                    <small v-if="errors.first('name_of_firm')">
+                      {{
+                        errors.first("name_of_firm")
+                      }}
+                    </small>
                   </div>
 
                   <div class="spaceBetween"></div>
@@ -1095,9 +1134,11 @@
                       v-model="newCustomer.market_name"
                       v-validate="'required'"
                     />
-                    <small v-if="errors.has('market_of_name')">{{
-                      errors.first("market_of_name")
-                    }}</small>
+                    <small v-if="errors.has('market_of_name')">
+                      {{
+                        errors.first("market_of_name")
+                      }}
+                    </small>
                   </div>
 
                   <div class="form-group col-md-6 px-md-3 px-1 float-left">
@@ -1112,9 +1153,7 @@
                       v-model="newCustomer.current_sal_or_business_income"
                       v-validate="'required|numeric'"
                     />
-                    <small v-if="errors.has('current_salary')"
-                      >{{ errors.first("current_salary") }}
-                    </small>
+                    <small v-if="errors.has('current_salary')">{{ errors.first("current_salary") }}</small>
                   </div>
 
                   <div class="spaceBetween"></div>
@@ -1130,9 +1169,7 @@
                       v-model="newCustomer.monthly_gains"
                       v-validate="'required|numeric'"
                     />
-                    <small v-if="errors.first('monthly_gains')"
-                      >{{ errors.first("monthly_gains") }}
-                    </small>
+                    <small v-if="errors.first('monthly_gains')">{{ errors.first("monthly_gains") }}</small>
                   </div>
 
                   <div class="form-group col-md-6 px-md-3 px-1 float-left">
@@ -1150,23 +1187,15 @@
                         :value="duration"
                         v-for="(duration, index) in durations"
                         :key="index"
-                      >
-                        {{ duration }}
-                      </option>
+                      >{{ duration }}</option>
                     </select>
-                    <small v-if="errors.first('work_duration')"
-                      >{{ errors.first("work_duration") }}
-                    </small>
+                    <small v-if="errors.first('work_duration')">{{ errors.first("work_duration") }}</small>
                   </div>
 
                   <div class="spaceBetween"></div>
 
-                  <div
-                    class="form-group col-md-3 col-6 px-md-3 px-1 float-left"
-                  >
-                    <label class="w-100 float-left pl-1"
-                      >Dou you have a bank account?</label
-                    >
+                  <div class="form-group col-md-3 col-6 px-md-3 px-1 float-left">
+                    <label class="w-100 float-left pl-1">Dou you have a bank account?</label>
                     <div class="radio pl-1 pr-3 float-left">
                       <input
                         data-vv-as="bank account"
@@ -1189,9 +1218,11 @@
                       />
                       <label for="bank_account_no">No</label>
                     </div>
-                    <small v-if="errors.first('bank_account')">{{
-                      errors.first("bank_account")
-                    }}</small>
+                    <small v-if="errors.first('bank_account')">
+                      {{
+                        errors.first("bank_account")
+                      }}
+                    </small>
                   </div>
 
                   <div class="form-group col-md-9 px-md-3 px-1 float-left">
@@ -1212,9 +1243,11 @@
                       />
                       <label :for="day">{{ day }}</label>
                     </div>
-                    <small v-if="errors.first('days_of_work')">{{
-                      errors.first("days_of_work")
-                    }}</small>
+                    <small v-if="errors.first('days_of_work')">
+                      {{
+                        errors.first("days_of_work")
+                      }}
+                    </small>
                   </div>
 
                   <div class="spaceAfter"></div>
@@ -1231,9 +1264,9 @@
                       v-model="newCustomer.comp_street_name"
                       v-validate="'required|max:50'"
                     />
-                    <small v-if="errors.first('office_street_name')"
-                      >{{ errors.first("office_street_name") }}
-                    </small>
+                    <small
+                      v-if="errors.first('office_street_name')"
+                    >{{ errors.first("office_street_name") }}</small>
                   </div>
 
                   <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -1247,9 +1280,9 @@
                       v-model="newCustomer.comp_house_no"
                       v-validate="'required|max:50'"
                     />
-                    <small v-if="errors.first('office_building_number')"
-                      >{{ errors.first("office_building_number") }}
-                    </small>
+                    <small
+                      v-if="errors.first('office_building_number')"
+                    >{{ errors.first("office_building_number") }}</small>
                   </div>
 
                   <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -1263,9 +1296,9 @@
                       v-model="newCustomer.cadd_nbstop"
                       v-validate="'required|max:50'"
                     />
-                    <small v-if="errors.first('office_nearest_bus_stop')"
-                      >{{ errors.first("office_nearest_bus_stop") }}
-                    </small>
+                    <small
+                      v-if="errors.first('office_nearest_bus_stop')"
+                    >{{ errors.first("office_nearest_bus_stop") }}</small>
                   </div>
 
                   <div class="spaceBetween"></div>
@@ -1281,9 +1314,11 @@
                       v-model="newCustomer.comp_area"
                       v-validate="'required|max:50'"
                     />
-                    <small v-if="errors.first('company_area')">{{
-                      errors.first("company_area")
-                    }}</small>
+                    <small v-if="errors.first('company_area')">
+                      {{
+                        errors.first("company_area")
+                      }}
+                    </small>
                   </div>
 
                   <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -1297,9 +1332,11 @@
                       v-model="newCustomer.company_city"
                       v-validate="'required|max:50'"
                     />
-                    <small v-if="errors.first('company_city')">{{
-                      errors.first("company_city")
-                    }}</small>
+                    <small v-if="errors.first('company_city')">
+                      {{
+                        errors.first("company_city")
+                      }}
+                    </small>
                   </div>
 
                   <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -1317,13 +1354,9 @@
                         :value="state.name"
                         v-for="(state, index) in states"
                         :key="index"
-                      >
-                        {{ state.name }}
-                      </option>
+                      >{{ state.name }}</option>
                     </select>
-                    <small v-if="errors.first('company_state')"
-                      >{{ errors.first("company_state") }}
-                    </small>
+                    <small v-if="errors.first('company_state')">{{ errors.first("company_state") }}</small>
                   </div>
 
                   <div class="spaceBetween"></div>
@@ -1339,9 +1372,9 @@
                       v-model="newCustomer.company_telno"
                       v-validate="'required|numeric|max:11|min:11'"
                     />
-                    <small v-if="errors.first('company_phone_number')"
-                      >{{ errors.first("company_phone_number") }}
-                    </small>
+                    <small
+                      v-if="errors.first('company_phone_number')"
+                    >{{ errors.first("company_phone_number") }}</small>
                   </div>
 
                   <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -1354,9 +1387,9 @@
                       v-model="newCustomer.cvisit_hour_from"
                       v-validate="'required'"
                     />
-                    <small v-if="errors.first('available_from')"
-                      >{{ errors.first("available_from") }}
-                    </small>
+                    <small
+                      v-if="errors.first('available_from')"
+                    >{{ errors.first("available_from") }}</small>
                   </div>
 
                   <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -1369,9 +1402,11 @@
                       v-model="newCustomer.cvisit_hour_to"
                       v-validate="'required'"
                     />
-                    <small v-if="errors.first('available_to')">{{
-                      errors.first("available_to")
-                    }}</small>
+                    <small v-if="errors.first('available_to')">
+                      {{
+                        errors.first("available_to")
+                      }}
+                    </small>
                   </div>
 
                   <div class="spaceBetween"></div>
@@ -1393,15 +1428,18 @@
         </form-wizard>
         <div v-if="registered" class="success">
           <h2 class="headeer">SUCCESS !</h2>
-          <check/>
-          <p class="text">You have successfully signed up Customer ID is <span class="id">{{identity}}</span></p>
+          <check />
+          <p class="text">
+            You have successfully signed up Customer ID is
+            <span class="id">{{ identity }}</span>
+          </p>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { required } from "vuelidate/lib/validators";
+import { required,minLength } from "vuelidate/lib/validators";
 import { email } from "vuelidate/lib/validators";
 import { numeric } from "vuelidate/lib/validators";
 import { FormWizard, TabContent, ValidationHelper } from "mulltistep-checker";
@@ -1413,20 +1451,30 @@ import Flash from "../../utilities/flash";
 import { get, post } from "../../utilities/api";
 import Verification from "../DVA/verification/verification";
 import flash from "../../utilities/flash";
-
+//name => $v.name.$model
+//age => $v.age.$model
 export default {
   components: { Verification, FormWizard, TabContent, check },
   mixins: [ValidationHelper],
   data() {
     return {
+      newCustomer:{},
+      formData: {
+        cc_reg_id: "",
+        new_customer_fname: "",
         newCustomer: {
-         first_name:'',
-         last_name:''
+          first_name: ""
+        }
       },
-
       validationRules: [
         {
-          // first_name: { required },
+          // cc_reg_id: { required },
+          newCustomer: {
+            first_name: {
+              required,
+              minLength: minLength(2)
+            },
+          }
           // last_name: { required },
         },
         {
@@ -1656,8 +1704,7 @@ export default {
               if (!acc) return this.$networkErr("edit");
             }
             await post(
-              `/api/customer${
-                this.mode === "update" ? "/" + this.newCustomer.id : ""
+              `/api/customer${this.mode === "update" ? "/" + this.newCustomer.id : ""
               }`,
               this.newCustomer
             )
@@ -1679,7 +1726,7 @@ export default {
                 if (this.mode === "register") {
                   this.prepareForm(data.prepareForm);
                 }
-                
+
               })
               .catch((e) => {
                 e = e.response;
@@ -1776,12 +1823,43 @@ export default {
         [this.fillWorkGuarantor, this.fillPersonalGuarantor] = [true, true];
       this.newCustomer = customer;
     },
+    memberHasError(fieldName) {
+      if(!fieldName) return false
+
+      let splitFields = fieldName.split(".")
+      let lastValidator =  this.$v.formData;
+
+      if(!lastValidator) return false
+
+      if(splitFields.length == 1){
+        return fieldName in lastValidator && !lastValidator[fieldName].$invalid;
+      }
+
+    
+      for (let index = 0; index < splitFields.length; index++) {
+        const element = splitFields[index];
+         if (!lastValidator) {
+         return false
+       }
+
+        if(!element in lastValidator){
+          return false
+        }
+       
+       lastValidator =  lastValidator[element]
+      
+      }
+
+      // console.log("After", lastValidator);
+
+      return lastValidator.$invalid;
+    }
   },
   created() {
     get("/api/customer/create").then(({ data }) => this.prepareForm(data));
     /*on create of the component fetch the data required to prepare the form
      * states, branches and the currently logged in dsa details*/
-  },
+  }
 };
 </script>
 
@@ -1829,7 +1907,7 @@ hr.my-4 + span.occupation-option {
 .relative {
   position: relative;
 }
-.success{
+.success {
   height: 100%;
   width: 100%;
   display: flex;
@@ -1837,21 +1915,19 @@ hr.my-4 + span.occupation-option {
   justify-items: start;
   align-items: center;
 }
-.headeer{
-  color: #074A74;
+.headeer {
+  color: #074a74;
   font-weight: 700;
   font-size: 55px;
   padding: 30px 0 0 0;
 }
-.id{
-  color: #074A74;
+.id {
+  color: #074a74;
   font-weight: 600;
   font-size: 25px;
 }
-.text{
+.text {
   color: #0f0f0f;
   font-size: 20px;
-
 }
-
 </style>

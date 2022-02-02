@@ -35,7 +35,7 @@ const repaymentCount = (days, cycle) => {
     return 18;
   } else if (result >= 12) {
     return 12;
-  }
+  } 
   if (result >= 6) {
     return 6;
   }
@@ -51,10 +51,9 @@ const cashLoan = (productPrice, data, params, percentage_discount) => {
   const tempActualRepayment = (principal + interest) * count;
   var biMonthlyRepayment = Math.round(tempActualRepayment / count / 100) * 100;
   const actualRepayment = biMonthlyRepayment * count;
-  let total = Math.ceil((actualDownpayment + rePayment) / 100) * 100;
+  let total = Math.ceil((actualDownpayment + actualRepayment) / 100) * 100;
   if (data.sales_category_id == 2 && percentage_discount > 0) {
-    var rePayment =
-      actualRepayment - (actualRepayment * percentage_discount) / 100;
+    var rePayment = actualRepayment - (actualRepayment * percentage_discount) / 100;
   } else {
     var rePayment = actualRepayment;
   }

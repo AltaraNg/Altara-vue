@@ -498,7 +498,7 @@ export default {
       useCreditCard: false,
       transfer: false,
       customer_email: this.customer.email || "somedefaultemail",
-      paystackkey: process.env.VUE_APP_PAYSTACK_KEY,
+      paystackkey: process.env.VUE_APP_PAYSTACK_KEY || "",
       paystackReference: null,
       newOrderId: null,
       verificationCollectionData: {
@@ -759,11 +759,11 @@ export default {
         this.selected_discount = this.discounts.find((item) => {
           return item.slug == this.salesLogForm.discount;
         });
-
         const { total, actualDownpayment, rePayment } =
           data0.business_type_id.slug.includes("cash_loan") ||
             data0.business_type_id.slug.includes("ap_rentals") ||
-            data0.business_type_id.slug.includes("ap_super")
+            data0.business_type_id.slug.includes("ap_super")||
+            data0.business_type_id.slug.includes("ap_starter")
             ? cashLoan(this.selectedProduct.price, data0, data, this.selected_discount?.percentage_discount)
             : calculate(
               this.selectedProduct.price,

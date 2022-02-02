@@ -349,16 +349,38 @@
 					labels: ['Active Orders', 'Inactive Orders', 'Completed Orders'],
 					options: {
 						title: {
-							text: "Order Categories",
+							text: ['Order Categories', 'Chart describing number of active', 'inactive and completed orders per selected period of time'],
 							display: true,
-							color: ['#ffffff']
-							
-					},
-					layout:{
-						padding: 0
-					},
-					maintainAspectRatio: false
-						
+							color: ['#ffffff'],
+						},
+
+						tooltips: {
+							callbacks: {
+								label: function(tooltipItem, data) {
+									var indice = tooltipItem.index;
+									var percent = (
+										(data.datasets[0].data[indice] /
+											(data.datasets[0].data[0] +
+												data.datasets[0].data[1] +
+												data.datasets[0].data[2])) *
+											100
+									);
+									return (
+										data.labels[indice] +
+										': ' +
+										data.datasets[0].data[indice] +
+										' (' +
+										Number.parseFloat(percent).toFixed(2) +
+										'%)'
+									);
+								},
+							},
+						},
+
+						layout: {
+							padding: 0,
+						},
+						maintainAspectRatio: false,
 					},
 
 					datasets: [
@@ -375,17 +397,43 @@
 
 			getPolarChartData() {
 				this.polarData = {
-					labels: ['1-30 days overdue', '30-45 days overdue  ', '>45 days overdue'],
+					labels: [
+						'1-30 days overdue',
+						'30-45 days overdue  ',
+						'>45 days overdue',
+					],
 					options: {
 						title: {
-							text: "Overdue Days",
+							text: ['Overdue Days', 'Chart of how many days overdue for missed payments'],
 							display: true,
-							color: '#ffffff'
-					},
-					layout:{
-						padding: 0
-					},
-					maintainAspectRatio: false
+							color: '#ffffff',
+						},
+						tooltips: {
+							callbacks: {
+								label: function(tooltipItem, data) {
+									var indice = tooltipItem.index;
+									var percent = (
+										(data.datasets[0].data[indice] /
+											(data.datasets[0].data[0] +
+												data.datasets[0].data[1] +
+												data.datasets[0].data[2])) *
+											100
+									);
+									return (
+										data.labels[indice] +
+										': ' +
+										data.datasets[0].data[indice] +
+										' (' +
+										Number.parseFloat(percent).toFixed(2) +
+										'%)'
+									);
+								},
+							},
+						},
+						layout: {
+							padding: 0,
+						},
+						maintainAspectRatio: false,
 					},
 					datasets: [
 						{
@@ -398,13 +446,12 @@
 					],
 				};
 			},
-			getPolarData () {
+			getPolarData() {
 				const orderStatus = this.reports?.meta?.stats?.overdueRange;
 				return [
 					orderStatus['1_30'],
 					orderStatus['31_45'],
 					orderStatus['45_above'],
-
 				];
 			},
 			async getReport() {
@@ -422,7 +469,9 @@
 						this.query
 					);
 					this.reports = report.data.data;
-					this.totalNumberOfSales = Object.values(this.reports?.meta?.stats?.ordersStatusCount).reduce((a,b) => a+b);
+					this.totalNumberOfSales = Object.values(
+						this.reports?.meta?.stats?.ordersStatusCount
+					).reduce((a, b) => a + b);
 					this.amountOwed = this.reports?.meta?.stats?.amountOwed;
 					this.amountCollected = this.reports?.meta?.stats?.amountReceived;
 

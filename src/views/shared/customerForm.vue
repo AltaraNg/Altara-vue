@@ -59,7 +59,7 @@
                   v-model="newCustomer.employee_name"
                   v-validate="'required|max:50'"
                 />
-               
+
                 <small v-if="errors.first('emp_name')">
                   {{
                     errors.first("emp_name")
@@ -114,17 +114,15 @@
                   placeholder="Enter First name here.."
                   type="text"
                   v-model="formData.newCustomer.first_name"
-                  v-validate="'required|max:25'"
                   :class="memberHasError('newCustomer.first_name') ? 'is-invalid' : ''"
+                  v-validate="'required|max:25'"
                 />
-                 <!-- <div class="error" v-if="!$v.formData.newCustomer.first_name.minLength ">Field is required.</div> -->
+                <!-- <div class="error" v-if="!$v.formData.newCustomer.first_name.minLength ">Field is required.</div> -->
                 <div v-if="memberHasError('newCustomer.first_name')" class="invalid-feedback">
                   <div
                     class="error"
                     v-if="!$v.formData.newCustomer.first_name.required"
-                  >Please provide a First Name.
-                  </div>
-                  
+                  >Please provide a First Name.</div>
                 </div>
                 <small v-if="errors.first('first_name')">
                   {{
@@ -139,7 +137,7 @@
                   class="form-control"
                   placeholder="Enter Middle name here.."
                   type="text"
-                  v-model="newCustomer.middle_name"
+                  v-model="formData.newCustomer.middle_name"
                 />
               </div>
 
@@ -152,16 +150,14 @@
                   placeholder="Enter Last name here.."
                   type="text"
                   v-model="formData.newCustomer.last_name"
-                  v-validate="'required|max:25'"
                   :class="memberHasError('newCustomer.last_name') ? 'is-invalid' : ''"
+                  v-validate="'required|max:25'"
                 />
                 <div v-if="memberHasError('newCustomer.last_name')" class="invalid-feedback">
                   <div
                     class="error"
                     v-if="!$v.formData.newCustomer.last_name.required"
-                  >Please provide a Last Name.
-                  </div>
-                  
+                  >Please provide a Last Name.</div>
                 </div>
                 <small v-if="errors.first('last_name')">
                   {{
@@ -178,10 +174,17 @@
                   class="form-control"
                   name="telephone"
                   placeholder="Enter Phone number here.."
-                  type="tel"
-                  v-model="newCustomer.telephone"
+                  type="number"
+                  v-model="formData.newCustomer.telephone"
                   v-validate="'required|numeric|max:11|min:11'"
+                  :class="memberHasError('newCustomer.telephone') ? 'is-invalid' : ''"
                 />
+                <div v-if="memberHasError('newCustomer.telephone')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.telephone.required"
+                  >Please provide your phone number.</div>
+                </div>
                 <small v-if="errors.first('telephone')">
                   {{
                     errors.first("telephone")
@@ -196,9 +199,16 @@
                   name="email"
                   placeholder="Enter Email.."
                   type="email"
-                  v-model="newCustomer.email"
+                  v-model="formData.newCustomer.email"
+                  :class="memberHasError('newCustomer.email') ? 'is-invalid' : ''"
                   v-validate="'required|email'"
                 />
+                <div v-if="memberHasError('newCustomer.email')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.email.required"
+                  >Please provide your email.</div>
+                </div>
                 <small v-if="errors.first('email')">
                   {{
                     errors.first("email")
@@ -213,9 +223,16 @@
                   data-vv-as="date of birth"
                   name="date_of_birth"
                   type="date"
-                  v-model="newCustomer.date_of_birth"
+                  v-model="formData.newCustomer.date_of_birth"
+                  :class="memberHasError('newCustomer.date_of_birth') ? 'is-invalid' : ''"
                   v-validate="'required'"
                 />
+                <div v-if="memberHasError('newCustomer.date_of_birth')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.date_of_birth.required"
+                  >Please provide your date of birth.</div>
+                </div>
                 <small v-if="errors.first('date_of_birth')">
                   {{
                     errors.first("date_of_birth")
@@ -230,7 +247,7 @@
                 <div
                   class="radio pl-1 pr-3 float-left"
                   v-for="(status, index) in civilStatus"
-                  :key="index"
+                  :key="'civilStatu' + index"
                 >
                   <input
                     :id="status"
@@ -238,10 +255,17 @@
                     data-vv-as="civil status"
                     name="civil_status"
                     type="radio"
-                    v-model="newCustomer.civil_status"
+                    v-model="formData.newCustomer.civil_status"
+                    :class="memberHasError('newCustomer.civil_status') ? 'is-invalid' : ''"
                     v-validate="'required'"
                   />
                   <label :for="status">{{ status }}</label>
+                  <div v-if="memberHasError('newCustomer.civil_status')" class="invalid-feedback">
+                    <div
+                      class="error"
+                      v-if="!$v.formData.newCustomer.civil_status.required"
+                    >Please provide your civil status.</div>
+                  </div>
                 </div>
                 <small v-if="errors.first('civil_status')">
                   {{
@@ -252,7 +276,7 @@
 
               <div
                 class="form-group col-md-4 px-md-3 px-1 float-left"
-                v-if="!(newCustomer.civil_status === 'single')"
+                v-if="!(formData.newCustomer.civil_status === 'single')"
               >
                 <label>Years together</label>
                 <input
@@ -261,9 +285,10 @@
                   name="years_together"
                   placeholder="years together.."
                   type="number"
-                  v-model="newCustomer.year_together"
+                  v-model="formData.newCustomer.year_together"
                   v-validate="'required|numeric|max:2'"
                 />
+
                 <small v-if="errors.first('years_together')">
                   {{
                     errors.first("years_together")
@@ -273,17 +298,28 @@
               <div class="spaceAfter"></div>
               <div class="form-group col-md-4 px-md-3 px-1 float-left">
                 <label class="w-100 float-left">Gender</label>
-                <div class="radio pl-1 float-left" v-for="(sex, index) in gender" :key="index">
+                <div
+                  class="radio pl-1 float-left"
+                  v-for="(sex, index) in gender"
+                  :key="'gender' + index"
+                >
                   <input
                     class="form-control"
                     :id="sex"
                     :value="sex"
                     name="gender"
                     type="radio"
-                    v-model="newCustomer.gender"
+                    v-model="formData.newCustomer.gender"
+                    :class="memberHasError('newCustomer.gender') ? 'is-invalid' : ''"
                     v-validate="'required'"
                   />
                   <label :for="sex">{{ sex }}</label>
+                  <div v-if="memberHasError('newCustomer.gender')" class="invalid-feedback">
+                    <div
+                      class="error"
+                      v-if="!$v.formData.newCustomer.gender.required"
+                    >Please provide your gender.</div>
+                  </div>
                 </div>
                 <small v-if="errors.first('gender')">
                   {{
@@ -297,7 +333,7 @@
                 <div
                   class="radio pl-1 pr-3 float-left"
                   v-for="(highestLevel, index) in highestLevelOfEdu"
-                  :key="index"
+                  :key="'highestLevel' + index"
                 >
                   <input
                     :id="highestLevel"
@@ -305,11 +341,22 @@
                     data-vv-as="highest level of education"
                     name="highestLevel"
                     type="radio"
-                    v-model="newCustomer.level_of_education"
+                    v-model="formData.newCustomer.level_of_education"
+                    :class="memberHasError('newCustomer.level_of_education') ? 'is-invalid' : ''"
                     v-validate="'required'"
                   />
                   <label :for="highestLevel">{{ highestLevel }}</label>
+                  <div
+                    v-if="memberHasError('newCustomer.level_of_education')"
+                    class="invalid-feedback"
+                  >
+                    <div
+                      class="error"
+                      v-if="!$v.formData.newCustomer.level_of_education.required"
+                    >Please provide your level of education.</div>
+                  </div>
                 </div>
+
                 <small v-if="errors.first('highestLevel')">
                   {{
                     errors.first("highestLevel")
@@ -331,9 +378,16 @@
                   name="street_name"
                   placeholder="Enter street name here.."
                   type="text"
-                  v-model="newCustomer.add_street"
+                  v-model="formData.newCustomer.add_street"
+                  :class="memberHasError('newCustomer.add_street') ? 'is-invalid' : ''"
                   v-validate="'required|max:25'"
                 />
+                <div v-if="memberHasError('newCustomer.add_street')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.add_street.required"
+                  >Please provide your street.</div>
+                </div>
                 <small v-if="errors.first('street_name')">
                   {{
                     errors.first("street_name")
@@ -349,9 +403,16 @@
                   name="house_number"
                   placeholder="Enter House number here.."
                   type="text"
-                  v-model="newCustomer.add_houseno"
+                  v-model="formData.newCustomer.add_houseno"
+                  :class="memberHasError('newCustomer.add_houseno') ? 'is-invalid' : ''"
                   v-validate="'required'"
                 />
+                <div v-if="memberHasError('newCustomer.add_houseno')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.add_houseno.required"
+                  >Please provide a House Number.</div>
+                </div>
                 <small v-if="errors.first('house_number')">
                   {{
                     errors.first("house_number")
@@ -366,9 +427,16 @@
                   name="nearest_bus_stop"
                   placeholder="Enter nearest bus stop here.."
                   type="text"
-                  v-model="newCustomer.add_nbstop"
+                  v-model="formData.newCustomer.add_nbstop"
+                  :class="memberHasError('newCustomer.add_nbstop') ? 'is-invalid' : ''"
                   v-validate="'required'"
                 />
+                <div v-if="memberHasError('newCustomer.add_nbstop')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.add_nbstop.required"
+                  >Please provide the nearest Bustop.</div>
+                </div>
                 <small v-if="errors.first('nearest_bus_stop')">
                   {{
                     errors.first("nearest_bus_stop")
@@ -385,9 +453,16 @@
                   name="area"
                   placeholder="Enter area here.."
                   type="text"
-                  v-model="newCustomer.area_address"
+                  v-model="formData.newCustomer.area_address"
+                  :class="memberHasError('newCustomer.area_address') ? 'is-invalid' : ''"
                   v-validate="'required|max:25'"
                 />
+                <div v-if="memberHasError('newCustomer.area_address')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.area_address.required"
+                  >Please provide your area.</div>
+                </div>
                 <small v-if="errors.first('area')">
                   {{
                     errors.first("area")
@@ -402,9 +477,16 @@
                   name="city"
                   placeholder="Enter city here.."
                   type="text"
-                  v-model="newCustomer.city"
+                  v-model="formData.newCustomer.city"
+                  :class="memberHasError('newCustomer.city') ? 'is-invalid' : ''"
                   v-validate="'required|max:25'"
                 />
+                <div v-if="memberHasError('newCustomer.city')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.city.required"
+                  >Please provide your city name.</div>
+                </div>
                 <small v-if="errors.first('city')">
                   {{
                     errors.first("city")
@@ -418,16 +500,23 @@
                   class="custom-select w-100"
                   data-vv-validate-on="blur"
                   name="state"
-                  v-model="newCustomer.state"
+                  v-model="formData.newCustomer.state"
+                  :class="memberHasError('newCustomer.state') ? 'is-invalid' : ''"
                   v-validate="'required'"
                 >
                   <option value>select state</option>
                   <option
                     v-bind:value="state.name"
                     v-for="(state, index) in states"
-                    :key="index"
+                    :key="'states' + index"
                   >{{ state.name }}</option>
                 </select>
+                <div v-if="memberHasError('newCustomer.state')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.state.required"
+                  >Please provide a State.</div>
+                </div>
                 <small v-if="errors.first('state')">
                   {{
                     errors.first("state")
@@ -443,7 +532,7 @@
                   class="form-control col-sm-12"
                   placeholder="Describe the Location"
                   rows="1"
-                  v-model="newCustomer.add_addinfo_description"
+                  v-model="formData.newCustomer.add_addinfo_description"
                 ></textarea>
               </div>
             </div>
@@ -459,9 +548,19 @@
                   name="duration_of_residence"
                   placeholder="Duration of residence.."
                   type="number"
-                  v-model="newCustomer.duration_of_residence"
+                  v-model="formData.newCustomer.duration_of_residence"
+                  :class="memberHasError('newCustomer.duration_of_residence') ? 'is-invalid' : ''"
                   v-validate="'required|numeric|max:2'"
                 />
+                <div
+                  v-if="memberHasError('newCustomer.duration_of_residence')"
+                  class="invalid-feedback"
+                >
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.duration_of_residence.required"
+                  >Please provide duration of residence.</div>
+                </div>
                 <small
                   v-if="errors.first('duration_of_residence')"
                 >{{ errors.first("duration_of_residence") }}</small>
@@ -474,9 +573,19 @@
                   name="number_in_household"
                   placeholder="Enter number here.."
                   type="number"
-                  v-model="newCustomer.people_in_household"
+                  v-model="formData.newCustomer.people_in_household"
+                  :class="memberHasError('newCustomer.people_in_household') ? 'is-invalid' : ''"
                   v-validate="'required|numeric|max:2'"
                 />
+                <div
+                  v-if="memberHasError('newCustomer.people_in_household')"
+                  class="invalid-feedback"
+                >
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.people_in_household.required"
+                  >Please provide people in household.</div>
+                </div>
                 <small
                   v-if="errors.first('number_in_household')"
                 >{{ errors.first("number_in_household") }}</small>
@@ -489,9 +598,16 @@
                   name="no_depend_on_you"
                   placeholder="Enter number here.."
                   type="number"
-                  v-model="newCustomer.depend_on_you"
+                  v-model="formData.newCustomer.depend_on_you"
+                  :class="memberHasError('newCustomer.depend_on_you') ? 'is-invalid' : ''"
                   v-validate="'required|numeric|max:2'"
                 />
+                <div v-if="memberHasError('newCustomer.depend_on_you')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.depend_on_you.required"
+                  >Please provide how many people depend on you.</div>
+                </div>
                 <small v-if="errors.first('no_depend_on_you')">
                   {{
                     errors.first("no_depend_on_you")
@@ -507,9 +623,16 @@
                   name="how_many_work"
                   placeholder="Enter number here.."
                   type="number"
-                  v-model="newCustomer.number_of_work"
+                  v-model="formData.newCustomer.number_of_work"
+                  :class="memberHasError('newCustomer.number_of_work') ? 'is-invalid' : ''"
                   v-validate="'required|numeric|max:2'"
                 />
+                <div v-if="memberHasError('newCustomer.number_of_work')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.number_of_work.required"
+                  >Please provide how many work.</div>
+                </div>
                 <small v-if="errors.first('how_many_work')">
                   {{
                     errors.first("how_many_work")
@@ -524,9 +647,16 @@
                   placeholder="From"
                   name="time_from"
                   type="time"
-                  v-model="newCustomer.visit_hour_from"
+                  v-model="formData.newCustomer.visit_hour_from"
+                  :class="memberHasError('newCustomer.visit_hour_from') ? 'is-invalid' : ''"
                   v-validate="'required'"
                 />
+                <div v-if="memberHasError('newCustomer.visit_hour_from')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.visit_hour_from.required"
+                  >Please provide time of visit.</div>
+                </div>
                 <small v-if="errors.first('time_from')">
                   {{
                     errors.first("time_from")
@@ -542,9 +672,16 @@
                   data-vv-as="time to"
                   name="time_to"
                   type="time"
-                  v-model="newCustomer.visit_hour_to"
+                  v-model="formData.newCustomer.visit_hour_to"
+                  :class="memberHasError('newCustomer.visit_hour_to') ? 'is-invalid' : ''"
                   v-validate="'required'"
                 />
+                <div v-if="memberHasError('newCustomer.visit_hour_to')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.visit_hour_to.required"
+                  >Please provide time of visit.</div>
+                </div>
                 <small v-if="errors.first('time_to')">
                   {{
                     errors.first("time_to")
@@ -557,7 +694,7 @@
                 <div
                   class="radio pl-1 pr-3 float-left"
                   v-for="(typeOfHome, index) in typesOfHome"
-                  :key="index"
+                  :key="'typesOfHome' + index"
                 >
                   <input
                     :id="typeOfHome"
@@ -565,10 +702,17 @@
                     data-vv-as="type of home"
                     name="typeOfHome"
                     type="radio"
-                    v-model="newCustomer.type_of_home"
+                    v-model="formData.newCustomer.type_of_home"
+                    :class="memberHasError('newCustomer.type_of_home') ? 'is-invalid' : ''"
                     v-validate="'required'"
                   />
                   <label :for="typeOfHome">{{ typeOfHome }}</label>
+                </div>
+                <div v-if="memberHasError('newCustomer.type_of_home')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.type_of_home.required"
+                  >Please provide type of home.</div>
                 </div>
                 <small v-if="errors.first('typeOfHome')">
                   {{
@@ -582,7 +726,7 @@
                 <div
                   class="radio pl-1 pr-3 float-left"
                   v-for="(noOfRoom, index) in noOfRooms"
-                  :key="index"
+                  :key="'noOfRooms' + index"
                 >
                   <input
                     :id="noOfRoom"
@@ -590,10 +734,17 @@
                     data-vv-as="number of rooms"
                     name="noOfRoom"
                     type="radio"
-                    v-model="newCustomer.no_of_rooms"
+                    v-model="formData.newCustomer.no_of_rooms"
+                    :class="memberHasError('newCustomer.no_of_rooms') ? 'is-invalid' : ''"
                     v-validate="'required'"
                   />
                   <label :for="noOfRoom">{{ noOfRoom }}</label>
+                </div>
+                <div v-if="memberHasError('newCustomer.no_of_rooms')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.no_of_rooms.required"
+                  >Please provide number of room(s).</div>
                 </div>
                 <small v-if="errors.first('noOfRoom')">
                   {{
@@ -612,9 +763,19 @@
                   name="NOK_first_name"
                   placeholder="Enter first name"
                   type="text"
-                  v-model="newCustomer.nextofkin_first_name"
+                  v-model="formData.newCustomer.nextofkin_first_name"
+                  :class="memberHasError('newCustomer.nextofkin_first_name') ? 'is-invalid' : ''"
                   v-validate="'required|max:25'"
                 />
+                <div
+                  v-if="memberHasError('newCustomer.nextofkin_first_name')"
+                  class="invalid-feedback"
+                >
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.nextofkin_first_name.required"
+                  >Please provide a First Name.</div>
+                </div>
                 <small v-if="errors.first('NOK_first_name')">
                   {{
                     errors.first("NOK_first_name")
@@ -628,7 +789,7 @@
                   class="form-control"
                   placeholder="Enter middle name"
                   type="text"
-                  v-model="newCustomer.nextofkin_middle_name"
+                  v-model="formData.newCustomer.nextofkin_middle_name"
                 />
               </div>
               <div class="spaceAfter"></div>
@@ -640,9 +801,19 @@
                   name="NOK_last_name"
                   placeholder="Enter last name"
                   type="text"
-                  v-model="newCustomer.nextofkin_last_name"
+                  v-model="formData.newCustomer.nextofkin_last_name"
+                  :class="memberHasError('newCustomer.nextofkin_last_name') ? 'is-invalid' : ''"
                   v-validate="'required|max:25'"
                 />
+                <div
+                  v-if="memberHasError('newCustomer.nextofkin_last_name')"
+                  class="invalid-feedback"
+                >
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.nextofkin_last_name.required"
+                  >Please provide a Last Name.</div>
+                </div>
                 <small v-if="errors.first('NOK_last_name')">
                   {{
                     errors.first("NOK_last_name")
@@ -657,10 +828,17 @@
                   data-vv-as="next of kin phone number"
                   name="NOK_phone_number"
                   placeholder="Enter phone number"
-                  type="tel"
-                  v-model="newCustomer.nextofkin_telno"
+                  type="number"
+                  v-model="formData.newCustomer.nextofkin_telno"
+                  :class="memberHasError('newCustomer.nextofkin_telno') ? 'is-invalid' : ''"
                   v-validate="'required|numeric|max:11|min:11'"
                 />
+                <div v-if="memberHasError('newCustomer.nextofkin_telno')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.nextofkin_telno.required"
+                  >Please provide a Tel No.</div>
+                </div>
                 <small v-if="errors.first('NOK_phone_number')">
                   {{
                     errors.first("NOK_phone_number")
@@ -670,7 +848,6 @@
               <div class="spaceAfter"></div>
             </div>
           </tab-content>
-
           <tab-content title="Work Details">
             <div class="form-group">
               <h5>Work Details - Select Occupation</h5>
@@ -680,7 +857,8 @@
                   <label>Employment Status</label>
                   <select
                     class="custom-select w-100"
-                    v-model="newCustomer.employment_status"
+                    v-model="formData.newCustomer.employment_status"
+                    :class="memberHasError('newCustomer.employment_status') ? 'is-invalid' : ''"
                     v-validate="'required'"
                     name="emp"
                   >
@@ -688,17 +866,25 @@
                     <option value="formal">formal</option>
                     <option value="unemployed">unemployed</option>
                   </select>
+                  <div
+                    v-if="memberHasError('newCustomer.employment_status')"
+                    class="invalid-feedback"
+                  >
+                    <div
+                      class="error"
+                      v-if="!$v.formData.newCustomer.employment_status.required"
+                    >Please provide employment status.</div>
+                  </div>
                   <small v-if="errors.has('emp')">{{ errors.first("emp") }}</small>
                 </div>
                 <br />
                 <span
                   v-for="(occupation, index) in occupations"
-                  :key="index"
+                  :key="'occupations' + index"
                   class="badge badge-primary occupation-title"
                   @click="checkOccupation(occupation.id)"
                   :data-id="occupation.id"
                 >{{ occupation.jobType }}</span>
-
                 &nbsp;
                 <hr class="my-4" />
 
@@ -706,7 +892,7 @@
                   v-if="isClick"
                   @click="setOccupation(name)"
                   v-for="(name, index) in occName"
-                  :key="index"
+                  :key="'occName' + index"
                   class="badge badge-default occupation-option"
                   :data-name="name"
                 >{{ name }}</span>
@@ -720,8 +906,15 @@
                     placeholder="Enter occupation here"
                     type="text"
                     v-validate="'required'"
-                    v-model="newCustomer.occupation"
+                    v-model="formData.newCustomer.occupation"
+                    :class="memberHasError('newCustomer.occupation') ? 'is-invalid' : ''"
                   />
+                </div>
+                <div v-if="memberHasError('newCustomer.occupation')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.occupation.required"
+                  >Please provide occupation.</div>
                 </div>
                 <small v-if="errors.has('occ')">{{ errors.first("occ") }}</small>
               </div>
@@ -729,8 +922,8 @@
               <transition name="fade">
                 <div
                   v-if="
-                    newCustomer.employment_status === 'formal' &&
-                    this.newCustomer.occupation !== ''
+                    formData.newCustomer.employment_status === 'formal' &&
+                    formData.newCustomer.occupation !== ''
                   "
                 >
                   <div class="form-group col-md-6 px-md-3 px-1 float-left">
@@ -743,11 +936,12 @@
                       data-vv-as="office phone"
                       name="office_phone"
                       placeholder="Enter Phone Number here"
-                      type="tel"
+                      type="number"
                       key="office_phone_formal"
-                      v-model="newCustomer.working_individual_Phone_number"
+                      v-model="formData.newCustomer.working_individual_Phone_number"
                       v-validate="'required|numeric|max:11|min:11'"
                     />
+
                     <small v-if="errors.first('office_phone')">
                       {{
                         errors.first("office_phone")
@@ -764,9 +958,10 @@
                       placeholder="Enter name of company here"
                       type="text"
                       key="name_of_form_formal"
-                      v-model="newCustomer.name_of_company_or_business"
+                      v-model="formData.newCustomer.name_of_company_or_business"
                       v-validate="'required|max:100'"
                     />
+
                     <small v-if="errors.first('name_of_firm')">
                       {{
                         errors.first("name_of_firm")
@@ -785,9 +980,10 @@
                       placeholder="Current Salary or Monthly income"
                       type="number"
                       key="current_salary_formal"
-                      v-model="newCustomer.current_sal_or_business_income"
+                      v-model="formData.newCustomer.current_sal_or_business_income"
                       v-validate="'required'"
                     />
+
                     <small v-if="errors.has('current_salary')">{{ errors.first("current_salary") }}</small>
                   </div>
 
@@ -797,7 +993,7 @@
                       class="form-control"
                       placeholder="Enter position/post here"
                       type="text"
-                      v-model="newCustomer.post_in_company"
+                      v-model="formData.newCustomer.post_in_company"
                     />
                   </div>
 
@@ -808,7 +1004,7 @@
                     <div
                       class="radio pl-1 pr-3 float-left"
                       v-for="(means, index) in receiveIncomeMeans"
-                      :key="index"
+                      :key="'receiveIncomeMeans' + index"
                     >
                       <input
                         :id="means"
@@ -816,11 +1012,12 @@
                         data-vv-as="income means"
                         name="means"
                         type="radio"
-                        v-model="newCustomer.receive_income_means"
+                        v-model="formData.newCustomer.receive_income_means"
                         v-validate="'required'"
                       />
                       <label :for="means">{{ means }}</label>
                     </div>
+
                     <small v-if="errors.first('means')">
                       {{
                         errors.first("means")
@@ -833,7 +1030,7 @@
                     <div
                       class="radio pl-1 pr-3 float-left"
                       v-for="(period, index) in paymentPeriod"
-                      :key="index"
+                      :key="'paymentPeriod' + index"
                     >
                       <input
                         :id="period"
@@ -841,11 +1038,12 @@
                         data-vv-as="payment period"
                         name="period"
                         type="radio"
-                        v-model="newCustomer.payment_period"
+                        v-model="formData.newCustomer.payment_period"
                         v-validate="'required'"
                       />
                       <label :for="period">{{ period }}</label>
                     </div>
+
                     <small v-if="errors.first('period')">
                       {{
                         errors.first("period")
@@ -862,16 +1060,17 @@
                       data-vv-as="work duration"
                       data-vv-validate-on="blur"
                       name="work_duration"
-                      v-model="newCustomer.years_of_existence_or_work_duration"
+                      v-model="formData.newCustomer.years_of_existence_or_work_duration"
                       v-validate="'required'"
                     >
                       <option value>select duration</option>
                       <option
                         :value="duration"
                         v-for="(duration, index) in durations"
-                        :key="index"
+                        :key="'durations' + index"
                       >{{ duration }}</option>
                     </select>
+
                     <small v-if="errors.first('work_duration')">{{ errors.first("work_duration") }}</small>
                   </div>
 
@@ -880,7 +1079,7 @@
                     <div
                       class="checkbox float-left pr-3"
                       v-for="(day, index) in weekdays"
-                      :key="index"
+                      :key="'weekdays' + index"
                     >
                       <input
                         :id="day"
@@ -888,10 +1087,17 @@
                         data-vv-as="days of work"
                         name="days_of_work"
                         type="checkbox"
-                        v-model="newCustomer.days_of_work"
+                        v-model="formData.newCustomer.days_of_work"
                         v-validate="'required'"
                       />
                       <label :for="day">{{ day }}</label>
+                    </div>
+
+                    <div v-if="memberHasError('newCustomer.days_of_work')" class="invalid-feedback">
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.days_of_work.required"
+                      >Please provide days.</div>
                     </div>
                     <small v-if="errors.first('days_of_work')">
                       {{
@@ -911,12 +1117,13 @@
                       name="office_street_name"
                       placeholder="Enter Street name here"
                       type="text"
-                      v-model="newCustomer.comp_street_name"
+                      v-model="formData.newCustomer.comp_street_name"
                       v-validate="'required|max:50'"
                     />
-                    <small v-if="errors.first('office_street_name')"
-                      >{{ errors.first("office_street_name") }}
-                    </small>
+
+                    <small
+                      v-if="errors.first('office_street_name')"
+                    >{{ errors.first("office_street_name") }}</small>
                   </div>
 
                   <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -927,12 +1134,13 @@
                       name="office_building_number"
                       placeholder="Enter Building Number"
                       type="text"
-                      v-model="newCustomer.comp_house_no"
+                      v-model="formData.newCustomer.comp_house_no"
                       v-validate="'required|max:50'"
                     />
-                    <small v-if="errors.first('office_building_number')"
-                      >{{ errors.first("office_building_number") }}
-                    </small>
+
+                    <small
+                      v-if="errors.first('office_building_number')"
+                    >{{ errors.first("office_building_number") }}</small>
                   </div>
 
                   <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -943,9 +1151,15 @@
                       name="office_nearest_bus_stop"
                       placeholder="Enter nearest bus stop"
                       type="text"
-                      v-model="newCustomer.cadd_nbstop"
+                      v-model="formData.newCustomer.cadd_nbstop"
                       v-validate="'required|max:50'"
                     />
+                    <div v-if="memberHasError('newCustomer.cadd_nbstop')" class="invalid-feedback">
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.cadd_nbstop.required"
+                      >Please provide a bustop.</div>
+                    </div>
                     <small
                       v-if="errors.first('office_nearest_bus_stop')"
                     >{{ errors.first("office_nearest_bus_stop") }}</small>
@@ -961,9 +1175,15 @@
                       name="company_area"
                       placeholder="Enter area"
                       type="text"
-                      v-model="newCustomer.comp_area"
+                      v-model="formData.newCustomer.comp_area"
                       v-validate="'required|max:50'"
                     />
+                    <div v-if="memberHasError('newCustomer.comp_area')" class="invalid-feedback">
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.comp_area.required"
+                      >Please provide area.</div>
+                    </div>
                     <small v-if="errors.first('company_area')">
                       {{
                         errors.first("company_area")
@@ -979,9 +1199,10 @@
                       name="company_city"
                       placeholder="Enter city"
                       type="text"
-                      v-model="newCustomer.company_city"
+                      v-model="formData.newCustomer.company_city"
                       v-validate="'required|max:50'"
                     />
+
                     <small v-if="errors.first('company_city')">
                       {{
                         errors.first("company_city")
@@ -996,16 +1217,17 @@
                       data-vv-as="company state"
                       data-vv-validate-on="blur"
                       name="company_state"
-                      v-model="newCustomer.company_state"
+                      v-model="formData.newCustomer.company_state"
                       v-validate="'required'"
                     >
                       <option value>select state</option>
                       <option
                         :value="state.name"
                         v-for="(state, index) in states"
-                        :key="index"
+                        :key="'states2' + index"
                       >{{ state.name }}</option>
                     </select>
+
                     <small v-if="errors.first('company_state')">{{ errors.first("company_state") }}</small>
                   </div>
 
@@ -1018,10 +1240,11 @@
                       data-vv-as="company phone number"
                       name="company_phone_number"
                       placeholder="Enter city"
-                      type="tel"
-                      v-model="newCustomer.company_telno"
+                      type="number"
+                      v-model="formData.newCustomer.company_telno"
                       v-validate="'required|numeric|max:11|min:11'"
                     />
+
                     <small
                       v-if="errors.first('company_phone_number')"
                     >{{ errors.first("company_phone_number") }}</small>
@@ -1034,9 +1257,10 @@
                       data-vv-as="available from"
                       name="available_from"
                       type="time"
-                      v-model="newCustomer.cvisit_hour_from"
+                      v-model="formData.newCustomer.cvisit_hour_from"
                       v-validate="'required'"
                     />
+
                     <small
                       v-if="errors.first('available_from')"
                     >{{ errors.first("available_from") }}</small>
@@ -1049,9 +1273,10 @@
                       data-vv-as="available to"
                       name="available_to"
                       type="time"
-                      v-model="newCustomer.cvisit_hour_to"
+                      v-model="formData.newCustomer.cvisit_hour_to"
                       v-validate="'required'"
                     />
+
                     <small v-if="errors.first('available_to')">
                       {{
                         errors.first("available_to")
@@ -1067,15 +1292,15 @@
                       class="form-control col-sm-12"
                       placeholder="Describe the Location"
                       rows="1"
-                      v-model="newCustomer.cadd_addinfo"
+                      v-model="formData.newCustomer.cadd_addinfo"
                     ></textarea>
                   </div>
                 </div>
 
                 <div
                   v-else-if="
-                    newCustomer.employment_status === 'informal(business)' &&
-                    newCustomer.occupation !== ''
+                    formData.newCustomer.employment_status === 'informal(business)' &&
+                    formData.newCustomer.occupation !== ''
                   "
                 >
                   <div class="form-group col-md-6 px-md-3 px-1 float-left">
@@ -1088,11 +1313,12 @@
                       data-vv-as="office phone"
                       name="office_phone"
                       placeholder="Enter Phone Number here"
-                      type="tel"
+                      type="number"
                       key="office_phone_informal"
-                      v-model="newCustomer.working_individual_Phone_number"
+                      v-model="formData.newCustomer.working_individual_Phone_number"
                       v-validate="'required|numeric|max:11|min:11'"
                     />
+
                     <small v-if="errors.first('office_phone')">
                       {{
                         errors.first("office_phone")
@@ -1109,9 +1335,10 @@
                       placeholder="Enter name of company here"
                       type="text"
                       key="name_of_form_informal"
-                      v-model="newCustomer.name_of_company_or_business"
+                      v-model="formData.newCustomer.name_of_company_or_business"
                       v-validate="'required|max:100'"
                     />
+
                     <small v-if="errors.first('name_of_firm')">
                       {{
                         errors.first("name_of_firm")
@@ -1129,9 +1356,15 @@
                       name="market_of_name"
                       placeholder="name of market"
                       type="text"
-                      v-model="newCustomer.market_name"
+                      v-model="formData.newCustomer.market_name"
                       v-validate="'required'"
                     />
+                    <div v-if="memberHasError('newCustomer.market_name')" class="invalid-feedback">
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.market_name.required"
+                      >Please provide a market name.</div>
+                    </div>
                     <small v-if="errors.has('market_of_name')">
                       {{
                         errors.first("market_of_name")
@@ -1148,9 +1381,10 @@
                       placeholder="Current Salary or Monthly income"
                       type="number"
                       key="current_salary_informal"
-                      v-model="newCustomer.current_sal_or_business_income"
+                      v-model="formData.newCustomer.current_sal_or_business_income"
                       v-validate="'required|numeric'"
                     />
+
                     <small v-if="errors.has('current_salary')">{{ errors.first("current_salary") }}</small>
                   </div>
 
@@ -1164,9 +1398,10 @@
                       name="monthly_gains"
                       placeholder="monthly gains"
                       type="number"
-                      v-model="newCustomer.monthly_gains"
+                      v-model="formData.newCustomer.monthly_gains"
                       v-validate="'required|numeric'"
                     />
+
                     <small v-if="errors.first('monthly_gains')">{{ errors.first("monthly_gains") }}</small>
                   </div>
 
@@ -1177,30 +1412,31 @@
                       data-vv-as="years of existence"
                       data-vv-validate-on="blur"
                       name="work_duration"
-                      v-model="newCustomer.years_of_existence_or_work_duration"
+                      v-model="formData.newCustomer.years_of_existence_or_work_duration"
                       v-validate="'required'"
                     >
                       <option value>select duration</option>
                       <option
                         :value="duration"
                         v-for="(duration, index) in durations"
-                        :key="index"
+                        :key="'durations' + index"
                       >{{ duration }}</option>
                     </select>
+
                     <small v-if="errors.first('work_duration')">{{ errors.first("work_duration") }}</small>
                   </div>
 
                   <div class="spaceBetween"></div>
 
                   <div class="form-group col-md-3 col-6 px-md-3 px-1 float-left">
-                    <label class="w-100 float-left pl-1">Dou you have a bank account?</label>
+                    <label class="w-100 float-left pl-1">Do you have a bank account?</label>
                     <div class="radio pl-1 pr-3 float-left">
                       <input
                         data-vv-as="bank account"
                         id="bank_account_yes"
                         name="bank_account"
                         type="radio"
-                        v-model="newCustomer.bank_account"
+                        v-model="formData.newCustomer.bank_account"
                         v-validate="'required'"
                         value="Yes"
                       />
@@ -1216,6 +1452,12 @@
                       />
                       <label for="bank_account_no">No</label>
                     </div>
+                    <div v-if="memberHasError('newCustomer.bank_account')" class="invalid-feedback">
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.bank_account.required"
+                      >Please provide bank account.</div>
+                    </div>
                     <small v-if="errors.first('bank_account')">
                       {{
                         errors.first("bank_account")
@@ -1228,7 +1470,7 @@
                     <div
                       class="checkbox float-left pr-3"
                       v-for="(day, index) in weekdays"
-                      :key="index"
+                      :key="'weekdays' + index"
                     >
                       <input
                         :id="day"
@@ -1236,10 +1478,16 @@
                         data-vv-as="days of work"
                         name="days_of_work"
                         type="checkbox"
-                        v-model="newCustomer.days_of_work"
+                        v-model="formData.newCustomer.days_of_work"
                         v-validate="'required'"
                       />
                       <label :for="day">{{ day }}</label>
+                    </div>
+                    <div v-if="memberHasError('newCustomer.days_of_work')" class="invalid-feedback">
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.days_of_work.required"
+                      >Please provide days of work.</div>
                     </div>
                     <small v-if="errors.first('days_of_work')">
                       {{
@@ -1259,9 +1507,10 @@
                       name="office_street_name"
                       placeholder="Enter Street name here"
                       type="text"
-                      v-model="newCustomer.comp_street_name"
+                      v-model="formData.newCustomer.comp_street_name"
                       v-validate="'required|max:50'"
                     />
+
                     <small
                       v-if="errors.first('office_street_name')"
                     >{{ errors.first("office_street_name") }}</small>
@@ -1275,9 +1524,10 @@
                       name="office_building_number"
                       placeholder="Enter Building Number"
                       type="text"
-                      v-model="newCustomer.comp_house_no"
+                      v-model="formData.newCustomer.comp_house_no"
                       v-validate="'required|max:50'"
                     />
+
                     <small
                       v-if="errors.first('office_building_number')"
                     >{{ errors.first("office_building_number") }}</small>
@@ -1291,9 +1541,15 @@
                       name="office_nearest_bus_stop"
                       placeholder="Enter nearest bus stop"
                       type="text"
-                      v-model="newCustomer.cadd_nbstop"
+                      v-model="formData.newCustomer.cadd_nbstop"
                       v-validate="'required|max:50'"
                     />
+                    <div v-if="memberHasError('newCustomer.cadd_nbstop')" class="invalid-feedback">
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.cadd_nbstop.required"
+                      >Please provide bustop.</div>
+                    </div>
                     <small
                       v-if="errors.first('office_nearest_bus_stop')"
                     >{{ errors.first("office_nearest_bus_stop") }}</small>
@@ -1309,9 +1565,15 @@
                       name="company_area"
                       placeholder="Enter area"
                       type="text"
-                      v-model="newCustomer.comp_area"
+                      v-model="formData.newCustomer.comp_area"
                       v-validate="'required|max:50'"
                     />
+                    <div v-if="memberHasError('newCustomer.comp_area')" class="invalid-feedback">
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.comp_area.required"
+                      >Please provide area.</div>
+                    </div>
                     <small v-if="errors.first('company_area')">
                       {{
                         errors.first("company_area")
@@ -1327,9 +1589,15 @@
                       name="company_city"
                       placeholder="Enter city"
                       type="text"
-                      v-model="newCustomer.company_city"
+                      v-model="formData.newCustomer.company_city"
                       v-validate="'required|max:50'"
                     />
+                    <div v-if="memberHasError('newCustomer.company_city')" class="invalid-feedback">
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.company_city.required"
+                      >Please provide a city name.</div>
+                    </div>
                     <small v-if="errors.first('company_city')">
                       {{
                         errors.first("company_city")
@@ -1344,16 +1612,17 @@
                       data-vv-as="company state"
                       data-vv-validate-on="blur"
                       name="company_state"
-                      v-model="newCustomer.company_state"
+                      v-model="formData.newCustomer.company_state"
                       v-validate="'required'"
                     >
                       <option value>select state</option>
                       <option
                         :value="state.name"
                         v-for="(state, index) in states"
-                        :key="index"
+                        :key="'states3' + index"
                       >{{ state.name }}</option>
                     </select>
+
                     <small v-if="errors.first('company_state')">{{ errors.first("company_state") }}</small>
                   </div>
 
@@ -1366,10 +1635,11 @@
                       data-vv-as="company phone number"
                       name="company_phone_number"
                       placeholder="Enter city"
-                      type="tel"
-                      v-model="newCustomer.company_telno"
+                      type="number"
+                      v-model="formData.newCustomer.company_telno"
                       v-validate="'required|numeric|max:11|min:11'"
                     />
+
                     <small
                       v-if="errors.first('company_phone_number')"
                     >{{ errors.first("company_phone_number") }}</small>
@@ -1382,9 +1652,10 @@
                       data-vv-as="available from"
                       name="available_from"
                       type="time"
-                      v-model="newCustomer.cvisit_hour_from"
+                      v-model="formData.newCustomer.cvisit_hour_from"
                       v-validate="'required'"
                     />
+
                     <small
                       v-if="errors.first('available_from')"
                     >{{ errors.first("available_from") }}</small>
@@ -1397,9 +1668,10 @@
                       data-vv-as="available to"
                       name="available_to"
                       type="time"
-                      v-model="newCustomer.cvisit_hour_to"
+                      v-model="formData.newCustomer.cvisit_hour_to"
                       v-validate="'required'"
                     />
+
                     <small v-if="errors.first('available_to')">
                       {{
                         errors.first("available_to")
@@ -1415,7 +1687,7 @@
                       class="form-control col-sm-12"
                       placeholder="Describe the Location"
                       rows="1"
-                      v-model="newCustomer.cadd_addinfo"
+                      v-model="formData.newCustomer.cadd_addinfo"
                     ></textarea>
                   </div>
                 </div>
@@ -1437,7 +1709,7 @@
   </div>
 </template>
 <script>
-import { required,minLength } from "vuelidate/lib/validators";
+import { required, minLength } from "vuelidate/lib/validators";
 import { email } from "vuelidate/lib/validators";
 import { numeric } from "vuelidate/lib/validators";
 import { FormWizard, TabContent, ValidationHelper } from "mulltistep-checker";
@@ -1449,36 +1721,118 @@ import Flash from "../../utilities/flash";
 import { get, post } from "../../utilities/api";
 import Verification from "../DVA/verification/verification";
 import flash from "../../utilities/flash";
+import AccountInformationVue from "../../components/CustomerRegistrationSteps/AccountInformation.vue";
+
 //name => $v.name.$model
 //age => $v.age.$model
 export default {
-  components: { Verification, FormWizard, TabContent, check },
+  components: { Verification, FormWizard, TabContent, check, AccountInformationVue },
   mixins: [ValidationHelper],
   data() {
     return {
-      newCustomer:{},
+      newCustomer: {},
       formData: {
         cc_reg_id: "",
-        new_customer_fname: "",
         newCustomer: {
           first_name: "",
-          last_name: ""
+          last_name: "",
+          middle_name: "",
+          telephone: "",
+          email: "",
+          date_of_birth: "",
+          civil_status: "",
+          year_together: "",
+          gender: "",
+          level_of_education: "",
+          add_street: "",
+          add_houseno: "",
+          add_nbstop: "",
+          area_address: "",
+          city: "",
+          state: "",
+          add_addinfo_description: "",
+          duration_of_residence: "",
+          people_in_household: "",
+          depend_on_you: "",
+          number_of_work: "",
+          visit_hour_from: "",
+          visit_hour_to: "",
+          type_of_home: "",
+          no_of_rooms: "",
+          nextofkin_first_name: "",
+          nextofkin_middle_name: "",
+          nextofkin_last_name: "",
+          nextofkin_telno: "",
+          employment_status: "",
+          occupation: "",
+          working_individual_Phone_number: "",
+          name_of_company_or_business: "",
+          current_sal_or_business_income: "",
+          post_in_company: "",
+          receive_income_means: "",
+          payment_period: "",
+          years_of_existence_or_work_duration: "",
+          days_of_work: "",
+          comp_street_name: "",
+          comp_house_no: "",
+          cadd_nbstop: "",
+          comp_area: "",
+          company_city: "",
+          company_state: "",
+          company_telno: "",
+          cvisit_hour_from: "",
+          cvisit_hour_to: "",
+          market_name: "",
+          monthly_gains: "",
+          bank_account: "",
+          cadd_addinfo: ""
+
         }
       },
       validationRules: [
         {
-          // cc_reg_id: { required },
           newCustomer: {
-            first_name: {required},
+            first_name: { required },
             last_name: { required },
+            telephone: { required },
+            email: { required },
+            date_of_birth: { required },
+            civil_status: { required },
+            gender: { required },
+            level_of_education: { required },
           }
-          
         },
         {
-          // companyName: { required },
+          newCustomer: {
+            add_street: { required },
+            add_houseno: { required },
+            add_nbstop: { required },
+            area_address: { required },
+            city: { required },
+            state: { required },
+          }
         },
-        {},
-        {},
+        {
+          newCustomer: {
+            duration_of_residence: { required },
+            people_in_household: { required },
+            depend_on_you: { required },
+            number_of_work: { required },
+            visit_hour_from: { required },
+            visit_hour_to: { required },
+            type_of_home: { required },
+            no_of_rooms: { required },
+            nextofkin_first_name: { required },
+            nextofkin_last_name: { required },
+            nextofkin_telno: { required },
+          }
+        },
+        {
+          newCustomer: {
+            employment_status: { required },
+            occupation: { required },
+          }
+        },
       ],
       occupations: [
         {
@@ -1683,11 +2037,12 @@ export default {
     };
   },
   methods: {
+
     register() {
       $('input[name="occ"]').attr("disabled", false);
       this.$validator.validateAll().then(async (result) => {
         if (result) {
-          if (this.newCustomer.employment_status === "unemployed") {
+          if (this.formData.newCustomer.employment_status === "unemployed") {
             Flash.setError(
               "you can only register customer from formal and informal sectors at the moment!"
             );
@@ -1697,13 +2052,13 @@ export default {
             this.$LIPS(true);
             this.error = {};
             if (this.mode === "update") {
-              let acc = this.$editAccess(this.user, this.newCustomer);
+              let acc = this.$editAccess(this.user, this.formData.newCustomer);
               if (!acc) return this.$networkErr("edit");
             }
             await post(
-              `/api/customer${this.mode === "update" ? "/" + this.newCustomer.id : ""
+              `/api/customer${this.mode === "update" ? "/" + this.formData.newCustomer.id : ""
               }`,
-              this.newCustomer
+              this.formData.newCustomer
             )
               .then(({ data }) => {
                 let {
@@ -1759,7 +2114,7 @@ export default {
         if (element.id === id) {
           $(`.occupation-title[data-id="${id}"]`).addClass("active shadow-sm");
           this.occName = element.names;
-          // this.newCustomer.employment_status = element.category;
+          // this.formData.newCustomer.employment_status = element.category;
           this.isClick = true;
           this.isOther = element.id === 12 ? true : false;
           if (element.id === 12) {
@@ -1776,11 +2131,11 @@ export default {
       get(`/api/customer-contact/get-by-id/${this.cc_reg_id}`)
         .then((res) => {
           let customer = res.data.data;
-          this.newCustomer.first_name = customer.name.split(" ")[0];
-          this.newCustomer.last_name = customer.name.split(" ")[1];
-          this.newCustomer.telephone = customer.phone;
-          this.newCustomer.email = customer.email;
-          this.newCustomer.reg_id = this.cc_reg_id;
+          this.formData.newCustomer.first_name = customer.name.split(" ")[0];
+          this.formData.newCustomer.last_name = customer.name.split(" ")[1];
+          this.formData.newCustomer.telephone = customer.phone;
+          this.formData.newCustomer.email = customer.email;
+          this.formData.newCustomer.reg_id = this.cc_reg_id;
         })
         .catch((err) => {
           flash.setError(
@@ -1802,7 +2157,7 @@ export default {
       $(".occupation-option").removeClass("active shadow-sm");
       this.occName.forEach((element) => {
         if (element == name) {
-          this.newCustomer.occupation = element;
+          this.formData.newCustomer.occupation = element;
           $(`.occupation-option[data-name="${name}"]`).addClass(
             "active shadow-sm"
           );
@@ -1812,45 +2167,47 @@ export default {
     prepareForm(data) {
       this.states = data.states;
       this.branches = data.branches;
-      this.newCustomer = data.form;
+      this.formData.newCustomer = data.form;
       this.user = data.user;
     },
     updateCustomer(customer) {
       if (this.mode === "update")
         [this.fillWorkGuarantor, this.fillPersonalGuarantor] = [true, true];
-      this.newCustomer = customer;
+      this.formData.newCustomer = customer;
     },
     memberHasError(fieldName) {
-      if(!fieldName) return false
+      if (!fieldName) return false
 
       let splitFields = fieldName.split(".")
-      let lastValidator =  this.$v.formData;
+      let lastValidator = this.$v.formData;
 
-      if(!lastValidator) return false
+      if (!lastValidator) return false
 
-      if(splitFields.length == 1){
+      if (splitFields.length == 1) {
         return fieldName in lastValidator && !lastValidator[fieldName].$invalid;
       }
 
-    
+
       for (let index = 0; index < splitFields.length; index++) {
         const element = splitFields[index];
-         if (!lastValidator) {
-         return false
-       }
-
-        if(!element in lastValidator){
+        if (!lastValidator) {
           return false
         }
-       
-       lastValidator =  lastValidator[element]
-      
+
+        if (!element in lastValidator) {
+          return false
+        }
+
+        lastValidator = lastValidator[element]
+
       }
 
       // console.log("After", lastValidator);
 
-      return lastValidator.$invalid;
-    }
+      return lastValidator?.$invalid;
+    },
+
+
   },
   created() {
     get("/api/customer/create").then(({ data }) => this.prepareForm(data));

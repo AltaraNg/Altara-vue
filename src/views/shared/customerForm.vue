@@ -1721,12 +1721,11 @@ import Flash from "../../utilities/flash";
 import { get, post } from "../../utilities/api";
 import Verification from "../DVA/verification/verification";
 import flash from "../../utilities/flash";
-import AccountInformationVue from "../../components/CustomerRegistrationSteps/AccountInformation.vue";
 
 //name => $v.name.$model
 //age => $v.age.$model
 export default {
-  components: { Verification, FormWizard, TabContent, check, AccountInformationVue },
+  components: { Verification, FormWizard, TabContent, check,  },
   mixins: [ValidationHelper],
   data() {
     return {

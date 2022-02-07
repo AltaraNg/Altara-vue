@@ -56,7 +56,7 @@
                   name="emp_name"
                   placeholder="Enter Employee name here"
                   type="text"
-                  v-model="newCustomer.employee_name"
+                  v-model="formData.newCustomer.employee_name"
                   v-validate="'required|max:50'"
                 />
 
@@ -76,7 +76,7 @@
                   name="employee_id"
                   placeholder="Enter Employee number here"
                   type="text"
-                  v-model="newCustomer.employee_id"
+                  v-model="formData.newCustomer.employee_id"
                   v-validate="'required'"
                 />
                 <small v-if="errors.first('employee_id')">
@@ -94,7 +94,7 @@
                   disabled
                   name="date_of_registration"
                   type="date"
-                  v-model="newCustomer.date_of_registration"
+                  v-model="formData.newCustomer.date_of_registration"
                   v-validate="'required'"
                 />
                 <small
@@ -2166,7 +2166,18 @@ export default {
     prepareForm(data) {
       this.states = data.states;
       this.branches = data.branches;
-      this.formData.newCustomer = data.form;
+      let newData ={}
+      if (data.form) {
+        for (const key in data.form) {
+          if(data.form[key]){
+            newData[key]= data.form[key]
+          }
+        }
+      }
+      this.formData.newCustomer ={
+        ...this.formData.newCustomer,
+        ...newData
+      } 
       this.user = data.user;
     },
     updateCustomer(customer) {
@@ -2206,7 +2217,20 @@ export default {
       return lastValidator?.$invalid;
     },
 
-
+  },
+  mounted(){
+    if(localStorage.data){
+        this.formData.newCustomer = JSON.parse(localStorage.data)
+        // console.log(JSON.parse(localStorage.data))
+    }
+  },
+  watch:{
+    "formData.newCustomer": {
+      handler(newData, oldData) {
+     localStorage.data = JSON.stringify(newData)
+    },
+    deep: true
+    } 
   },
   created() {
     get("/api/customer/create").then(({ data }) => this.prepareForm(data));

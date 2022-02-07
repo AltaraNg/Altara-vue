@@ -73,14 +73,14 @@
 		<div class="row px-4 h-auto" v-if="reports !== null">
 			<stat-card-new
 				:stat="totalNumberOfSales"
-				class="col mx-4  w-50 font-weight-bold bg-custom3"
+				class="col mx-4  w-50 font-weight-bold "
 				:label="'Total Number of Sales'"
 			>
 				<template v-slot:svg><img src="../../assets/css/svgs//sale-svgrepo-com.svg" width="100" height="100" alt="img" class="float-right" /></template>
 			</stat-card-new>
 			<stat-card-new
 				:stat="$formatCurrency(amountCollected)"
-				class="col mx-4 w-50 font-weight-bold bg-custom1"
+				class="col mx-4 w-50 font-weight-bold "
 				
 				:icon="'fas fa-dolly-flatbed'"
 				:label="'Amount Paid'"
@@ -89,7 +89,7 @@
 			</stat-card-new>
 			<stat-card-new
 				:stat="$formatCurrency(amountOwed)"
-				class="col mx-4 w-50 font-weight-bold bg-custom2"
+				class="col mx-4 w-50 font-weight-bold "
 				:label="'Amount Owed'"
 				:icon="'fas fa-dolly-flatbed'"
 			>

@@ -1729,6 +1729,7 @@ export default {
   mixins: [ValidationHelper],
   data() {
     return {
+      data:{},
       newCustomer: {},
       formData: {
         cc_reg_id: "",
@@ -2069,6 +2070,7 @@ export default {
                 } = data.customer;
                 this.identity = id
                 this.registered = true;
+                this.formData.newCustomer= this.data
                 // Flash.setSuccess(
                 //   `Customer ${this.mode}ed successful! Customer ID is: ${id}`,
                 //   30000
@@ -2167,6 +2169,7 @@ export default {
       this.states = data.states;
       this.branches = data.branches;
       let newData ={}
+      this.data = data.form
       if (data.form) {
         for (const key in data.form) {
           if(data.form[key]){

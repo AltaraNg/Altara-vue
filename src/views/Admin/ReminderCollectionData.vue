@@ -76,7 +76,7 @@
 				class="col mx-4  w-50 font-weight-bold "
 				:label="'Total Number of Sales'"
 			>
-				<template v-slot:svg><img src="../../assets/css/svgs//sale-svgrepo-com.svg" width="100" height="100" alt="img" class="float-right" /></template>
+				<template v-slot:svg><img src="../../assets/css/svgs//sale-svgrepo-com.svg" width="70" height="70" alt="img" class="float-right" /></template>
 			</stat-card-new>
 			<stat-card-new
 				:stat="$formatCurrency(amountCollected)"
@@ -85,7 +85,7 @@
 				:icon="'fas fa-dolly-flatbed'"
 				:label="'Amount Paid'"
 			>
-				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-com.svg" width="100" height="100"  class="float-right"/> </template>
+				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-com.svg" width="70" height="70"  class="float-right"/> </template>
 			</stat-card-new>
 			<stat-card-new
 				:stat="$formatCurrency(amountOwed)"
@@ -93,7 +93,7 @@
 				:label="'Amount Owed'"
 				:icon="'fas fa-dolly-flatbed'"
 			>
-				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-2.svg" width="100" height="100" alt="img" class="float-right"/></template>
+				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-2.svg" width="70" height="70" alt="img" class="float-right"/></template>
 
 			</stat-card-new>
 		</div>
@@ -107,12 +107,21 @@
 				></bar-chart>
 			</div> -->
 			<div class="card col p-5" v-if="reports">
+				
 				<pie-chart
 					:chart-data="pieData"
 					:options="pieData.options"
 					v-if="loaded"
 					class=""
 				></pie-chart>
+				<div class="text-left">
+					<h4>Overview</h4>
+					<ul class=".list-unstyled">
+						<li><span class="font-weight-bold" style="color: #e2e612">Active Sales</span>: <span>anyone who has not completed payment but has made a payment in the last 60 days(2 months) (from today's date), REGARDLESS of if the payment cycle is over.</span></li>
+						<li><span class="font-weight-bold" style="color: #e6091c">Inactive Sales</span>: <span> anyone who has not completed payment but has not made any payment in the last 60 days</span></li>
+						<li><span class="font-weight-bold" style="color: #2ad413">Completed Sales</span>: <span>anyone who has completed payment irregardless of if they completed it on time or late. </span></li>
+					</ul>
+				</div>
 			</div>
 
 			<div class="card col ml-5 p-5" v-if="reports">
@@ -122,6 +131,13 @@
 					v-if="loaded"
 					class=""
 				></polar-chart>
+				<div class="text-left">
+					<h4>Overview</h4>
+					<p class=".list-unstyled">
+						This is a chart of overdue days of active salesdone						
+					</p>
+				</div>
+
 			</div>
 		</div>
 		

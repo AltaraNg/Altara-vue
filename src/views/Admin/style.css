@@ -1,9 +1,36 @@
-h2 {
-	font-family: Arial, Helvetica;
-	font-size: 36px;
+.header{
+	text-align: center;
+	font-family: 'Courier New', Courier, monospace;
+	font-style: italic;
+	font-size: 3em;
 }
 
-p {
-	font-family: sans-serif;
-	font-size: 12px;
+.underline blockquote{
+	text-align: justify;
+}
+.first{
+	font-size: 1em;
+	font-style: italic;
+
+	
+}
+
+.second{
+	font-size: .8em;
+	
+}
+.container{
+	display: flex;
+	flex-direction: row;
+}
+.col1, .col2{
+	padding: 10px;
+	/* text-align: justify; */
+}
+
+h2{
+	font-weight: 200;
+}
+.underline{
+	text-align: center;
 }

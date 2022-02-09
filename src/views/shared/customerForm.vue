@@ -21,7 +21,7 @@
           class="form-group m-top"
           v-if="(mode === 'register' || $store.getters.auth('DVAAccess')) && !registered"
         >
-          <tab-content title="Account Info" :selected="true">
+          <tab-content title="Account Info" >
             <div class="form-group">
               <h5>Prospects Reg ID</h5>
               <label>
@@ -362,12 +362,12 @@
                     />
                     <label :for="highestLevel">{{ highestLevel }}</label>
                   </div>
-                 
+                 <div v-if="memberHasError('newCustomer.level_of_education')" class="invalid-feedback">
                     <div
                       class="error bottom" style="color:red; font-size:xx-small"
                       v-if="!$v.formData.newCustomer.level_of_education.required"
-                    >Please provide your gender.</div>
-                  
+                    >Please select level of education.</div>
+                  </div>
                 </div>
 
                 <small v-if="errors.first('highestLevel')">
@@ -2301,6 +2301,7 @@ export default {
 
       return lastValidator?.$invalid;
     },
+
 
   },
   mounted() {

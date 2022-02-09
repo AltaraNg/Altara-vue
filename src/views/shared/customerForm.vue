@@ -185,6 +185,18 @@
                     v-if="!$v.formData.newCustomer.telephone.required"
                   >Please provide your phone number.</div>
                 </div>
+                <div v-if="memberHasError('newCustomer.telephone')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.telephone.minLength"
+                  >The minimum phone number is 11digit.</div>
+                </div>
+                <div v-if="memberHasError('newCustomer.telephone')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.telephone.maxLength"
+                  >The maximum phone number is 11digit.</div>
+                </div>
                 <small v-if="errors.first('telephone')">
                   {{
                     errors.first("telephone")
@@ -242,7 +254,10 @@
 
               <div class="spaceAfter"></div>
 
-              <div class="form-group col-md-8 px-md-3 px-1 float-left">
+              <div
+                class="form-group px-md-3 px-1 float-left"
+                :class="(formData.newCustomer.civil_status === 'single') ? 'col-md-12' : 'col-md-8'"
+              >
                 <label class="w-100 float-left pl-1">Civil Status</label>
                 <div
                   class="radio pl-1 pr-3 float-left"
@@ -328,33 +343,31 @@
                 </small>
               </div>
 
-              <div class="form-group col-md-8 px-md-3 px-1 float-left">
+              <div class="form-group col-md-8 px-md-3 px-1 float-left" >
                 <label class="w-100 float-left pl-1">Highest Level of Education</label>
-                <div
-                  class="radio pl-1 pr-3 float-left"
-                  v-for="(highestLevel, index) in highestLevelOfEdu"
-                  :key="'highestLevel' + index"
-                >
-                  <input
-                    :id="highestLevel"
-                    :value="highestLevel"
-                    data-vv-as="highest level of education"
-                    name="highestLevel"
-                    type="radio"
-                    v-model="formData.newCustomer.level_of_education"
-                    :class="memberHasError('newCustomer.level_of_education') ? 'is-invalid' : ''"
-                    v-validate="'required'"
-                  />
-                  <label :for="highestLevel">{{ highestLevel }}</label>
+                <div class>
                   <div
-                    v-if="memberHasError('newCustomer.level_of_education')"
-                    class="invalid-feedback"
+                    class="radio pl-1 pr-3 float-left"
+                    v-for="(highestLevel, index) in highestLevelOfEdu"
+                    :key="'highestLevel' + index"
                   >
-                    <div
-                      class="error"
-                      v-if="!$v.formData.newCustomer.level_of_education.required"
-                    >Please provide your level of education.</div>
+                    <input
+                      :id="highestLevel"
+                      :value="highestLevel"
+                      data-vv-as="highest level of education"
+                      name="highestLevel"
+                      type="radio"
+                      v-model="formData.newCustomer.level_of_education"
+                      v-validate="'required'"
+                    />
+                    <label :for="highestLevel">{{ highestLevel }}</label>
                   </div>
+                 
+                    <div
+                      class="error bottom" style="color:red; font-size:xx-small"
+                      v-if="!$v.formData.newCustomer.level_of_education.required"
+                    >Please provide your gender.</div>
+                  
                 </div>
 
                 <small v-if="errors.first('highestLevel')">
@@ -767,6 +780,12 @@
                   :class="memberHasError('newCustomer.nextofkin_first_name') ? 'is-invalid' : ''"
                   v-validate="'required|max:25'"
                 />
+                <div v-if="memberHasError('newCustomer.last_name')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.last_name.minLength"
+                  >The minimum phone number is 11 digits.</div>
+                </div>
                 <div
                   v-if="memberHasError('newCustomer.nextofkin_first_name')"
                   class="invalid-feedback"
@@ -839,6 +858,19 @@
                     v-if="!$v.formData.newCustomer.nextofkin_telno.required"
                   >Please provide a Tel No.</div>
                 </div>
+                <div v-if="memberHasError('newCustomer.nextofkin_telno')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.nextofkin_telno.minLength"
+                  >The minimum phone number is 11digit.</div>
+                </div>
+                <div v-if="memberHasError('newCustomer.nextofkin_telno')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.nextofkin_telno.maxLength"
+                  >The maximum phone number is 11digit.</div>
+                </div>
+
                 <small v-if="errors.first('NOK_phone_number')">
                   {{
                     errors.first("NOK_phone_number")
@@ -941,6 +973,24 @@
                       v-model="formData.newCustomer.working_individual_Phone_number"
                       v-validate="'required|numeric|max:11|min:11'"
                     />
+                    <div
+                      v-if="memberHasError('newCustomer.working_individual_Phone_number')"
+                      class="invalid-feedback"
+                    >
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.working_individual_Phone_number.minLength"
+                      >The minimum phone number is 11 digits.</div>
+                    </div>
+                    <div
+                      v-if="memberHasError('newCustomer.working_individual_Phone_number')"
+                      class="invalid-feedback"
+                    >
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.working_individual_Phone_number.maxLength"
+                      >The maximum phone number is 11 digits.</div>
+                    </div>
 
                     <small v-if="errors.first('office_phone')">
                       {{
@@ -1318,6 +1368,18 @@
                       v-model="formData.newCustomer.working_individual_Phone_number"
                       v-validate="'required|numeric|max:11|min:11'"
                     />
+                    <div v-if="memberHasError('newCustomer.last_name')" class="invalid-feedback">
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.last_name.minLength"
+                      >The minimum phone number is 11 digits.</div>
+                    </div>
+                    <div v-if="memberHasError('newCustomer.last_name')" class="invalid-feedback">
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.last_name.maxLength"
+                      >The maximum phone number is 11 digits.</div>
+                    </div>
 
                     <small v-if="errors.first('office_phone')">
                       {{
@@ -1639,6 +1701,24 @@
                       v-model="formData.newCustomer.company_telno"
                       v-validate="'required|numeric|max:11|min:11'"
                     />
+                    <div
+                      v-if="memberHasError('newCustomer.company_telno')"
+                      class="invalid-feedback"
+                    >
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.company_telno.minLength"
+                      >The minimum phone number is 11digit.</div>
+                    </div>
+                    <div
+                      v-if="memberHasError('newCustomer.company_telno')"
+                      class="invalid-feedback"
+                    >
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.company_telno.maxLength"
+                      >The maximum phone number is 11digit.</div>
+                    </div>
 
                     <small
                       v-if="errors.first('company_phone_number')"
@@ -1709,7 +1789,7 @@
   </div>
 </template>
 <script>
-import { required, minLength } from "vuelidate/lib/validators";
+import { required, minLength, maxLength } from "vuelidate/lib/validators";
 import { email } from "vuelidate/lib/validators";
 import { numeric } from "vuelidate/lib/validators";
 import { FormWizard, TabContent, ValidationHelper } from "mulltistep-checker";
@@ -1725,11 +1805,11 @@ import flash from "../../utilities/flash";
 //name => $v.name.$model
 //age => $v.age.$model
 export default {
-  components: { Verification, FormWizard, TabContent, check,  },
+  components: { Verification, FormWizard, TabContent, check, },
   mixins: [ValidationHelper],
   data() {
     return {
-      data:{},
+      data: {},
       newCustomer: {},
       formData: {
         cc_reg_id: "",
@@ -1793,8 +1873,8 @@ export default {
         {
           newCustomer: {
             first_name: { required },
-            last_name: { required },
-            telephone: { required },
+            last_name: { required, },
+            telephone: { required, minLength: minLength(11), maxLength: maxLength(11), },
             email: { required },
             date_of_birth: { required },
             civil_status: { required },
@@ -1824,13 +1904,15 @@ export default {
             no_of_rooms: { required },
             nextofkin_first_name: { required },
             nextofkin_last_name: { required },
-            nextofkin_telno: { required },
+            nextofkin_telno: { required, minLength: minLength(11), maxLength: maxLength(11), },
           }
         },
         {
           newCustomer: {
             employment_status: { required },
             occupation: { required },
+            working_individual_Phone_number: { minLength: minLength(11), maxLength: maxLength(11), },
+            company_telno: { minLength: minLength(11), maxLength: maxLength(11), }
           }
         },
       ],
@@ -2070,7 +2152,7 @@ export default {
                 } = data.customer;
                 this.identity = id
                 this.registered = true;
-                this.formData.newCustomer= this.data
+                this.formData.newCustomer = this.data
                 // Flash.setSuccess(
                 //   `Customer ${this.mode}ed successful! Customer ID is: ${id}`,
                 //   30000
@@ -2168,19 +2250,19 @@ export default {
     prepareForm(data) {
       this.states = data.states;
       this.branches = data.branches;
-      let newData ={}
+      let newData = {}
       this.data = data.form
       if (data.form) {
         for (const key in data.form) {
-          if(data.form[key]){
-            newData[key]= data.form[key]
+          if (data.form[key]) {
+            newData[key] = data.form[key]
           }
         }
       }
-      this.formData.newCustomer ={
+      this.formData.newCustomer = {
         ...this.formData.newCustomer,
         ...newData
-      } 
+      }
       this.user = data.user;
     },
     updateCustomer(customer) {
@@ -2221,19 +2303,19 @@ export default {
     },
 
   },
-  mounted(){
-    if(localStorage.data){
-        this.formData.newCustomer = JSON.parse(localStorage.data)
-        // console.log(JSON.parse(localStorage.data))
+  mounted() {
+    if (localStorage.data) {
+      this.formData.newCustomer = JSON.parse(localStorage.data)
+      // console.log(JSON.parse(localStorage.data))
     }
   },
-  watch:{
+  watch: {
     "formData.newCustomer": {
       handler(newData, oldData) {
-     localStorage.data = JSON.stringify(newData)
-    },
-    deep: true
-    } 
+        localStorage.data = JSON.stringify(newData)
+      },
+      deep: true
+    }
   },
   created() {
     get("/api/customer/create").then(({ data }) => this.prepareForm(data));
@@ -2309,5 +2391,10 @@ hr.my-4 + span.occupation-option {
 .text {
   color: #0f0f0f;
   font-size: 20px;
+}
+.bottom {
+  position: absolute;
+  bottom: 0px;
+  right:50%;
 }
 </style>

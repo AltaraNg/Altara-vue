@@ -876,11 +876,7 @@ export default {
       try {
         const fetchSalesCategory = await get(this.apiUrls.salesCategoryUrl);
         this.salesCategories = fetchSalesCategory.data.data.data;
-        if(!this.isAuthorized){
-          this.salesCategories = this.salesCategories.filter(item => {
-            return item.name !== 'renewal(DSA)'
-          })
-        }
+       
       } catch (err) {
         this.$displayErrorMessage(err);
       }

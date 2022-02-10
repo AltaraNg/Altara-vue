@@ -856,20 +856,18 @@
                   <div
                     class="error"
                     v-if="!$v.formData.newCustomer.nextofkin_telno.required"
-                  >Please provide a Tel No.</div>
-                </div>
-                <div v-if="memberHasError('newCustomer.nextofkin_telno')" class="invalid-feedback">
+                  >Please provide next of kin phone number.</div>
                   <div
                     class="error"
                     v-if="!$v.formData.newCustomer.nextofkin_telno.minLength"
                   >The minimum phone number is 11digit.</div>
-                </div>
-                <div v-if="memberHasError('newCustomer.nextofkin_telno')" class="invalid-feedback">
                   <div
                     class="error"
                     v-if="!$v.formData.newCustomer.nextofkin_telno.maxLength"
                   >The maximum phone number is 11digit.</div>
                 </div>
+
+                
 
                 <small v-if="errors.first('NOK_phone_number')">
                   {{
@@ -1701,24 +1699,21 @@
                       v-model="formData.newCustomer.company_telno"
                       v-validate="'required|numeric|max:11|min:11'"
                     />
-                    <div
-                      v-if="memberHasError('newCustomer.company_telno')"
-                      class="invalid-feedback"
-                    >
-                      <div
-                        class="error"
-                        v-if="!$v.formData.newCustomer.company_telno.minLength"
-                      >The minimum phone number is 11digit.</div>
-                    </div>
-                    <div
-                      v-if="memberHasError('newCustomer.company_telno')"
-                      class="invalid-feedback"
-                    >
-                      <div
-                        class="error"
-                        v-if="!$v.formData.newCustomer.company_telno.maxLength"
-                      >The maximum phone number is 11digit.</div>
-                    </div>
+                    
+                    <div v-if="memberHasError('newCustomer.company_telno')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.company_telno.required"
+                  >Please provide company's phone number.</div>
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.company_telno.minLength"
+                  >The minimum phone number is 11digit.</div>
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.company_telno.maxLength"
+                  >The maximum phone number is 11digit.</div>
+                </div>
 
                     <small
                       v-if="errors.first('company_phone_number')"
@@ -2296,9 +2291,6 @@ export default {
         lastValidator = lastValidator[element]
 
       }
-
-      // console.log("After", lastValidator);
-
       return lastValidator?.$error;
     },
 

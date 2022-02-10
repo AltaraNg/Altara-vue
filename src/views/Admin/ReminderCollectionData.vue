@@ -106,6 +106,16 @@
 				<template v-slot:svg> <img src="../../assets/css/svgs//cash-svgrepo-com.svg" width="50" height="50" alt="img" class="float-right"/></template>
 
 			</stat-card-new>
+
+			<stat-card-new
+				:stat="$formatCurrency(totalOutstanding)"
+				class="col mx-4 w-50 font-weight-bold "
+				:label="'Total Outstanding'"
+				:icon="'fas fa-dolly-flatbed'"
+			>
+				<template v-slot:svg> <img src="../../assets/css/svgs//cash-svgrepo-com.svg" width="70" height="70" alt="img" class="float-right"/></template>
+
+			</stat-card-new>
 		</div>
 
 		<div class="my-3 space-between px-4 w-100 text-center">

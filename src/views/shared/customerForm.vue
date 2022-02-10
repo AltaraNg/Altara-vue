@@ -2279,7 +2279,7 @@ export default {
       if (!lastValidator) return false
 
       if (splitFields.length == 1) {
-        return fieldName in lastValidator && !lastValidator[fieldName].$invalid;
+        return fieldName in lastValidator && !lastValidator[fieldName].$error;
       }
 
 
@@ -2299,7 +2299,7 @@ export default {
 
       // console.log("After", lastValidator);
 
-      return lastValidator?.$invalid;
+      return lastValidator?.$error;
     },
 
 
@@ -2307,7 +2307,6 @@ export default {
   mounted() {
     if (localStorage.data) {
       this.formData.newCustomer = JSON.parse(localStorage.data)
-      // console.log(JSON.parse(localStorage.data))
     }
   },
   watch: {

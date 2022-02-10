@@ -76,7 +76,12 @@
 				class="col mx-4  w-50 font-weight-bold "
 				:label="'Total Number of Sales'"
 			>
-				<template v-slot:svg><img src="../../assets/css/svgs//sale-svgrepo-com.svg" width="50" height="50" alt="img" class="float-right" /></template>
+				<template v-slot:svg
+							><img
+								src="../../assets/new_stats.png"
+								alt="work"
+								style="height=100%"
+						/></template>
 			</stat-card>
 			<stat-card
 				:stat="$formatCurrency(amountCollected)"
@@ -85,7 +90,12 @@
 				:icon="'fas fa-dolly-flatbed'"
 				:label="'Amount Paid'"
 			>
-				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-com.svg" width="50" height="50"  class="float-right"/> </template>
+				<template v-slot:svg
+							><img
+								src="../../assets/pic.png"
+								alt="work"
+								style="height=100%"
+						/></template>
 			</stat-card>
 			<stat-card
 				:stat="$formatCurrency(amountOwed)"
@@ -93,7 +103,12 @@
 				:label="'Amount Owed'"
 				:icon="'fas fa-dolly-flatbed'"
 			>
-				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-2.svg" width="50" height="50" alt="img" class="float-right"/></template>
+				<template v-slot:svg
+							><img
+								src="../../assets/stat_red.png"
+								alt="work"
+								style="height=100%"
+						/></template>
 
 			</stat-card>
 

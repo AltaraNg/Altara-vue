@@ -576,7 +576,7 @@ export default {
       return this.isAltaraPay ? "Altara Pay" : "Altara Credit";
     },
     isAuthorized(){
-      return [roles.general_manager, roles.finance_manager, roles.operation_manager, roles.coordinator].includes(this.userRole)
+      return [roles.general_manager, roles.finance_manager, roles.operation_manager, roles.coordinator, roles.software_engineer, roles.business_analyst].includes(this.userRole)
     }
   },
 
@@ -876,6 +876,7 @@ export default {
       try {
         const fetchSalesCategory = await get(this.apiUrls.salesCategoryUrl);
         this.salesCategories = fetchSalesCategory.data.data.data;
+       
       } catch (err) {
         this.$displayErrorMessage(err);
       }

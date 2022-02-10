@@ -71,14 +71,14 @@
 		</div>
 
 		<div class="row px-4 h-auto" v-if="reports !== null">
-			<stat-card-new
+			<stat-card
 				:stat="totalNumberOfSales"
 				class="col mx-4  w-50 font-weight-bold "
 				:label="'Total Number of Sales'"
 			>
 				<template v-slot:svg><img src="../../assets/css/svgs//sale-svgrepo-com.svg" width="50" height="50" alt="img" class="float-right" /></template>
-			</stat-card-new>
-			<stat-card-new
+			</stat-card>
+			<stat-card
 				:stat="$formatCurrency(amountCollected)"
 				class="col mx-4 w-50 font-weight-bold "
 				
@@ -86,8 +86,8 @@
 				:label="'Amount Paid'"
 			>
 				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-com.svg" width="50" height="50"  class="float-right"/> </template>
-			</stat-card-new>
-			<stat-card-new
+			</stat-card>
+			<stat-card
 				:stat="$formatCurrency(amountOwed)"
 				class="col mx-4 w-50 font-weight-bold "
 				:label="'Amount Owed'"
@@ -95,27 +95,24 @@
 			>
 				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-2.svg" width="50" height="50" alt="img" class="float-right"/></template>
 
-			</stat-card-new>
+			</stat-card>
 
-			<stat-card-new
+			<stat-card
 				:stat="$formatCurrency(totalOutstanding)"
 				class="col mx-4 w-50 font-weight-bold "
 				:label="'Total Outstanding'"
 				:icon="'fas fa-dolly-flatbed'"
 			>
-				<template v-slot:svg> <img src="../../assets/css/svgs//cash-svgrepo-com.svg" width="50" height="50" alt="img" class="float-right"/></template>
+				<template v-slot:svg
+							><img
+								src="../../assets/new_stats.png"
+								alt="work"
+								style="height=100%"
+						/></template>
 
-			</stat-card-new>
+			</stat-card>
 
-			<stat-card-new
-				:stat="$formatCurrency(totalOutstanding)"
-				class="col mx-4 w-50 font-weight-bold "
-				:label="'Total Outstanding'"
-				:icon="'fas fa-dolly-flatbed'"
-			>
-				<template v-slot:svg> <img src="../../assets/css/svgs//cash-svgrepo-com.svg" width="70" height="70" alt="img" class="float-right"/></template>
-
-			</stat-card-new>
+			
 		</div>
 
 		<div class="my-3 space-between px-4 w-100 text-center">
@@ -181,7 +178,6 @@
 
 <script>
 	import StatCard from '../../components/StatCard.vue';
-	import StatCardNew from '../../components/StatCardNew.vue';
 	import { get, byMethod } from '../../utilities/api';
 	import Sales from '../../assets/css/svgs/sales.vue';
 	import Revenue from '../../assets/css/svgs/revenue.vue';
@@ -199,7 +195,6 @@
 	export default {
 		components: {
 			StatCard,
-			StatCardNew,
 			DatePicker,
 			BarChart,
 			PieChart,

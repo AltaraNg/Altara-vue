@@ -513,9 +513,7 @@
 						this.query
 					);
 					this.reports = report.data.data;
-					this.totalNumberOfSales = Object.values(
-						this.reports?.meta?.stats?.ordersStatusCount
-					).reduce((a, b) => a + b);
+					this.totalNumberOfSales = this.reports?.meta?.stats?.total_sales;
 					this.amountOwed = this.reports?.meta?.stats?.amountOwed;
 					this.amountCollected = this.reports?.meta?.stats?.amountReceived;
 					this.totalOutstanding = this.reports?.meta?.stats?.totalOutstanding;

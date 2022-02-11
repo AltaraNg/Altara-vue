@@ -362,12 +362,6 @@
                     />
                     <label :for="highestLevel">{{ highestLevel }}</label>
                   </div>
-                 <div v-if="memberHasError('newCustomer.level_of_education')" class="invalid-feedback">
-                    <div
-                      class="error bottom" style="color:red; font-size:xx-small"
-                      v-if="!$v.formData.newCustomer.level_of_education.required"
-                    >Please select level of education.</div>
-                  </div>
                 </div>
 
                 <small v-if="errors.first('highestLevel')">
@@ -866,8 +860,6 @@
                     v-if="!$v.formData.newCustomer.nextofkin_telno.maxLength"
                   >The maximum phone number is 11digit.</div>
                 </div>
-
-                
 
                 <small v-if="errors.first('NOK_phone_number')">
                   {{
@@ -1699,21 +1691,24 @@
                       v-model="formData.newCustomer.company_telno"
                       v-validate="'required|numeric|max:11|min:11'"
                     />
-                    
-                    <div v-if="memberHasError('newCustomer.company_telno')" class="invalid-feedback">
-                  <div
-                    class="error"
-                    v-if="!$v.formData.newCustomer.company_telno.required"
-                  >Please provide company's phone number.</div>
-                  <div
-                    class="error"
-                    v-if="!$v.formData.newCustomer.company_telno.minLength"
-                  >The minimum phone number is 11digit.</div>
-                  <div
-                    class="error"
-                    v-if="!$v.formData.newCustomer.company_telno.maxLength"
-                  >The maximum phone number is 11digit.</div>
-                </div>
+
+                    <div
+                      v-if="memberHasError('newCustomer.company_telno')"
+                      class="invalid-feedback"
+                    >
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.company_telno.required"
+                      >Please provide company's phone number.</div>
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.company_telno.minLength"
+                      >The minimum phone number is 11digit.</div>
+                      <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.company_telno.maxLength"
+                      >The maximum phone number is 11digit.</div>
+                    </div>
 
                     <small
                       v-if="errors.first('company_phone_number')"
@@ -2387,6 +2382,6 @@ hr.my-4 + span.occupation-option {
 .bottom {
   position: absolute;
   bottom: 0px;
-  right:50%;
+  right: 50%;
 }
 </style>

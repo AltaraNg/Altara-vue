@@ -130,7 +130,7 @@
 			
 		</div>
 
-		<div class="my-3 space-between px-4 w-100 text-center">
+		<div class="my-3 d-flex px-4 w-100">
 			<!-- <div class="card col mr-3 py-2" v-if="reports">
 				<bar-chart
 					:chart-data="barData"
@@ -584,11 +584,10 @@
 
 			getPieData() {
 				const orderStatus = this.reports?.meta?.stats?.ordersStatusCount;
-				console.log(orderStatus);
 				return [
-					orderStatus.active,
-					orderStatus.inactive,
-					orderStatus.complete,
+					orderStatus.active === 0 ? 1 : orderStatus.active,
+					orderStatus.inactive === 0 ? 1 : orderStatus.inactive,
+					orderStatus.complete === 0 ? 1 : orderStatus.complete,
 
 				];
 			},

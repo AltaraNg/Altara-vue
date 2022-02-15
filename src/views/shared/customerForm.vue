@@ -3,7 +3,7 @@
     <verification :action="'update'" @update="updateCustomer" v-if="mode === 'update'" />
     <div
       class="card"
-      v-if="(newCustomer.id && mode === 'update') || mode === 'register'"
+      v-if="(formData.newCustomer.id && mode === 'update') || mode === 'register'"
       :style="
         mode === 'update'
           ? 'margin-left: 5rem;margin-right: 5rem;width: auto;'

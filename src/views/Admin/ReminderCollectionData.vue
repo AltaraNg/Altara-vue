@@ -152,6 +152,7 @@
 						<li><span class="font-weight-bold" style="color: #e2e612">Active Sales</span>: <span>anyone who has not completed payment but has made a payment in the last 60 days(2 months) (from today's date), REGARDLESS of if the payment cycle is over.</span></li>
 						<li><span class="font-weight-bold" style="color: #e6091c">Inactive Sales</span>: <span> anyone who has not completed payment but has not made any payment in the last 60 days</span></li>
 						<li><span class="font-weight-bold" style="color: #2ad413">Completed Sales</span>: <span>anyone who has completed payment irregardless of if they completed it on time or late. </span></li>
+						<li v-if="checker"><span class="font-weight-bold" style="color: #aaaaaa">No Orders </span>: <span>No orders for that time frame </span></li>
 					</ul>
 				</div>
 			</div>
@@ -229,6 +230,7 @@
 				sector: '',
 				branchesInfo: {},
 				orderTypes: {},
+				checker: false,
 
 				apiUrls: {
 					getReports: '/api/recollection/statistics',
@@ -338,59 +340,10 @@
 			// this.getBarchartColors();
 		},
 
-		methods: {
-			getBarChartData() {
-				this.barData = {
-					labels: this.getBranchLabel(),
-					datasets: [
-						{
-							barPercentage: 1,
-							barThickness: 12,
-							maxBarThickness: 16,
-							label: 'Number of sales',
-							data: this.getSalesPerBranch(),							
-							backgroundColor: [
-								'#e76f51',
-								'#457b9d',
-								'#cb997e',
-								'#4361ee',
-								'#00f5d4',
-								'#333d29',
-								'#9b5de5',
-								'#22223b',
-								'#55a630',
-								'#973aa8',
-								'#cb997e',
-								'#ff0a54',
-								'#b392ac',
-								'#355070',
-								'#be0aff',
-							],
-							borderColor: [
-								'#e76f51',
-								'#457b9d',
-								'#cb997e',
-								'#4361ee',
-								'#00f5d4',
-								'#333d29',
-								'#9b5de5',
-								'#22223b',
-								'#55a630',
-								'#973aa8',
-								'#cb997e',
-								'#ff0a54',
-								'#b392ac',
-								'#355070',
-								'#be0aff',
-							],
-							borderWidth: 1,
-						},
-					],
-				};
-			},
+		methods: {			
 			getPieChartData() {
 				this.pieData = {
-					labels: ['Active Orders', 'Inactive Orders', 'Completed Orders'],
+					labels: this.checker === true ? ['No orders'] : ['Active Orders', 'Inactive Orders', 'Completed Orders'],
 					options: {
 						title: {
 							text: ['Order Categories', 'Chart describing number of active', 'inactive and completed orders per selected period of time'],
@@ -433,7 +386,7 @@
 							barThickness: 12,
 							maxBarThickness: 16,
 							data: this.getPieData(),
-							backgroundColor: ['#e2e612', '#e6091c', '#2ad413'],
+							backgroundColor:this.checker ? ['#aaaaaa'] : ['#e2e612', '#e6091c', '#2ad413'],
 						},
 					],
 				};
@@ -518,6 +471,9 @@
 					this.amountCollected = this.reports?.meta?.stats?.amountReceived;
 					this.totalOutstanding = this.reports?.meta?.stats?.totalOutstanding;
 
+					const orderStatus = this.reports?.meta?.stats?.ordersStatusCount;
+				this.checker = orderStatus.active === 0 && orderStatus.inactive === 0 && orderStatus.complete === 0;
+
 					// this.branchesInfo = Object.values(
 					// 	this.reports.meta.groupedDataByBranch
 					// );
@@ -584,12 +540,13 @@
 
 			getPieData() {
 				const orderStatus = this.reports?.meta?.stats?.ordersStatusCount;
-				return [
-					orderStatus.active === 0 ? 1 : orderStatus.active,
-					orderStatus.inactive === 0 ? 1 : orderStatus.inactive,
-					orderStatus.complete === 0 ? 1 : orderStatus.complete,
+				// this.checker = orderStatus.active === 0 && orderStatus.inactive === 0 && orderStatus.complete === 0;
+				return this.checker === true ? [1] : [
+					orderStatus.active ,
+					orderStatus.inactive ,
+					orderStatus.complete ,
 
-				];
+				 ];
 			},
 
 			getSalesPerBranch() {

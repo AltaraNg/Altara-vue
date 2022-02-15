@@ -231,13 +231,7 @@
 				branchesInfo: {},
 				orderTypes: {},
 				checker: false,
-
-				apiUrls: {
-					getReports: '/api/recollection/statistics',
-					exportReport: '/api/order/reports/export',
 					businessTypes: '/api/business_type',
-					orderTypes: '/api/order-types',
-				},
 				tableHeaders: [
 					'S/N',
 					'Branch',

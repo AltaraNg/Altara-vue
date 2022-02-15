@@ -1,9 +1,9 @@
 <template>
-	<div class="card py-4 rounded-circle d-flex">
-		<div class="col float-right"><slot name="svg" class="card-img-top rounded-circle float-right">"></slot></div>
+	<div class="card py-1 rounded-circle d-flex">
+		<div class="col float-right my-auto py-2"><slot name="svg" class="card-img-top rounded-circle float-right my-auto"></slot></div>
 
 		<div
-			class="card-body text-white font-weight-bold col"
+			class="card-body text-black font-weight-bold col"
 			style="border-radius: 50%"
 		>
 			<h3>

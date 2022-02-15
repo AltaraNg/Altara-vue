@@ -71,34 +71,66 @@
 		</div>
 
 		<div class="row px-4 h-auto" v-if="reports !== null">
-			<stat-card-new
+			<stat-card
 				:stat="totalNumberOfSales"
-				class="col mx-4  w-50 font-weight-bold bg-custom3"
+				class="col mx-4  w-50 font-weight-bold "
 				:label="'Total Number of Sales'"
 			>
-				<template v-slot:svg><img src="../../assets/css/svgs//sale-svgrepo-com.svg" width="100" height="100" alt="img" class="float-right" /></template>
-			</stat-card-new>
-			<stat-card-new
+				<template v-slot:svg
+							><img
+								src="../../assets/new_stats.png"
+								alt="work"
+								style="height=100%"
+						/></template>
+			</stat-card>
+			<stat-card
 				:stat="$formatCurrency(amountCollected)"
-				class="col mx-4 w-50 font-weight-bold bg-custom1"
+				class="col mx-4 w-50 font-weight-bold "
 				
 				:icon="'fas fa-dolly-flatbed'"
 				:label="'Amount Paid'"
 			>
-				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-com.svg" width="100" height="100"  class="float-right"/> </template>
-			</stat-card-new>
-			<stat-card-new
+				<template v-slot:svg
+							><img
+								src="../../assets/pic.png"
+								alt="work"
+								style="height=100%"
+						/></template>
+			</stat-card>
+			<stat-card
 				:stat="$formatCurrency(amountOwed)"
-				class="col mx-4 w-50 font-weight-bold bg-custom2"
+				class="col mx-4 w-50 font-weight-bold "
 				:label="'Amount Owed'"
 				:icon="'fas fa-dolly-flatbed'"
 			>
-				<template v-slot:svg> <img src="../../assets/css/svgs//money-svgrepo-2.svg" width="100" height="100" alt="img" class="float-right"/></template>
+				<template v-slot:svg
+							><img
+								src="../../assets/stat_red.png"
+								alt="work"
+								style="height=100%"
+						/></template>
 
-			</stat-card-new>
+			</stat-card>
+
+			<stat-card
+				:stat="$formatCurrency(totalOutstanding)"
+				class="col mx-4 w-50 font-weight-bold "
+				:label="'Total Outstanding'"
+				:icon="'fas fa-dolly-flatbed'"
+			>
+				<template v-slot:svg
+							><img
+								src="../../assets/new_stats.png"
+								alt="work"
+								style="height=100%"
+						/></template>
+
+			</stat-card>
+
+			
 		</div>
 
-		<div class="my-3 space-between px-4 w-100 text-center">
+		<div class="my-3 d-flex px-4 w-100">
 			<!-- <div class="card col mr-3 py-2" v-if="reports">
 				<bar-chart
 					:chart-data="barData"
@@ -107,12 +139,22 @@
 				></bar-chart>
 			</div> -->
 			<div class="card col p-5" v-if="reports">
+				
 				<pie-chart
 					:chart-data="pieData"
 					:options="pieData.options"
 					v-if="loaded"
 					class=""
 				></pie-chart>
+				<div class="text-left">
+					<h4>Overview</h4>
+					<ul class=".list-unstyled">
+						<li><span class="font-weight-bold" style="color: #e2e612">Active Sales</span>: <span>anyone who has not completed payment but has made a payment in the last 60 days(2 months) (from today's date), REGARDLESS of if the payment cycle is over.</span></li>
+						<li><span class="font-weight-bold" style="color: #e6091c">Inactive Sales</span>: <span> anyone who has not completed payment but has not made any payment in the last 60 days</span></li>
+						<li><span class="font-weight-bold" style="color: #2ad413">Completed Sales</span>: <span>anyone who has completed payment irregardless of if they completed it on time or late. </span></li>
+						<li v-if="checker"><span class="font-weight-bold" style="color: #aaaaaa">No Orders </span>: <span>No orders for that time frame </span></li>
+					</ul>
+				</div>
 			</div>
 
 			<div class="card col ml-5 p-5" v-if="reports">
@@ -122,6 +164,10 @@
 					v-if="loaded"
 					class=""
 				></polar-chart>
+				<div class="text-left">
+					
+				</div>
+
 			</div>
 		</div>
 		
@@ -148,7 +194,6 @@
 
 <script>
 	import StatCard from '../../components/StatCard.vue';
-	import StatCardNew from '../../components/StatCardNew.vue';
 	import { get, byMethod } from '../../utilities/api';
 	import Sales from '../../assets/css/svgs/sales.vue';
 	import Revenue from '../../assets/css/svgs/revenue.vue';
@@ -166,7 +211,6 @@
 	export default {
 		components: {
 			StatCard,
-			StatCardNew,
 			DatePicker,
 			BarChart,
 			PieChart,
@@ -186,13 +230,8 @@
 				sector: '',
 				branchesInfo: {},
 				orderTypes: {},
-
-				apiUrls: {
-					getReports: '/api/recollection/statistics',
-					exportReport: '/api/order/reports/export',
+				checker: false,
 					businessTypes: '/api/business_type',
-					orderTypes: '/api/order-types',
-				},
 				tableHeaders: [
 					'S/N',
 					'Branch',
@@ -230,6 +269,7 @@
 				noOfSalesMadeOnEachProduct: null,
 				totalNumberOfSales: null,
 				amountCollected: null,
+				totalOutstanding: null,
 				amountOwed: null,
 				productPieData: {
 					labels: [],
@@ -294,59 +334,10 @@
 			// this.getBarchartColors();
 		},
 
-		methods: {
-			getBarChartData() {
-				this.barData = {
-					labels: this.getBranchLabel(),
-					datasets: [
-						{
-							barPercentage: 1,
-							barThickness: 12,
-							maxBarThickness: 16,
-							label: 'Number of sales',
-							data: this.getSalesPerBranch(),							
-							backgroundColor: [
-								'#e76f51',
-								'#457b9d',
-								'#cb997e',
-								'#4361ee',
-								'#00f5d4',
-								'#333d29',
-								'#9b5de5',
-								'#22223b',
-								'#55a630',
-								'#973aa8',
-								'#cb997e',
-								'#ff0a54',
-								'#b392ac',
-								'#355070',
-								'#be0aff',
-							],
-							borderColor: [
-								'#e76f51',
-								'#457b9d',
-								'#cb997e',
-								'#4361ee',
-								'#00f5d4',
-								'#333d29',
-								'#9b5de5',
-								'#22223b',
-								'#55a630',
-								'#973aa8',
-								'#cb997e',
-								'#ff0a54',
-								'#b392ac',
-								'#355070',
-								'#be0aff',
-							],
-							borderWidth: 1,
-						},
-					],
-				};
-			},
+		methods: {			
 			getPieChartData() {
 				this.pieData = {
-					labels: ['Active Orders', 'Inactive Orders', 'Completed Orders'],
+					labels: this.checker === true ? ['No orders'] : ['Active Orders', 'Inactive Orders', 'Completed Orders'],
 					options: {
 						title: {
 							text: ['Order Categories', 'Chart describing number of active', 'inactive and completed orders per selected period of time'],
@@ -389,7 +380,7 @@
 							barThickness: 12,
 							maxBarThickness: 16,
 							data: this.getPieData(),
-							backgroundColor: ['#e2e612', '#e6091c', '#2ad413'],
+							backgroundColor:this.checker ? ['#aaaaaa'] : ['#e2e612', '#e6091c', '#2ad413'],
 						},
 					],
 				};
@@ -469,11 +460,13 @@
 						this.query
 					);
 					this.reports = report.data.data;
-					this.totalNumberOfSales = Object.values(
-						this.reports?.meta?.stats?.ordersStatusCount
-					).reduce((a, b) => a + b);
+					this.totalNumberOfSales = this.reports?.meta?.stats?.total_sales;
 					this.amountOwed = this.reports?.meta?.stats?.amountOwed;
 					this.amountCollected = this.reports?.meta?.stats?.amountReceived;
+					this.totalOutstanding = this.reports?.meta?.stats?.totalOutstanding;
+
+					const orderStatus = this.reports?.meta?.stats?.ordersStatusCount;
+				this.checker = orderStatus.active === 0 && orderStatus.inactive === 0 && orderStatus.complete === 0;
 
 					// this.branchesInfo = Object.values(
 					// 	this.reports.meta.groupedDataByBranch
@@ -541,13 +534,13 @@
 
 			getPieData() {
 				const orderStatus = this.reports?.meta?.stats?.ordersStatusCount;
-				console.log(orderStatus);
-				return [
-					orderStatus.active,
-					orderStatus.inactive,
-					orderStatus.complete,
+				// this.checker = orderStatus.active === 0 && orderStatus.inactive === 0 && orderStatus.complete === 0;
+				return this.checker === true ? [1] : [
+					orderStatus.active ,
+					orderStatus.inactive ,
+					orderStatus.complete ,
 
-				];
+				 ];
 			},
 
 			getSalesPerBranch() {

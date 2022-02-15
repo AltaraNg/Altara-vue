@@ -343,7 +343,7 @@
 		methods: {			
 			getPieChartData() {
 				this.pieData = {
-					labels: this.checker ? ['No orders'] : ['Active Orders', 'Inactive Orders', 'Completed Orders'],
+					labels: this.checker === true ? ['No orders'] : ['Active Orders', 'Inactive Orders', 'Completed Orders'],
 					options: {
 						title: {
 							text: ['Order Categories', 'Chart describing number of active', 'inactive and completed orders per selected period of time'],
@@ -471,6 +471,9 @@
 					this.amountCollected = this.reports?.meta?.stats?.amountReceived;
 					this.totalOutstanding = this.reports?.meta?.stats?.totalOutstanding;
 
+					const orderStatus = this.reports?.meta?.stats?.ordersStatusCount;
+				this.checker = orderStatus.active === 0 && orderStatus.inactive === 0 && orderStatus.complete === 0;
+
 					// this.branchesInfo = Object.values(
 					// 	this.reports.meta.groupedDataByBranch
 					// );
@@ -537,7 +540,7 @@
 
 			getPieData() {
 				const orderStatus = this.reports?.meta?.stats?.ordersStatusCount;
-				this.checker = orderStatus.active === 0 && orderStatus.inactive === 0 && orderStatus.complete === 0;
+				// this.checker = orderStatus.active === 0 && orderStatus.inactive === 0 && orderStatus.complete === 0;
 				return this.checker === true ? [1] : [
 					orderStatus.active ,
 					orderStatus.inactive ,

@@ -1,16 +1,14 @@
 <template>
   <div class="clearfix pt-md-3 pt-2" id="customerRegister">
-    <verification :action="'update'" @update="updateCustomer" v-if="mode === 'update'" />
+    <!-- <verification :action="'update'" @update="updateCustomer" v-if="mode === 'update'" /> -->
     <div
       class="card"
-      v-if="(formData.newCustomer.id && mode === 'update') || mode === 'register'"
       :style="
         mode === 'update'
           ? 'margin-left: 5rem;margin-right: 5rem;width: auto;'
           : ''
       "
     >
-      <!--TODO cleanup-->
 
       <ul class="nav nav-tabs justify-content-center bg-default">
         <h6>{{ mode | capitalize }} Customer</h6>
@@ -19,7 +17,7 @@
         <form-wizard
           @onComplete="register"
           class="form-group m-top"
-          v-if="(mode === 'register' || $store.getters.auth('DVAAccess')) && !registered"
+          v-if="(mode === 'register') && !registered"
         >
           <tab-content title="Account Info" >
             <div class="form-group">
@@ -1766,6 +1764,7 @@
             </div>
           </tab-content>
         </form-wizard>
+        <updateCustomer v-if="mode === 'update'"/>
         <div v-if="registered" class="success">
           <h2 class="headeer">SUCCESS !</h2>
           <check />
@@ -1779,6 +1778,7 @@
   </div>
 </template>
 <script>
+import updateCustomer from '../../components/updateCustomer'
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 import { email } from "vuelidate/lib/validators";
 import { numeric } from "vuelidate/lib/validators";
@@ -1795,7 +1795,7 @@ import flash from "../../utilities/flash";
 //name => $v.name.$model
 //age => $v.age.$model
 export default {
-  components: { Verification, FormWizard, TabContent, check, },
+  components: { Verification, FormWizard, TabContent, check, updateCustomer },
   mixins: [ValidationHelper],
   data() {
     return {

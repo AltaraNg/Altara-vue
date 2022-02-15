@@ -80,7 +80,7 @@
                   >{{ type.name }}</option>
                 </select>
               </div>
-              <div class="col form-group" v-if="renewalState">
+              <div class="col form-group" v-if="renewalState && isAuthorized">
                 <label for="amount" class="form-control-label">Discounts</label>
                 <select
                   @change="getCalc()"
@@ -432,6 +432,7 @@ import Flash from "../utilities/flash";
 import discount from "./discount.vue";
 import paystack from "vue-paystack";
 import moment from "moment";
+import roles from '../utilities/roles';
 
 export default {
   props: { customerId: null, customer: null },
@@ -483,6 +484,7 @@ export default {
       ],
       selectedProduct: {},
       selected_discount: {},
+      userRole: parseInt(localStorage.getItem('role')),
       fPayment: "",
       pPrice: "",
       rPayment: "",
@@ -573,6 +575,9 @@ export default {
     compHeader() {
       return this.isAltaraPay ? "Altara Pay" : "Altara Credit";
     },
+    isAuthorized(){
+      return [roles.general_manager, roles.finance_manager, roles.operation_manager, roles.coordinator, roles.software_engineer, roles.business_analyst].includes(this.userRole)
+    }
   },
 
   methods: {
@@ -871,6 +876,7 @@ export default {
       try {
         const fetchSalesCategory = await get(this.apiUrls.salesCategoryUrl);
         this.salesCategories = fetchSalesCategory.data.data.data;
+       
       } catch (err) {
         this.$displayErrorMessage(err);
       }

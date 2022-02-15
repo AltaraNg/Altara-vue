@@ -537,7 +537,7 @@
 
 			getPieData() {
 				const orderStatus = this.reports?.meta?.stats?.ordersStatusCount;
-				this.checker = orderStatus.active === 0 && orderStatus.inactive === 0 && orderStatus.complete === 0
+				this.checker = orderStatus.active === 0 && orderStatus.inactive === 0 && orderStatus.complete === 0;
 				return this.checker === true ? [1] : [
 					orderStatus.active ,
 					orderStatus.inactive ,

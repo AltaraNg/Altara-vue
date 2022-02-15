@@ -1,0 +1,132 @@
+.progressbar {
+  -webkit-transition: width 1s ease;
+  transition: width 1s ease;
+}
+.vue-step-wizard {
+  background-color: #f7f8fc;
+  width: 100%;
+  margin: auto;
+  padding: 40px;
+}
+.step-progress {
+  height: 1rem;
+  background: #fff;
+  border-radius: 1rem;
+  margin: 1rem 0;
+}
+.step-progress .bar {
+  content: "";
+  height: 0.8rem;
+  border-radius: 1.5rem;
+  background-color: #074a74;
+}
+.step-pills {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  background-color: #fff;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 1rem;
+  -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+.step-pills .step-item {
+  background-color: #074a746c;
+  border-radius: 10px;
+  position: relative;
+  list-style-type: none;
+  padding: 1rem 1.5rem;
+}
+.step-pills .step-item a {
+  text-decoration: none;
+  color: #7b7b7b;
+}
+.step-pills .step-item.active {
+  border: 1px solid #074a74a8;
+  background-color: #074a74a8;
+}
+.step-pills .step-item.validated {
+  border: 1px solid #074a74;
+  background-color: #074a74;
+}
+.step-body {
+ 
+  margin-left: auto;
+  padding: 1.2rem;
+}
+
+.step-footer {
+  padding: 1rem;
+  border-radius: 1rem;
+}
+.step-footer {
+  margin-left: auto;
+  margin: 1rem 0;
+  text-align: center;
+}
+.step-button {
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  position: relative;
+  max-width: 30rem;
+  text-align: center;
+  border: 1px solid;
+  border-radius: 12px;
+  color: #22292f;
+  color: rgba(34, 41, 47, var(--text-opacity));
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  margin: 0.5rem;
+  color: #fff;
+  outline: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
+.step-button-next {
+  background-color: #074a74;
+  padding: 1.3rem 2.25rem;
+}
+.step-button-previous {
+  background-color: #074a74;
+  padding: 1.3rem 2.25rem;
+}
+.step-button-previous:disabled {
+  background-color: #919191;
+  padding: 1.3rem 2.25rem;
+}
+.step-button-submit {
+  background-color: #074a74;
+  padding: 1.3rem 2.25rem;
+}
+.step-button-reset {
+  background-color: #074a74;
+}
+.tabStatus {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5rem;
+  line-height: 1.5rem;
+  color: #fff;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.38);
+  border-radius: 50%;
+}
+.tabLabel {
+  color: #fff;
+}
+.check{
+  margin-left: 0.7rem;
+   margin-right: 0.7rem;
+   width: 1.5rem;
+  height:1.5rem;
+  display: none;
+}
+.check.validated{
+  display: inline-block;
+}
+

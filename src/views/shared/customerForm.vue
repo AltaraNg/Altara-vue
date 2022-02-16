@@ -1764,7 +1764,7 @@
             </div>
           </tab-content>
         </form-wizard>
-        <updateCustomer v-if="mode === 'update'"/>
+
         <div v-if="registered" class="success">
           <h2 class="headeer">SUCCESS !</h2>
           <check />
@@ -1778,7 +1778,6 @@
   </div>
 </template>
 <script>
-import updateCustomer from '../../components/updateCustomer'
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 import { email } from "vuelidate/lib/validators";
 import { numeric } from "vuelidate/lib/validators";
@@ -1795,7 +1794,7 @@ import flash from "../../utilities/flash";
 //name => $v.name.$model
 //age => $v.age.$model
 export default {
-  components: { Verification, FormWizard, TabContent, check, updateCustomer },
+  components: { Verification, FormWizard, TabContent, check },
   mixins: [ValidationHelper],
   data() {
     return {

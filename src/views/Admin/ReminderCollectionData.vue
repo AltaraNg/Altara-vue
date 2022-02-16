@@ -448,7 +448,6 @@
 			},
 			async getReport() {
 				this.$LIPS(true);
-				console.log('work now')
 				this.query.fromDate = this.fromDate;
 				this.query.toDate = this.toDate;
 				this.query.businessType = this.businessType;

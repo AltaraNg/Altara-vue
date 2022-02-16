@@ -138,7 +138,7 @@
 					v-if="loaded"
 				></bar-chart>
 			</div> -->
-			<div class="card col p-5" v-if="reports">
+			<div class="card col p-5" v-if="reports !== null">
 				
 				<pie-chart
 					:chart-data="pieData"
@@ -231,7 +231,12 @@
 				branchesInfo: {},
 				orderTypes: {},
 				checker: false,
+				apiUrls:{
 					businessTypes: '/api/business_type',
+					getReports: '/api/recollection/statistics',
+					orderTypes: '/api/order-types'
+				},
+					
 				tableHeaders: [
 					'S/N',
 					'Branch',
@@ -323,15 +328,11 @@
 			this.fromDate = firstDay.slice(0, 10);
 			await this.getReport();
 			this.getPieChartData();
-			this.getPolarChartData();
-			// this.drawProductPieChart();
-			// this.getBarChartData();
-			// this.getOrderBarChartData();
+			this.getPolarChartData();			
 			this.$prepareBranches();
 			this.getBusinessTypes();
 			this.getOrderTypes();
 			this.loaded = true;
-			// this.getBarchartColors();
 		},
 
 		methods: {			

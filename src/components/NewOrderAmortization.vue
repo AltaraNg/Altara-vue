@@ -21,7 +21,7 @@
               <td>Product</td>
               <td>Owner</td>
               <td>Serial No</td>
-               <th>Order Type</th>
+               <th>Business Type</th>
               <th>Downpayment</th>
               <th>Collection Channel</th>
               <th>Branch</th>

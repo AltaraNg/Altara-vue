@@ -605,7 +605,7 @@ export default {
         : (renewal = "");
       let orderType = "";
       orderType = this.orderTypes.find((item) => {
-        return item.name === this.isAltaraPay ? "Altara Pay" : "Altara Credit";
+        return item.name === (this.isAltaraPay ? "Altara Pay" : "Altara Credit");
       });
 
       const data = {

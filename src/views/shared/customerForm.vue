@@ -162,10 +162,14 @@ export default {
                 e = e.response;
                 if (e.status === 422)
                   this.error = e.data.errors ? e.data.errors : e.data;
-                console.log(e);
+               
                 Flash.setError(
-                  e.status === 422
-                    ? this.$displayErrorText(this.error.data.errors)
+                  e.status === 422 && e.data.data.errors.telephone && e.data.data.errors.email
+                    ? this.$displayErrorText("This customer's phone number and email is already taken")
+                    :e.status === 422 && e.data.data.errors.telephone
+                    ? this.$displayErrorText("This customer's phone number is already taken")
+                     :e.status === 422 && e.data.data.errors.email
+                    ? this.$displayErrorText("This customer's email is already taken")
                     : e.message,
                   10000
                 );

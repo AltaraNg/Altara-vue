@@ -150,11 +150,7 @@
                     v-if="!$v.formData.newCustomer.state.required"
                   >Please provide a State.</div>
                 </div>
-                <small v-if="errors.first('state')">
-                  {{
-                    errors.first("state")
-                  }}
-                </small>
+                
               </div>
 
               <div class="spaceAfter"></div>

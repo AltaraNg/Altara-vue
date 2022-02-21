@@ -238,6 +238,27 @@
               >
                 <label class="w-100 float-left pl-1">Civil Status</label>
                 <div
+                  class="radio pl-1 float-left"
+                >
+                  <input
+                    class="form-control"
+                    id="single"
+                    value="single"
+                    name="highestLevel"
+                    type="radio"
+                    v-model="formData.newCustomer.civil_status"
+                    :class="memberHasError('newCustomer.civil_status') ? 'is-invalid' : ''"
+                    v-validate="'required'"
+                  />
+                  <label for="single">single</label>
+                  <div v-if="memberHasError('newCustomer.civil_status')" class="invalid-feedback">
+                    <div
+                      class="error"
+                      v-if="!$v.formData.newCustomer.civil_status.required"
+                    >Please provide your civil status.</div>
+                  </div>
+                </div>
+                <div
                   class="radio pl-1 pr-3 float-left"
                   v-for="(status, index) in civilStatus"
                   :key="'civilStatu' + index"
@@ -256,23 +277,7 @@
                   <label :for="status">{{ status }}</label>
                   
                 </div>
-                <div v-if="memberHasError('newCustomer.civil_status')" class="invalid-feedback">
-                    <div
-                      class="error"
-                      v-if="!$v.formData.newCustomer.civil_status.required"
-                    >Please provide your civil status.</div>
-                  </div>
-                    <div v-if="memberHasError('newCustomer.civil_status')" class="invalid-feedback">
-                    <div
-                      class="error"
-                      v-if="!$v.formData.newCustomer.civil_status.required"
-                    >Please provide your civil.</div>
-                  </div>
-                <small v-if="errors.first('civil_status')">
-                  {{
-                    errors.first("civil_status")
-                  }}
-                </small>
+                  
               </div>
 
               <div
@@ -301,6 +306,27 @@
                 <label class="w-100 float-left">Gender</label>
                 <div
                   class="radio pl-1 float-left"
+                >
+                  <input
+                    class="form-control"
+                    id="male"
+                    value="male"
+                    name="gender"
+                    type="radio"
+                    v-model="formData.newCustomer.gender"
+                    :class="memberHasError('newCustomer.gender') ? 'is-invalid' : ''"
+                    v-validate="'required'"
+                  />
+                  <label for="male">male</label>
+                  <div v-if="memberHasError('newCustomer.gender')" class="invalid-feedback">
+                    <div
+                      class="error"
+                      v-if="!$v.formData.newCustomer.gender.required"
+                    >Please provide your gender.</div>
+                  </div>
+                </div>
+                 <div
+                  class="radio pl-1 float-left"
                   v-for="(sex, index) in gender"
                   :key="'gender' + index"
                 >
@@ -312,27 +338,36 @@
                      @change="$emit('input', sex)"
                     type="radio"
                     v-model="formData.newCustomer.gender"
-                    :class="memberHasError('newCustomer.gender') ? 'is-invalid' : ''"
                     v-validate="'required'"
                   />
                   <label :for="sex">{{ sex }}</label>
-                  <div v-if="memberHasError('newCustomer.gender')" class="invalid-feedback">
-                    <div
-                      class="error"
-                      v-if="!$v.formData.newCustomer.gender.required"
-                    >Please provide your gender.</div>
-                  </div>
+                  
                 </div>
-                <small v-if="errors.first('gender')">
-                  {{
-                    errors.first("gender")
-                  }}
-                </small>
               </div>
 
               <div class="form-group col-md-8 px-md-3 px-1 float-left" >
                 <label class="w-100 float-left pl-1">Highest Level of Education</label>
-                <div class>
+                  <div
+                  class="radio pl-1 float-left"
+                >
+                  <input
+                    class="form-control"
+                    id="no studies"
+                    value="no studies"
+                    name="highestLevel"
+                    type="radio"
+                    v-model="formData.newCustomer.level_of_education"
+                    :class="memberHasError('newCustomer.level_of_education') ? 'is-invalid' : ''"
+                    v-validate="'required'"
+                  />
+                  <label for="no studies">no studies</label>
+                  <div v-if="memberHasError('newCustomer.level_of_education')" class="invalid-feedback">
+                    <div
+                      class="error"
+                      v-if="!$v.formData.newCustomer.level_of_education.required"
+                    >Please provide your level of education.</div>
+                  </div>
+                </div>
                   <div
                     class="radio pl-1 pr-3 float-left"
                     v-for="(highestLevel, index) in highestLevelOfEdu"
@@ -350,13 +385,7 @@
                     />
                     <label :for="highestLevel">{{ highestLevel }}</label>
                   </div>
-                </div>
-
-                <small v-if="errors.first('highestLevel')">
-                  {{
-                    errors.first("highestLevel")
-                  }}
-                </small>
+               
               </div>
             </div>
     </div>

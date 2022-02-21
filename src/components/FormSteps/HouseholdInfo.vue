@@ -151,6 +151,27 @@
               <div class="spaceAfter"></div>
               <div class="form-group col-md-6 px-md-3 px-1 float-left">
                 <label class="w-100 float-left pl-1">Type of Home</label>
+                 <div
+                  class="radio pl-1 float-left"
+                >
+                  <input
+                    class="form-control"
+                    id="family"
+                    value="family"
+                    name="typeOfHome"
+                    type="radio"
+                    v-model="formData.newCustomer.type_of_home"
+                    :class="memberHasError('newCustomer.type_of_home') ? 'is-invalid' : ''"
+                    v-validate="'required'"
+                  />
+                  <label for="family">family</label>
+                  <div v-if="memberHasError('newCustomer.type_of_home')" class="invalid-feedback">
+                    <div
+                      class="error"
+                      v-if="!$v.formData.newCustomer.type_of_home.required"
+                    >Please provide your type of home.</div>
+                  </div>
+                </div>
                 <div
                   class="radio pl-1 pr-3 float-left"
                   v-for="(typeOfHome, index) in typesOfHome"
@@ -168,21 +189,31 @@
                   />
                   <label :for="typeOfHome">{{ typeOfHome }}</label>
                 </div>
-                <div v-if="memberHasError('newCustomer.type_of_home')" class="invalid-feedback">
-                  <div
-                    class="error"
-                    v-if="!$v.formData.newCustomer.type_of_home.required"
-                  >Please provide type of home.</div>
-                </div>
-                <small v-if="errors.first('typeOfHome')">
-                  {{
-                    errors.first("typeOfHome")
-                  }}
-                </small>
               </div>
 
               <div class="form-group col-md-6 px-md-3 px-1 float-left">
                 <label class="w-100 float-left pl-1">Number of Rooms</label>
+                 <div
+                  class="radio pl-1 float-left"
+                >
+                  <input
+                    class="form-control"
+                    id="one room"
+                    value="one room"
+                    name="noOfRoom"
+                    type="radio"
+                    v-model="formData.newCustomer.no_of_rooms"
+                    :class="memberHasError('newCustomer.no_of_rooms') ? 'is-invalid' : ''"
+                    v-validate="'required'"
+                  />
+                  <label for="one room">one room</label>
+                  <div v-if="memberHasError('newCustomer.no_of_rooms')" class="invalid-feedback">
+                    <div
+                      class="error"
+                      v-if="!$v.formData.newCustomer.no_of_rooms.required"
+                    >Please provide no of rooms.</div>
+                  </div>
+                </div>
                 <div
                   class="radio pl-1 pr-3 float-left"
                   v-for="(noOfRoom, index) in noOfRooms"
@@ -200,17 +231,6 @@
                   />
                   <label :for="noOfRoom">{{ noOfRoom }}</label>
                 </div>
-                <div v-if="memberHasError('newCustomer.no_of_rooms')" class="invalid-feedback">
-                  <div
-                    class="error"
-                    v-if="!$v.formData.newCustomer.no_of_rooms.required"
-                  >Please provide number of room(s).</div>
-                </div>
-                <small v-if="errors.first('noOfRoom')">
-                  {{
-                    errors.first("noOfRoom")
-                  }}
-                </small>
               </div>
               <div class="spaceAfter"></div>
               <h5>Next of Kin</h5>

@@ -244,7 +244,7 @@
                     class="form-control"
                     id="single"
                     value="single"
-                    name="highestLevel"
+                    name="civil_status"
                     type="radio"
                     v-model="formData.newCustomer.civil_status"
                     :class="memberHasError('newCustomer.civil_status') ? 'is-invalid' : ''"

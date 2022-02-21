@@ -216,15 +216,15 @@
                     </small>
                   </div>
                    <div class="form-group col-md-6 px-md-3 px-1 float-left" v-if="formData.newCustomer.employment_status === 'informal(business)'">
-                    <label>Monthly Businesss income</label>
+                    <label>Monthly Business Gains</label>
                     <input
                       class="form-control"
                       data-vv-as="current salary"
                       name="current_salary"
-                      placeholder="Current Salary or Monthly income"
+                      placeholder="Monthly Business gains"
                       type="number"
                       key="current_salary_informal"
-                      v-model="formData.newCustomer.current_sal_or_business_income"
+                      v-model="formData.newCustomer.current_salary"
                       v-validate="'required|numeric'"
                     />
 

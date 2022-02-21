@@ -169,7 +169,7 @@
                     <div
                       class="error"
                       v-if="!$v.formData.newCustomer.type_of_home.required"
-                    >Please provide your type of home.</div>
+                    >Type of home is required.</div>
                   </div>
                 </div>
                 <div
@@ -211,7 +211,7 @@
                     <div
                       class="error"
                       v-if="!$v.formData.newCustomer.no_of_rooms.required"
-                    >Please provide no of rooms.</div>
+                    >No of rooms is required.</div>
                   </div>
                 </div>
                 <div

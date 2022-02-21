@@ -255,7 +255,7 @@
                     <div
                       class="error"
                       v-if="!$v.formData.newCustomer.civil_status.required"
-                    >Please provide your civil status.</div>
+                    >Civil status is required.</div>
                   </div>
                 </div>
                 <div
@@ -322,7 +322,7 @@
                     <div
                       class="error"
                       v-if="!$v.formData.newCustomer.gender.required"
-                    >Please provide your gender.</div>
+                    >Gender is required.</div>
                   </div>
                 </div>
                  <div
@@ -365,7 +365,7 @@
                     <div
                       class="error"
                       v-if="!$v.formData.newCustomer.level_of_education.required"
-                    >Please provide your level of education.</div>
+                    >Highest level of education.</div>
                   </div>
                 </div>
                   <div

@@ -180,12 +180,6 @@
                       v-model="formData.newCustomer.market_name"
                       v-validate="'required'"
                     />
-                    <div v-if="memberHasError('newCustomer.market_name')" class="invalid-feedback">
-                      <div
-                        class="error"
-                        v-if="!$v.formData.newCustomer.market_name.required"
-                      >Please provide a market name.</div>
-                    </div>
                     <small v-if="errors.has('market_of_name')">
                       {{
                         errors.first("market_of_name")

@@ -80,7 +80,7 @@
                   >{{ type.name }}</option>
                 </select>
               </div>
-              <div class="col form-group" v-if="renewalState && isAuthorized">
+              <div class="col form-group" v-if="isAltaraPay">
                 <label for="amount" class="form-control-label">Discounts</label>
                 <select
                   @change="getCalc()"
@@ -575,19 +575,10 @@ export default {
     compHeader() {
       return this.isAltaraPay ? "Altara Pay" : "Altara Credit";
     },
-    isAuthorized(){
-      return [roles.general_manager, roles.finance_manager, roles.operation_manager, roles.coordinator, roles.software_engineer, roles.business_analyst].includes(this.userRole)
-    }
+    
   },
 
   methods: {
-    watchSalesLogForm() {
-      if (this.salesLogForm.sales_category_id == "2") {
-        this.renewalState = true;
-      } else {
-        this.renewalState = false;
-      }
-    },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"
         ? (this.customDateToggle = true)
@@ -617,7 +608,6 @@ export default {
         business_type_id: this.salesLogForm.business_type_id.id,
         branch_id: localStorage.getItem("branch_id"),
         down_payment: this.fPayment,
-        custom_date: this.salesLogForm.custom_date,
         repayment: this.rPayment,
         bank_id: this.isAltaraPay ? 1 : this.salesLogForm.bank_id,
         product_price: this.$formatMoney(this.pPrice),
@@ -641,6 +631,7 @@ export default {
       if (this.eligible && renewal) {
         data.discount = [renewal];
       }
+      this.salesLogForm.repayment_cycle_id?.id == 3 ? data.custom_date = parseInt(this.salesLogForm.custom_date) : ''
       this.$validator.validateAll().then((result) => {
         if (result) {
           this.$LIPS(true);

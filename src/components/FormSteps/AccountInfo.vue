@@ -365,7 +365,7 @@
                     <div
                       class="error"
                       v-if="!$v.formData.newCustomer.level_of_education.required"
-                    >Highest level of education.</div>
+                    >Highest level of education is required.</div>
                   </div>
                 </div>
                   <div

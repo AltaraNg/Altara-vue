@@ -134,7 +134,6 @@ export default {
             company_state:{required},
             cvisit_hour_from:{required},
             cvisit_hour_to:{required},
-            cadd_addinfo:{required}
           },
         },
       ],

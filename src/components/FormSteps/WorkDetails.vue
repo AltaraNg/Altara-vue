@@ -224,7 +224,7 @@
                       placeholder="Monthly Business gains"
                       type="number"
                       key="current_salary_informal"
-                      v-model="formData.newCustomer.current_salary"
+                      v-model="formData.newCustomer.monthly_gains"
                       v-validate="'required|numeric'"
                     />
 

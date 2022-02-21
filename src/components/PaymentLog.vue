@@ -575,19 +575,10 @@ export default {
     compHeader() {
       return this.isAltaraPay ? "Altara Pay" : "Altara Credit";
     },
-    isAuthorized(){
-      return [roles.general_manager, roles.finance_manager, roles.operation_manager, roles.coordinator, roles.software_engineer, roles.business_analyst].includes(this.userRole)
-    }
+    
   },
 
   methods: {
-    watchSalesLogForm() {
-      if (this.salesLogForm.sales_category_id == "2") {
-        this.renewalState = true;
-      } else {
-        this.renewalState = false;
-      }
-    },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"
         ? (this.customDateToggle = true)
@@ -640,7 +631,7 @@ export default {
       if (this.eligible && renewal) {
         data.discount = [renewal];
       }
-      this.salesLogForm.repayment_cycle_id?.id == 3 ? data.custom_date = this.salesLogForm.custom_date : ''
+      this.salesLogForm.repayment_cycle_id?.id == 3 ? data.custom_date = parseInt(this.salesLogForm.custom_date) : ''
       this.$validator.validateAll().then((result) => {
         if (result) {
           this.$LIPS(true);

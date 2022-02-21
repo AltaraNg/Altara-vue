@@ -21,8 +21,6 @@
           <tab-content title="Account Info">
             <AccountInfoVue
               :formData="formData"
-              :cc_reg_id="cc_reg_id"
-              :getCustomerDetails="getCustomerDetails"
               :memberHasError="memberHasError"
               :error="error"
               :civilStatus="civilStatus"
@@ -35,7 +33,6 @@
           <tab-content title="Contact Address">
             <ContactAddressVue
               :formData="formData"
-              :getCustomerDetails="getCustomerDetails"
               :memberHasError="memberHasError"
               :error="error"
               :states="states"
@@ -46,7 +43,6 @@
           <tab-content title="Household Info">
             <HouseholdInfoVue
               :formData="formData"
-              :getCustomerDetails="getCustomerDetails"
               :memberHasError="memberHasError"
               :error="error"
               :typesOfHome="typesOfHome"
@@ -57,7 +53,6 @@
           <tab-content title="Work Details">
             <WorkDetailsVue
               :formData="formData"
-              :getCustomerDetails="getCustomerDetails"
               :memberHasError="memberHasError"
               :error="error"
               :occupations="occupations"
@@ -209,32 +204,7 @@ export default {
       });
     },
 
-    getCustomerDetails() {
-      this.$LIPS(true);
-      get(`/api/customer-contact/get-by-id/${this.cc_reg_id}`)
-        .then((res) => {
-          let customer = res.data.data;
-          this.formData.newCustomer.first_name = customer.name.split(" ")[0];
-          this.formData.newCustomer.last_name = customer.name.split(" ")[1];
-          this.formData.newCustomer.telephone = customer.phone;
-          this.formData.newCustomer.email = customer.email;
-          this.formData.newCustomer.reg_id = this.cc_reg_id;
-        })
-        .catch((err) => {
-          flash.setError(
-            err.status === 400
-              ? err.message
-              : this.$displayErrorText("Reg Id does not exist"),
-            10000
-          );
-
-          const field = this.$validator.fields.find({ name: "cc_reg_id" });
-          field.setFlags({ invalid: true });
-        })
-        .finally(() => {
-          this.$LIPS(false);
-        });
-    },
+   
 
     setOccupation(name) {
       $(".occupation-option").removeClass("active shadow-sm");

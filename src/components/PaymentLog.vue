@@ -526,7 +526,6 @@ export default {
     };
   },
   async beforeMount() {
-    this.watchSalesLogForm();
     this.checkIfDiscountElig();
     await this.getRepaymentDuration();
     await this.getSalesCategory();
@@ -537,11 +536,7 @@ export default {
     await this.getDiscounts();
     await this.getOrderTypes();
   },
-  watch: {
-    "salesLogForm.sales_category_id": function (newData, oldData) {
-      this.watchSalesLogForm(newData);
-    },
-  },
+ 
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
     downPaymentRatesFiltered() {
@@ -579,6 +574,7 @@ export default {
   },
 
   methods: {
+    
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"
         ? (this.customDateToggle = true)

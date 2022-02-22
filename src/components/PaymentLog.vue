@@ -663,7 +663,6 @@ export default {
         branch_id: localStorage.getItem("branch_id"),
         down_payment: this.$formatMoney(this.fPayment),
         down_payment_rate_id: this.salesLogForm.payment_type_id.id,
-        custom_date: this.salesLogForm.custom_date,
         repayment: this.$formatMoney(this.rPayment),
         bank_id: this.isAltaraPay ? 1 : this.salesLogForm.bank_id,
         product_price: this.$formatMoney(this.pPrice),
@@ -679,6 +678,7 @@ export default {
       this.salesLogForm.serial_number !== null
         ? (data.serial_number = this.salesLogForm.serial_number)
         : "";
+      this.salesLogForm.repayment_cycle_id?.id == 3 ? data.custom_date = parseInt(this.salesLogForm.custom_date) : ''
 
       if (this.card_expiry) {
         let expiry_date = moment(this.card_expiry);

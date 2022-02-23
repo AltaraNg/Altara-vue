@@ -281,7 +281,7 @@
               <discount
                 class="discount"
                 v-if="
-                  renewalState &&
+                 
                   salesLogForm.discount !== '0_discount' &&
                   rPayment > 0
                 "
@@ -327,7 +327,7 @@
                         <discount
                           class="modal_discount"
                           v-if="
-                            renewalState &&
+                            
                             salesLogForm.discount !== '0_discount' &&
                             rPayment > 0
                           "

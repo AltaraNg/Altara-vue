@@ -540,7 +540,6 @@ export default {
   watch:{
     "salesLogForm.sales_category_id": function(newData){
       this.watchSalesLogForm(newData);
-      console.log(newData)
     }
   },
  

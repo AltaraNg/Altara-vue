@@ -581,9 +581,7 @@ export default {
 
   methods: {
     watchSalesLogForm(){
-      if(this.salesLogForm.sales_category_id && this.salesLogForm.sales_category_id == "2"){
-        this.salesLogForm.discount = "5_discount"
-      }else this.salesLogForm.discount = "0_discount"
+     this.salesLogForm.discount = this.salesLogForm?.sales_category_id == "2" ? "5_discount" : "0_discount"
     },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"

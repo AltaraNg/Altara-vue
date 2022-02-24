@@ -1087,7 +1087,7 @@
 				this.updateView(value);
 			},
 			showDiscount(order){                        
-                        if (order.sales_type.name == 'renewal(DSA)' && order.order_discount &&  order?.order_discount?.slug !== '0_discount'){
+                        if (order.order_discount &&  order?.order_discount?.slug !== '0_discount'){
                               return true
                         }else{
                             return false

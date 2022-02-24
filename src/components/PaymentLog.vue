@@ -71,6 +71,7 @@
                   class="custom-select w-100"
                   v-model="salesLogForm.sales_category_id"
                   v-validate="'required'"
+                  
                 >
                   <option disabled selected="selected">Sales Category</option>
                   <option
@@ -80,7 +81,7 @@
                   >{{ type.name }}</option>
                 </select>
               </div>
-              <div class="col form-group" v-if="renewalState && isAuthorized">
+              <div class="col form-group" v-if="isAltaraPay">
                 <label for="amount" class="form-control-label">Discounts</label>
                 <select
                   @change="getCalc()"
@@ -281,7 +282,7 @@
               <discount
                 class="discount"
                 v-if="
-                  renewalState &&
+                 
                   salesLogForm.discount !== '0_discount' &&
                   rPayment > 0
                 "
@@ -327,7 +328,7 @@
                         <discount
                           class="modal_discount"
                           v-if="
-                            renewalState &&
+                            
                             salesLogForm.discount !== '0_discount' &&
                             rPayment > 0
                           "
@@ -444,7 +445,7 @@ export default {
       users: [],
       product: "",
       salesLogForm: {
-        discount: "0_discount"
+        
       },
       repaymentDuration: [],
       repaymentCyclesopt: [],
@@ -526,7 +527,6 @@ export default {
     };
   },
   async beforeMount() {
-    this.watchSalesLogForm();
     this.checkIfDiscountElig();
     await this.getRepaymentDuration();
     await this.getSalesCategory();
@@ -537,11 +537,12 @@ export default {
     await this.getDiscounts();
     await this.getOrderTypes();
   },
-  watch: {
-    "salesLogForm.sales_category_id": function (newData, oldData) {
+  watch:{
+    "salesLogForm.sales_category_id": function(newData){
       this.watchSalesLogForm(newData);
-    },
+    }
   },
+ 
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
     downPaymentRatesFiltered() {
@@ -575,18 +576,12 @@ export default {
     compHeader() {
       return this.isAltaraPay ? "Altara Pay" : "Altara Credit";
     },
-    isAuthorized(){
-      return [roles.general_manager, roles.finance_manager, roles.operation_manager, roles.coordinator, roles.software_engineer, roles.business_analyst].includes(this.userRole)
-    }
+    
   },
 
   methods: {
-    watchSalesLogForm() {
-      if (this.salesLogForm.sales_category_id == "2") {
-        this.renewalState = true;
-      } else {
-        this.renewalState = false;
-      }
+    watchSalesLogForm(){
+     this.salesLogForm.discount = this.salesLogForm?.sales_category_id == "2" ? "5_discount" : "0_discount"
     },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"
@@ -617,7 +612,6 @@ export default {
         business_type_id: this.salesLogForm.business_type_id.id,
         branch_id: localStorage.getItem("branch_id"),
         down_payment: this.fPayment,
-        custom_date: this.salesLogForm.custom_date,
         repayment: this.rPayment,
         bank_id: this.isAltaraPay ? 1 : this.salesLogForm.bank_id,
         product_price: this.$formatMoney(this.pPrice),
@@ -641,6 +635,7 @@ export default {
       if (this.eligible && renewal) {
         data.discount = [renewal];
       }
+      this.salesLogForm.repayment_cycle_id?.id == 3 ? data.custom_date = parseInt(this.salesLogForm.custom_date) : ''
       this.$validator.validateAll().then((result) => {
         if (result) {
           this.$LIPS(true);
@@ -676,7 +671,6 @@ export default {
         branch_id: localStorage.getItem("branch_id"),
         down_payment: this.$formatMoney(this.fPayment),
         down_payment_rate_id: this.salesLogForm.payment_type_id.id,
-        custom_date: this.salesLogForm.custom_date,
         repayment: this.$formatMoney(this.rPayment),
         bank_id: this.isAltaraPay ? 1 : this.salesLogForm.bank_id,
         product_price: this.$formatMoney(this.pPrice),
@@ -692,6 +686,7 @@ export default {
       this.salesLogForm.serial_number !== null
         ? (data.serial_number = this.salesLogForm.serial_number)
         : "";
+      this.salesLogForm.repayment_cycle_id?.id == 3 ? data.custom_date = parseInt(this.salesLogForm.custom_date) : ''
 
       if (this.card_expiry) {
         let expiry_date = moment(this.card_expiry);
@@ -883,13 +878,14 @@ export default {
     },
 
     async getUsers(salesCat = 1) {
-      this.getCalc();
+      
       this.$LIPS(true);
       await get(`/api/sales-category/${salesCat}/roles`).then((res) => {
         this.users = this.mergeArrays(res.data.data);
       });
 
       this.$LIPS(false);
+      this.getCalc();
     },
     mergeArrays(parent) {
       let result = [];

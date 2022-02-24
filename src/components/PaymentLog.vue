@@ -71,6 +71,7 @@
                   class="custom-select w-100"
                   v-model="salesLogForm.sales_category_id"
                   v-validate="'required'"
+                  
                 >
                   <option disabled selected="selected">Sales Category</option>
                   <option
@@ -444,7 +445,7 @@ export default {
       users: [],
       product: "",
       salesLogForm: {
-        discount: "0_discount"
+        
       },
       repaymentDuration: [],
       repaymentCyclesopt: [],
@@ -539,6 +540,7 @@ export default {
   watch:{
     "salesLogForm.sales_category_id": function(newData){
       this.watchSalesLogForm(newData);
+      console.log(newData)
     }
   },
  
@@ -580,9 +582,9 @@ export default {
 
   methods: {
     watchSalesLogForm(){
-      if(this.salesLogForm.sales_category_id == "2"){
+      if(this.salesLogForm.sales_category_id && this.salesLogForm.sales_category_id == "2"){
         this.salesLogForm.discount = "5_discount"
-      }
+      }else this.salesLogForm.discount = "0_discount"
     },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"
@@ -879,13 +881,14 @@ export default {
     },
 
     async getUsers(salesCat = 1) {
-      this.getCalc();
+      
       this.$LIPS(true);
       await get(`/api/sales-category/${salesCat}/roles`).then((res) => {
         this.users = this.mergeArrays(res.data.data);
       });
 
       this.$LIPS(false);
+      this.getCalc();
     },
     mergeArrays(parent) {
       let result = [];

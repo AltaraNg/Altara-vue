@@ -536,6 +536,11 @@ export default {
     await this.getDiscounts();
     await this.getOrderTypes();
   },
+  watch:{
+    "salesLogForm.sales_category_id": function(newData){
+      this.watchSalesLogForm(newData);
+    }
+  },
  
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
@@ -574,7 +579,11 @@ export default {
   },
 
   methods: {
-    
+    watchSalesLogForm(){
+      if(this.salesLogForm.sales_category_id == "2"){
+        this.salesLogForm.discount = "5_discount"
+      }
+    },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"
         ? (this.customDateToggle = true)

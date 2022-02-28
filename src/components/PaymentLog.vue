@@ -538,9 +538,14 @@ export default {
     await this.getOrderTypes();
   },
   watch:{
-    "salesLogForm.sales_category_id": function(newData){
+    salesLogForm: {
+      handler(newData){
       this.watchSalesLogForm(newData);
-    }
+      
+    },
+    deep:true
+    },
+
   },
  
   computed: {
@@ -576,12 +581,10 @@ export default {
     compHeader() {
       return this.isAltaraPay ? "Altara Pay" : "Altara Credit";
     },
-    
   },
-
   methods: {
     watchSalesLogForm(){
-     this.salesLogForm.discount = this.salesLogForm?.sales_category_id == "2" ? "5_discount" : "0_discount"
+     this.salesLogForm.discount = ((this.salesLogForm?.sales_category_id == "2") && !(this.salesLogForm.product_name.includes("Cash")|| this.salesLogForm.product_name.includes("cash") )) ? "5_discount" : "0_discount"
     },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"
@@ -828,7 +831,9 @@ export default {
     },
     selectedItem(value) {
       this.selectedProduct = value;
+      this.salesLogForm = {...this.salesLogForm, product_name: this.selectedProduct.product_name}
       this.test0 = false;
+      this.watchSalesLogForm();
       this.getCalc();
     },
     async getProduct() {

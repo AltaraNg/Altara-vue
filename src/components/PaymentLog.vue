@@ -584,7 +584,7 @@ export default {
   },
   methods: {
     watchSalesLogForm(){
-     this.salesLogForm.discount = ((this.salesLogForm?.sales_category_id == "2") && !(this.salesLogForm.product_name.includes("Cash")|| this.salesLogForm.product_name.includes("cash") )) ? "5_discount" : "0_discount"
+     this.salesLogForm.discount = (this.salesLogForm?.sales_category_id == "2") && !(this.salesLogForm.product_name.includes("cash")) ? "5_discount" : "0_discount"
     },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"

@@ -613,7 +613,7 @@ export default {
      this.salesLogForm.discount = (this.salesLogForm?.sales_category_id == "2") && !(this.salesLogForm.product_name.includes("cash")) ? "5_discount" : "0_discount"
     },
     watchProduct(){
-      this.CashLoanOrder = this.salesLogForm?.product_name?.includes("cash") ? true: false
+      this.CashLoanOrder = this.salesLogForm?.product_name?.includes("cash")
       this.salesLogForm.discount = '0_discount'
       
     },

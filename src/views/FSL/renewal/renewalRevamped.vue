@@ -62,38 +62,48 @@
 					<span class="mr-3 bg-default rounded p-3">View DSA stats</span>
 				</router-link>
 			</div>
-			<div class="mt-5 mb-3 px-2 py-3 row">
-				<div class="col-8">
+			<div class="mt-5 mb-3 px-2 py-3 d-flex">
+				<div class="w-100">
 					<div class="row w-100">
 						<h3 class="col">Filters</h3>
 					</div>
 					<div class="d-flex">
-						<div class="col">
+						
 							<date-picker
-								class="w-100"
+								class="mx-2"
 								v-model="fromDate"
 								valueType="format"
 								placeholder="Date From"
 							></date-picker>
-						</div>
-						<div class="col">
+						
+						
 							<date-picker
-								class="w-100"
+								class="mx-2"
 								v-model="toDate"
 								valueType="format"
 								placeholder="Date To"
 							></date-picker>
-						</div>
-						<div class="col" v-if="canFilter">
-							<select v-model="branch" class="custom-select" name="branch" id="branch">
+						
+						<div class="mx-2" v-if="canFilter">
+							<select
+								v-model="branch"
+								class="custom-select"
+								name="branch"
+								id="branch"
+							>
 								<option selected value="" disabled>--Select Showroom--</option>
 								<option :value="branch.id" v-for="branch in getBranches">
 									{{ branch.name }}
 								</option>
 							</select>
 						</div>
-						<div class="col" >
-							<select v-model="businessTypeGroup" class="custom-select" name="product" id="product">
+						<div class="mx-2">
+							<select
+								v-model="businessTypeGroup"
+								class="custom-select"
+								name="product"
+								id="product"
+							>
 								<option selected value="" disabled>--Select Product--</option>
 								<option value="product">
 									Altara Product
@@ -103,25 +113,30 @@
 								</option>
 							</select>
 						</div>
-						<div class="col d-flex">
+						<div class="d-flex">
+							<div class="mx-2">
 							<button
-								class="my-auto p-2 mx-2 h4  rounded bg-default w-100"
+								class="my-auto p-3  btn rounded bg-default w-100"
 								@click="searchAction"
 							>
 								Search
 							</button>
+							</div>
+
+							<div class="mx-2">
 							<button
-								class="my-auto p-2 h4 rounded mx-2 bg-default w-100"
+								class="my-auto p-3 btn rounded mx-2 bg-default w-100"
 								@click="resetAction"
 							>
 								Reset
 							</button>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-4 mt-5 px-5">
+				<div class="mt-5 px-1 py-4">
 					<button
-						class="reset-button py-2 px-4 rounded bg-default"
+						class="reset-button p3 rounded bg-default w-100"
 						@click="exportCsv"
 					>
 						<i class="fas fa-file-export"></i> Download names
@@ -310,6 +325,8 @@
 		},
 
 		async mounted() {
+			await this.$prepareBranches();
+
 			await this.getRenewalStatuses();
 			await this.fetchDsas();
 			var date = new Date(),
@@ -341,7 +358,6 @@
 			this.$root.$on('owner_updated', (payload) => {
 				this.fetchData();
 			});
-			await this.$prepareBranches();
 			await this.getRenewalStatuses();
 			await this.fetchDsas();
 
@@ -367,6 +383,12 @@
 						? this.branch
 						: this.searchQuery.branch
 						? this.searchQuery.branch
+						: '',
+
+					businessTypeGroup: this.businessTypeGroup
+						? this.businessTypeGroup
+						: this.searchQuery.businessTypeGroup
+						? this.searchQuery.businessTypeGroup
 						: '',
 					rollUp: true,
 					filterOrderbyBranch: true,
@@ -493,6 +515,7 @@
 				query.fromDate = '';
 				delete query.toDate;
 				delete query.branch;
+				delete query.businessTypeGroup;
 
 				query.tab = 'all';
 
@@ -604,7 +627,7 @@
 					Roles.software_engineer,
 					Roles.general_manager,
 					Roles.coordinator,
-					Roles.dsa_captain
+					Roles.dsa_captain,
 				].includes(this.role);
 			},
 			canFilter: function() {

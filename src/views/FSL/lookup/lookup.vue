@@ -161,7 +161,7 @@
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
 								>
 									{{ order.sales_type.name }}
-										<discount v-if="showDiscount(order)" class="discount_badge" :percent="5"  />
+										<discount v-if="showDiscount(order)" class="discount_badge" :percent="percentage(order)"  />
 								</div>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
@@ -953,6 +953,7 @@
 				this.paymentForm.payments.splice(index, 1);
 				this.reNumber();
 			},
+			
 
 			selectedItem(value) {
 				this.selectedProduct = value;
@@ -1086,12 +1087,15 @@
 				this.updateView(value);
 			},
 			showDiscount(order){                        
-                        if (order.sales_type.name == 'renewal(DSA)' && order?.order_discount?.slug == '5_discount'){
+                        if (order.order_discount &&  order?.order_discount?.slug !== '0_discount'){
                               return true
                         }else{
                             return false
                         }
                 },
+				percentage(order){
+				return order?.order_discount?.percentage_discount
+			},
 		},
 
 

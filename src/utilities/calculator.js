@@ -17,11 +17,12 @@ const calculate = (productPrice, data, params, percentage_discount) => {
   const tempActualRepayment = +(total - downpayment).toFixed(2);
   var   biMonthlyRepayment = Math.round((tempActualRepayment/count)/100)*100
   const actualRepayment = biMonthlyRepayment * count;
-  if(data.sales_category_id == 2 && data.discount_slug == "5_discount" ){
-        var   rePayment = actualRepayment - (actualRepayment * percentage_discount/100)
-    }else{
-       var   rePayment = actualRepayment
-    }
+  if (percentage_discount > 0) {
+    var rePayment =
+      actualRepayment - (actualRepayment * percentage_discount) / 100;
+  } else {
+    var rePayment = actualRepayment;
+  }
   total = actualRepayment + actualDownpayment ;
   
   return { total, actualDownpayment, rePayment };
@@ -34,29 +35,31 @@ const repaymentCount = (days, cycle) => {
     return 18;
   } else if (result >= 12) {
     return 12;
-  }
+  } 
   if (result >= 6) {
     return 6;
   }
   return 3;
 };
 
-const cashLoan = (productPrice, data, params) => {
-  const count = repaymentCount(
-    data.repayment_duration_id.value,
-    14
-  );
+const cashLoan = (productPrice, data, params, percentage_discount) => {
+  const count = repaymentCount(data.repayment_duration_id.value, 14);
   const actualDownpayment = (data.payment_type_id.percent / 100) * productPrice;
   const residual = productPrice - actualDownpayment;
   const principal = residual / count;
   const interest = (params.interest / 100) * residual;
   const tempActualRepayment = (principal + interest) * count;
   var biMonthlyRepayment = Math.round(tempActualRepayment / count / 100) * 100;
-  const rePayment = biMonthlyRepayment * count;
-  let total = Math.ceil((actualDownpayment + rePayment) / 100) * 100;
-  total = rePayment + actualDownpayment;
+  const actualRepayment = biMonthlyRepayment * count;
+  let total = Math.ceil((actualDownpayment + actualRepayment) / 100) * 100;
+  if (percentage_discount > 0) {
+    var rePayment = actualRepayment - (actualRepayment * percentage_discount) / 100;
+  } else {
+    var rePayment = actualRepayment;
+  }
+  total = actualRepayment + actualDownpayment;
   return { total, actualDownpayment, rePayment };
-}
+};
 
 
 export {calculate, cashLoan};

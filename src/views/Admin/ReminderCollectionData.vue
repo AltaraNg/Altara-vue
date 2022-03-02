@@ -138,7 +138,7 @@
 					v-if="loaded"
 				></bar-chart>
 			</div> -->
-			<div class="card col p-5" v-if="reports">
+			<div class="card col p-5" v-if="reports !== null">
 				
 				<pie-chart
 					:chart-data="pieData"
@@ -232,12 +232,12 @@
 				orderTypes: {},
 				checker: false,
 
-				apiUrls: {
-					getReports: '/api/recollection/statistics',
-					exportReport: '/api/order/reports/export',
+				
+				apiUrls:{
 					businessTypes: '/api/business_type',
 					getReports: '/api/recollection/statistics',
-					orderTypes: '/api/order-types'
+					orderTypes: '/api/order-types',
+					exportReport: '/api/order/reports/export',
 				},
 					
 				tableHeaders: [

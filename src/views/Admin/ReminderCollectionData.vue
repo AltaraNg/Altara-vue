@@ -231,10 +231,13 @@
 				branchesInfo: {},
 				orderTypes: {},
 				checker: false,
+
+				
 				apiUrls:{
 					businessTypes: '/api/business_type',
 					getReports: '/api/recollection/statistics',
-					orderTypes: '/api/order-types'
+					orderTypes: '/api/order-types',
+					exportReport: '/api/order/reports/export',
 				},
 					
 				tableHeaders: [

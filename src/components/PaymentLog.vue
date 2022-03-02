@@ -345,7 +345,11 @@
             <div class="cover">
               <discount
                 class="discount"
-                v-if="salesLogForm.discount !== '0_discount' && rPayment > 0"
+                v-if="
+
+                  salesLogForm.discount !== '0_discount' &&
+                  rPayment > 0
+                "
                 :percent="selected_discount.percentage_discount"
               />
             </div>
@@ -511,7 +515,9 @@ export default {
       error: {},
       users: [],
       product: "",
-      salesLogForm: {},
+      salesLogForm: {
+
+      },
       repaymentDuration: [],
       repaymentCyclesopt: [],
       downPaymentRates: [],
@@ -604,12 +610,20 @@ export default {
     await this.getDiscounts();
     await this.getOrderTypes();
   },
-  watch: {
-    salesLogForm: {
-      handler(newData) {
-        this.watchSalesLogForm(newData);
-      },
-      deep: true,
+  watch:{
+    "salesLogForm.sales_category_id": {
+      handler(newData){
+      this.watchSalesLogForm(newData);
+
+    },
+    
+    },
+    "salesLogForm.product_name": {
+      handler(newData){
+      this.watchSalesLogForm(newData);
+
+    },
+    
     },
   },
 

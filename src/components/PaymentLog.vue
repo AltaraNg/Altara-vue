@@ -543,14 +543,14 @@ export default {
       this.watchSalesLogForm(newData);
 
     },
-    deep:true
+    
     },
     "salesLogForm.product_name": {
       handler(newData){
       this.watchSalesLogForm(newData);
 
     },
-    deep:true
+    
     },
 
   },

@@ -1927,6 +1927,11 @@ import CustomerData from "../../mixins/CustomerData";
     export default {
         components: {Verification},
         mixins:[CustomerData],
+        data(){
+            return{
+                gender: [ "Male","female"],
+            }
+        },
         
         methods: {
             register() {

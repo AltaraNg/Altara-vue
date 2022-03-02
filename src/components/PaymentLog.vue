@@ -71,7 +71,7 @@
                   class="custom-select w-100"
                   v-model="salesLogForm.sales_category_id"
                   v-validate="'required'"
-                  
+
                 >
                   <option disabled selected="selected">Sales Category</option>
                   <option
@@ -282,7 +282,7 @@
               <discount
                 class="discount"
                 v-if="
-                 
+
                   salesLogForm.discount !== '0_discount' &&
                   rPayment > 0
                 "
@@ -328,7 +328,7 @@
                         <discount
                           class="modal_discount"
                           v-if="
-                            
+
                             salesLogForm.discount !== '0_discount' &&
                             rPayment > 0
                           "
@@ -445,7 +445,7 @@ export default {
       users: [],
       product: "",
       salesLogForm: {
-        
+
       },
       repaymentDuration: [],
       repaymentCyclesopt: [],
@@ -538,16 +538,23 @@ export default {
     await this.getOrderTypes();
   },
   watch:{
-    salesLogForm: {
+    "salesLogForm.sales_category_id": {
       handler(newData){
       this.watchSalesLogForm(newData);
-      
+
+    },
+    deep:true
+    },
+    "salesLogForm.product_name": {
+      handler(newData){
+      this.watchSalesLogForm(newData);
+
     },
     deep:true
     },
 
   },
- 
+
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
     downPaymentRatesFiltered() {
@@ -876,14 +883,14 @@ export default {
       try {
         const fetchSalesCategory = await get(this.apiUrls.salesCategoryUrl);
         this.salesCategories = fetchSalesCategory.data.data.data;
-       
+
       } catch (err) {
         this.$displayErrorMessage(err);
       }
     },
 
     async getUsers(salesCat = 1) {
-      
+
       this.$LIPS(true);
       await get(`/api/sales-category/${salesCat}/roles`).then((res) => {
         this.users = this.mergeArrays(res.data.data);

@@ -538,7 +538,14 @@ export default {
     await this.getOrderTypes();
   },
   watch:{
-    salesLogForm: {
+    "salesLogForm.sales_category_id": {
+      handler(newData){
+      this.watchSalesLogForm(newData);
+      
+    },
+    deep:true
+    },
+    "salesLogForm.product_name": {
       handler(newData){
       this.watchSalesLogForm(newData);
       

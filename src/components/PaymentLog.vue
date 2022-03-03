@@ -1015,7 +1015,6 @@ export default {
           }
           return item.slug.includes("ac_");
         });
-        console.log(this.businessTypes)
       } catch (err) {
         this.$displayErrorMessage(err);
       }

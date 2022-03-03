@@ -97,38 +97,8 @@
                   </option>
                 </select>
               </div>
-              <div class="col form-group" v-if="isAltaraPay && !CashLoanOrder">
-                <label for="amount" class="form-control-label">Discounts</label>
-                <select
-                  @change="getCalc()"
-                  class="custom-select w-100"
-                  v-model="salesLogForm.discount"
-                  v-validate="'required'"
-                >
-                  <option
-                    :value="type.slug"
-                    :key="type.id"
-                    v-for="type in discounts"
-                  >
-                    {{ type.name }}
-                  </option>
-                </select>
-              </div>
-              <div class="col form-group" v-if="isAltaraPay && CashLoanOrder">
-                <label for="amount" class="form-control-label">Discount</label>
-                <select
-                  @change="getCalc()"
-                  class="custom-select w-100"
-                  v-model="salesLogForm.discount"
-                  v-validate="'required'"
-                  selected
-                >
-                  <option
-                    value="0_discount"
-                    key="11"
-                  >0% Discount</option>
-                </select>
-              </div>
+            
+              
               
               <div class="col form-group">
                 <label for="amount" class="form-control-label">Owner</label>
@@ -239,6 +209,23 @@
                     :value="type"
                     :key="type.id"
                     v-for="type in businessTypes"
+                  >
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
+                <div class="col form-group" v-if="isAltaraPay && productOrder">
+                <label for="amount" class="form-control-label">Discounts</label>
+                <select
+                  @change="getCalc()"
+                  class="custom-select w-100"
+                  v-model="salesLogForm.discount"
+                  v-validate="'required'"
+                >
+                  <option
+                    :value="type.slug"
+                    :key="type.id"
+                    v-for="type in discounts"
                   >
                     {{ type.name }}
                   </option>
@@ -527,7 +514,7 @@ export default {
   components: { AutoComplete, discount, paystack, VerificationCollectionData },
   data() {
     return {
-      CashLoanOrder:true,
+      productOrder:false,
       card_expiry: null,
       error: {},
       users: [],
@@ -631,14 +618,16 @@ export default {
     "salesLogForm.sales_category_id": {
       handler(newData){
       this.watchSalesLogForm(newData);
+      
 
     },
     
     },
-    "salesLogForm.product_name": {
-      handler(newData){
+    "salesLogForm.business_type_id": {
+      handler(newData){ 
+      this.watchBusinessType(newData)
       this.watchSalesLogForm(newData);
-      this.watchProduct(newData)
+      
 
     },
     
@@ -685,13 +674,12 @@ export default {
     watchSalesLogForm() {
       this.salesLogForm.discount =
         this.salesLogForm?.sales_category_id == "2" &&
-        !this.salesLogForm.product_name.includes("cash")
+        !this.salesLogForm.product_name.includes("cash") 
           ? "5_discount"
           : "0_discount";
     },
-    watchProduct(){
-      this.CashLoanOrder = this.salesLogForm?.product_name?.includes("cash")
-      this.salesLogForm.discount = '0_discount'
+    watchBusinessType(){
+      this.productOrder = this.salesLogForm?.business_type_id?.slug?.includes("ap_products")|| this.salesLogForm?.business_type_id?.slug?.includes("ac_products")
       
     },
     customDate(event) {

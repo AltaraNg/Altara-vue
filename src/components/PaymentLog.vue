@@ -214,7 +214,7 @@
                   </option>
                 </select>
               </div>
-                <div class="col form-group" v-if="isAltaraPay && ProductOrder">
+                <div class="col form-group" v-if="isAltaraPay && productOrder">
                 <label for="amount" class="form-control-label">Discounts</label>
                 <select
                   @change="getCalc()"
@@ -514,7 +514,7 @@ export default {
   components: { AutoComplete, discount, paystack, VerificationCollectionData },
   data() {
     return {
-      ProductOrder:false,
+      productOrder:false,
       card_expiry: null,
       error: {},
       users: [],
@@ -618,13 +618,14 @@ export default {
     "salesLogForm.sales_category_id": {
       handler(newData){
       this.watchSalesLogForm(newData);
+      
 
     },
     
     },
     "salesLogForm.business_type_id": {
-      handler(newData){
-       this.watchBusinessType(newData) 
+      handler(newData){ 
+      this.watchBusinessType(newData)
       this.watchSalesLogForm(newData);
       
 
@@ -673,12 +674,12 @@ export default {
     watchSalesLogForm() {
       this.salesLogForm.discount =
         this.salesLogForm?.sales_category_id == "2" &&
-        !this.salesLogForm.product_name.includes("cash") && this.ProductOrder
+        !this.salesLogForm.product_name.includes("cash") 
           ? "5_discount"
           : "0_discount";
     },
     watchBusinessType(){
-      this.ProductOrder = this.salesLogForm?.business_type_id?.slug?.includes("ap_products")
+      this.productOrder = this.salesLogForm?.business_type_id?.slug?.includes("ap_products")|| this.salesLogForm?.business_type_id?.slug?.includes("ac_products")
       
     },
     customDate(event) {

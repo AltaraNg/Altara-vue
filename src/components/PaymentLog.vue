@@ -617,6 +617,7 @@ export default {
   watch:{
     "salesLogForm.sales_category_id": {
       handler(newData){
+        this.watchBusinessType(newData)
       this.watchSalesLogForm(newData);
       
 
@@ -627,10 +628,10 @@ export default {
       handler(newData){ 
       this.watchBusinessType(newData)
       this.watchSalesLogForm(newData);
+      this.getCalc()
       
 
-    },
-    
+    },   
     },
     
 
@@ -674,7 +675,7 @@ export default {
     watchSalesLogForm() {
       this.salesLogForm.discount =
         this.salesLogForm?.sales_category_id == "2" &&
-        !this.salesLogForm.product_name.includes("cash") 
+        !this.salesLogForm.product_name.includes("cash") && this.productOrder
           ? "5_discount"
           : "0_discount";
     },

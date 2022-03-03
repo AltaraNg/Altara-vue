@@ -1070,7 +1070,8 @@ export default {
           this.customer.id,
           this.customer.email,
           this.customer.first_name,
-          this.customer.last_name
+          this.customer.last_name,
+          this.customer.telephone
         ).then((data) => {
           return data;
         });

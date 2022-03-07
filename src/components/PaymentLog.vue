@@ -1128,7 +1128,7 @@ export default {
           first_name: firstName,
           last_name: lastName,
           phone: phoneNo,
-          metadata: { customerId: `"${id}"` },
+          metadata: { customerId: `${id}` },
         }),
         // Adding headers to the request
         headers: {

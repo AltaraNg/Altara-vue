@@ -97,9 +97,9 @@
                   </option>
                 </select>
               </div>
-            
-              
-              
+
+
+
               <div class="col form-group">
                 <label for="amount" class="form-control-label">Owner</label>
                 <select
@@ -619,21 +619,21 @@ export default {
       handler(newData){
         this.watchBusinessType(newData)
       this.watchSalesLogForm(newData);
-      
+
 
     },
-    
+
     },
     "salesLogForm.business_type_id": {
-      handler(newData){ 
+      handler(newData){
       this.watchBusinessType(newData)
       this.watchSalesLogForm(newData);
       this.getCalc()
-      
 
-    },   
+
     },
-    
+    },
+
 
   },
 
@@ -681,7 +681,7 @@ export default {
     },
     watchBusinessType(){
       this.productOrder = this.salesLogForm?.business_type_id?.slug?.includes("ap_products")|| this.salesLogForm?.business_type_id?.slug?.includes("ac_products")
-      
+
     },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"
@@ -1128,7 +1128,7 @@ export default {
           first_name: firstName,
           last_name: lastName,
           phone: phoneNo,
-          metadata: { customerId: id },
+          metadata: { customerId: `"${id}"` },
         }),
         // Adding headers to the request
         headers: {

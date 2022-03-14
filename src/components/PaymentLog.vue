@@ -608,25 +608,18 @@ export default {
   },
   watch: {
     "salesLogForm.sales_category_id": {
-      handler(newData){
-        this.watchBusinessType(newData)
-      this.watchSalesLogForm(newData);
-
-
-    },
-
+      handler(newData) {
+        this.watchBusinessType(newData);
+        this.watchSalesLogForm(newData);
+      },
     },
     "salesLogForm.business_type_id": {
-      handler(newData){
-      this.watchBusinessType(newData)
-      this.watchSalesLogForm(newData);
-      this.getCalc()
-
-
+      handler(newData) {
+        this.watchBusinessType(newData);
+        this.watchSalesLogForm(newData);
+        this.getCalc();
+      },
     },
-    },
-
-
   },
 
   computed: {
@@ -672,9 +665,10 @@ export default {
           ? "5_discount"
           : "0_discount";
     },
-    watchBusinessType(){
-      this.productOrder = this.salesLogForm?.business_type_id?.slug?.includes("ap_products")|| this.salesLogForm?.business_type_id?.slug?.includes("ac_products")
-
+    watchBusinessType() {
+      this.productOrder =
+        this.salesLogForm?.business_type_id?.slug?.includes("ap_products") ||
+        this.salesLogForm?.business_type_id?.slug?.includes("ac_products");
     },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"
@@ -757,6 +751,21 @@ export default {
       });
     },
     async previewAmortization() {
+      if (this.isAltaraPay) {
+        const createdPaystackCustomer = await this.createCustomer(
+          this.customer.id,
+          this.customer.email,
+          this.customer.first_name,
+          this.customer.last_name,
+          this.customer.telephone
+        ).then((data) => {
+          return data;
+        });
+        await this.paystackCustomer(
+          this.customer.id,
+          createdPaystackCustomer.data.customer_code
+        );
+      }
       this.cardError = false;
       this.salesLogForm.customer_id = this.customerId;
       const data = {
@@ -1058,19 +1067,6 @@ export default {
       this.salesLogForm.discount = "0_discount";
     },
     async processPaymentPayStackPayment(resp) {
-      const createdPaystackCustomer = await this.createCustomer(
-        this.customer.id,
-        this.customer.email,
-        this.customer.first_name,
-        this.customer.last_name,
-        this.customer.telephone
-      ).then((data) => {
-        return data;
-      });
-      await this.paystackCustomer(
-        this.customer.id,
-        createdPaystackCustomer.data.customer_code
-      );
       this.paystackReference = resp.reference;
       if (resp.status == "success" && resp.message == "Approved") {
         this.salesLogForm.payment_gateway_id = this.paymentGateways.find(

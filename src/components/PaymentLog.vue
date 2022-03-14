@@ -98,7 +98,6 @@
                 </select>
               </div>
 
-              <<<<<<< HEAD ======= >>>>>>> origin/staging
               <div class="col form-group">
                 <label for="amount" class="form-control-label">Owner</label>
                 <select

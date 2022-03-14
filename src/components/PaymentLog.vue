@@ -97,9 +97,7 @@
                   </option>
                 </select>
               </div>
-            
-              
-              
+
               <div class="col form-group">
                 <label for="amount" class="form-control-label">Owner</label>
                 <select
@@ -214,7 +212,7 @@
                   </option>
                 </select>
               </div>
-                <div class="col form-group" v-if="isAltaraPay && productOrder">
+              <div class="col form-group" v-if="isAltaraPay && productOrder">
                 <label for="amount" class="form-control-label">Discounts</label>
                 <select
                   @change="getCalc()"
@@ -348,11 +346,7 @@
             <div class="cover">
               <discount
                 class="discount"
-                v-if="
-
-                  salesLogForm.discount !== '0_discount' &&
-                  rPayment > 0
-                "
+                v-if="salesLogForm.discount !== '0_discount' && rPayment > 0"
                 :percent="selected_discount.percentage_discount"
               />
             </div>
@@ -514,14 +508,12 @@ export default {
   components: { AutoComplete, discount, paystack, VerificationCollectionData },
   data() {
     return {
-      productOrder:false,
+      productOrder: false,
       card_expiry: null,
       error: {},
       users: [],
       product: "",
-      salesLogForm: {
-
-      },
+      salesLogForm: {},
       repaymentDuration: [],
       repaymentCyclesopt: [],
       downPaymentRates: [],
@@ -614,27 +606,20 @@ export default {
     await this.getDiscounts();
     await this.getOrderTypes();
   },
-  watch:{
+  watch: {
     "salesLogForm.sales_category_id": {
-      handler(newData){
-        this.watchBusinessType(newData)
-      this.watchSalesLogForm(newData);
-      
-
-    },
-    
+      handler(newData) {
+        this.watchBusinessType(newData);
+        this.watchSalesLogForm(newData);
+      },
     },
     "salesLogForm.business_type_id": {
-      handler(newData){ 
-      this.watchBusinessType(newData)
-      this.watchSalesLogForm(newData);
-      this.getCalc()
-      
-
-    },   
+      handler(newData) {
+        this.watchBusinessType(newData);
+        this.watchSalesLogForm(newData);
+        this.getCalc();
+      },
     },
-    
-
   },
 
   computed: {
@@ -675,13 +660,15 @@ export default {
     watchSalesLogForm() {
       this.salesLogForm.discount =
         this.salesLogForm?.sales_category_id == "2" &&
-        !this.salesLogForm.product_name.includes("cash") && this.productOrder
+        !this.salesLogForm.product_name.includes("cash") &&
+        this.productOrder
           ? "5_discount"
           : "0_discount";
     },
-    watchBusinessType(){
-      this.productOrder = this.salesLogForm?.business_type_id?.slug?.includes("ap_products")|| this.salesLogForm?.business_type_id?.slug?.includes("ac_products")
-      
+    watchBusinessType() {
+      this.productOrder =
+        this.salesLogForm?.business_type_id?.slug?.includes("ap_products") ||
+        this.salesLogForm?.business_type_id?.slug?.includes("ac_products");
     },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"
@@ -1065,6 +1052,19 @@ export default {
       this.salesLogForm.discount = "0_discount";
     },
     async processPaymentPayStackPayment(resp) {
+      const createdPaystackCustomer = await this.createCustomer(
+        this.customer.id,
+        this.customer.email,
+        this.customer.first_name,
+        this.customer.last_name,
+        this.customer.telephone
+      ).then((data) => {
+        return data;
+      });
+      await this.paystackCustomer(
+        this.customer.id,
+        createdPaystackCustomer.data.customer_code
+      );
       this.paystackReference = resp.reference;
       if (resp.status == "success" && resp.message == "Approved") {
         this.salesLogForm.payment_gateway_id = this.paymentGateways.find(
@@ -1080,19 +1080,6 @@ export default {
           .catch((error) => {
             this.$displayErrorMessage(error);
           });
-        const createdPaystackCustomer = await this.createCustomer(
-          this.customer.id,
-          this.customer.email,
-          this.customer.first_name,
-          this.customer.last_name,
-          this.customer.telephone
-        ).then((data) => {
-          return data;
-        });
-        await this.paystackCustomer(
-          this.customer.id,
-          createdPaystackCustomer.data.customer_code
-        );
         this.logSale();
       }
     },
@@ -1144,7 +1131,7 @@ export default {
           Flash.setError("Error: " + err.message);
         });
     },
-   async paystackCustomer(id, customer_code) {
+    async paystackCustomer(id, customer_code) {
       post(this.apiUrls.paystackCustomerCodeUrl, {
         id: id,
         customer_code: customer_code,

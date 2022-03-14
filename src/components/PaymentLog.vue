@@ -98,6 +98,7 @@
                 </select>
               </div>
 
+              <<<<<<< HEAD ======= >>>>>>> origin/staging
               <div class="col form-group">
                 <label for="amount" class="form-control-label">Owner</label>
                 <select
@@ -608,18 +609,25 @@ export default {
   },
   watch: {
     "salesLogForm.sales_category_id": {
-      handler(newData) {
-        this.watchBusinessType(newData);
-        this.watchSalesLogForm(newData);
-      },
+      handler(newData){
+        this.watchBusinessType(newData)
+      this.watchSalesLogForm(newData);
+
+
+    },
+
     },
     "salesLogForm.business_type_id": {
-      handler(newData) {
-        this.watchBusinessType(newData);
-        this.watchSalesLogForm(newData);
-        this.getCalc();
-      },
+      handler(newData){
+      this.watchBusinessType(newData)
+      this.watchSalesLogForm(newData);
+      this.getCalc()
+
+
     },
+    },
+
+
   },
 
   computed: {
@@ -665,10 +673,9 @@ export default {
           ? "5_discount"
           : "0_discount";
     },
-    watchBusinessType() {
-      this.productOrder =
-        this.salesLogForm?.business_type_id?.slug?.includes("ap_products") ||
-        this.salesLogForm?.business_type_id?.slug?.includes("ac_products");
+    watchBusinessType(){
+      this.productOrder = this.salesLogForm?.business_type_id?.slug?.includes("ap_products")|| this.salesLogForm?.business_type_id?.slug?.includes("ac_products")
+
     },
     customDate(event) {
       this.salesLogForm.repayment_cycle_id.name === "custom"

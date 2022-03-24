@@ -8,7 +8,7 @@
         id="customSMSForm"
       >
         <div class="modal-header py-2">
-          <h6 class="modal-title py-2">Send Mobile Notification</h6>
+          <h6 class="modal-title py-2">Send Message</h6>
           <a
             aria-label="Close"
             class="close py-1"
@@ -32,7 +32,7 @@
                   type="text"
                 />
               </div>
-              <div class="form-group">
+              <div class="form-group d-none">
                 <label>Customer ID</label>
                 <input
                   class="form-control"

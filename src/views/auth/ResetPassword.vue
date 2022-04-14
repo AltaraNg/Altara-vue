@@ -45,7 +45,9 @@
 </template>
 <script>
     import Vue from 'vue';
+    import Auth from '../../utilities/auth';
     import {put} from '../../utilities/api';
+    import Flash from '../../utilities/flash';
     import VueSweetalert2 from 'vue-sweetalert2';
 
     Vue.use(VueSweetalert2);

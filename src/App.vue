@@ -168,9 +168,7 @@
 		},
 
 		async mounted() {
-			if(this.authState.api_token !== null){				
-				await this.$prepareUncontacted();
-			}
+			await this.$prepareUncontacted();
 			axios.interceptors.request.use(
 				(config) => {
 					this.debouncer();

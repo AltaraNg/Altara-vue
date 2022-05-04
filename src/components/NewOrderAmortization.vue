@@ -4,7 +4,12 @@
       <h6 class="modal-title py-1">
         Repayment Plan/Summary - {{ customer.employment_status | capitalize }}
       </h6>
-      <a aria-label="Close" class="close py-1" data-dismiss="modal" @click="$emit('close')">
+      <a
+        aria-label="Close"
+        class="close py-1"
+        data-dismiss="modal"
+        @click="$emit('close')"
+      >
         <span aria-hidden="true" class="modal-close text-danger">
           <i class="fas fa-times"></i>
         </span>
@@ -21,12 +26,12 @@
               <td>Product</td>
               <td>Owner</td>
               <td>Serial No</td>
-               <th>Business Type</th>
+              <th>Business Type</th>
               <th>Downpayment</th>
               <th>Collection Channel</th>
               <th>Branch</th>
+              <th>Financed By</th>
               <th>Status</th>
-
             </tr>
             <tr>
               <td class="font-weight-bold">
@@ -36,10 +41,13 @@
               <th>{{ order.product.name }}</th>
               <th>{{ order.owner }}</th>
               <th>{{ order.serial_number }}</th>
-              <th>{{ order.business_type}}</th>
-              <th class="text-capitalize">{{ order.down_payment_rate }} percent</th>
+              <th>{{ order.business_type }}</th>
+              <th class="text-capitalize">
+                {{ order.down_payment_rate }} percent
+              </th>
               <th>{{ order.payment_gateway }}</th>
               <td class="font-weight-bold">{{ order.branch }}</td>
+               <td class="font-weight-bold">{{ order.financed_by }}</td>
               <td class="font-weight-bold td-back">ok</td>
               <!-- <td
                         :class="getOrderStatusClass(getOrderStatus(order))"
@@ -326,15 +334,14 @@ export default {
     },
 
     updateAmmo(armo, index) {
-      if(this.canEditAmmoPayment && this.standAlone === false){
-         this.showModal = true;
-      this.ammo_item = armo;
-      this.ammoIndex = index;
+      if (this.canEditAmmoPayment && this.standAlone === false) {
+        this.showModal = true;
+        this.ammo_item = armo;
+        this.ammoIndex = index;
 
-      return $(`#viewEdit`).modal("toggle");
-
+        return $(`#viewEdit`).modal("toggle");
       }
-         },
+    },
     closeModal() {
       this.showModal = false;
       // $(`#viewEdit`).modal("toggle");
@@ -342,7 +349,7 @@ export default {
     save() {
       this.$LIPS(true);
       const updateData = {
-        user_id: localStorage.getItem('user_id'),
+        user_id: localStorage.getItem("user_id"),
         actual_amount: this.ammo_item.actual_amount,
         actual_payment_date: this.ammo_item.actual_payment_date,
         expected_payment_date: this.ammo_item.expected_payment_date,
@@ -396,22 +403,17 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-
-      "auth",
-      "getAuthUserDetails",
-    ]),
+    ...mapGetters(["auth", "getAuthUserDetails"]),
 
     canEditAmmoPayment() {
       if (this.auth("FSLLead") || this.auth("DVALead")) return true;
-
     },
-  }
+  },
 };
 </script>
 <style scoped>
 .amor-table {
-  width:  70vw;
+  width: 70vw;
   overflow-x: auto;
 }
 .green {

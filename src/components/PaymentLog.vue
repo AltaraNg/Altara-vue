@@ -97,7 +97,33 @@
                   </option>
                 </select>
               </div>
-
+              <div class="col form-group">
+                <label for="financed_by" class="form-control-label"
+                  >Financed By</label
+                >
+                <select
+                  class="custom-select w-100"
+                  v-model="financed_by"
+                  v-validate="'required'"
+                >
+                  <option
+                    :value="financier"
+                    :key="key"
+                    v-for="(financier, key) in financiers"
+                  >
+                    {{ financier }}
+                  </option>
+                </select>
+              </div>
+              <div class="col form-group" v-if="financed_by == 'bank54'">
+                <label for="bvn" class="form-control-label">BVN</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="salesLogForm.bvn"
+                  v-validate="'required'"
+                />
+              </div>
               <div class="col form-group">
                 <label for="amount" class="form-control-label">Owner</label>
                 <select
@@ -269,6 +295,7 @@
                   </option>
                 </select>
               </div>
+
               <div
                 class="col form-group bor"
                 v-if="isAltaraPay && salesLogForm.payment_gateway_id != 2"
@@ -376,6 +403,7 @@
                     <td>Product Price</td>
                     <td>First Payment</td>
                     <td>Repayment</td>
+                     <td>Financed By</td>
                     <!-- <th>Branch</th> -->
                   </tr>
                   <tr>
@@ -396,6 +424,7 @@
                         />
                       </div>
                     </td>
+                    <td>{{financed_by}}</td>
                     <!-- <td class="font-weight-bold">Ikoyi</td> -->
                   </tr>
                 </tbody>
@@ -593,6 +622,8 @@ export default {
       address_visited: ["Yes", "No"],
       credit_report_status: ["Bad", "Fair", "No", "Good"],
       credit_point_status: ["Bad", "Average", "Good"],
+      financiers: ["altara", "bank54"],
+      financed_by: "altara",
     };
   },
   async beforeMount() {
@@ -717,6 +748,10 @@ export default {
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
       };
+      if (this.financed_by == "bank54") {
+        data.bvn = this.salesLogForm.bvn;
+      }
+      data.financed_by = this.financed_by;
       this.salesLogForm.payment_gateway_id
         ? (data.payment_gateway_id = this.salesLogForm.payment_gateway_id)
         : "";
@@ -788,6 +823,11 @@ export default {
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
       };
+
+      if (this.financed_by == "bank54") {
+        data.bvn = this.salesLogForm.bvn;
+      }
+      data.financed_by = this.financed_by;
 
       this.salesLogForm.serial_number !== null
         ? (data.serial_number = this.salesLogForm.serial_number)

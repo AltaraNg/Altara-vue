@@ -8,6 +8,20 @@
               <h2>{{ compHeader }}</h2>
             </div>
             <div class="row">
+              <div class="col d-flex align-items-center" v-if="isAltaraPay && flag" >
+                <div class="switch float-left mr-3">
+                  <input
+                    type="checkbox"
+                    id="switch"
+                    class="switch_input"
+                    v-model="isBank54"
+                  />
+
+                  <label for="switch" class="switch_label">KKK</label>
+                  <br />
+                </div>
+                <div>Financed by {{ isBank54 ? "Bank 54" : "Altara" }}</div>
+              </div>
               <div class="col">
                 <button
                   class="btn btn-md float-right"
@@ -97,25 +111,7 @@
                   </option>
                 </select>
               </div>
-              <div class="col form-group">
-                <label for="financed_by" class="form-control-label"
-                  >Financed By</label
-                >
-                <select
-                  class="custom-select w-100"
-                  v-model="financed_by"
-                  v-validate="'required'"
-                >
-                  <option
-                    :value="financier"
-                    :key="key"
-                    v-for="(financier, key) in financiers"
-                  >
-                    {{ financier }}
-                  </option>
-                </select>
-              </div>
-              <div class="col form-group" v-if="financed_by == 'bank54'">
+              <div class="col form-group" v-if="isBank54">
                 <label for="bvn" class="form-control-label">BVN</label>
                 <input
                   type="text"
@@ -403,7 +399,7 @@
                     <td>Product Price</td>
                     <td>First Payment</td>
                     <td>Repayment</td>
-                     <td>Financed By</td>
+                    <td>Financed By</td>
                     <!-- <th>Branch</th> -->
                   </tr>
                   <tr>
@@ -424,7 +420,7 @@
                         />
                       </div>
                     </td>
-                    <td>{{financed_by}}</td>
+                    <td>{{ financed_by }}</td>
                     <!-- <td class="font-weight-bold">Ikoyi</td> -->
                   </tr>
                 </tbody>
@@ -623,10 +619,13 @@ export default {
       credit_report_status: ["Bad", "Fair", "No", "Good"],
       credit_point_status: ["Bad", "Average", "Good"],
       financiers: ["altara", "bank54"],
+      isBank54: false,
       financed_by: "altara",
+      flag: null
     };
   },
   async beforeMount() {
+    this.canLogBank54Payment();
     this.checkIfDiscountElig();
     await this.getRepaymentDuration();
     await this.getSalesCategory();
@@ -748,7 +747,8 @@ export default {
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
       };
-      if (this.financed_by == "bank54") {
+      if (this.isBank54) {
+        this.financed_by = "bank54";
         data.bvn = this.salesLogForm.bvn;
       }
       data.financed_by = this.financed_by;
@@ -824,7 +824,8 @@ export default {
         owner_id: this.salesLogForm.owner_id,
       };
 
-      if (this.financed_by == "bank54") {
+       if (this.isBank54) {
+        this.financed_by = "bank54";
         data.bvn = this.salesLogForm.bvn;
       }
       data.financed_by = this.financed_by;
@@ -1100,6 +1101,7 @@ export default {
     },
     toggleProductType() {
       this.transfer = false;
+      this.isBank54 = false;
       this.getBusinessTypes();
       this.isAltaraPay = !this.isAltaraPay;
       this.isAltaraPay ? "" : (this.card_expiry = null);
@@ -1186,6 +1188,10 @@ export default {
           Flash.setError("Error: " + err.message);
         });
     },
+    canLogBank54Payment: function(){
+				this.flag = localStorage.getItem('flag')
+				return this.flag === 'beta'
+			},
   },
 };
 </script>

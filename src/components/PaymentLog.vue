@@ -1100,7 +1100,6 @@ export default {
       this.serial === true ? (this.serial = false) : (this.serial = true);
     },
     toggleProductType() {
-      console.log(this.isBank54);
       this.transfer = false;
       this.isBank54 = false;
       this.getBusinessTypes();

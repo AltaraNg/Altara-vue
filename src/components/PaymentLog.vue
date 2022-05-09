@@ -8,7 +8,6 @@
               <h2>{{ compHeader }}</h2>
             </div>
             <div class="row">
-<<<<<<< HEAD
               <div
                 class="col d-flex align-items-center"
                 v-if="isAltaraPay && flag"
@@ -20,21 +19,6 @@
                   :defaultState="isBank54"
                   :label="'Financed by Bank54'"
                 />
-=======
-              <div class="col d-flex align-items-center" v-if="isAltaraPay && flag" >
-                <div class="switch float-left mr-3">
-                  <input
-                    type="checkbox"
-                    id="switch"
-                    class="switch_input"
-                    v-model="isBank54"
-                  />
-
-                  <label for="switch" class="switch_label">KKK</label>
-                  <br />
-                </div>
-                <div>Financed by {{ isBank54 ? "Bank 54" : "Altara" }}</div>
->>>>>>> origin/staging
               </div>
               <div class="col">
                 <button

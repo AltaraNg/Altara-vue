@@ -1192,7 +1192,6 @@ export default {
           Flash.setError("Error: " + err.message);
         });
     },
-<<<<<<< HEAD
     canLogBank54Payment: function () {
       this.flag = localStorage.getItem("flag");
       return this.flag === "beta";
@@ -1206,12 +1205,6 @@ export default {
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value);
     },
-=======
-    canLogBank54Payment: function(){
-				this.flag = localStorage.getItem('flag')
-				return this.flag === 'beta'
-			},
->>>>>>> origin/staging
   },
 };
 </script>

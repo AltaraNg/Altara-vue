@@ -540,7 +540,6 @@ export default {
         }
         const fetchPaymentList = await get(this.url + queryParam(param));
         this.prepareList(fetchPaymentList.data);
-        console.log(param);
 
         
 

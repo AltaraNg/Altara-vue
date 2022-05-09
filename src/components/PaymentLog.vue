@@ -8,6 +8,7 @@
               <h2>{{ compHeader }}</h2>
             </div>
             <div class="row">
+<<<<<<< HEAD
               <div
                 class="col d-flex align-items-center"
                 v-if="isAltaraPay && flag"
@@ -19,6 +20,21 @@
                   :defaultState="isBank54"
                   :label="'Financed by Bank54'"
                 />
+=======
+              <div class="col d-flex align-items-center" v-if="isAltaraPay && flag" >
+                <div class="switch float-left mr-3">
+                  <input
+                    type="checkbox"
+                    id="switch"
+                    class="switch_input"
+                    v-model="isBank54"
+                  />
+
+                  <label for="switch" class="switch_label">KKK</label>
+                  <br />
+                </div>
+                <div>Financed by {{ isBank54 ? "Bank 54" : "Altara" }}</div>
+>>>>>>> origin/staging
               </div>
               <div class="col">
                 <button
@@ -625,7 +641,7 @@ export default {
       financiers: ["altara", "bank54"],
       isBank54: false,
       financed_by: "altara",
-      flag: null,
+      flag: null
     };
   },
   async beforeMount() {
@@ -828,7 +844,7 @@ export default {
         owner_id: this.salesLogForm.owner_id,
       };
 
-      if (this.isBank54) {
+       if (this.isBank54) {
         this.financed_by = "bank54";
         data.bvn = this.salesLogForm.bvn;
       }
@@ -1192,6 +1208,7 @@ export default {
           Flash.setError("Error: " + err.message);
         });
     },
+<<<<<<< HEAD
     canLogBank54Payment: function () {
       this.flag = localStorage.getItem("flag");
       return this.flag === "beta";
@@ -1205,6 +1222,12 @@ export default {
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value);
     },
+=======
+    canLogBank54Payment: function(){
+				this.flag = localStorage.getItem('flag')
+				return this.flag === 'beta'
+			},
+>>>>>>> origin/staging
   },
 };
 </script>

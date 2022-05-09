@@ -288,6 +288,7 @@ export default {
 
   methods: {
     setCustomer(customer) {
+      console.log(customer)
       Vue.set(this.$data, "customer", customer);
       this.show = true;
     },

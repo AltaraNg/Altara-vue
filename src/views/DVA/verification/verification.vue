@@ -33,7 +33,7 @@
                     </form>
                 </div>
             </div>-->
-
+    
             <transition name="fade">
                 <div v-if="customer">
                     <customer-profile :view-customer="customer"/>
@@ -65,8 +65,8 @@
                                     {{key(type) ? 'Verified' : 'Not Verified'}}
                                     <small v-if="! key(type)" style="font-size: 9px">(Click here to update status!)</small>
                                     <span class="float-right" style="font-size: 10px" v-else>
-                                            by - {{type == 'passport' || type == 'id_card' || type == 'guarantor_id' || type == 'proof_of_income' ?
-                                        customer['document'].staff_name : customer[type].staff_name | capitalize}}
+                                            by - {{
+                                        customer['document'].staff_name | capitalize}}
                                     </span>
                                 </div>
                             </div>
@@ -628,6 +628,7 @@
                 * is used as the customer update form for both dsa and dva portal.*/
                 this.user = data.hasOwnProperty('user') ? data.user : null;
                 Vue.set(this.$data, 'customer', data.customer);
+                console.log('I got here',this.customer);
                 this.$emit('update', data.customer);
                 EventBus.$emit('customer', data.customer);
                 if (data.customer) {
@@ -743,6 +744,7 @@
         },
 
         mounted() {
+            console.log('I got here')
             $(document).on("hidden.bs.modal", '.modal', () => {
                 this.verification = JSON.parse(JSON.stringify(this.customer.verification));
                 /*this.verification holds a copy of the this.customer.verification. this.verification is what is used to style

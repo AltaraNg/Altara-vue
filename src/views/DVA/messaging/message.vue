@@ -131,7 +131,6 @@ export default {
                             r.status === 200;
                             const success = [1,3];
                             const data = r.data.messages;
-                            console.log('dataMessages',data);
                             this.dataMessages=data;
                              this.done();
                         });

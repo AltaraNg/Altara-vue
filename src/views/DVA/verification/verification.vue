@@ -33,7 +33,7 @@
                     </form>
                 </div>
             </div>-->
-
+    
             <transition name="fade">
                 <div v-if="customer">
                     <customer-profile :view-customer="customer"/>
@@ -65,8 +65,8 @@
                                     {{key(type) ? 'Verified' : 'Not Verified'}}
                                     <small v-if="! key(type)" style="font-size: 9px">(Click here to update status!)</small>
                                     <span class="float-right" style="font-size: 10px" v-else>
-                                            by - {{type == 'passport' || type == 'id_card' || type == 'guarantor_id' || type == 'proof_of_income' ?
-                                        customer['document'].staff_name : customer[type].staff_name | capitalize}}
+                                            by - {{
+                                        customer['document'].staff_name | capitalize}}
                                     </span>
                                 </div>
                             </div>

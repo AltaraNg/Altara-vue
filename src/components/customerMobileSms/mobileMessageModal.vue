@@ -122,7 +122,6 @@ export default {
       this.toggleModal();
     },
     toggleModal() {
-      console.log("jjdjd");
       $("#mobileMessageModal").modal("toggle");
     },
     async sendNotification() {
@@ -143,7 +142,6 @@ export default {
                   "Error Sending customer mobile notification!"
                 )
               );
-              console.log(data);
             if (data.status =='success') {
              this.done(data.message);
             }

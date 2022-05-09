@@ -173,7 +173,6 @@
 					}
 					this.closeModal();
 				} catch (e) {
-					console.log(e);
 				} finally {
 					this.$LIPS(false);
 					this.$prepareUncontacted();

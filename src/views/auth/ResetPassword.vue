@@ -107,7 +107,6 @@
                     });
                 })
                 .catch(({response: {data}}) => {
-                    console.log('err',data);
                     this.error = data.errors ? data.errors : data;
                     this.$swal({
                         icon: 'error',

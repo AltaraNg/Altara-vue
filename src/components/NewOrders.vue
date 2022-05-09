@@ -457,7 +457,6 @@
 				};
 				post('/api/new-order-renewal', data)
 					.then((res) => {
-						console.log(res);
 						if (res.data.status === 'success') {
 							this.$swal({
 								icon: 'success',
@@ -469,7 +468,6 @@
 						order.renewal_date = '';
 					})
 					.catch((err) => {
-						console.log(err);
 					})
 					.finally(() => {
 						this.$LIPS(false);

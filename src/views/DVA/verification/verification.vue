@@ -628,7 +628,6 @@
                 * is used as the customer update form for both dsa and dva portal.*/
                 this.user = data.hasOwnProperty('user') ? data.user : null;
                 Vue.set(this.$data, 'customer', data.customer);
-                console.log('I got here',this.customer);
                 this.$emit('update', data.customer);
                 EventBus.$emit('customer', data.customer);
                 if (data.customer) {
@@ -744,7 +743,6 @@
         },
 
         mounted() {
-            console.log('I got here')
             $(document).on("hidden.bs.modal", '.modal', () => {
                 this.verification = JSON.parse(JSON.stringify(this.customer.verification));
                 /*this.verification holds a copy of the this.customer.verification. this.verification is what is used to style

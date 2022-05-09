@@ -8,19 +8,17 @@
               <h2>{{ compHeader }}</h2>
             </div>
             <div class="row">
-              <div class="col d-flex align-items-center" v-if="isAltaraPay && flag" >
-                <div class="switch float-left mr-3">
-                  <input
-                    type="checkbox"
-                    id="switch"
-                    class="switch_input"
-                    v-model="isBank54"
-                  />
-
-                  <label for="switch" class="switch_label">KKK</label>
-                  <br />
-                </div>
-                <div>Financed by {{ isBank54 ? "Bank 54" : "Altara" }}</div>
+              <div
+                class="col d-flex align-items-center"
+                v-if="isAltaraPay && flag"
+              >
+                <toggle-button
+                  v-on:valueChangedEvent="triggerToggleEvent"
+                  :switchName="'Bank54'"
+                  :key="Math.random()"
+                  :defaultState="isBank54"
+                  :label="'Financed by Bank54'"
+                />
               </div>
               <div class="col">
                 <button
@@ -456,16 +454,15 @@
                   : "Push Button To Pay With Credit Card"
               }}
             </p>
-            <div class="switch">
-              <input
-                type="checkbox"
-                id="switch"
-                class="switch_input"
-                v-model="transfer"
-              />
-              <label for="switch" class="switch_label"></label>
-              <br />
-            </div>
+
+            <toggle-button
+              v-on:valueChangedEvent="triggerToggleEvent"
+              :key="Math.random()"
+              :switchName="'Transfer'"
+              :defaultState="transfer"
+              :label="'Transfer'"
+            />
+
             <button
               class="btn bg-default"
               @click="logSale()"
@@ -527,10 +524,17 @@ import discount from "./discount.vue";
 import paystack from "vue-paystack";
 import moment from "moment";
 import roles from "../utilities/roles";
+import ToggleButton from "./ToggleButton.vue";
 
 export default {
   props: { customerId: null, customer: null },
-  components: { AutoComplete, discount, paystack, VerificationCollectionData },
+  components: {
+    AutoComplete,
+    discount,
+    paystack,
+    VerificationCollectionData,
+    ToggleButton,
+  },
   data() {
     return {
       productOrder: false,
@@ -621,7 +625,7 @@ export default {
       financiers: ["altara", "bank54"],
       isBank54: false,
       financed_by: "altara",
-      flag: null
+      flag: null,
     };
   },
   async beforeMount() {
@@ -824,7 +828,7 @@ export default {
         owner_id: this.salesLogForm.owner_id,
       };
 
-       if (this.isBank54) {
+      if (this.isBank54) {
         this.financed_by = "bank54";
         data.bvn = this.salesLogForm.bvn;
       }
@@ -1188,10 +1192,19 @@ export default {
           Flash.setError("Error: " + err.message);
         });
     },
-    canLogBank54Payment: function(){
-				this.flag = localStorage.getItem('flag')
-				return this.flag === 'beta'
-			},
+    canLogBank54Payment: function () {
+      this.flag = localStorage.getItem("flag");
+      return this.flag === "beta";
+    },
+    triggerToggleEventBank54(value) {
+      this.isBank54 = value;
+    },
+    triggerToggleEventTransfer(value) {
+      this.transfer = value;
+    },
+    triggerToggleEvent(value, switchName) {
+      this[`triggerToggleEvent${switchName}`](value);
+    },
   },
 };
 </script>
@@ -1261,51 +1274,5 @@ export default {
   display: block;
   float: right;
   text-decoration: underline;
-}
-.switch {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.switch input[type="checkbox"] {
-  height: 0;
-  width: 0;
-  visibility: hidden;
-}
-
-.switch label {
-  cursor: pointer;
-  text-indent: -9999px;
-  width: 50px;
-  height: 25px;
-  background: grey;
-  display: block;
-  border-radius: 10px;
-  position: relative;
-}
-
-.switch label:after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 20px;
-  height: 20px;
-  background: #fff;
-  border-radius: 10px;
-  transition: 0.3s;
-}
-
-.switch input:checked + label {
-  background: green;
-}
-
-.switch input:checked + label:after {
-  left: calc(100% - 5px);
-  transform: translateX(-80%);
-}
-
-.switch label:active:after {
-  width: 60px;
 }
 </style>

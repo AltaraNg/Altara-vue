@@ -15,7 +15,7 @@
                 <toggle-button
                   v-on:valueChangedEvent="triggerToggleEvent"
                   :switchName="'Bank54'"
-                  :key="Math.random()"
+                  :key="'Bank54'"
                   :defaultState="isBank54"
                   :label="'Financed by Bank54'"
                 />
@@ -457,7 +457,7 @@
 
             <toggle-button
               v-on:valueChangedEvent="triggerToggleEvent"
-              :key="Math.random()"
+              :key="'Transfer'"
               :switchName="'Transfer'"
               :defaultState="transfer"
               :label="'Transfer'"

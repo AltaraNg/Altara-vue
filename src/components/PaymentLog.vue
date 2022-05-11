@@ -454,14 +454,14 @@
                   : "Push Button To Pay With Credit Card"
               }}
             </p>
-
-            <toggle-button
-              v-on:valueChangedEvent="triggerToggleEvent"
-              :key="'Transfer'"
-              :switchName="'Transfer'"
-              :defaultState="transfer"
-              :label="'Transfer'"
-            />
+            <div class="col d-flex justify-content-center">
+              <toggle-button
+                v-on:valueChangedEvent="triggerToggleEvent"
+                :key="'Transfer'"
+                :switchName="'Transfer'"
+                :defaultState="transfer"
+              />
+            </div>
 
             <button
               class="btn bg-default"
@@ -625,7 +625,7 @@ export default {
       financiers: ["altara", "bank54"],
       isBank54: false,
       financed_by: "altara",
-      flag: null
+      flag: null,
     };
   },
   async beforeMount() {
@@ -828,7 +828,7 @@ export default {
         owner_id: this.salesLogForm.owner_id,
       };
 
-       if (this.isBank54) {
+      if (this.isBank54) {
         this.financed_by = "bank54";
         data.bvn = this.salesLogForm.bvn;
       }

@@ -1,5 +1,4 @@
 <template>
-  <div class="col">
     <div class="toggle_container">
       <label :for="'toggle_button' + switchName" class="toggle__button mr-3">
         <input
@@ -10,9 +9,8 @@
         />
         <span class="toggle__switch round"></span>
       </label>
-      <span>{{ label ? label : "click" }}</span>
+      <span>{{ label ? label : "" }}</span>
     </div>
-  </div>
 </template>
 
 <script>

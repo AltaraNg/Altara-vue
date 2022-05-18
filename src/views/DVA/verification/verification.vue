@@ -646,6 +646,8 @@
                         ${this.customer.pgua_area},
                         ${this.customer.personal_guarantor_city},
                         ${this.customer.personal_guarantor_state}`;
+                        this.form.guarantor_id = data.customer.document.guarantor_id_url;
+                        this.form.proof_of_income = data.customer.document.proof_of_income_url;
                     this.veriData.forEach(e => {
                         //e is the current array element during the foreach call;
                         this[`${e}Btns`] = !(!!data.customer[e]);

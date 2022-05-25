@@ -47,25 +47,19 @@
 							<td>{{ item.order_type }}</td>
 							<td>{{ item.status }}</td>
 							<td>
-								<select
-									v-if="
+								<div v-if="
 										item.status === 'accepted' || item.status === 'declined'
-									"
-									class="custom-select w-50"
-								>
-									<option value="" selected>--select--</option>
-									<option value="">View</option>
-								</select>
+									">N/A</div>
 								<select
-									class="custom-select w-50"
+									class="custom-select w-50 pointer"
 									v-else
 									@change="showModal(item.newStat, item)"
 									v-model="item.newStat"
+
 								>
 									<option value="" selected>--select--</option>
 									<option value="decline">Decline</option>
 									<option value="accept">Approve</option>
-									
 								</select>
 							</td>
 						</tr>
@@ -197,28 +191,37 @@
 					.finally(() => this.$LIPS(false));
 			},
 			showModal(text, req) {
-                console.log(req);
+				console.log(req);
 				this.$swal({
 					title: `${text.toUpperCase()} REQUEST`,
-					text: "Leave a comment",
-					input: 'text',
+					text: 'Leave a reason',
+					input: 'textarea',
 					inputValue: '',
-					inputPlaceholder: 'Comments',
+					inputPlaceholder: 'Reason',
 					showCancelButton: true,
 					confirmButtonColor: '#074A74',
 					cancelButtonColor: '#d33',
 					confirmButtonText: `Yes, ${text} it!`,
-					
+					width: '50%',
 				}).then((result) => {
-					console.log(result)
-					let comment = result.value;
-					let url = `api/order-requests/${req.id}/${text}`;
-					patch(url, {reason: comment}).then((res) => {
-						this.$swal('Success', `${text}ed successfully`);
-						this.fetchOrderRequests();
-
-					})
-
+					if (!result.isDismissed) {
+						let comment = result.value;
+						let url = `api/order-requests/${req.id}/${text}`;
+						patch(url, { reason: comment }).then((res) => {
+							this.$swal({
+								title: "Success",
+								icon: 'success',
+								text: 'Action was successful'
+							});
+							this.fetchOrderRequests();
+						}).catch(err => {
+							this.$swal({
+								title: "Fail",
+								icon: 'error',
+								text: err.response.data
+							});
+						});
+					}
 				});
 			},
 		},

@@ -47,6 +47,7 @@
 	import 'vue2-datepicker/index.css';
 
 	export default {
+
 		data() {
 			return {
 				fromDate: '',
@@ -66,6 +67,17 @@
 		},
 		components: {
 			DatePicker,
+		},
+		mounted(){
+			if(this.$route.query){
+				let obj = this.$route.query;
+				obj.fromDate ? this.fromDate = obj.fromDate : '' ;
+				obj.toDate ? this.toDate = obj.toDate : '';
+				obj.status ? this.status = obj.status : '';
+				obj.phoneNumber ? this.phoneNumber = obj.phoneNumber : '';
+				obj.orderType ? this.orderType = obj.orderType : '';
+				obj.customerName ? this.customerName = obj.customerName : '';
+			}
 		},
 		methods: {
 			searchAction() {

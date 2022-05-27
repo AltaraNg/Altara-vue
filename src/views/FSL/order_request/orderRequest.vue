@@ -47,15 +47,18 @@
 							<td>{{ item.order_type }}</td>
 							<td>{{ item.status }}</td>
 							<td>
-								<div v-if="
+								<div
+									v-if="
 										item.status === 'accepted' || item.status === 'declined'
-									">N/A</div>
+									"
+								>
+									N/A
+								</div>
 								<select
 									class="custom-select w-50 pointer"
 									v-else
 									@change="showModal(item.newStat, item)"
 									v-model="item.newStat"
-
 								>
 									<option value="" selected>--select--</option>
 									<option value="decline">Decline</option>
@@ -143,8 +146,15 @@
 		methods: {
 			fetchOrderRequests() {
 				this.$LIPS(true);
+				let date = new Date();
+				let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+				let format = 'yyyy-MM-DD'
+				let param = {
+					fromDate: moment(firstDay).format(format)
+				}
 				try {
-					get(this.requestOrdersApi).then((response) => {
+					this.$router.push('order-request' + queryParam(param));
+					get(this.requestOrdersApi + queryParam(param)).then((response) => {
 						this.orderRequests = response.data.data.order_requests.data;
 						this.pageMeta = response.data.data.order_requests;
 						this.OId = this.pageMeta.from;
@@ -203,24 +213,30 @@
 					cancelButtonColor: '#d33',
 					confirmButtonText: `Yes, ${text} it!`,
 					width: '50%',
+					customClass: {
+						container: 'swal2-height',
+					},
+					heightAuto: false,
 				}).then((result) => {
 					if (!result.isDismissed) {
 						let comment = result.value;
 						let url = `api/order-requests/${req.id}/${text}`;
-						patch(url, { reason: comment }).then((res) => {
-							this.$swal({
-								title: "Success",
-								icon: 'success',
-								text: 'Action was successful'
+						patch(url, { reason: comment })
+							.then((res) => {
+								this.$swal({
+									title: 'Success',
+									icon: 'success',
+									text: 'Action was successful',
+								});
+								this.paginationAction();
+							})
+							.catch((err) => {
+								this.$swal({
+									title: 'Fail',
+									icon: 'error',
+									text: err.response.data,
+								});
 							});
-							this.fetchOrderRequests();
-						}).catch(err => {
-							this.$swal({
-								title: "Fail",
-								icon: 'error',
-								text: err.response.data
-							});
-						});
 					}
 				});
 			},
@@ -228,4 +244,8 @@
 	};
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+	.swal2-height {
+		height: 80vh;
+	}
+</style>

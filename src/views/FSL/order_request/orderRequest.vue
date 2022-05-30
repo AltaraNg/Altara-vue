@@ -8,7 +8,7 @@
 					<request-filter @searchParams="search"></request-filter>
 				</div>
 			</div>
-			<div class="">
+			<div class="" v-if="orderRequests.length > 0">
 				<table class="table table-striped w-100">
 					<thead class="attendance-head bg-default text-white ">
 						<tr class="w-100">
@@ -69,6 +69,12 @@
 					</tbody>
 				</table>
 			</div>
+			<div v-else class="mx-4">
+				<ZeroState :title="'No Request to display'" :message="'No requests'">
+					<template v-slot:image>
+						<img src="../../../assets/thumb-up.png" /> </template
+				></ZeroState>
+			</div>
 			<BasePagination
 				:pageParam="pageMeta"
 				@fetchData="paginationAction"
@@ -84,11 +90,12 @@
 	import BasePagination from '../../../components/Pagination/BasePagination.vue';
 	import RequestFilter from '../../../components/Filters/RequestFilter.vue';
 	import queryParam from '../../../utilities/queryParam';
+	import ZeroState from '../../../components/ZeroState.vue';
 
 	const init = () => `/api/order-requests`;
 
 	export default {
-		components: { BasePagination, RequestFilter },
+		components: { BasePagination, RequestFilter, ZeroState },
 		data() {
 			return {
 				tableHeaders: [
@@ -148,10 +155,10 @@
 				this.$LIPS(true);
 				let date = new Date();
 				let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-				let format = 'yyyy-MM-DD'
+				let format = 'yyyy-MM-DD';
 				let param = {
-					fromDate: moment(firstDay).format(format)
-				}
+					fromDate: moment(firstDay).format(format),
+				};
 				try {
 					this.$router.push('order-request' + queryParam(param));
 					get(this.requestOrdersApi + queryParam(param)).then((response) => {
@@ -168,7 +175,6 @@
 				this.$LIPS(true);
 
 				let query = this.$route.query;
-				console.log(query);
 				if (Object.keys(query).length !== 0) {
 					get(init() + queryParam(query))
 						.then((res) => {
@@ -185,11 +191,9 @@
 				return m.fromNow();
 			},
 			viewRequest(item) {
-				console.log(item);
 			},
 			search(payload) {
 				this.$LIPS(true);
-				console.log(payload);
 				this.$router.push('order-request' + queryParam(payload));
 				get(this.requestOrdersApi + queryParam(payload))
 					.then((res) => {
@@ -201,7 +205,6 @@
 					.finally(() => this.$LIPS(false));
 			},
 			showModal(text, req) {
-				console.log(req);
 				this.$swal({
 					title: `${text.toUpperCase()} REQUEST`,
 					text: 'Leave a reason',

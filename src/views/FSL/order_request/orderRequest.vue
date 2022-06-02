@@ -207,14 +207,20 @@
 			showModal(text, req) {
 				this.$swal({
 					title: `${text.toUpperCase()} REQUEST`,
-					text: 'Leave a reason',
+					// text: 'Leave a reason',
 					input: 'textarea',
 					inputValue: '',
+					inputLabel: 'Reason',
 					inputPlaceholder: 'Reason',
 					showCancelButton: true,
 					confirmButtonColor: '#074A74',
 					cancelButtonColor: '#d33',
 					confirmButtonText: `Yes, ${text} it!`,
+					inputValidator: (value) => {
+						if(!value){
+							return 'Reason field is required'
+						}
+					},
 					width: '50%',
 					customClass: {
 						container: 'swal2-height',

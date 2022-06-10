@@ -210,6 +210,9 @@
 					// text: 'Leave a reason',
 					input: 'textarea',
 					inputValue: '',
+					inputAttributes: {
+						maxlength: 200
+					},
 					inputLabel: 'Reason',
 					inputPlaceholder: 'Reason',
 					showCancelButton: true,

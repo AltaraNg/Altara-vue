@@ -33,7 +33,7 @@
                     </form>
                 </div>
             </div>-->
-
+    
             <transition name="fade">
                 <div v-if="customer">
                     <customer-profile :view-customer="customer"/>
@@ -65,8 +65,8 @@
                                     {{key(type) ? 'Verified' : 'Not Verified'}}
                                     <small v-if="! key(type)" style="font-size: 9px">(Click here to update status!)</small>
                                     <span class="float-right" style="font-size: 10px" v-else>
-                                            by - {{type == 'passport' || type == 'id_card' || type == 'guarantor_id' || type == 'proof_of_income' ?
-                                        customer['document'].staff_name : customer[type].staff_name | capitalize}}
+                                            by - {{
+                                        customer['document'].staff_name | capitalize}}
                                     </span>
                                 </div>
                             </div>
@@ -641,11 +641,13 @@
                         ${this.customer.work_guarantor_city},
                         ${this.customer.work_guarantor_state}`;
                     this.personal_guarantor_address =
-                        `${this.customer.pguaadd_houseno},
-                        ${this.customer.pguaadd_street},
-                        ${this.customer.pgua_area},
-                        ${this.customer.personal_guarantor_city},
-                        ${this.customer.personal_guarantor_state}`;
+                        `${this.customer?.pguaadd_houseno},
+                        ${this.customer?.pguaadd_street},
+                        ${this.customer?.pgua_area},
+                        ${this.customer?.personal_guarantor_city},
+                        ${this.customer?.personal_guarantor_state}`;
+                        this.form.guarantor_id = data?.customer?.document?.guarantor_id_url;
+                        this.form.proof_of_income = data?.customer?.document?.proof_of_income_url;
                     this.veriData.forEach(e => {
                         //e is the current array element during the foreach call;
                         this[`${e}Btns`] = !(!!data.customer[e]);

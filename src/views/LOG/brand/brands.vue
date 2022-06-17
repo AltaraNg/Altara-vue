@@ -273,10 +273,8 @@
             },
             getCategories(){
                 get('/api/category?isActive=true').then(res => {
-                    console.log(res.data.data);
                     Vue.set(this.$data, 'categories', res.data.data.data)
                 }).catch(err => {
-                    console.log(err)
                 })
             },
             toggleCat(){

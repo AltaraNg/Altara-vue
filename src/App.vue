@@ -132,6 +132,7 @@
 				<router-view></router-view>
 			</div>
 			<SMSModal v-if="showSMSModal" />
+			<mobileMessageModal v-if="showMobileMessageModal"/>
 			<ChangeCustomerManagerModal v-if="showCustomerManagerModal" />
 		</div>
 	</transition>
@@ -145,6 +146,7 @@
 	import SideNav from './components/SideNav.vue';
 	import { interceptors, post } from './utilities/api';
 	import SMSModal from './components/CustomSMSButton/SMSModal';
+	import mobileMessageModal from './components/customerMobileSms/mobileMessageModal.vue';
 	import ChangeCustomerManagerModal from './components/modals/ChangeCustomerManagerModal';
 	import _ from 'lodash';
 	import axios from 'axios';
@@ -155,6 +157,7 @@
 			Loader,
 			SMSModal,
 			ChangeCustomerManagerModal,
+			mobileMessageModal
 		},
 		data() {
 			return {
@@ -165,7 +168,9 @@
 		},
 
 		async mounted() {
-			await this.$prepareUncontacted();
+			if(this.authState.api_token !== null){
+				await this.$prepareUncontacted();
+			}
 			axios.interceptors.request.use(
 				(config) => {
 					this.debouncer();
@@ -211,6 +216,7 @@
 			...mapGetters('ModalAccess', [
 				'showCustomerManagerModal',
 				'showSMSModal',
+				'showMobileMessageModal'
 			]),
 			auth() {
 				return this.authState.api_token && this.authState.user_id;

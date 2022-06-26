@@ -45,9 +45,7 @@
 </template>
 <script>
     import Vue from 'vue';
-    import Auth from '../../utilities/auth';
     import {put} from '../../utilities/api';
-    import Flash from '../../utilities/flash';
     import VueSweetalert2 from 'vue-sweetalert2';
 
     Vue.use(VueSweetalert2);
@@ -109,7 +107,6 @@
                     });
                 })
                 .catch(({response: {data}}) => {
-                    console.log('err',data);
                     this.error = data.errors ? data.errors : data;
                     this.$swal({
                         icon: 'error',

@@ -87,6 +87,7 @@ const Admin = () => import('../views/Admin/Index.vue');
 const AdminHome = () => import('../views/Admin/HomePage.vue');
 const ReportingTool = () => import('../views/Admin/ReportingTool.vue');
 const ReminderReportingTool = () => import('../views/Admin/ReminderCollectionData.vue');
+const OrderRequest = () => import('../views/FSL/order_request/orderRequest.vue');
 
 
 
@@ -529,6 +530,10 @@ const router = new VueRouter({
           path: "customer/create",
           component: CustomerForm,
           meta: { mode: "register" },
+        },
+        {
+          path: "order-request",
+          component: OrderRequest,
         },
       ],
     },

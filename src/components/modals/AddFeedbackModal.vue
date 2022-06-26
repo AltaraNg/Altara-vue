@@ -126,7 +126,6 @@
 
 					
 				} catch (e) {
-					console.log(e);
 				} finally {
 					this.$LIPS(false);
 

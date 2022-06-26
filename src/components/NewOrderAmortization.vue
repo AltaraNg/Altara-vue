@@ -118,6 +118,30 @@
             </tbody>
           </table>
         </div>
+        <h5 class="mt-5 mb-0">
+          <div class="d-flex justify-content-between">
+            <div style="color: red;">Late Fee</div>
+          </div>
+        </h5>
+        <div class="amor-table">
+          <table class="table table-bordered">
+            <tbody class="text-center">
+              <tr class="table-separator">
+                <th>Penalty Date</th>
+                <td v-for="armo in amortizationData">
+                  {{ armo.expected_payment_date }}
+                </td>
+              </tr>
+              <tr>
+                <th>Late Fee Amount</th>
+                <td
+                  v-for="(armor, index) in amortizationData"
+                  v-html="index + 1"
+                ></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <h5 class="mt-5 mb-0">Payment Summary</h5>
         <table class="table table-bordered">

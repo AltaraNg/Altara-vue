@@ -118,30 +118,28 @@
             </tbody>
           </table>
         </div>
-        <h5 class="mt-5 mb-0">
-          <div class="d-flex justify-content-between">
-            <div style="color: red;">Late Fee</div>
-          </div>
-        </h5>
+        <div v-if="lateFEES" v-for="latefee in lateFEES">
+          <h5 class="mt-5 mb-0 d-flex justify-content-between"  style="color: red;">
+            Late Fee
+          </h5>
         <div class="amor-table">
           <table class="table table-bordered">
-            <tbody class="text-center">
+            <tbody class="text-center" >
               <tr class="table-separator">
                 <th>Penalty Date</th>
-                <td v-for="armo in amortizationData">
-                  {{ armo.expected_payment_date }}
+                <td style="font-weight: 800;" >
+                  {{ new Date(latefee.date_created).toLocaleDateString() }}
                 </td>
               </tr>
               <tr>
                 <th>Late Fee Amount</th>
-                <td
-                  v-for="(armor, index) in amortizationData"
-                  v-html="index + 1"
-                ></td>
+                <td style="font-weight: 800;">₦{{latefee.amount}}</td>
               </tr>
             </tbody>
           </table>
         </div>
+        </div>
+       
         <h5 class="mt-5 mb-0">Payment Summary</h5>
         <table class="table table-bordered">
           <tbody class="text-center">
@@ -315,6 +313,7 @@ export default {
       ammoIndex: null,
       completed: null,
       ammo_item: null,
+      lateFEES : null,
       newOrderItem: {},
       showModal: false,
       canEditPayment: true,
@@ -348,6 +347,14 @@ export default {
     },
     addPaymentForm(data) {
       this.$emit("addPayment", data);
+    },
+    async getLateFee() {
+      try {
+        const fetchLateFee = await get( `api/late_fee?order=${this?.order?.id}`);
+        this.lateFEES = fetchLateFee.data.data.data;
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
     },
     deletePayment(index) {
       this.$emit("deletePayment", index);
@@ -410,6 +417,9 @@ export default {
       }
     },
   },
+  async mounted(){
+        await this.getLateFee();
+    },
   created() {
     this.calcDebt(this.order.amortization) === 0
       ? (this.completed = true)

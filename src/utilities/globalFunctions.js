@@ -258,7 +258,7 @@ Vue.prototype.$editAccess = function (user = '', customer = '') {
                 return true;
             } else {
                 /**else if either a dsa captain or just dsa both user branch and customer branch must be same*/
-                if (true) {
+                
                     /**if both branch(user and customer) match*/
                     if (store.state.DSACaptain.includes(user.role_id)) {
                         /**if user is a  captain grant access*/
@@ -270,7 +270,7 @@ Vue.prototype.$editAccess = function (user = '', customer = '') {
                             return true
                         } else /**else if its not the same person deny access*/return true;
                     }
-                } else /***if not same branch deny access*/ return true;
+               
             }
         } else if (store.getters.auth('DVAAccess')) {
             /**ref 0: if user is DVA*/

@@ -822,11 +822,18 @@
 								);
 						  })
 						: [];
-
 					this.show = true;
 				} else Flash.setError('Customer not found.', 5000);
 				this.$LIPS(false);
 			},
+		async getLateFee(order) {
+     			 try {
+        const fetchLateFee = await get( `api/late_fee?order=${order?.id}`);
+        order.lateFEES = fetchLateFee.data.data.data;
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
 			done() {
 				this.show = false;
 			},
@@ -834,7 +841,8 @@
 				this.show = false;
 				this.$LIPS(true);
 				get(`/api/customer/lookup/${id}`)
-					.then((res) => this.updateView(res.data))
+					.then((res) => {
+					this.updateView(res.data)})
 					.catch((e) => {
 						this.$LIPS(false);
 						Flash.setError('Error Fetching customer detail');
@@ -851,7 +859,8 @@
 				}
 			},
 
-			displayAmortization(order) {
+		async displayAmortization(order) {
+			await this.getLateFee(order)
 				if (order.status) {
 					this.newOrder = true;
 					this.order = order;

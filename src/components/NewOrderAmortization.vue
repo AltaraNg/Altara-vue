@@ -118,22 +118,22 @@
             </tbody>
           </table>
         </div>
-        <div v-if="lateFEES" v-for="latefee in lateFEES">
+        <div v-if="order.lateFEES.length >0">
           <h5 class="mt-5 mb-0 d-flex justify-content-between"  style="color: red;">
             Late Fee
           </h5>
         <div class="amor-table">
           <table class="table table-bordered">
-            <tbody class="text-center" >
+            <tbody clas s="text-center" >
               <tr class="table-separator">
                 <th>Penalty Date</th>
-                <td style="font-weight: 800;" >
+                <td style="font-weight: 800;" v-for="latefee in order.lateFEES" >
                   {{ new Date(latefee.date_created).toLocaleDateString() }}
                 </td>
               </tr>
               <tr>
                 <th>Late Fee Amount</th>
-                <td style="font-weight: 800;">₦{{latefee.amount}}</td>
+                <td style="font-weight: 800;" v-for="latefee in order.lateFEES">₦{{latefee.amount}}</td>
               </tr>
             </tbody>
           </table>
@@ -313,7 +313,6 @@ export default {
       ammoIndex: null,
       completed: null,
       ammo_item: null,
-      lateFEES : null,
       newOrderItem: {},
       showModal: false,
       canEditPayment: true,
@@ -348,14 +347,7 @@ export default {
     addPaymentForm(data) {
       this.$emit("addPayment", data);
     },
-    async getLateFee() {
-      try {
-        const fetchLateFee = await get( `api/late_fee?order=${this?.order?.id}`);
-        this.lateFEES = fetchLateFee.data.data.data;
-      } catch (err) {
-        this.$displayErrorMessage(err);
-      }
-    },
+
     deletePayment(index) {
       this.$emit("deletePayment", index);
     },
@@ -418,7 +410,6 @@ export default {
     },
   },
   async mounted(){
-        await this.getLateFee();
     },
   created() {
     this.calcDebt(this.order.amortization) === 0

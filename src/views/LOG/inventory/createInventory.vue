@@ -272,7 +272,6 @@
                     if (result) {
                         if (this.$network()) {
                             this.$LIPS(true);
-                            console.log(this.form);
                             put(this.store, this.form).then(data => {
                                 this.$swal({
                                     icon: 'success',
@@ -308,7 +307,6 @@
                             this.inventoryList.products.forEach(e => {
                                 post(this.store, e)
                                     .then(({data}) => {
-                                        console.log(data);
                                         status = data.status;
                                     }).catch(({response:r}) => {
                                     let {data, status} = r;
@@ -351,7 +349,6 @@
         },
          created() {
              this.$prepareBranches();
-             console.log(this.getAuthUserDetails);
          }
          ,
            }

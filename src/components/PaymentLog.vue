@@ -8,6 +8,18 @@
               <h2>{{ compHeader }}</h2>
             </div>
             <div class="row">
+              <div
+                class="col d-flex align-items-center"
+                v-if="isAltaraPay && flag"
+              >
+                <toggle-button
+                  v-on:valueChangedEvent="triggerToggleEvent"
+                  :switchName="'Bank54'"
+                  :key="'Bank54'"
+                  :defaultState="isBank54"
+                  :label="'Financed by Bank54'"
+                />
+              </div>
               <div class="col">
                 <button
                   class="btn btn-md float-right"
@@ -97,7 +109,15 @@
                   </option>
                 </select>
               </div>
-
+              <div class="col form-group" v-if="isBank54">
+                <label for="bvn" class="form-control-label">BVN</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="salesLogForm.bvn"
+                  v-validate="'required'"
+                />
+              </div>
               <div class="col form-group">
                 <label for="amount" class="form-control-label">Owner</label>
                 <select
@@ -269,6 +289,7 @@
                   </option>
                 </select>
               </div>
+
               <div
                 class="col form-group bor"
                 v-if="isAltaraPay && salesLogForm.payment_gateway_id != 2"
@@ -376,6 +397,7 @@
                     <td>Product Price</td>
                     <td>First Payment</td>
                     <td>Repayment</td>
+                    <td>Financed By</td>
                     <!-- <th>Branch</th> -->
                   </tr>
                   <tr>
@@ -396,6 +418,7 @@
                         />
                       </div>
                     </td>
+                    <td>{{ financed_by }}</td>
                     <!-- <td class="font-weight-bold">Ikoyi</td> -->
                   </tr>
                 </tbody>
@@ -431,16 +454,15 @@
                   : "Push Button To Pay With Credit Card"
               }}
             </p>
-            <div class="switch">
-              <input
-                type="checkbox"
-                id="switch"
-                class="switch_input"
-                v-model="transfer"
+            <div class="col d-flex justify-content-center">
+              <toggle-button
+                v-on:valueChangedEvent="triggerToggleEvent"
+                :key="'Transfer'"
+                :switchName="'Transfer'"
+                :defaultState="transfer"
               />
-              <label for="switch" class="switch_label"></label>
-              <br />
             </div>
+
             <button
               class="btn bg-default"
               @click="logSale()"
@@ -502,10 +524,17 @@ import discount from "./discount.vue";
 import paystack from "vue-paystack";
 import moment from "moment";
 import roles from "../utilities/roles";
+import ToggleButton from "./ToggleButton.vue";
 
 export default {
   props: { customerId: null, customer: null },
-  components: { AutoComplete, discount, paystack, VerificationCollectionData },
+  components: {
+    AutoComplete,
+    discount,
+    paystack,
+    VerificationCollectionData,
+    ToggleButton,
+  },
   data() {
     return {
       productOrder: false,
@@ -593,9 +622,14 @@ export default {
       address_visited: ["Yes", "No"],
       credit_report_status: ["Bad", "Fair", "No", "Good"],
       credit_point_status: ["Bad", "Average", "Good"],
+      financiers: ["altara", "bank54"],
+      isBank54: false,
+      financed_by: "altara",
+      flag: null,
     };
   },
   async beforeMount() {
+    this.canLogBank54Payment();
     this.checkIfDiscountElig();
     await this.getRepaymentDuration();
     await this.getSalesCategory();
@@ -717,6 +751,11 @@ export default {
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
       };
+      if (this.isBank54) {
+        this.financed_by = "bank54";
+        data.bvn = this.salesLogForm.bvn;
+      }
+      data.financed_by = this.financed_by;
       this.salesLogForm.payment_gateway_id
         ? (data.payment_gateway_id = this.salesLogForm.payment_gateway_id)
         : "";
@@ -788,6 +827,12 @@ export default {
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
       };
+
+      if (this.isBank54) {
+        this.financed_by = "bank54";
+        data.bvn = this.salesLogForm.bvn;
+      }
+      data.financed_by = this.financed_by;
 
       this.salesLogForm.serial_number !== null
         ? (data.serial_number = this.salesLogForm.serial_number)
@@ -1060,6 +1105,7 @@ export default {
     },
     toggleProductType() {
       this.transfer = false;
+      this.isBank54 = false;
       this.getBusinessTypes();
       this.isAltaraPay = !this.isAltaraPay;
       this.isAltaraPay ? "" : (this.card_expiry = null);
@@ -1146,6 +1192,19 @@ export default {
           Flash.setError("Error: " + err.message);
         });
     },
+    canLogBank54Payment: function () {
+      this.flag = localStorage.getItem("flag");
+      return this.flag === "beta";
+    },
+    triggerToggleEventBank54(value) {
+      this.isBank54 = value;
+    },
+    triggerToggleEventTransfer(value) {
+      this.transfer = value;
+    },
+    triggerToggleEvent(value, switchName) {
+      this[`triggerToggleEvent${switchName}`](value);
+    },
   },
 };
 </script>
@@ -1215,51 +1274,5 @@ export default {
   display: block;
   float: right;
   text-decoration: underline;
-}
-.switch {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.switch input[type="checkbox"] {
-  height: 0;
-  width: 0;
-  visibility: hidden;
-}
-
-.switch label {
-  cursor: pointer;
-  text-indent: -9999px;
-  width: 50px;
-  height: 25px;
-  background: grey;
-  display: block;
-  border-radius: 10px;
-  position: relative;
-}
-
-.switch label:after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 20px;
-  height: 20px;
-  background: #fff;
-  border-radius: 10px;
-  transition: 0.3s;
-}
-
-.switch input:checked + label {
-  background: green;
-}
-
-.switch input:checked + label:after {
-  left: calc(100% - 5px);
-  transform: translateX(-80%);
-}
-
-.switch label:active:after {
-  width: 60px;
 }
 </style>

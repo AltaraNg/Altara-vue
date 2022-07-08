@@ -21,6 +21,10 @@ Vue.filter('capitalize', s => {
 /**the argument s is the string to be converted to slug**/
 Vue.filter('slug', s => !s ? '' : s.replace(/ /g, '_').toLowerCase());
 
+Vue.filter('upper', s => {
+    return s.toUpperCase();
+})
+
 
 /**custom add Date prototype**/
 Date.prototype.addDays = function (days) {

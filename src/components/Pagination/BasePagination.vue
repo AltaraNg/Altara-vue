@@ -83,7 +83,7 @@
 				if (this.pageParam.next_page_url) {
 					this.pageParam.page = firstPage
 						? firstPage
-						: parseInt(this.pageParam.page) + 1;
+						: parseInt(this.pageParam.current_page) + 1;
 					this.$router.push({
 						path: this.$route.path,
 						query: {
@@ -98,7 +98,7 @@
 				if (this.pageParam.prev_page_url) {
 					this.pageParam.page = lastPage
 						? lastPage
-						: parseInt(this.pageParam.page) - 1;
+						: parseInt(this.pageParam.current_page) - 1;
 					this.$router.push({
 						path: this.$route.path,
 						query: {

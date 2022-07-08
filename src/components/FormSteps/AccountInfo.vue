@@ -346,29 +346,19 @@
               </div>
            <div class="form-group col-md-3 px-md-3 px-1 float-left" >
             <label>Customer Registration Channel</label>
-             <select class="custom-select w-100" v-model="formData.newCustomer.channel" 
-                  name="channel"
+             <select class="custom-select w-100" v-model="formData.newCustomer.registration_channel" 
+                  name="registration_channel"
                   placeholder="Enter channel.."
-                  type="channel"
-                  :class="memberHasError('newCustomer.channel') ? 'is-invalid' : ''"
-                  v-validate="'required|channel'">
+                  type="registration_channel"
+                  :class="memberHasError('newCustomer.registration_channel') ? 'is-invalid' : ''" >
+                  <option selected>Website</option>
                 <option :value="channel" v-for="channel in channels">{{channel}}
                 </option>
               </select>
-                <!-- <label>Customer Registration Channel</label>
-                <input
-                  class="form-control"
-                  name="email"
-                  placeholder="Enter Email.."
-                  type="email"
-                  v-model="formData.newCustomer.email"
-                  :class="memberHasError('newCustomer.email') ? 'is-invalid' : ''"
-                  v-validate="'required|email'"
-                /> -->
-                <div v-if="memberHasError('newCustomer.channel')" class="invalid-feedback">
+                <div v-if="memberHasError('newCustomer.registration_channel')" class="invalid-feedback">
                   <div
                     class="error"
-                    v-if="!$v.formData.newCustomer.channel.required"
+                    v-if="!$v.formData.newCustomer.registration_channel.required"
                   >Please provide your channel.</div>
                 </div> 
                 

@@ -301,8 +301,8 @@
                   }}
                 </small>
               </div>
-              <div class="spaceAfter"></div>
-              <div class="form-group col-md-4 px-md-3 px-1 float-left">
+              <div class="spaceAfter" style='flex-direction: row; justify-content: ;'></div>
+              <div class="form-group col-md-2 px-md-3 px-1 float-left">
                 <label class="w-100 float-left">Gender</label>
                 <div
                   class="radio pl-1 float-left"
@@ -344,9 +344,27 @@
                   
                 </div>
               </div>
-
-              <div class="form-group col-md-8 px-md-3 px-1 float-left" >
-                <label class="w-100 float-left pl-1">Highest Level of Education</label>
+           <div class="form-group col-md-3 px-md-3 px-1 float-left" >
+            <label>Customer Registration Channel</label>
+             <select class="custom-select w-100" v-model="formData.newCustomer.registration_channel" 
+                  name="registration_channel"
+                  placeholder="Enter channel.."
+                  type="registration_channel"
+                  :class="memberHasError('newCustomer.registration_channel') ? 'is-invalid' : ''" >
+                  <option selected>Website</option>
+                <option :value="channel" v-for="channel in channels">{{channel}}
+                </option>
+              </select>
+                <div v-if="memberHasError('newCustomer.registration_channel')" class="invalid-feedback">
+                  <div
+                    class="error"
+                    v-if="!$v.formData.newCustomer.registration_channel.required"
+                  >Please provide your channel.</div>
+                </div> 
+                
+              </div>
+              <div class="form-group col-md-7 px-md-3 px-1 float-left"  >
+                <label class="w-100 float-left pl-1 pr-5"  >Highest Level of Education</label>
                   <div
                   class="radio pl-1 float-left"
                 >
@@ -422,11 +440,16 @@ export default{
         },
         $v:{
 
+        },
+        channels:{
+          type:Array,
+          required:true
         }
     },
    data(){
      return{
-       cc_reg_id:""
+       cc_reg_id:"",
+       
      }
    },
    methods:{

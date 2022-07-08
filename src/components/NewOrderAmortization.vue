@@ -118,7 +118,28 @@
             </tbody>
           </table>
         </div>
-
+        <div v-if="order.lateFEES.length >0">
+          <h5 class="mt-5 mb-0 d-flex justify-content-between"  style="color: red;">
+            Late Fee
+          </h5>
+        <div class="amor-table">
+          <table class="table table-bordered">
+            <tbody clas s="text-center" >
+              <tr class="table-separator">
+                <th>Penalty Date</th>
+                <td style="font-weight: 800;" v-for="latefee in order.lateFEES" >
+                  {{ new Date(latefee.date_created).toLocaleDateString() }}
+                </td>
+              </tr>
+              <tr>
+                <th>Late Fee Amount</th>
+                <td style="font-weight: 800;" v-for="latefee in order.lateFEES">₦{{latefee.amount}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        </div>
+       
         <h5 class="mt-5 mb-0">Payment Summary</h5>
         <table class="table table-bordered">
           <tbody class="text-center">
@@ -326,6 +347,7 @@ export default {
     addPaymentForm(data) {
       this.$emit("addPayment", data);
     },
+
     deletePayment(index) {
       this.$emit("deletePayment", index);
     },
@@ -387,6 +409,8 @@ export default {
       }
     },
   },
+  async mounted(){
+    },
   created() {
     this.calcDebt(this.order.amortization) === 0
       ? (this.completed = true)

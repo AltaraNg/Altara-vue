@@ -1,467 +1,589 @@
 <template>
-  <div>
-    <div class="modal-header py-2">
-      <h6 class="modal-title py-1">
-        Repayment Plan/Summary - {{ customer.employment_status | capitalize }}
-      </h6>
-      <a
-        aria-label="Close"
-        class="close py-1"
-        data-dismiss="modal"
-        @click="$emit('close')"
-      >
-        <span aria-hidden="true" class="modal-close text-danger">
-          <i class="fas fa-times"></i>
-        </span>
-      </a>
-    </div>
-    <div class="modal-body">
-      <div class="table-responsive">
-        <h5 class="mt-3 mb-0">Order Information</h5>
-        <table class="table table-bordered">
-          <tbody>
-            <tr class="table-separator">
-              <td>Name</td>
-              <td>Order Id</td>
-              <td>Product</td>
-              <td>Owner</td>
-              <td>Serial No</td>
-              <th>Business Type</th>
-              <th>Downpayment</th>
-              <th>Collection Channel</th>
-              <th>Branch</th>
-              <th>Financed By</th>
-              <th>Status</th>
-            </tr>
-            <tr>
-              <td class="font-weight-bold">
-                {{ `${customer.first_name} ${customer.last_name}` }}
-              </td>
-              <th>{{ order.order_number }}</th>
-              <th>{{ order.product.name }}</th>
-              <th>{{ order.owner }}</th>
-              <th>{{ order.serial_number }}</th>
-              <th>{{ order.business_type }}</th>
-              <th class="text-capitalize">
-                {{ order.down_payment_rate }} percent
-              </th>
-              <th>{{ order.payment_gateway }}</th>
-              <td class="font-weight-bold">{{ order.branch }}</td>
-               <td class="font-weight-bold">{{ order.financed_by }}</td>
-              <td class="font-weight-bold td-back">ok</td>
-              <!-- <td
+	<div>
+		<div class="modal-header py-2">
+			<h6 class="modal-title py-1">
+				Repayment Plan/Summary - {{ customer.employment_status | capitalize }}
+			</h6>
+			<a
+				aria-label="Close"
+				class="close py-1"
+				data-dismiss="modal"
+				@click="$emit('close')"
+			>
+				<span aria-hidden="true" class="modal-close text-danger">
+					<i class="fas fa-times"></i>
+				</span>
+			</a>
+		</div>
+		<div class="modal-body">
+			<div class="table-responsive">
+				<h5 class="mt-3 mb-0">Order Information</h5>
+				<table class="table table-bordered">
+					<tbody>
+						<tr class="table-separator">
+							<td>Name</td>
+							<td>Order Id</td>
+							<td>Product</td>
+							<td>Owner</td>
+							<td>Serial No</td>
+							<th>Business Type</th>
+							<th>Downpayment</th>
+							<th>Collection Channel</th>
+							<th>Branch</th>
+							<th>Financed By</th>
+							<th>Status</th>
+						</tr>
+						<tr>
+							<td class="font-weight-bold">
+								{{ `${customer.first_name} ${customer.last_name}` }}
+							</td>
+							<th>{{ order.order_number }}</th>
+							<th>{{ order.product.name }}</th>
+							<th>{{ order.owner }}</th>
+							<th>{{ order.serial_number }}</th>
+							<th>{{ order.business_type }}</th>
+							<th class="text-capitalize">
+								{{ order.down_payment_rate }} percent
+							</th>
+							<th>{{ order.payment_gateway }}</th>
+							<td class="font-weight-bold">{{ order.branch }}</td>
+							<td class="font-weight-bold">{{ order.financed_by }}</td>
+							<td class="font-weight-bold td-back">ok</td>
+							<!-- <td
                         :class="getOrderStatusClass(getOrderStatus(order))"
                         class="font-weight-bold"
                       >{{getOrderStatus(order)}}</td> -->
-            </tr>
-          </tbody>
-        </table>
-        <h5 class="mt-5 mb-0">
-          <div class="d-flex justify-content-between">
-            <div>Amortization Schedule</div>
-          </div>
-        </h5>
-        <div class="amor-table">
-          <table class="table table-bordered">
-            <tbody class="text-center">
-              <tr>
-                <th>Repayment</th>
-                <td
-                  v-for="(armor, index) in amortizationData"
-                  v-html="index + 1"
-                ></td>
-              </tr>
-              <tr class="table-separator">
-                <th>Due Date</th>
-                <td v-for="armo in amortizationData">
-                  {{ armo.expected_payment_date }}
-                </td>
-              </tr>
-              <tr>
-                <th>Actual Pay Day</th>
-                <td v-for="armo in amortizationData">
-                  {{ armo.actual_payment_date }}
-                </td>
-              </tr>
-              <tr class="table-separator status-row">
-                <th>Status</th>
-                <td v-for="armo in amortizationData">
-                  <div v-if="armo.actual_payment_date" class="green">
-                    <i class="fa fa-check"></i>
-                  </div>
-                  <div
-                    v-else-if="
-                      Date.parse(armo.expected_payment_date) < Date.now()
-                    "
-                    class="red"
-                  >
-                    <i class="fa fa-times"></i>
-                  </div>
-                </td>
-              </tr>
-              <tr class="table-separator">
-                <th>Repayment Amount</th>
-                <td v-for="armo in amortizationData">
-                  {{ $formatCurrency(armo.expected_amount) }}
-                </td>
-              </tr>
-              <tr>
-                <th>Actual Amount Paid</th>
-                <td
-                  v-for="(armo, index) in amortizationData"
-                  @click="updateAmmo(armo, index)"
-                  class="pointer"
-                >
-                  {{ $formatCurrency(armo.actual_amount) }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div v-if="order.lateFEES.length >0">
-          <h5 class="mt-5 mb-0 d-flex justify-content-between"  style="color: red;">
-            Late Fee
-          </h5>
-        <div class="amor-table">
-          <table class="table table-bordered">
-            <tbody clas s="text-center" >
-              <tr class="table-separator">
-                <th>Penalty Date</th>
-                <td style="font-weight: 800;" v-for="latefee in order.lateFEES" >
-                  {{ new Date(latefee.date_created).toLocaleDateString() }}
-                </td>
-              </tr>
-              <tr>
-                <th>Late Fee Amount</th>
-                <td style="font-weight: 800;" v-for="latefee in order.lateFEES">₦{{latefee.amount}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        </div>
-       
-        <h5 class="mt-5 mb-0">Payment Summary</h5>
-        <table class="table table-bordered">
-          <tbody class="text-center">
-            <tr class="table-separator">
-              <td class="text-left">Discount Detail (%)</td>
-              <th>
-                {{
-                  order.discount[0]
-                    ? order.discount[0].name
-                    : "Null" | capitalize
-                }}
-              </th>
-              <td>Total Before Discount</td>
-              <th>{{ $formatCurrency($roundDownAmt(order.product_price)) }}</th>
-              <td>Total Paid (+discount)</td>
-              <th>{{ order.amountPaid }}</th>
-            </tr>
-            <tr>
-              <td class="text-left">Discount Amount</td>
-              <th>{{ order.discountAmount || "null" }}</th>
-              <td>Total After Discount</td>
-              <th>{{ order.discountedTotal || "null" }}</th>
-              <td>Total Debt</td>
-              <th>
-                {{ $formatCurrency(calcDebt(order.amortization)) || "null" }}
-              </th>
-            </tr>
-            <tr>
-              <td class="text-left">Down Payment</td>
-              <th>{{ $formatCurrency($roundDownAmt(order.down_payment)) }}</th>
-              <td>Total Plus Default Fee</td>
-              <th>{{ $formatCurrency($roundDownAmt(order.product_price)) }}</th>
-              <td>Default Fee</td>
-              <th>{{ order.defaultFee || "null" }}</th>
-            </tr>
-          </tbody>
-        </table>
-        <div v-if="standAlone === false">
-          <div v-if="completed === false">
-            <LogForm
-              :amortizationData="amortizationData"
-              :customerId="customer.id"
-              :orderId="order.id"
-              @done="this.done"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      :class="{ 'd-flex justify-content-end': !canEditPayment || isReadOnly }"
-      class="modal-footer"
-    >
-      <a
-        @click="$emit('close')"
-        class="text-link mt-3"
-        data-dismiss="modal"
-        href="javascript:"
-        style="text-align: right"
-        >close dialogue</a
-      >
-    </div>
-    <div class="modal fade repayment" id="viewEdit">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content" v-if="showModal">
-          <div>
-            <h5>
-              <div class="d-flex justify-content-between">
-                <div>Update Amortization</div>
-                <div @click="closeModal()"><i class="fa fa-times"></i></div>
-              </div>
-            </h5>
-            <div class="card">
-              <form class="card-body" @submit.prevent="save">
-                <div class="row">
-                  <div class="col form-group">
-                    <label for="amount" class="form-control-label"
-                      >Actual Amount</label
-                    >
-                    <br />
-                    <input
-                      name="ammo"
-                      class="custom-select"
-                      v-model="ammo_item.actual_amount"
-                    />
-                  </div>
-                  <div class="col form-group">
-                    <label for="amount" class="form-control-label"
-                      >Actual Payment Date</label
-                    >
-                    <date-picker
-                      class="w-100"
-                      v-model="ammo_item.actual_payment_date"
-                      valueType="format"
-                      placeholder="Date"
-                    ></date-picker>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col form-group">
-                    <label for="amount" class="form-control-label"
-                      >Expected Amount</label
-                    >
-                    <input
-                      class="w-100 custom-select"
-                      name="amount"
-                      v-model="ammo_item.expected_amount"
-                      v-validate="'required'"
-                      type="number"
-                    />
-                  </div>
-                  <div class="col form-group">
-                    <label for="amount" class="form-control-label"
-                      >Expected Payment Date</label
-                    >
-                    <date-picker
-                      class="w-100"
-                      v-model="ammo_item.expected_payment_date"
-                      valueType="format"
-                      placeholder="Date"
-                    ></date-picker>
-                  </div>
-                </div>
-                <br />
+						</tr>
+					</tbody>
+				</table>
+				<h5 class="mt-5 mb-0">
+					<div class="d-flex justify-content-between">
+						<div>Amortization Schedule</div>
+					</div>
+				</h5>
+				<div class="amor-table">
+					<table class="table table-bordered">
+						<tbody class="text-center">
+							<tr>
+								<th>Repayment</th>
+								<td
+									v-for="(armor, index) in amortizationData"
+									v-html="index + 1"
+								></td>
+							</tr>
+							<tr class="table-separator">
+								<th>Due Date</th>
+								<td v-for="armo in amortizationData">
+									{{ armo.expected_payment_date }}
+								</td>
+							</tr>
+							<tr>
+								<th>Actual Pay Day</th>
+								<td v-for="armo in amortizationData">
+									{{ armo.actual_payment_date }}
+								</td>
+							</tr>
+							<tr class="table-separator status-row">
+								<th>Status</th>
+								<td v-for="armo in amortizationData">
+									<div v-if="armo.actual_payment_date" class="green">
+										<i class="fa fa-check"></i>
+									</div>
+									<div
+										v-else-if="
+											Date.parse(armo.expected_payment_date) < Date.now()
+										"
+										class="red"
+									>
+										<i class="fa fa-times"></i>
+									</div>
+								</td>
+							</tr>
+							<tr class="table-separator">
+								<th>Repayment Amount</th>
+								<td v-for="armo in amortizationData">
+									{{ $formatCurrency(armo.expected_amount) }}
+								</td>
+							</tr>
+							<tr>
+								<th>Actual Amount Paid</th>
+								<td
+									v-for="(armo, index) in amortizationData"
+									@click="updateAmmo(armo, index)"
+									class="pointer"
+								>
+									{{ $formatCurrency(armo.actual_amount) }}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div v-if="order.lateFEES && order.lateFEES.length > 0">
+					<h5
+						class="mt-5 mb-0 d-flex justify-content-between"
+						style="color: red;"
+					>
+						Late Fee
+					</h5>
+					<div class="amor-table">
+						<table class="table table-bordered">
+							<tbody class="text-center">
+								<tr class="table-separator">
+									<th>Penalty Date</th>
+									<td
+										style="font-weight: 800;"
+										v-for="latefee in order.lateFEES"
+									>
+										{{ new Date(latefee.date_created).toLocaleDateString() }}
+									</td>
+								</tr>
+								<tr class="table-separator">
+									<th>Late Fee Amount Due</th>
+									<td
+										style="font-weight: 800;"
+										v-for="latefee in order.lateFEES"
+									>
+										₦{{ latefee.amount_due }}
+									</td>
+								</tr>
+								<tr>
+									<th>Late Fee Amount Paid</th>
+									<td
+										style="font-weight: 800;"
+										v-for="(latefee, index) in order.lateFEES"
+										@click="updateLateFee(latefee, index)"
+										class="pointer"
+									>
+										₦{{ latefee.amount_paid }}
+									</td>
+								</tr>
+								<tr class="table-separator status-row">
+									<th>Status</th>
+									<td v-for="latefee in order.lateFEES">
+										<div
+											v-if="latefee.amount_due === latefee.amount_paid"
+											class="green"
+										>
+											<i class="fa fa-check"></i>
+										</div>
+										<div v-else class="red">
+											<i class="fa fa-times"></i>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
 
-                <div class="text-center">
-                  <button class="text-center btn bg-default">Save</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+				<h5 class="mt-5 mb-0">Payment Summary</h5>
+				<table class="table table-bordered">
+					<tbody class="text-center">
+						<tr class="table-separator">
+							<td class="text-left">Discount Detail (%)</td>
+							<th>
+								{{
+									order.discount[0]
+										? order.discount[0].name
+										: 'Null' | capitalize
+								}}
+							</th>
+							<td>Total Before Discount</td>
+							<th>{{ $formatCurrency($roundDownAmt(order.product_price)) }}</th>
+							<td>Total Paid (+discount)</td>
+							<th>{{ order.amountPaid }}</th>
+						</tr>
+						<tr>
+							<td class="text-left">Discount Amount</td>
+							<th>{{ order.discountAmount || 'null' }}</th>
+							<td>Total After Discount</td>
+							<th>{{ order.discountedTotal || 'null' }}</th>
+							<td>Total Debt</td>
+							<th>
+								{{ $formatCurrency(calcDebt(order.amortization)) || 'null' }}
+							</th>
+						</tr>
+						<tr>
+							<td class="text-left">Down Payment</td>
+							<th>{{ $formatCurrency($roundDownAmt(order.down_payment)) }}</th>
+							<td>Total Plus Default Fee</td>
+							<th>{{ $formatCurrency($roundDownAmt(order.product_price)) }}</th>
+							<td>Default Fee</td>
+							<th>{{ order.defaultFee || 'null' }}</th>
+						</tr>
+					</tbody>
+				</table>
+				<div v-if="standAlone === false">
+					<div v-if="completed === false">
+						<LogForm
+							:amortizationData="amortizationData"
+							:customerId="customer.id"
+							:orderId="order.id"
+							@done="this.done"
+						/>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div
+			:class="{ 'd-flex justify-content-end': !canEditPayment || isReadOnly }"
+			class="modal-footer"
+		>
+			<a
+				@click="$emit('close')"
+				class="text-link mt-3"
+				data-dismiss="modal"
+				href="javascript:"
+				style="text-align: right"
+				>close dialogue</a
+			>
+		</div>
+		<div class="modal fade repayment" id="viewEdit">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content" v-if="showAmmoModal">
+					<div>
+						<h5>
+							<div class="d-flex justify-content-between">
+								<div>Update Amortization</div>
+								<div @click="closeModal()"><i class="fa fa-times"></i></div>
+							</div>
+						</h5>
+						<div class="card">
+							<form class="card-body" @submit.prevent="save">
+								<div class="row">
+									<div class="col form-group">
+										<label for="amount" class="form-control-label"
+											>Actual Amount</label
+										>
+										<br />
+										<input
+											name="ammo"
+											class="custom-select"
+											v-model="ammo_item.actual_amount"
+										/>
+									</div>
+									<div class="col form-group">
+										<label for="amount" class="form-control-label"
+											>Actual Payment Date</label
+										>
+										<date-picker
+											class="w-100"
+											v-model="ammo_item.actual_payment_date"
+											valueType="format"
+											placeholder="Date"
+										></date-picker>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col form-group">
+										<label for="amount" class="form-control-label"
+											>Expected Amount</label
+										>
+										<input
+											class="w-100 custom-select"
+											name="amount"
+											v-model="ammo_item.expected_amount"
+											v-validate="'required'"
+											type="number"
+										/>
+									</div>
+									<div class="col form-group">
+										<label for="amount" class="form-control-label"
+											>Expected Payment Date</label
+										>
+										<date-picker
+											class="w-100"
+											v-model="ammo_item.expected_payment_date"
+											valueType="format"
+											placeholder="Date"
+										></date-picker>
+									</div>
+								</div>
+								<br />
+
+								<div class="text-center">
+									<button class="text-center btn bg-default">Save</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade repayment" id="viewEditLateFee">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content" v-if="showLateFeeModal">
+					<div>
+						<h5>
+							<div class="d-flex justify-content-between">
+								<div>Update LateFee</div>
+								<div @click="closeModal()"><i class="fa fa-times"></i></div>
+							</div>
+						</h5>
+						<div class="card">
+							<form class="card-body" @submit.prevent="saveLateFee">
+								<div class="row">
+									<div class="col form-group">
+										<label for="amount" class="form-control-label"
+											>Actual Amount</label
+										>
+										<br />
+										<input
+											name="ammo"
+											class="custom-select"
+											v-model="lateFeeItem.amount_paid"
+										/>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col form-group">
+										<label for="amount" class="form-control-label"
+											>Expected Amount</label
+										>
+										<br />
+
+										<input
+											class="custom-select"
+											disabled
+											name="amount"
+											v-model="lateFeeItem.amount_due"
+										/>
+									</div>
+								</div>
+								<br />
+
+								<div class="text-center">
+									<button class="text-center btn bg-default">Save</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 <script>
-import Flash from "../utilities/flash";
-import { mapGetters } from "vuex";
-import Auth from "../utilities/auth";
-import LogForm from "./LogForm";
-import { get, patch, put } from "../utilities/api";
-import DatePicker from "vue2-datepicker";
-import "vue2-datepicker/index.css";
+	import Flash from '../utilities/flash';
+	import { mapGetters } from 'vuex';
+	import Auth from '../utilities/auth';
+	import LogForm from './LogForm';
+	import { get, patch, put } from '../utilities/api';
+	import DatePicker from 'vue2-datepicker';
+	import 'vue2-datepicker/index.css';
 
-export default {
-  name: "NewOrderAmortization",
-  components: { LogForm, DatePicker },
-  props: {
-    order: {
-      type: Object,
-    },
-    customer: {
-      type: Object,
-    },
-    paymentForm: {
-      type: Object,
-    },
-    paymentFormType: {
-      type: String,
-      default: "add",
-    },
-    standAlone: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  data() {
-    return {
-      actual_amount: null,
-      ammoIndex: null,
-      completed: null,
-      ammo_item: null,
-      newOrderItem: {},
-      showModal: false,
-      canEditPayment: true,
-      isReadOnly: false,
+	export default {
+		name: 'NewOrderAmortization',
+		components: { LogForm, DatePicker },
+		props: {
+			order: {
+				type: Object,
+			},
+			customer: {
+				type: Object,
+			},
+			paymentForm: {
+				type: Object,
+			},
+			paymentFormType: {
+				type: String,
+				default: 'add',
+			},
+			standAlone: {
+				type: Boolean,
+				default: false,
+			},
+		},
+		data() {
+			return {
+				actual_amount: null,
+				ammoIndex: null,
+				completed: null,
+				ammo_item: null,
+				newOrderItem: {},
+				showAmmoModal: false,
+				showLateFeeModal: false,
 
-      canAddPayment: true,
-      user: {
-        name: Auth.state.user_name,
-        id: Auth.state.user_id,
-      },
-      amortizationData: this.order.amortization,
-    };
-  },
-  methods: {
-    done() {
-      this.show = false;
+				canEditPayment: true,
+				isReadOnly: false,
+				lateFeeItem: null,
+				lateFeeIndex: null,
 
-      this.$LIPS(true);
-      get(`/api/customer/lookup/${this.customer.id}`)
-        .then((res) => {
-          this.$LIPS(false);
-          this.amortizationData = res.data.customer[0].new_orders.find(
-            (x) => x.order_number === this.order.order_number
-          ).amortization;
-          this.$emit("childToParent", res.data);
-        })
-        .catch((e) => {
-          this.$LIPS(false);
-          Flash.setError("Error Fetching customer detail");
-        });
-    },
-    addPaymentForm(data) {
-      this.$emit("addPayment", data);
-    },
+				canAddPayment: true,
+				user: {
+					name: Auth.state.user_name,
+					id: Auth.state.user_id,
+				},
+				amortizationData: this.order.amortization,
+			};
+		},
+		methods: {
+			done() {
+				this.show = false;
 
-    deletePayment(index) {
-      this.$emit("deletePayment", index);
-    },
-    preparePayments() {
-      this.$emit("preparePayments");
-    },
+				this.$LIPS(true);
+				get(`/api/customer/lookup/${this.customer.id}`)
+					.then((res) => {
+						this.$LIPS(false);
+						this.amortizationData = res.data.customer[0].new_orders.find(
+							(x) => x.order_number === this.order.order_number
+						).amortization;
+						this.$emit('childToParent', res.data);
+					})
+					.catch((e) => {
+						this.$LIPS(false);
+						Flash.setError('Error Fetching customer detail');
+					});
+			},
+			addPaymentForm(data) {
+				this.$emit('addPayment', data);
+			},
 
-    updateAmmo(armo, index) {
-      if (this.canEditAmmoPayment && this.standAlone === false) {
-        this.showModal = true;
-        this.ammo_item = armo;
-        this.ammoIndex = index;
+			deletePayment(index) {
+				this.$emit('deletePayment', index);
+			},
+			preparePayments() {
+				this.$emit('preparePayments');
+			},
 
-        return $(`#viewEdit`).modal("toggle");
-      }
-    },
-    closeModal() {
-      this.showModal = false;
-      // $(`#viewEdit`).modal("toggle");
-    },
-    save() {
-      this.$LIPS(true);
-      const updateData = {
-        user_id: localStorage.getItem("user_id"),
-        actual_amount: this.ammo_item.actual_amount,
-        actual_payment_date: this.ammo_item.actual_payment_date,
-        expected_payment_date: this.ammo_item.expected_payment_date,
-        expected_amount: this.ammo_item.expected_amount,
-      };
+			updateAmmo(armo, index) {
+				if (this.canEditAmmoPayment && this.standAlone === false) {
+					this.showAmmoModal = true;
+					this.ammo_item = armo;
+					this.ammoIndex = index;
 
-      put(`/api/amortization/${this.ammo_item.id}`, updateData)
-        .then((res) => {
-          this.$swal({
-            icon: "success",
-            title: "Amortization Updated Successfully",
-          });
-          this.amortizationData[this.ammoIndex] = res.data.data;
-          this.$LIPS(false);
-          return $(`#viewEdit`).modal("toggle");
-        })
-        .catch((err) => {
-          this.$LIPS(false);
+					return $(`#viewEdit`).modal('toggle');
+				}
+			},
+			updateLateFee(lateFee, index) {
+				if (this.canEditAmmoPayment && this.standAlone === false) {
+					this.showLateFeeModal = true;
+					this.lateFeeItem = lateFee;
+					this.lateFeeIndex = index;
 
-          Flash.setError("Unable to update payment");
-          return $(`#viewEdit`).modal("toggle");
-        })
-        .finally(() => {
-          $(`#viewEdit`).modal("toggle");
-          this.showModal = false;
-        });
-    },
-    calcDebt(amortization) {
-      // * Assumed equal distribution of amortization
-      if (amortization[0] !== undefined) {
-        let res = amortization.filter((amor) => {
-          return amor.actual_amount === 0;
-        });
-        return res.length * amortization[0].expected_amount;
-      }
-    },
-  },
-  async mounted(){
-    },
-  created() {
-    this.calcDebt(this.order.amortization) === 0
-      ? (this.completed = true)
-      : (this.completed = false);
-  },
-  updated() {
-    this.calcDebt(this.order.amortization) === 0
-      ? (this.completed = true)
-      : (this.completed = false);
-  },
-  watch: {
-    order: function () {
-      this.amortizationData = this.order.amortization;
-    },
-  },
-  computed: {
-    ...mapGetters(["auth", "getAuthUserDetails"]),
+					return $(`#viewEditLateFee`).modal('toggle');
+				}
+			},
+			closeModal() {
+				this.showModal = false;
+				// $(`#viewEdit`).modal("toggle");
+			},
+			save() {
+				this.$LIPS(true);
+				const updateData = {
+					user_id: localStorage.getItem('user_id'),
+					actual_amount: this.ammo_item.actual_amount,
+					actual_payment_date: this.ammo_item.actual_payment_date,
+					expected_payment_date: this.ammo_item.expected_payment_date,
+					expected_amount: this.ammo_item.expected_amount,
+				};
 
-    canEditAmmoPayment() {
-      if (this.auth("FSLLead") || this.auth("DVALead")) return true;
-    },
-  },
-};
+				put(`/api/amortization/${this.ammo_item.id}`, updateData)
+					.then((res) => {
+						this.$swal({
+							icon: 'success',
+							title: 'Amortization Updated Successfully',
+						});
+						this.amortizationData[this.ammoIndex] = res.data.data;
+						this.$LIPS(false);
+						return $(`#viewEdit`).modal('toggle');
+					})
+					.catch((err) => {
+						this.$LIPS(false);
+
+						Flash.setError('Unable to update payment');
+						return $(`#viewEdit`).modal('toggle');
+					})
+					.finally(() => {
+						$(`#viewEdit`).modal('toggle');
+						this.showModal = false;
+					});
+			},
+			calcDebt(amortization) {
+				// * Assumed equal distribution of amortization
+				if (amortization[0] !== undefined) {
+					let res = amortization.filter((amor) => {
+						return amor.actual_amount === 0;
+					});
+					return res.length * amortization[0].expected_amount;
+				}
+			},
+			saveLateFee() {
+				this.$LIPS(true);
+				patch(`/api/late_fee/${this.lateFeeItem.id}`, this.lateFeeItem)
+					.then((res) => {
+						this.$swal({
+							icon: 'success',
+							title: 'LateFee Updated Successfully',
+						});
+						this.amortizationData[this.ammoIndex] = res.data.data;
+						this.$LIPS(false);
+						return $(`#viewEdit`).modal('toggle');
+					})
+					.catch((err) => {
+						this.$LIPS(false);
+
+						Flash.setError('Unable to update late fee');
+						return $(`#viewLateFeeEdit`).modal('toggle');
+					})
+					.finally(() => {
+						$(`#viewLateFeeEdit`).modal('toggle');
+						this.showLateFeeModal = false;
+					});
+			},
+		},
+		async mounted() {},
+		created() {
+			this.calcDebt(this.order.amortization) === 0
+				? (this.completed = true)
+				: (this.completed = false);
+		},
+		updated() {
+			this.calcDebt(this.order.amortization) === 0
+				? (this.completed = true)
+				: (this.completed = false);
+		},
+		watch: {
+			order: function() {
+				this.amortizationData = this.order.amortization;
+			},
+		},
+		computed: {
+			...mapGetters(['auth', 'getAuthUserDetails']),
+
+			canEditAmmoPayment() {
+				if (this.auth('FSLLead') || this.auth('DVALead')) return true;
+			},
+		},
+	};
 </script>
 <style scoped>
-.amor-table {
-  width: 70vw;
-  overflow-x: auto;
-}
-.green {
-  color: #00a368;
-  width: 100%;
-  font-size: 1.3em;
-  background: rgba(0, 163, 104, 0.09);
-}
-.red {
-  color: red;
-  font-size: 1.3em;
-  width: 100%;
-  background: rgba(163, 0, 104, 0.09);
-}
-.td-back {
-  color: #00a368;
-  background: rgba(0, 163, 104, 0.09);
-}
-.status-row td {
-  padding: 0;
-  margin: 0;
-}
-.pointer {
-  cursor: pointer;
-}
+	.amor-table {
+		width: 70vw;
+		overflow-x: auto;
+	}
+	.green {
+		color: #00a368;
+		width: 100%;
+		font-size: 1.3em;
+		background: rgba(0, 163, 104, 0.09);
+	}
+	.red {
+		color: red;
+		font-size: 1.3em;
+		width: 100%;
+		background: rgba(163, 0, 104, 0.09);
+	}
+	.td-back {
+		color: #00a368;
+		background: rgba(0, 163, 104, 0.09);
+	}
+	.status-row td {
+		padding: 0;
+		margin: 0;
+	}
+	.pointer {
+		cursor: pointer;
+	}
 </style>
-

@@ -137,7 +137,7 @@
 										style="font-weight: 800;"
 										v-for="latefee in lateFEES"
 									>
-										₦{{ latefee.amount_due }}
+										{{ $formatCurrency(latefee.amount_due) }}
 									</td>
 								</tr>
 
@@ -149,7 +149,7 @@
 										@click="updateLateFee(latefee, index)"
 										class="pointer"
 									>
-										₦{{ latefee.amount_paid }}
+										{{ $formatCurrency(latefee.amount_paid)}}
 									</td>
 				</tr>
 				<tr class="table-separator status-row">

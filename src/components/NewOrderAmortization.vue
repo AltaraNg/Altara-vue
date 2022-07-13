@@ -118,23 +118,54 @@
             </tbody>
           </table>
         </div>
-        <div v-if="order.lateFEES.length >0">
+        <div v-if="order.lateFEES && order.lateFEES.length >0">
           <h5 class="mt-5 mb-0 d-flex justify-content-between"  style="color: red;">
             Late Fee
           </h5>
         <div class="amor-table">
           <table class="table table-bordered">
-            <tbody clas s="text-center" >
+            <tbody class="text-center" >
               <tr class="table-separator">
                 <th>Penalty Date</th>
                 <td style="font-weight: 800;" v-for="latefee in order.lateFEES" >
                   {{ new Date(latefee.date_created).toLocaleDateString() }}
                 </td>
               </tr>
-              <tr>
-                <th>Late Fee Amount</th>
-                <td style="font-weight: 800;" v-for="latefee in order.lateFEES">₦{{latefee.amount}}</td>
-              </tr>
+             <tr class="table-separator">
+									<th>Late Fee Amount Due</th>
+									<td
+										style="font-weight: 800;"
+										v-for="latefee in order.lateFEES"
+									>
+										₦{{ latefee.amount_due }}
+									</td>
+								</tr>
+
+				<tr>
+					<th>Late Fee Amount Paid</th>
+									<td
+										style="font-weight: 800;"
+										v-for="(latefee, index) in order.lateFEES"
+										@click="updateLateFee(latefee, index)"
+										class="pointer"
+									>
+										₦{{ latefee.amount_paid }}
+									</td>
+				</tr>
+				<tr class="table-separator status-row">
+									<th>Status</th>
+									<td v-for="latefee in order.lateFEES">
+										<div
+											v-if="latefee.amount_due === latefee.amount_paid"
+											class="green"
+										>
+											<i class="fa fa-check"></i>
+										</div>
+										<div v-else class="red">
+											<i class="fa fa-times"></i>
+										</div>
+									</td>
+								</tr>
             </tbody>
           </table>
         </div>
@@ -204,7 +235,7 @@
     </div>
     <div class="modal fade repayment" id="viewEdit">
       <div class="modal-dialog" role="document">
-        <div class="modal-content" v-if="showModal">
+        <div class="modal-content" v-if="showAmmoModal">
           <div>
             <h5>
               <div class="d-flex justify-content-between">
@@ -274,6 +305,59 @@
         </div>
       </div>
     </div>
+
+	<div class="modal fade repayment" id="viewEditLateFee">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content" v-if="showLateFeeModal">
+					<div>
+						<h5>
+							<div class="d-flex justify-content-between">
+								<div>Update LateFee</div>
+								<div @click="closeModal()"><i class="fa fa-times"></i></div>
+							</div>
+						</h5>
+						<div class="card">
+							<form class="card-body" @submit.prevent="saveLateFee">
+								<div class="row">
+									<div class="col form-group">
+										<label for="amount" class="form-control-label"
+											>Actual Amount</label
+										>
+										<br />
+										<input
+											name="ammo"
+											class="custom-select"
+											v-model="lateFeeItem.amount_paid"
+                      v-validate="'required'"
+										/>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col form-group">
+										<label for="amount" class="form-control-label"
+											>Expected Amount</label
+										>
+										<br />
+
+										<input
+											class="custom-select"
+											disabled
+											name="amount"
+											v-model="lateFeeItem.amount_due"
+										/>
+									</div>
+								</div>
+								<br />
+
+								<div class="text-center">
+									<button class="text-center btn bg-default">Save</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
   </div>
 </template>
 <script>
@@ -317,6 +401,10 @@ export default {
       showModal: false,
       canEditPayment: true,
       isReadOnly: false,
+	  showAmmoModal: false,
+	showLateFeeModal: false,
+	lateFeeItem: null,
+				lateFeeIndex: null,
 
       canAddPayment: true,
       user: {
@@ -357,13 +445,22 @@ export default {
 
     updateAmmo(armo, index) {
       if (this.canEditAmmoPayment && this.standAlone === false) {
-        this.showModal = true;
+        this.showAmmoModal = true;
         this.ammo_item = armo;
         this.ammoIndex = index;
 
         return $(`#viewEdit`).modal("toggle");
       }
     },
+	updateLateFee(lateFee, index) {
+				if (this.canEditAmmoPayment && this.standAlone === false) {
+					this.showLateFeeModal = true;
+					this.lateFeeItem = lateFee;
+					this.lateFeeIndex = index;
+
+					return $(`#viewEditLateFee`).modal('toggle');
+				}
+			},
     closeModal() {
       this.showModal = false;
       // $(`#viewEdit`).modal("toggle");
@@ -399,6 +496,31 @@ export default {
           this.showModal = false;
         });
     },
+
+	saveLateFee() {
+				this.$LIPS(true);
+        this.lateFeeItem.amount_paid = parseFloat(this.lateFeeItem.amount_paid).toFixed(2);
+				patch(`/api/late_fee/${this.lateFeeItem.id}`, this.lateFeeItem)
+					.then((res) => {
+						this.$swal({
+							icon: 'success',
+							title: 'LateFee Updated Successfully',
+						});
+						this.amortizationData[this.ammoIndex] = res.data.data;
+						this.$LIPS(false);
+						return $(`#viewEdit`).modal('toggle');
+					})
+					.catch((err) => {
+						this.$LIPS(false);
+
+						Flash.setError('Unable to update late fee');
+						return $(`#viewLateFeeEdit`).modal('toggle');
+					})
+					.finally(() => {
+						$(`#viewLateFeeEdit`).modal('toggle');
+						this.showLateFeeModal = false;
+					});
+			},
     calcDebt(amortization) {
       // * Assumed equal distribution of amortization
       if (amortization[0] !== undefined) {

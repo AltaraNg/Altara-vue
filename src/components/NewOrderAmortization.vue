@@ -118,7 +118,7 @@
             </tbody>
           </table>
         </div>
-        <div v-if="order.lateFEES && order.lateFEES.length >0">
+        <div v-if="lateFEES && lateFEES.length >0">
           <h5 class="mt-5 mb-0 d-flex justify-content-between"  style="color: red;">
             Late Fee
           </h5>
@@ -127,7 +127,7 @@
             <tbody class="text-center" >
               <tr class="table-separator">
                 <th>Penalty Date</th>
-                <td style="font-weight: 800;" v-for="latefee in order.lateFEES" >
+                <td style="font-weight: 800;" v-for="latefee in lateFEES" >
                   {{ new Date(latefee.date_created).toLocaleDateString() }}
                 </td>
               </tr>
@@ -135,7 +135,7 @@
 									<th>Late Fee Amount Due</th>
 									<td
 										style="font-weight: 800;"
-										v-for="latefee in order.lateFEES"
+										v-for="latefee in lateFEES"
 									>
 										₦{{ latefee.amount_due }}
 									</td>
@@ -145,7 +145,7 @@
 					<th>Late Fee Amount Paid</th>
 									<td
 										style="font-weight: 800;"
-										v-for="(latefee, index) in order.lateFEES"
+										v-for="(latefee, index) in lateFEES"
 										@click="updateLateFee(latefee, index)"
 										class="pointer"
 									>
@@ -154,7 +154,7 @@
 				</tr>
 				<tr class="table-separator status-row">
 									<th>Status</th>
-									<td v-for="latefee in order.lateFEES">
+									<td v-for="latefee in lateFEES">
 										<div
 											v-if="latefee.amount_due === latefee.amount_paid"
 											class="green"
@@ -166,6 +166,16 @@
 										</div>
 									</td>
 								</tr>
+
+                <tr>
+					<th>Date Paid</th>
+									<td
+										style="font-weight: 800;"
+										v-for="(latefee, index) in lateFEES"
+									>
+										{{ latefee.date_paid !== null ? new Date(latefee.date_paid).toLocaleDateString(): 'N/A'  }}
+									</td>
+				</tr>
             </tbody>
           </table>
         </div>
@@ -412,6 +422,7 @@ export default {
         id: Auth.state.user_id,
       },
       amortizationData: this.order.amortization,
+      lateFEES : this.order.lateFEES
     };
   },
   methods: {
@@ -506,7 +517,7 @@ export default {
 							icon: 'success',
 							title: 'LateFee Updated Successfully',
 						});
-						this.amortizationData[this.ammoIndex] = res.data.data;
+						this.lateFEES[this.lateFeeIndex] = res.data.data;
 						this.$LIPS(false);
 						return $(`#viewEdit`).modal('toggle');
 					})

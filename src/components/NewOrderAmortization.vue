@@ -389,6 +389,9 @@ export default {
     customer: {
       type: Object,
     },
+    lateFEES: {
+      type: Array
+    },
     paymentForm: {
       type: Object,
     },
@@ -422,7 +425,7 @@ export default {
         id: Auth.state.user_id,
       },
       amortizationData: this.order.amortization,
-      lateFEES : this.order.lateFEES
+     
     };
   },
   methods: {

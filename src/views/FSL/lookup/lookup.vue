@@ -643,6 +643,7 @@
 						</div>
 						<div v-else>
 							<new-order-amortization
+								:lateFEES="lateFEES"
 								:order="order"
 								:customer="customer"
 								:paymentForm="paymentForm"
@@ -763,6 +764,7 @@
 					product: `/api/product`,
 				},
 				paymentMeths: [],
+				lateFEES: null
 			};
 		},
 
@@ -829,7 +831,7 @@
 		async getLateFee(order) {
      			 try {
         const fetchLateFee = await get( `api/late_fee?order=${order?.id}`);
-        order.lateFEES = fetchLateFee.data.data.data;
+        this.lateFEES = fetchLateFee.data.data.data;
       } catch (err) {
         this.$displayErrorMessage(err);
       }

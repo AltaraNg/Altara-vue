@@ -467,7 +467,7 @@ export default {
       }
     },
 	updateLateFee(lateFee, index) {
-				if (this.canEditAmmoPayment && this.standAlone === false) {
+				if (this.standAlone === false) {
 					this.showLateFeeModal = true;
 					this.lateFeeItem = lateFee;
 					this.lateFeeIndex = index;

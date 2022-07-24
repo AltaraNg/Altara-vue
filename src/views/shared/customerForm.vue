@@ -25,6 +25,7 @@
               :error="error"
               :civilStatus="civilStatus"
               :gender="gender"
+              :channels="channels"
               :highestLevelOfEdu="highestLevelOfEdu"
               :$v= $v
             />

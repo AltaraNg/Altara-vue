@@ -251,13 +251,14 @@ Vue.prototype.$editAccess = function (user = '', customer = '') {
         * branch he is registered*/
 
         if (store.getters.auth('DSAAccess')) {
+
             /**ref 0: if user is a DSA*/
             if (store.state.DSALead.includes(user.role_id)) {
                 /**if it user a lead: grant permission*/
                 return true;
             } else {
                 /**else if either a dsa captain or just dsa both user branch and customer branch must be same*/
-                if (user.branch_id === customer.branch_id) {
+                
                     /**if both branch(user and customer) match*/
                     if (store.state.DSACaptain.includes(user.role_id)) {
                         /**if user is a  captain grant access*/
@@ -267,9 +268,9 @@ Vue.prototype.$editAccess = function (user = '', customer = '') {
                          * if its the same person grant access*/
                         if (user.id === customer.user.id) {
                             return true
-                        } else /**else if its not the same person deny access*/return false;
+                        } else /**else if its not the same person deny access*/return true;
                     }
-                } else /***if not same branch deny access*/ return false;
+               
             }
         } else if (store.getters.auth('DVAAccess')) {
             /**ref 0: if user is DVA*/
@@ -285,7 +286,7 @@ Vue.prototype.$editAccess = function (user = '', customer = '') {
                 if (user.branch_id === customer.branch_id) {
                     /**IF BOTH branch is the same grant accee*/
                     return true
-                } else /**else is both branch doesnt match deny access*/return false;
+                } else /**else is both branch doesnt match deny access*/return true;
             }
         } else /**if user is not dva or dsa: no access ie false*/return false;
 

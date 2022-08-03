@@ -341,6 +341,17 @@
                       v-validate="'required'"
 										/>
 									</div>
+                  <div class="col form-group">
+                    <label for="amount" class="form-control-label"
+                      >Date Paid</label
+                    >
+                    <date-picker
+                      class="w-100"
+                      v-model="lateFeeItem.date_paid"
+                      valueType="format"
+                      placeholder="Date"
+                    ></date-picker>
+                  </div>
 								</div>
 								<div class="row">
 									<div class="col form-group">

@@ -180,7 +180,7 @@
           </table>
         </div>
         </div>
-       
+
         <h5 class="mt-5 mb-0">Payment Summary</h5>
         <table class="table table-bordered">
           <tbody class="text-center">
@@ -436,7 +436,7 @@ export default {
         id: Auth.state.user_id,
       },
       amortizationData: this.order.amortization,
-     
+
     };
   },
   methods: {

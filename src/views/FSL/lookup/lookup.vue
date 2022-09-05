@@ -162,7 +162,7 @@
 								<div
 									class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
 								>
-									{{ order.product.name }}
+									{{ order.product.name | truncate(50) }}
 								</div>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
@@ -212,6 +212,7 @@
 								</div>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
+									v-if="!order.paystack_auth_code"
 									@click="getClickedOrder(order)"
 								>
 									<paystack
@@ -224,6 +225,12 @@
 										class="btn bg-default"
 										>Get Auth Code</paystack
 									>
+								</div>
+								<div
+									v-else
+									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center arrow"
+								>
+									<button class="btn disabled bg-default">Already Exist</button>
 								</div>
 							</div>
 						</div>
@@ -820,6 +827,7 @@
 				lateFEES: null,
 				showPaystack: false,
 				verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
+				paystack_auth_code_url: '/api/pay_stack_auth_code',
 				paystackkey: process.env.VUE_APP_PAYSTACK_KEY || '',
 				paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || '',
 
@@ -834,17 +842,32 @@
 					await this.verifyPaystackPayment()
 						.then((data) => {
 							if (data.status && data.message == 'Verification successful') {
+								this.$LIPS(true);
 								this.authorization_code =
 									data.data.authorization.authorization_code;
+
+								post(this.paystack_auth_code_url, {
+									order_id: this.clickedOrder.id,
+									auth_code: this.authorization_code,
+								})
+									.then((res) => {
+										Flash.setSuccess('AuthCode set successfully!');
+										this.processForm(this.customer.id);
+									})
+									.catch((err) => {
+										Flash.setError(err.message);
+									})
+									.finally(() => {
+										this.$LIPS(false);
+									});
 							}
-							console.log(this.clickedOrder.id, this.authorization_code)
 						})
 						.catch((error) => {
 							this.$displayErrorMessage(error);
 						});
 				}
 			},
-			getClickedOrder(order){
+			getClickedOrder(order) {
 				this.clickedOrder = order;
 			},
 			closePayStackModal: () => {},
@@ -895,11 +918,6 @@
 					this.currentOrder = order;
 					return $(`#updateOrderModal`).modal('toggle');
 				}
-			},
-
-			payAuthPaystack(order) {
-				this.showPaystack = true;
-				console.log(order);
 			},
 			async updateView(data) {
 				let { customer, user } = data;
@@ -1210,7 +1228,8 @@
 			reference() {
 				let text = '';
 				let possible =
-					'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' + this.clickedOrder?.order_number;
+					'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' +
+					this.clickedOrder?.order_number;
 				for (let i = 0; i < 10; i++)
 					text += possible.charAt(Math.floor(Math.random() * possible.length));
 				return text;

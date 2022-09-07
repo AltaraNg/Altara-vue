@@ -132,6 +132,7 @@
 				<router-view></router-view>
 			</div>
 			<SMSModal v-if="showSMSModal" />
+			<ShowPaystack v-if="showPaystackModal" />
 			<mobileMessageModal v-if="showMobileMessageModal"/>
 			<ChangeCustomerManagerModal v-if="showCustomerManagerModal" />
 		</div>
@@ -150,6 +151,7 @@
 	import ChangeCustomerManagerModal from './components/modals/ChangeCustomerManagerModal';
 	import _ from 'lodash';
 	import axios from 'axios';
+	import ShowPaystack from './components/Paystack/ShowPaystack.vue';
 
 	export default {
 		components: {
@@ -157,7 +159,8 @@
 			Loader,
 			SMSModal,
 			ChangeCustomerManagerModal,
-			mobileMessageModal
+			mobileMessageModal,
+			ShowPaystack
 		},
 		data() {
 			return {
@@ -216,7 +219,8 @@
 			...mapGetters('ModalAccess', [
 				'showCustomerManagerModal',
 				'showSMSModal',
-				'showMobileMessageModal'
+				'showMobileMessageModal',
+				'showPaystackModal'
 			]),
 			auth() {
 				return this.authState.api_token && this.authState.user_id;

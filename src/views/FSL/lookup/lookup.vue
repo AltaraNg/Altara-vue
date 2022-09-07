@@ -157,6 +157,22 @@
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
 								>
+									<span
+										v-if="
+											order.order_type === 'Altara Pay' &&
+												!order.paystack_auth_code
+										"
+									>
+										<PaystackModal
+											:order="order"
+											:customer="customer"
+											:key="
+												order.amortization[0]
+													? order.amortization[0].new_order_id
+													: index
+											"
+										></PaystackModal>
+									</span>
 									{{ order.order_number }}
 								</div>
 								<div
@@ -209,28 +225,6 @@
 										></i>
 										<!--                                        // TODO:: cleanup-->
 									</button>
-								</div>
-								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
-									v-if="!order.paystack_auth_code"
-									@click="getClickedOrder(order)"
-								>
-									<paystack
-										:amount="10000"
-										:email="customer ? customer.email : ''"
-										:paystackkey="paystackkey"
-										:reference="reference"
-										:callback="processPaymentPayStackPayment"
-										:close="closePayStackModal"
-										class="btn bg-default"
-										>Get Auth Code</paystack
-									>
-								</div>
-								<div
-									v-else
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center arrow"
-								>
-									<button class="btn disabled bg-default">Already Exist</button>
 								</div>
 							</div>
 						</div>
@@ -767,6 +761,8 @@
 	import 'vue2-datepicker/index.css';
 	import Discount from '../../../components/discount.vue';
 	import paystack from 'vue-paystack';
+	import PaystackModal from '../../../components/Paystack/PaystackModal';
+	import { EventBus } from '../../../utilities/event-bus';
 
 	export default {
 		components: {
@@ -781,6 +777,7 @@
 			DatePicker,
 			Discount,
 			paystack,
+			PaystackModal,
 		},
 		props: { logger: null },
 
@@ -812,7 +809,6 @@
 					'Type',
 					'Customer Type',
 					'Repayment Plans',
-					'Auth Code Acquired',
 				],
 				products: [],
 				paymentForm: { payments: [] },
@@ -1222,6 +1218,15 @@
 			percentage(order) {
 				return order?.order_discount?.percentage_discount;
 			},
+			updateCustomerData(data){
+
+				let element = this.customer.new_orders.find(item => {
+					return item.id === data.order
+				});
+				element.paystack_auth_code = data.auth_code;
+				let index = this.customer.new_orders.indexOf(element);
+				Vue.set(this.$data.customer.new_orders, index, element);
+			}
 		},
 
 		computed: {
@@ -1262,11 +1267,17 @@
 			},
 		},
 
+		created() {
+			EventBus.$on('reloadUser', this.updateCustomerData);
+		},
+
 		async mounted() {
 			this.$prepareBanks();
 			this.$prepareBranches();
 			this.$preparePaymentMethods();
 		},
+
+
 	};
 </script>
 

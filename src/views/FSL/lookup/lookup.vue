@@ -160,7 +160,7 @@
 									<span
 										v-if="
 											order.order_type === 'Altara Pay' &&
-												!order.paystack_auth_code
+												!order.paystack_auth_code && order.payment_gateway === 'Paystack'
 										"
 									>
 										<PaystackModal

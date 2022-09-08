@@ -113,11 +113,7 @@
 										<!--                                        // TODO:: cleanup-->
 									</button>
 								</div>
-								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
-								>
-									N/A
-								</div>
+								
 							</div>
 							<div
 								class="mb-3 row attendance-item"
@@ -240,12 +236,7 @@
 						</div>
 					</div>
 
-					<!-- <LogForm
-            v-if="logger === 'cash' && customer.orders.length > 0"
-            :customerId="customer.id"
-            :order-id="customer.orders[0].order.id"
-            @done="this.done"
-          /> -->
+					
 
 					<PaymentLog
 						:customerId="customer.id"
@@ -832,51 +823,11 @@
 		},
 
 		methods: {
-			async processPaymentPayStackPayment(resp) {
-				this.paystackReference = resp.reference;
-				if (resp.status == 'success' && resp.message == 'Approved') {
-					await this.verifyPaystackPayment()
-						.then((data) => {
-							if (data.status && data.message == 'Verification successful') {
-								this.$LIPS(true);
-								this.authorization_code =
-									data.data.authorization.authorization_code;
-
-								post(this.paystack_auth_code_url, {
-									order_id: this.clickedOrder.id,
-									auth_code: this.authorization_code,
-								})
-									.then((res) => {
-										Flash.setSuccess('AuthCode set successfully!');
-										this.processForm(this.customer.id);
-									})
-									.catch((err) => {
-										Flash.setError(err.message);
-									})
-									.finally(() => {
-										this.$LIPS(false);
-									});
-							}
-						})
-						.catch((error) => {
-							this.$displayErrorMessage(error);
-						});
-				}
-			},
+			
 			getClickedOrder(order) {
 				this.clickedOrder = order;
 			},
-			closePayStackModal: () => {},
-			async verifyPaystackPayment() {
-				const url = `${this.verifyPaymentUrl}${this.paystackReference}`;
-				const response = await fetch(url, {
-					method: 'GET',
-					headers: {
-						Authorization: `Bearer ${process.env.VUE_APP_PAYSTACK_SECRET_KEY}`,
-					},
-				});
-				return response.json();
-			},
+			
 
 			async submitForm() {
 				const updateData = {
@@ -1230,15 +1181,7 @@
 		},
 
 		computed: {
-			reference() {
-				let text = '';
-				let possible =
-					'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' +
-					this.clickedOrder?.order_number;
-				for (let i = 0; i < 10; i++)
-					text += possible.charAt(Math.floor(Math.random() * possible.length));
-				return text;
-			},
+			
 			...mapGetters([
 				'getBanks',
 				'getPaymentMethods',

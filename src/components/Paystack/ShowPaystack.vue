@@ -152,7 +152,6 @@
 								})
 									.then((res) => {
                                         this.done('AuthCode set successfully!');
-										// this.processForm(this.customer.id);
 									})
 									.catch((err) => {
 										Flash.setError(err.message);

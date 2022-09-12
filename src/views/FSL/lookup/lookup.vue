@@ -19,7 +19,11 @@
 							<div class="col light-heading" style="max-width: 100px">
 								S/No.
 							</div>
-							<div class="col light-heading" v-for="(header, index) in headers" :key="index">
+							<div
+								class="col light-heading"
+								v-for="(header, index) in headers"
+								:key="index"
+							>
 								{{ header }}
 							</div>
 						</div>
@@ -35,7 +39,9 @@
 						>
 							<div
 								class="mb-3 row attendance-item"
-								v-for="(order, index) in customer.orders" :key="order.index"											>
+								v-for="(order, index) in customer.orders"
+								:key="order.index"
+							>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
 									style="max-width: 100px"
@@ -107,10 +113,12 @@
 										<!--                                        // TODO:: cleanup-->
 									</button>
 								</div>
+								
 							</div>
 							<div
 								class="mb-3 row attendance-item"
-								v-for="(order, index) in customer.new_orders" :key="index"
+								v-for="(order, index) in customer.new_orders"
+								:key="index"
 							>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
@@ -145,12 +153,28 @@
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
 								>
+									<span
+										v-if="
+											order.order_type === 'Altara Pay' &&
+												!order.paystack_auth_code && order.payment_gateway === 'Paystack'
+										"
+									>
+										<PaystackModal
+											:order="order"
+											:customer="customer"
+											:key="
+												order.amortization[0]
+													? order.amortization[0].new_order_id
+													: index
+											"
+										></PaystackModal>
+									</span>
 									{{ order.order_number }}
 								</div>
 								<div
 									class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
 								>
-									{{ order.product.name }}
+									{{ order.product.name | truncate(50) }}
 								</div>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
@@ -161,7 +185,11 @@
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
 								>
 									{{ order.sales_type.name }}
-										<discount v-if="showDiscount(order)" class="discount_badge" :percent="percentage(order)"  />
+									<discount
+										v-if="showDiscount(order)"
+										class="discount_badge"
+										:percent="percentage(order)"
+									/>
 								</div>
 								<div
 									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
@@ -208,12 +236,7 @@
 						</div>
 					</div>
 
-					<!-- <LogForm
-            v-if="logger === 'cash' && customer.orders.length > 0"
-            :customerId="customer.id"
-            :order-id="customer.orders[0].order.id"
-            @done="this.done"
-          /> -->
+					
 
 					<PaymentLog
 						:customerId="customer.id"
@@ -372,19 +395,27 @@
 												<tr>
 													<th>Repayment</th>
 													<td
-														v-for="(caption, index) in activeOrder.repaymentCaptions"
-														v-html="caption" :key="index"
+														v-for="(caption,
+														index) in activeOrder.repaymentCaptions"
+														v-html="caption"
+														:key="index"
 													></td>
 												</tr>
 												<tr class="table-separator">
 													<th>Due Date</th>
-													<td v-for="(date, index) in activeOrder.dueDates" :key="index">
+													<td
+														v-for="(date, index) in activeOrder.dueDates"
+														:key="index"
+													>
 														{{ date }}
 													</td>
 												</tr>
 												<tr>
 													<th>Actual Pay Day</th>
-													<td v-for="(date, index) in activeOrder.actualPayDates" :key="index">
+													<td
+														v-for="(date, index) in activeOrder.actualPayDates"
+														:key="index"
+													>
 														{{ date }}
 													</td>
 												</tr>
@@ -392,7 +423,8 @@
 													<th>Status</th>
 													<td
 														:class="status.class"
-														v-for="(status,index) in activeOrder.paymentStatusClasses"
+														v-for="(status,
+														index) in activeOrder.paymentStatusClasses"
 														:key="index"
 													>
 														<i :class="status.icon" class="fas"></i>
@@ -400,15 +432,19 @@
 												</tr>
 												<tr class="table-separator">
 													<th>Repayment Amount</th>
-													<td v-for="(payment, index) in activeOrder.amountsToBePaid" 
-													:key="index">
+													<td
+														v-for="(payment,
+														index) in activeOrder.amountsToBePaid"
+														:key="index"
+													>
 														{{ $formatCurrency(payment) }}
 													</td>
 												</tr>
 												<tr>
 													<th>Actual Amount Paid</th>
 													<td
-														v-for="(payment, index) in activeOrder.actualAmountsPaid"
+														v-for="(payment,
+														index) in activeOrder.actualAmountsPaid"
 														:key="index"
 														@click="updateAmmo(armo)"
 													>
@@ -419,7 +455,8 @@
 													<th>Payment Method</th>
 													<td
 														class="text-capitalize"
-														v-for="(repaymentMethod, index) in activeOrder.paymentMethods"
+														v-for="(repaymentMethod,
+														index) in activeOrder.paymentMethods"
 														:key="index"
 													>
 														{{
@@ -434,7 +471,8 @@
 													<th>Bank</th>
 													<td
 														class="text-capitalize"
-														v-for="(repaymentBank, key) in activeOrder.paymentBanks"
+														v-for="(repaymentBank,
+														key) in activeOrder.paymentBanks"
 														:key="key"
 													>
 														{{ Order.convertToName(repaymentBank, 'banks') }}
@@ -502,8 +540,10 @@
 													<th>Collected By</th>
 													<th>Action</th>
 												</tr>
-												<tr v-for="(payment, index) in paymentForm.payments"
-												:key="index">
+												<tr
+													v-for="(payment, index) in paymentForm.payments"
+													:key="index"
+												>
 													<th>{{ index + 1 }}</th>
 													<th>
 														<div
@@ -710,7 +750,10 @@
 	import PaymentLog from '../../../components/PaymentLog';
 	import DatePicker from 'vue2-datepicker';
 	import 'vue2-datepicker/index.css';
-	import Discount from '../../../components/discount.vue'
+	import Discount from '../../../components/discount.vue';
+	import paystack from 'vue-paystack';
+	import PaystackModal from '../../../components/Paystack/PaystackModal';
+	import { EventBus } from '../../../utilities/event-bus';
 
 	export default {
 		components: {
@@ -723,7 +766,9 @@
 			PaymentLog,
 			NewOrderAmortization,
 			DatePicker,
-			Discount
+			Discount,
+			paystack,
+			PaystackModal,
 		},
 		props: { logger: null },
 
@@ -746,6 +791,7 @@
 				ammo_item: {},
 				actual_amount: null,
 				activeOrder: null,
+				authorization_code: null,
 				headers: [
 					'Date',
 					'Order No.',
@@ -763,12 +809,26 @@
 				apiURL: {
 					product: `/api/product`,
 				},
+				clickedOrder: null,
 				paymentMeths: [],
-				lateFEES: null
+				lateFEES: null,
+				showPaystack: false,
+				verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
+				paystack_auth_code_url: '/api/pay_stack_auth_code',
+				paystackkey: process.env.VUE_APP_PAYSTACK_KEY || '',
+				paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || '',
+
+				paystackReference: null,
 			};
 		},
 
 		methods: {
+			
+			getClickedOrder(order) {
+				this.clickedOrder = order;
+			},
+			
+
 			async submitForm() {
 				const updateData = {
 					product_id: this.selectedProduct.id,
@@ -786,7 +846,7 @@
 							icon: 'success',
 							title: 'Order Successfully Updated',
 						});
-						
+
 						let x = this.customer.new_orders.findIndex((elem) => {
 							return elem.id === this.currentOrder.id;
 						});
@@ -828,14 +888,14 @@
 				} else Flash.setError('Customer not found.', 5000);
 				this.$LIPS(false);
 			},
-		async getLateFee(order) {
-     			 try {
-        const fetchLateFee = await get( `api/late_fee?order=${order?.id}`);
-        this.lateFEES = fetchLateFee.data.data.data;
-      } catch (err) {
-        this.$displayErrorMessage(err);
-      }
-    },
+			async getLateFee(order) {
+				try {
+					const fetchLateFee = await get(`api/late_fee?order=${order?.id}`);
+					this.lateFEES = fetchLateFee.data.data.data;
+				} catch (err) {
+					this.$displayErrorMessage(err);
+				}
+			},
 			done() {
 				this.show = false;
 			},
@@ -844,7 +904,8 @@
 				this.$LIPS(true);
 				get(`/api/customer/lookup/${id}`)
 					.then((res) => {
-					this.updateView(res.data)})
+						this.updateView(res.data);
+					})
 					.catch((e) => {
 						this.$LIPS(false);
 						Flash.setError('Error Fetching customer detail');
@@ -861,8 +922,8 @@
 				}
 			},
 
-		async displayAmortization(order) {
-			await this.getLateFee(order)
+			async displayAmortization(order) {
+				await this.getLateFee(order);
 				if (order.status) {
 					this.newOrder = true;
 					this.order = order;
@@ -921,11 +982,10 @@
 
 					this.paymentForm.payments.push(newPaymentData);
 				} else {
-          this.paymentMeths = this.getPaymentMethods.filter(item => {
-			        return item.name !== 'direct-debit'
-			    });
+					this.paymentMeths = this.getPaymentMethods.filter((item) => {
+						return item.name !== 'direct-debit';
+					});
 
-          
 					const level = this.activeOrder.repaymentLevel;
 					const nextRepayment = parseInt(
 						level + this.paymentForm.payments.length + 1
@@ -964,7 +1024,6 @@
 				this.paymentForm.payments.splice(index, 1);
 				this.reNumber();
 			},
-			
 
 			selectedItem(value) {
 				this.selectedProduct = value;
@@ -988,7 +1047,7 @@
 				});
 			},
 
-			preparePayments(index=0) {
+			preparePayments(index = 0) {
 				if (!this.canAddPayment) return;
 				let payments = {};
 				this.paymentForm.payments.forEach((payment) => {
@@ -1047,7 +1106,7 @@
 					repayment_id: this.activeOrder.order.id,
 					order_id: this.activeOrder.order.id,
 					amount: this.paymentForm.payments[0]._pay,
-					payment_method_id: this.paymentForm.payments[index]._payment_method
+					payment_method_id: this.paymentForm.payments[index]._payment_method,
 				};
 				post(`/api/repayment`, data)
 					.then(async (res) => {
@@ -1097,20 +1156,32 @@
 			newOrderItem(value) {
 				this.updateView(value);
 			},
-			showDiscount(order){                        
-                        if (order.order_discount &&  order?.order_discount?.slug !== '0_discount'){
-                              return true
-                        }else{
-                            return false
-                        }
-                },
-				percentage(order){
-				return order?.order_discount?.percentage_discount
+			showDiscount(order) {
+				if (
+					order.order_discount &&
+					order?.order_discount?.slug !== '0_discount'
+				) {
+					return true;
+				} else {
+					return false;
+				}
 			},
+			percentage(order) {
+				return order?.order_discount?.percentage_discount;
+			},
+			updateCustomerData(data){
+
+				let element = this.customer.new_orders.find(item => {
+					return item.id === data.order
+				});
+				element.paystack_auth_code = data.auth_code;
+				let index = this.customer.new_orders.indexOf(element);
+				Vue.set(this.$data.customer.new_orders, index, element);
+			}
 		},
 
-
 		computed: {
+			
 			...mapGetters([
 				'getBanks',
 				'getPaymentMethods',
@@ -1139,12 +1210,17 @@
 			},
 		},
 
+		created() {
+			EventBus.$on('reloadUser', this.updateCustomerData);
+		},
+
 		async mounted() {
 			this.$prepareBanks();
 			this.$prepareBranches();
 			this.$preparePaymentMethods();
-			
 		},
+
+
 	};
 </script>
 
@@ -1159,8 +1235,7 @@
 	.pointer {
 		cursor: pointer;
 	}
-	.discount_badge{
-		margin-left:10px;
+	.discount_badge {
+		margin-left: 10px;
 	}
-
 </style>

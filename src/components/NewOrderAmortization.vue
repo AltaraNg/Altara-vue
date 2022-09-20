@@ -180,7 +180,7 @@
           </table>
         </div>
         </div>
-       
+
         <h5 class="mt-5 mb-0">Payment Summary</h5>
         <table class="table table-bordered">
           <tbody class="text-center">
@@ -341,6 +341,17 @@
                       v-validate="'required'"
 										/>
 									</div>
+                  <div class="col form-group">
+                    <label for="amount" class="form-control-label"
+                      >Date Paid</label
+                    >
+                    <date-picker
+                      class="w-100"
+                      v-model="lateFeeItem.date_paid"
+                      valueType="format"
+                      placeholder="Date"
+                    ></date-picker>
+                  </div>
 								</div>
 								<div class="row">
 									<div class="col form-group">
@@ -425,7 +436,7 @@ export default {
         id: Auth.state.user_id,
       },
       amortizationData: this.order.amortization,
-     
+
     };
   },
   methods: {

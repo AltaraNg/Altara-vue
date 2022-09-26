@@ -224,7 +224,9 @@
 									<span
 										v-if="
 											order.payment_gateway === 'Paystack' &&
-												order.paystack_auth_code != null && role === roles.software_engineer
+												order.paystack_auth_code != null &&
+												role === roles.software_engineer &&
+												order.status !== 'Completed'
 										"
 									>
 										<CustomDirectDebitModalButton
@@ -853,8 +855,7 @@
 	import PaystackModal from '../../../components/Paystack/PaystackModal';
 	import CustomDirectDebitModalButton from '../../../components/Paystack/CustomDirectDebitModalButton.vue';
 	import { EventBus } from '../../../utilities/event-bus';
-  import Roles from "../../../utilities/roles";
-
+	import Roles from '../../../utilities/roles';
 
 	export default {
 		components: {
@@ -911,7 +912,7 @@
 				apiURL: {
 					product: `/api/product`,
 				},
-        roles: Roles,
+				roles: Roles,
 				clickedOrder: null,
 				paymentMeths: [],
 				lateFEES: null,
@@ -921,7 +922,7 @@
 				paystack_auth_code_url: '/api/pay_stack_auth_code',
 				paystackkey: process.env.VUE_APP_PAYSTACK_KEY || '',
 				paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || '',
-        role: '',
+				role: '',
 
 				paystackReference: null,
 			};
@@ -1322,7 +1323,6 @@
 			this.$prepareBranches();
 			this.$preparePaymentMethods();
 			this.role = parseInt(localStorage.getItem('role'));
-      
 		},
 	};
 </script>

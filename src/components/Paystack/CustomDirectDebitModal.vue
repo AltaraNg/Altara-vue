@@ -34,12 +34,21 @@
 
 							<div class="form-group">
 								<label>Amount</label>
-								<input
+								<currency-input
+									class="form-control"
+									placeholder="Amount"
+									v-model="amount"
+									:options="{
+										currency: 'NGN',
+										hideGroupingSeparatorOnFocus: false,
+									}"
+								></currency-input>
+								<!-- <input
 									type="number"
 									class="form-control"
 									placeholder="Amount"
 									v-model="amount"
-								/>
+								/> -->
 							</div>
 						</div>
 					</div>
@@ -67,8 +76,12 @@
 	import { post } from '../../utilities/api';
 	import Flash from '../../utilities/flash';
 	import { EventBus } from '../../utilities/event-bus';
+	import CurrencyInput from '../CurrencyInput.vue';
 
 	export default {
+		components: {
+			CurrencyInput,
+		},
 		data() {
 			return {
 				order: null,
@@ -110,7 +123,6 @@
 				await Vue.set(this.$data, 'amount', amount);
 				this.toggleModal();
 			},
-
 			toggleModal() {
 				$('#CustomDirectDebitModal').modal('toggle');
 			},
@@ -119,14 +131,13 @@
 				this.$scrollToTop();
 				EventBus.$emit('updateUser', this.order.customer_id);
 				this.toggleModal();
-				this.$LIPS(false);
 				this.message = null;
 			},
 		},
-
 		created() {
 			EventBus.$on('CustomDirectDebitModal', this.handleModalToggle);
 		},
+		components: { CurrencyInput },
 	};
 </script>
 <style scoped>

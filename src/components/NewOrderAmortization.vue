@@ -86,7 +86,7 @@
               <tr class="table-separator status-row">
                 <th>Status</th>
                 <td v-for="armo in amortizationData">
-                  <div v-if="armo.actual_payment_date" class="green">
+                  <div v-if="armo.actual_payment_date && armo.actual_amount !== 0" class="green">
                     <i class="fa fa-check"></i>
                   </div>
                   <div

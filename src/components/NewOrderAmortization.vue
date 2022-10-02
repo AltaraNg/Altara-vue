@@ -61,7 +61,7 @@
             <div>Amortization Schedule</div>
           </div>
         </h5>
-        <div class="amor-table">
+        <div>
           <table class="table table-bordered">
             <tbody class="text-center">
               <tr>
@@ -86,7 +86,7 @@
               <tr class="table-separator status-row">
                 <th>Status</th>
                 <td v-for="armo in amortizationData">
-                  <div v-if="armo.actual_payment_date && armo.actual_amount !== 0" class="green">
+                  <div v-if="armo.actual_payment_date && armo.actual_amount === armo.expected_amount" class="green">
                     <i class="fa fa-check"></i>
                   </div>
                   <div
@@ -584,7 +584,7 @@ export default {
 </script>
 <style scoped>
 .amor-table {
-  width: 70vw;
+  width: 80%;
   overflow-x: auto;
 }
 .green {

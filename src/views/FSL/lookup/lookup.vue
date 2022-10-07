@@ -43,8 +43,11 @@
 								:key="order.index"
 							>
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
-									style="max-width: 100px"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    align-items-center
+                  "
 								>
 									<span class="user mx-auto">{{ index + 1 }}</span>
 									<span v-if="$route.meta.customSMS">
@@ -54,42 +57,76 @@
 											:key="order.order.id"
 										/>
 									</span>
-									<span>
-										<!-- <img src="../../../../svg/download.svg" /> -->
-									</span>
 								</div>
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    user-name
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									{{ formatDate(order.order.order_date) }}
 								</div>
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    user-name
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									{{ order.order.id }}
 								</div>
 								<div
-									class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-3 col-md col-lg
+                    d-flex
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									{{ order.order.store_product.product_name }}
 								</div>
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									{{ $formatCurrency(order.order.product_price) }}
 								</div>
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									{{ order.order.sales_category.name }}
 								</div>
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									{{ customer.employment_status }}
 								</div>
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									<button
 										:class="
@@ -113,7 +150,6 @@
 										<!--                                        // TODO:: cleanup-->
 									</button>
 								</div>
-								
 							</div>
 							<div
 								class="mb-3 row attendance-item"
@@ -121,7 +157,11 @@
 								:key="index"
 							>
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    align-items-center
+                  "
 									style="max-width: 100px"
 								>
 									<span
@@ -146,17 +186,29 @@
 								</div>
 
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									{{ formatDate(order.order_date) }}
 								</div>
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    user-name
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									<span
 										v-if="
 											order.order_type === 'Altara Pay' &&
-												!order.paystack_auth_code && order.payment_gateway === 'Paystack'
+												!order.paystack_auth_code &&
+												order.payment_gateway === 'Paystack'
 										"
 									>
 										<PaystackModal
@@ -169,20 +221,48 @@
 											"
 										></PaystackModal>
 									</span>
+									<span
+										v-if="
+											order.payment_gateway === 'Paystack' &&
+												order.paystack_auth_code != null &&
+												role === roles.software_engineer &&
+												order.status !== 'Completed'
+										"
+									>
+										<CustomDirectDebitModalButton
+											:order="order"
+											:key="order.id"
+										></CustomDirectDebitModalButton>
+									</span>
 									{{ order.order_number }}
 								</div>
 								<div
-									class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-3 col-md col-lg
+                    d-flex
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									{{ order.product.name | truncate(50) }}
 								</div>
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									{{ $formatCurrency(order.product_price) }}
 								</div>
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									{{ order.sales_type.name }}
 									<discount
@@ -192,13 +272,23 @@
 									/>
 								</div>
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									{{ order.customer.employment_status }}
 								</div>
 
 								<div
-									class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
+									class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									<button
 										:class="
@@ -228,15 +318,19 @@
 						<div class="tab-pane active text-center" v-else>
 							<div class="mb-3 row attendance-item">
 								<div
-									class="col d-flex light-heading align-items-center justify-content-center"
+									class="
+                    col
+                    d-flex
+                    light-heading
+                    align-items-center
+                    justify-content-center
+                  "
 								>
 									No records found!
 								</div>
 							</div>
 						</div>
 					</div>
-
-					
 
 					<PaymentLog
 						:customerId="customer.id"
@@ -642,7 +736,13 @@
 													<th>
 														<button
 															@click="deletePayment(index)"
-															class="ml-2 btn status status-sm my-sm-2 not-approved"
+															class="
+                                ml-2
+                                btn
+                                status status-sm
+                                my-sm-2
+                                not-approved
+                              "
 														>
 															<i class="fas fa-times"></i>
 														</button>
@@ -753,7 +853,9 @@
 	import Discount from '../../../components/discount.vue';
 	import paystack from 'vue-paystack';
 	import PaystackModal from '../../../components/Paystack/PaystackModal';
+	import CustomDirectDebitModalButton from '../../../components/Paystack/CustomDirectDebitModalButton.vue';
 	import { EventBus } from '../../../utilities/event-bus';
+	import Roles from '../../../utilities/roles';
 
 	export default {
 		components: {
@@ -769,6 +871,7 @@
 			Discount,
 			paystack,
 			PaystackModal,
+			CustomDirectDebitModalButton,
 		},
 		props: { logger: null },
 
@@ -809,25 +912,26 @@
 				apiURL: {
 					product: `/api/product`,
 				},
+				roles: Roles,
 				clickedOrder: null,
 				paymentMeths: [],
 				lateFEES: null,
 				showPaystack: false,
+				ShowCustomDirectDebitModal: false,
 				verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
 				paystack_auth_code_url: '/api/pay_stack_auth_code',
 				paystackkey: process.env.VUE_APP_PAYSTACK_KEY || '',
 				paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || '',
+				role: '',
 
 				paystackReference: null,
 			};
 		},
 
 		methods: {
-			
 			getClickedOrder(order) {
 				this.clickedOrder = order;
 			},
-			
 
 			async submitForm() {
 				const updateData = {
@@ -923,6 +1027,7 @@
 			},
 
 			async displayAmortization(order) {
+				//   await this.chargeCustomerWithCustomDirectDebit(order);
 				await this.getLateFee(order);
 				if (order.status) {
 					this.newOrder = true;
@@ -1169,19 +1274,17 @@
 			percentage(order) {
 				return order?.order_discount?.percentage_discount;
 			},
-			updateCustomerData(data){
-
-				let element = this.customer.new_orders.find(item => {
-					return item.id === data.order
+			updateCustomerData(data) {
+				let element = this.customer.new_orders.find((item) => {
+					return item.id === data.order;
 				});
 				element.paystack_auth_code = data.auth_code;
 				let index = this.customer.new_orders.indexOf(element);
 				Vue.set(this.$data.customer.new_orders, index, element);
-			}
+			},
 		},
 
 		computed: {
-			
 			...mapGetters([
 				'getBanks',
 				'getPaymentMethods',
@@ -1212,15 +1315,15 @@
 
 		created() {
 			EventBus.$on('reloadUser', this.updateCustomerData);
+			EventBus.$on('updateUser', this.processForm);
 		},
 
 		async mounted() {
 			this.$prepareBanks();
 			this.$prepareBranches();
 			this.$preparePaymentMethods();
+			this.role = parseInt(localStorage.getItem('role'));
 		},
-
-
 	};
 </script>
 

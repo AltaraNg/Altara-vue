@@ -86,17 +86,20 @@
               <tr class="table-separator status-row">
                 <th>Status</th>
                 <td v-for="armo in amortizationData">
-                  <div v-if="armo.actual_payment_date && armo.actual_amount === armo.expected_amount && Date.parse(armo.actual_payment_date) <= Date.parse(armo.expected_payment_date)" class="green">
+                  <div v-if="armo.actual_payment_date && armo.actual_amount === armo.expected_amount && Date.parse(armo.actual_payment_date) <= Date.parse(armo.expected_payment_date)" class="green status-sign">
                     <i class="fa fa-check"></i>
                   </div>
-                  <div v-else-if="armo.actual_payment_date && armo.actual_amount === armo.expected_amount && Date.parse(armo.actual_payment_date) > Date.parse(armo.expected_payment_date)" class="grey">
+                  <div v-else-if="armo.actual_payment_date && armo.actual_amount === armo.expected_amount && Date.parse(armo.actual_payment_date) > Date.parse(armo.expected_payment_date)" class="magenta status-sign">
                     <i class="fa fa-check"></i>
+                  </div>
+                  <div v-else-if="armo.actual_payment_date && armo.actual_amount < armo.expected_amount " class="pending status-sign">
+                    <i class="fa fa-hourglass-start"></i>
                   </div>
                   <div
                     v-else-if="
                       Date.parse(armo.expected_payment_date) < Date.now()
                     "
-                    class="red"
+                    class="red status-sign"
                   >
                     <i class="fa fa-times"></i>
                   </div>
@@ -590,24 +593,27 @@ export default {
   width: 80%;
   overflow-x: auto;
 }
-.green {
-  color: #0cd68c;
+.status-sign{
   width: 100%;
   font-size: 1.3em;
+}
+
+.green {
+  color: #0cd68c;  
   background: rgba(10, 232, 150, 0.274);
 }
 
-.grey {
-  color: #8fa39b;
-  width: 100%;
-  font-size: 1.3em;
-  background: rgba(0, 163, 104, 0.09);
+.magenta {
+  color: #FF00FF;  
+  background: rgba(200, 0, 140, 0.09);
+}
+.pending {
+  color: #FFA500;  
+  background: rgba(253, 253, 150, 0.5);
 }
 .red {
-  color: red;
-  font-size: 1.3em;
-  width: 100%;
-  background: rgba(163, 0, 104, 0.09);
+  color: red;  
+  background: rgba(236, 0, 0, 0.09);
 }
 .td-back {
   color: #00a368;

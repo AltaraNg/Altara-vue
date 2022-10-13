@@ -354,6 +354,10 @@
                   <td>{{ $formatCurrency(pPrice) }}</td>
                 </tr>
                 <tr class="table-separator">
+                  <th>Estimating Downpayment</th>
+                  <td>{{ $formatCurrency(fPayment) }} <span style="font-size: 12px; text-decoration: underline; font-weight: 900;" v-if="singleRepayment"> + {{ $formatCurrency(singleRepayment)}}</span> </td>
+                </tr>
+                <tr class="table-separator">
                   <th>First Payment</th>
                   <td>{{ $formatCurrency(fPayment) }}</td>
                 </tr>
@@ -890,6 +894,7 @@ export default {
       }
     },
     getCalc() {
+      this.getProduct()
       try {
         this.salesLogForm.customer_id = this.customerId;
         const data0 = {
@@ -936,6 +941,11 @@ export default {
         this.rPayment = rePayment;
         this.pPrice = total;
         this.test1 = false;
+        const months = this.rDuration/30
+        const cycle = 28/this.repaymentCircle
+        this.singleRepayment = this.rPayment/(months * cycle)
+        console.log(this.singleRepayment,  this.repaymentCircle);
+        
       } catch (e) {
         // this.$swal({
         //     icon: "error",
@@ -986,6 +996,8 @@ export default {
     },
     selectedItem(value) {
       this.selectedProduct = value;
+      console.log(value);
+      
       this.salesLogForm = {
         ...this.salesLogForm,
         product_name: this.selectedProduct.product_name,
@@ -996,7 +1008,12 @@ export default {
     },
     async getProduct() {
       try {
-        const fetchProduct = await get(this.apiUrls.getProduct + this.product);
+        const fetchProduct = await get(this.apiUrls.getProduct);
+        this.onlyCashloans = fetchProduct.data.data.data.filter((item)=>{
+         return item.product_name.includes('cash')
+        })
+        console.log(this.onlyCashloans);
+        
       } catch (err) {
         this.$displayErrorMessage(err);
       }

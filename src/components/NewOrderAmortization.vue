@@ -86,10 +86,10 @@
               <tr class="table-separator status-row">
                 <th>Status</th>
                 <td v-for="armo in amortizationData">
-                  <div v-if="armo.actual_payment_date && armo.actual_amount === armo.expected_amount && Date.parse(armo.actual_payment_date) <= Date.parse(armo.expected_payment_date)" class="green status-sign">
+                  <div v-if="armo.actual_payment_date && armo.actual_amount >= armo.expected_amount && Date.parse(armo.actual_payment_date) <= Date.parse(armo.expected_payment_date)" class="green status-sign">
                     <i class="fa fa-check"></i>
                   </div>
-                  <div v-else-if="armo.actual_payment_date && armo.actual_amount === armo.expected_amount && Date.parse(armo.actual_payment_date) > Date.parse(armo.expected_payment_date)" class="magenta status-sign">
+                  <div v-else-if="armo.actual_payment_date && armo.actual_amount >= armo.expected_amount && Date.parse(armo.actual_payment_date) > Date.parse(armo.expected_payment_date)" class="magenta status-sign">
                     <i class="fa fa-check"></i>
                   </div>
                   <div v-else-if="armo.actual_payment_date && armo.actual_amount < armo.expected_amount " class="pending status-sign">

@@ -353,18 +353,40 @@
                   <th>Product Price</th>
                   <td>{{ $formatCurrency(pPrice) }}</td>
                 </tr>
-                <tr class="table-separator">
+                <tr
+                  class="table-separator"
+                  v-if="singleRepayment && addDownpayment"
+                >
                   <th>Estimating Downpayment</th>
-                  <td>{{ $formatCurrency(fPayment) }} <span style="font-size: 12px; text-decoration: underline; font-weight: 900;" v-if="singleRepayment"> + {{ $formatCurrency(singleRepayment)}}</span> </td>
+                  <td>
+                    {{ $formatCurrency(fPayment) }}
+                    <span
+                      style="font-size: 12px; text-decoration: underline; font-weight: 900;"
+                    >
+                      + {{ $formatCurrency(singleRepayment) }}</span
+                    >
+                  </td>
                 </tr>
                 <tr class="table-separator">
                   <th>First Payment</th>
-                  <td>{{ $formatCurrency(fPayment) }}</td>
+                  <td>
+                    {{
+                      $formatCurrency(
+                        computedPayment(fPayment + singleRepayment, fPayment)
+                      )
+                    }}
+                  </td>
                 </tr>
 
                 <tr class="table-separator">
                   <th>Repayment</th>
-                  <td class>{{ $formatCurrency(rPayment) }}</td>
+                  <td class>
+                    {{
+                      $formatCurrency(
+                        computedPayment(rPayment - singleRepayment, rPayment)
+                      )
+                    }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -416,7 +438,7 @@
                           class="modal_discount"
                           v-if="
                             salesLogForm.discount !== '0_discount' &&
-                            rPayment > 0
+                              rPayment > 0
                           "
                           :percent="selected_discount.percentage_discount"
                         />
@@ -541,6 +563,7 @@ export default {
   },
   data() {
     return {
+      addDownpayment: false,
       productOrder: false,
       card_expiry: null,
       error: {},
@@ -630,6 +653,7 @@ export default {
       isBank54: false,
       financed_by: "altara",
       flag: null,
+      singleRepayment: null,
     };
   },
   async beforeMount() {
@@ -649,6 +673,7 @@ export default {
       handler(newData) {
         this.watchBusinessType(newData);
         this.watchSalesLogForm(newData);
+        this.watchCashPrice(newData);
       },
     },
     "salesLogForm.business_type_id": {
@@ -657,6 +682,19 @@ export default {
         this.watchSalesLogForm(newData);
         this.getCalc();
       },
+    },
+    "salesLogForm.product": {
+      handler(newData) {
+        this.watchCashPrice(newData);
+        this.getCalc();
+      },
+      deep: true,
+    },
+    "salesLogForm.repayment_duration_id": {
+      handler(newData) {
+        this.watchCashPrice(newData);
+      },
+      deep: true,
     },
   },
 
@@ -695,6 +733,24 @@ export default {
     },
   },
   methods: {
+    computedPayment(firstvalue, secondvalue) {
+      if (this.singleRepayment && this.addDownpayment) {
+        return firstvalue;
+      } else return secondvalue;
+    },
+    watchCashPrice() {
+      if (
+        this.salesLogForm?.product?.product?.category == "cash loan" &&
+        this.salesLogForm?.repayment_duration_id?.name == "six_months"
+      ) {
+        this.addDownpayment =
+          (this.salesLogForm.sales_category_id == 2 &&
+            this.selectedProduct.price >= 120000) ||
+          this.salesLogForm.sales_category_id == 1 && this.selectedProduct.price >= 110000
+            ? true
+            : false;
+      } else this.addDownpayment = false;
+    },
     watchSalesLogForm() {
       this.salesLogForm.discount =
         this.salesLogForm?.sales_category_id == "2" &&
@@ -894,7 +950,6 @@ export default {
       }
     },
     getCalc() {
-      this.getProduct()
       try {
         this.salesLogForm.customer_id = this.customerId;
         const data0 = {
@@ -941,11 +996,21 @@ export default {
         this.rPayment = rePayment;
         this.pPrice = total;
         this.test1 = false;
-        const months = this.rDuration/30
-        const cycle = 28/this.repaymentCircle
-        this.singleRepayment = this.rPayment/(months * cycle)
-        console.log(this.singleRepayment,  this.repaymentCircle);
-        
+        const months = this.rDuration / 30;
+        const cycle = 28 / this.repaymentCircle;
+        const additionalRepayment = this.rPayment / (months * cycle);
+        if (
+          this.selectedProduct.price >= 110000 &&
+          this.selectedProduct.price < 125000
+        ) {
+          this.singleRepayment =
+            cycle == 1 ? additionalRepayment / 2 : additionalRepayment;
+        } else if (this.selectedProduct.price > 125000) {
+          this.singleRepayment =
+            cycle == 1 ? additionalRepayment : additionalRepayment * 2;
+
+          console.log(this.salesLogForm.sales_category_id, "sales");
+        }
       } catch (e) {
         // this.$swal({
         //     icon: "error",
@@ -997,10 +1062,11 @@ export default {
     selectedItem(value) {
       this.selectedProduct = value;
       console.log(value);
-      
+
       this.salesLogForm = {
         ...this.salesLogForm,
         product_name: this.selectedProduct.product_name,
+        product: this.selectedProduct,
       };
       this.test0 = false;
       this.watchSalesLogForm();
@@ -1009,11 +1075,10 @@ export default {
     async getProduct() {
       try {
         const fetchProduct = await get(this.apiUrls.getProduct);
-        this.onlyCashloans = fetchProduct.data.data.data.filter((item)=>{
-         return item.product_name.includes('cash')
-        })
-        console.log(this.onlyCashloans);
-        
+        this.onlyCashloans = fetchProduct.data.data.data.filter((item) => {
+          return item.product_name.includes("cash");
+        });
+        console.log(this.onlyCashloans, "all product");
       } catch (err) {
         this.$displayErrorMessage(err);
       }
@@ -1209,7 +1274,7 @@ export default {
           Flash.setError("Error: " + err.message);
         });
     },
-    canLogBank54Payment: function () {
+    canLogBank54Payment: function() {
       this.flag = localStorage.getItem("flag");
       return this.flag === "beta";
     },

@@ -745,8 +745,8 @@ export default {
       ) {
         this.addDownpayment =
           (this.salesLogForm.sales_category_id == 2 &&
-            this.selectedProduct.price >= 120000) ||
-          this.salesLogForm.sales_category_id == 1 && this.selectedProduct.price >= 110000
+            this.selectedProduct.price >= 110000) ||
+          this.salesLogForm.sales_category_id == 1 && this.selectedProduct.price >= 80000
             ? true
             : false;
       } else this.addDownpayment = false;
@@ -1001,12 +1001,13 @@ export default {
         const cycle = 28 / this.repaymentCircle;
         const additionalRepayment = this.rPayment / (months * cycle);
         if (
-          this.selectedProduct.price >= 110000 &&
-          this.selectedProduct.price < 125000
+         ( this.selectedProduct.price >= 80000 &&
+          this.selectedProduct.price < 110000) || (this.salesLogForm.sales_category_id == 2 &&
+            this.selectedProduct.price >= 110000)
         ) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment / 2 : additionalRepayment;
-        } else if (this.selectedProduct.price > 125000) {
+        } else if (this.selectedProduct.price > 110000) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment : additionalRepayment * 2;
         }

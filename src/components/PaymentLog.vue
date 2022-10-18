@@ -678,6 +678,7 @@ export default {
     },
     "salesLogForm.business_type_id": {
       handler(newData) {
+        this.watchCashPrice(newData);
         this.watchBusinessType(newData);
         this.watchSalesLogForm(newData);
         this.getCalc();
@@ -739,14 +740,16 @@ export default {
       } else return secondvalue;
     },
     watchCashPrice() {
+      console.log(this.salesLogForm.business_type_id, 'hello');
+      
       if (
         this.salesLogForm?.product?.product?.category == "cash loan" &&
         this.salesLogForm?.repayment_duration_id?.name == "six_months"
       ) {
         this.addDownpayment =
-          (this.salesLogForm.sales_category_id == 2 &&
+          ((this.salesLogForm.business_type_id.id == 5 || this.salesLogForm.business_type_id.id == 10) &&
             this.selectedProduct.price >= 110000) ||
-          this.salesLogForm.sales_category_id == 1 && this.selectedProduct.price >= 80000
+          this.salesLogForm.business_type_id.id == 7 && this.selectedProduct.price >= 80000
             ? true
             : false;
       } else this.addDownpayment = false;
@@ -1002,12 +1005,12 @@ export default {
         const additionalRepayment = this.rPayment / (months * cycle);
         if (
          ( this.selectedProduct.price >= 80000 &&
-          this.selectedProduct.price < 110000) || (this.salesLogForm.sales_category_id == 2 &&
+          this.selectedProduct.price < 110000 &&  this.salesLogForm.business_type_id.id == 7) || ((this.salesLogForm.business_type_id.id == 5 || this.salesLogForm.business_type_id.id == 10) &&
             this.selectedProduct.price >= 110000)
         ) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment / 2 : additionalRepayment;
-        } else if (this.selectedProduct.price > 110000) {
+        } else if (this.selectedProduct.price > 110000 &&  this.salesLogForm.business_type_id.id == 7) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment : additionalRepayment * 2;
         }

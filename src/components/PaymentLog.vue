@@ -868,6 +868,7 @@ export default {
       this.cardError = false;
       this.salesLogForm.customer_id = this.customerId;
       const data = {
+        ammortization_downpayment:this.singleRepayment,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
@@ -1008,8 +1009,6 @@ export default {
         } else if (this.selectedProduct.price > 125000) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment : additionalRepayment * 2;
-
-          console.log(this.salesLogForm.sales_category_id, "sales");
         }
       } catch (e) {
         // this.$swal({
@@ -1074,11 +1073,7 @@ export default {
     },
     async getProduct() {
       try {
-        const fetchProduct = await get(this.apiUrls.getProduct);
-        this.onlyCashloans = fetchProduct.data.data.data.filter((item) => {
-          return item.product_name.includes("cash");
-        });
-        console.log(this.onlyCashloans, "all product");
+        const fetchProduct = await get(this.apiUrls.getProduct + this.product);
       } catch (err) {
         this.$displayErrorMessage(err);
       }

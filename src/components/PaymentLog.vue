@@ -740,16 +740,16 @@ export default {
       } else return secondvalue;
     },
     watchCashPrice() {
-      console.log(this.salesLogForm.business_type_id, 'hello');
+      console.log(this.salesLogForm?.business_type_id?.id);
       
       if (
         this.salesLogForm?.product?.product?.category == "cash loan" &&
         this.salesLogForm?.repayment_duration_id?.name == "six_months"
       ) {
         this.addDownpayment =
-          ((this.salesLogForm.business_type_id.id == 5 || this.salesLogForm.business_type_id.id == 10) &&
-            this.selectedProduct.price >= 110000) ||
-          this.salesLogForm.business_type_id.id == 7 && this.selectedProduct.price >= 80000
+          ((this.salesLogForm?.business_type_id?.id == 5 || this.salesLogForm?.business_type_id?.id == 10) &&
+            this.selectedProduct.price > 110000) ||
+          (this.salesLogForm?.business_type_id?.id == 9 || this.salesLogForm?.business_type_id?.id == 7) && this.selectedProduct.price > 80000
             ? true
             : false;
       } else this.addDownpayment = false;
@@ -1001,11 +1001,14 @@ export default {
         this.pPrice = total;
         this.test1 = false;
         const months = this.rDuration / 30;
-        const cycle = 28 / this.repaymentCircle;
+       
+        
+        const cycle = Math.ceil(28 / this.repaymentCircle);
+         console.log(cycle, 'repaymentduration');
         const additionalRepayment = this.rPayment / (months * cycle);
         if (
          ( this.selectedProduct.price >= 80000 &&
-          this.selectedProduct.price < 110000 &&  this.salesLogForm.business_type_id.id == 7) || ((this.salesLogForm.business_type_id.id == 5 || this.salesLogForm.business_type_id.id == 10) &&
+          this.selectedProduct.price < 110000 &&  this.salesLogForm?.business_type_id?.id == 7) || ((this.salesLogForm?.business_type_id?.id == 5 || this.salesLogForm?.business_type_id?.id == 10) &&
             this.selectedProduct.price >= 110000)
         ) {
           this.singleRepayment =
@@ -1064,7 +1067,6 @@ export default {
     },
     selectedItem(value) {
       this.selectedProduct = value;
-      console.log(value);
 
       this.salesLogForm = {
         ...this.salesLogForm,

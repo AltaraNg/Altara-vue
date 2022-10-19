@@ -871,7 +871,7 @@ export default {
       this.cardError = false;
       this.salesLogForm.customer_id = this.customerId;
       const data = {
-        ammortization_downpayment:(this.singleRepayment && this.addDownpayment) ? this.singleRepayment : 0,
+        amortization_downpayment:(this.singleRepayment && this.addDownpayment) ? this.singleRepayment : 0,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,

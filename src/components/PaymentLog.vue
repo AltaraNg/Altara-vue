@@ -1006,14 +1006,16 @@ export default {
         const cycle = Math.ceil(28 / this.repaymentCircle);
          console.log(cycle, 'repaymentduration');
         const additionalRepayment = this.rPayment / (months * cycle);
+        console.log(this.salesLogForm?.business_type_id?.id );
+        
         if (
          ( this.selectedProduct.price >= 80000 &&
-          this.selectedProduct.price < 110000 &&  this.salesLogForm?.business_type_id?.id == 7) || ((this.salesLogForm?.business_type_id?.id == 5 || this.salesLogForm?.business_type_id?.id == 10) &&
+          this.selectedProduct.price < 110000 && ( this.salesLogForm?.business_type_id?.id == 7 || this.salesLogForm?.business_type_id?.id == 9)) || ((this.salesLogForm?.business_type_id?.id == 5 || this.salesLogForm?.business_type_id?.id == 10) &&
             this.selectedProduct.price >= 110000)
         ) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment / 2 : additionalRepayment;
-        } else if (this.selectedProduct.price > 110000 &&  this.salesLogForm.business_type_id.id == 7) {
+        } else if (this.selectedProduct.price > 110000 &&  (this.salesLogForm.business_type_id.id == 7 || this.salesLogForm?.business_type_id?.id == 9)) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment : additionalRepayment * 2;
         }

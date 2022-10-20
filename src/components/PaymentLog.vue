@@ -20,6 +20,7 @@
                   :label="'Financed by Bank54'"
                 />
               </div>
+               
               <div class="col">
                 <button
                   class="btn btn-md float-right"
@@ -27,7 +28,7 @@
                   :class="[isAltaraPay ? 'bg-default' : 'bt-default']"
                   type="button"
                 >
-                  Altara Pay
+                Altara Pay
                 </button>
                 <button
                   class="btn btn-md float-right mr-0"
@@ -313,7 +314,20 @@
             </div>
             <br />
             <div>
-              <div class="text-center">
+              <div :style="addDownpayment && isAltaraPay ? 'display:flex; ' :''">
+                  <div
+                class="col d-flex align-items-center"
+                v-if="(addDownpayment && isAltaraPay) || stillShowToggle"
+              >
+                <toggle-button
+                  v-on:valueChangedEvent="triggerToggleEvent"
+                  :switchName="'addDownpayment'"
+                  :key="'addDownpayment'"
+                  :defaultState="addDownpayment"
+                  :label="'Add Repayment'"
+                />
+              </div>
+              <div class="text-center " :style="addDownpayment && isAltaraPay ? 'position:absolute; left:50%; ' :''">
                 <button
                   class="btn bg-default"
                   :disabled="test1"
@@ -324,6 +338,7 @@
                 </button>
                 <br />
               </div>
+                </div>
               <div class="text-right" v-if="isAltaraPay">
                 <button
                   class="btn bg-default"
@@ -563,7 +578,8 @@ export default {
   },
   data() {
     return {
-      addDownpayment: false,
+      stillShowToggle:null,
+      addDownpayment: null,
       productOrder: false,
       card_expiry: null,
       error: {},
@@ -753,6 +769,7 @@ export default {
             ? true
             : false;
       } else this.addDownpayment = false;
+      this.stillShowToggle = this.addDownpayment
     },
     watchSalesLogForm() {
       this.salesLogForm.discount =
@@ -1287,6 +1304,13 @@ export default {
     triggerToggleEventTransfer(value) {
       this.transfer = value;
     },
+    triggerToggleEventaddDownpayment(value) {
+          this.addDownpayment = !this.addDownpayment
+      this.addDownpayment = value;
+      this.stillShowToggle= true
+
+    },
+    
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value);
     },

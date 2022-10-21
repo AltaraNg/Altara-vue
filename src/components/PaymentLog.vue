@@ -20,7 +20,7 @@
                   :label="'Financed by Bank54'"
                 />
               </div>
-               
+
               <div class="col">
                 <button
                   class="btn btn-md float-right"
@@ -28,7 +28,7 @@
                   :class="[isAltaraPay ? 'bg-default' : 'bt-default']"
                   type="button"
                 >
-                Altara Pay
+                  Altara Pay
                 </button>
                 <button
                   class="btn btn-md float-right mr-0"
@@ -314,31 +314,40 @@
             </div>
             <br />
             <div>
-              <div :style="addDownpayment && isAltaraPay ? 'display:flex; ' :''">
-                  <div
-                class="col d-flex align-items-center"
-                v-if="(addDownpayment && isAltaraPay) || stillShowToggle"
+              <div
+                :style="addDownpayment && isAltaraPay ? 'display:flex; ' : ''"
               >
-                <toggle-button
-                  v-on:valueChangedEvent="triggerToggleEvent"
-                  :switchName="'addDownpayment'"
-                  :key="'addDownpayment'"
-                  :defaultState="addDownpayment"
-                  :label="'Add Repayment'"
-                />
-              </div>
-              <div class="text-center " :style="addDownpayment && isAltaraPay ? 'position:absolute; left:50%; ' :''">
-                <button
-                  class="btn bg-default"
-                  :disabled="test1"
-                  type="submit"
-                  v-on:click="getCalc()"
+                <div
+                  class="col d-flex align-items-center"
+                  v-if="(addDownpayment && isAltaraPay) || stillShowToggle"
                 >
-                  View Amortization
-                </button>
-                <br />
-              </div>
+                  <toggle-button
+                    v-on:valueChangedEvent="triggerToggleEvent"
+                    :switchName="'addDownpayment'"
+                    :key="'addDownpayment'"
+                    :defaultState="addDownpayment"
+                    :label="'Add Repayment'"
+                  />
                 </div>
+                <div
+                  class="text-center "
+                  :style="
+                    addDownpayment && isAltaraPay
+                      ? 'position:absolute; left:50%; '
+                      : ''
+                  "
+                >
+                  <button
+                    class="btn bg-default"
+                    :disabled="test1"
+                    type="submit"
+                    v-on:click="getCalc()"
+                  >
+                    View Amortization
+                  </button>
+                  <br />
+                </div>
+              </div>
               <div class="text-right" v-if="isAltaraPay">
                 <button
                   class="btn bg-default"
@@ -578,7 +587,7 @@ export default {
   },
   data() {
     return {
-      stillShowToggle:null,
+      stillShowToggle: null,
       addDownpayment: null,
       productOrder: false,
       card_expiry: null,
@@ -757,19 +766,22 @@ export default {
     },
     watchCashPrice() {
       console.log(this.salesLogForm?.business_type_id?.id);
-      
+
       if (
         this.salesLogForm?.product?.product?.category == "cash loan" &&
         this.salesLogForm?.repayment_duration_id?.name == "six_months"
       ) {
         this.addDownpayment =
-          ((this.salesLogForm?.business_type_id?.id == 5 || this.salesLogForm?.business_type_id?.id == 10) &&
+          ((this.salesLogForm?.business_type_id?.id == 5 ||
+            this.salesLogForm?.business_type_id?.id == 10) &&
             this.selectedProduct.price > 110000) ||
-          (this.salesLogForm?.business_type_id?.id == 9 || this.salesLogForm?.business_type_id?.id == 7) && this.selectedProduct.price > 80000
+          ((this.salesLogForm?.business_type_id?.id == 9 ||
+            this.salesLogForm?.business_type_id?.id == 7) &&
+            this.selectedProduct.price > 80000)
             ? true
             : false;
       } else this.addDownpayment = false;
-      this.stillShowToggle = this.addDownpayment
+      this.stillShowToggle = this.addDownpayment;
     },
     watchSalesLogForm() {
       this.salesLogForm.discount =
@@ -807,6 +819,10 @@ export default {
       });
 
       const data = {
+        amortization_downpayment:
+          this.singleRepayment && this.addDownpayment
+            ? this.singleRepayment
+            : 0,
         order_type_id: orderType.id,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
@@ -888,7 +904,10 @@ export default {
       this.cardError = false;
       this.salesLogForm.customer_id = this.customerId;
       const data = {
-        amortization_downpayment:(this.singleRepayment && this.addDownpayment) ? this.singleRepayment : 0,
+        amortization_downpayment:
+          this.singleRepayment && this.addDownpayment
+            ? this.singleRepayment
+            : 0,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
@@ -1018,21 +1037,28 @@ export default {
         this.pPrice = total;
         this.test1 = false;
         const months = this.rDuration / 30;
-       
-        
+
         const cycle = Math.ceil(28 / this.repaymentCircle);
-         console.log(cycle, 'repaymentduration');
+        console.log(cycle, "repaymentduration");
         const additionalRepayment = this.rPayment / (months * cycle);
-        console.log(this.salesLogForm?.business_type_id?.id );
-        
+        console.log(this.salesLogForm?.business_type_id?.id);
+
         if (
-         ( this.selectedProduct.price > 80000 &&
-          this.selectedProduct.price <= 110000 && ( this.salesLogForm?.business_type_id?.id == 7 || this.salesLogForm?.business_type_id?.id == 9)) || ((this.salesLogForm?.business_type_id?.id == 5 || this.salesLogForm?.business_type_id?.id == 10) &&
+          (this.selectedProduct.price > 80000 &&
+            this.selectedProduct.price <= 110000 &&
+            (this.salesLogForm?.business_type_id?.id == 7 ||
+              this.salesLogForm?.business_type_id?.id == 9)) ||
+          ((this.salesLogForm?.business_type_id?.id == 5 ||
+            this.salesLogForm?.business_type_id?.id == 10) &&
             this.selectedProduct.price > 110000)
         ) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment / 2 : additionalRepayment;
-        } else if (this.selectedProduct.price > 110000 &&  (this.salesLogForm.business_type_id.id == 7 || this.salesLogForm?.business_type_id?.id == 9)) {
+        } else if (
+          this.selectedProduct.price > 110000 &&
+          (this.salesLogForm.business_type_id.id == 7 ||
+            this.salesLogForm?.business_type_id?.id == 9)
+        ) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment : additionalRepayment * 2;
         }
@@ -1305,12 +1331,11 @@ export default {
       this.transfer = value;
     },
     triggerToggleEventaddDownpayment(value) {
-          this.addDownpayment = !this.addDownpayment
+      this.addDownpayment = !this.addDownpayment;
       this.addDownpayment = value;
-      this.stillShowToggle= true
-
+      this.stillShowToggle = true;
     },
-    
+
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value);
     },

@@ -13,7 +13,11 @@
 				:pageTitleSmall="'Customer Profile'"
 				v-if="full"
 			/>
-			<div class="pt-md-3 pt-2 verification" id="employeeRegister" v-if="showCustomer">
+			<div
+				class="pt-md-3 pt-2 verification"
+				id="employeeRegister"
+				v-if="showCustomer"
+			>
 				<div class="customer-profile card position-relative">
 					<div class="design"></div>
 					<div
@@ -134,13 +138,19 @@
 									:customer="customer"
 								/>
 							</div>
-							<div
-								class="float-right  col-md-4 col-sm-6 small-center pointer"
-							>
-								<h4 class="mt-3 pt-md-5  pt-0 mb-md-5 mb-sm-4 " v-if="customer.guarantor_paystack.length === 0" @click="showModal">
+							<div class="float-right  col-md-4 col-sm-6 small-center pointer">
+								<h4
+									class="mt-3 pt-md-5  pt-0 mb-md-5 mb-sm-4 "
+									v-if="customer.guarantor_paystack.length === 0"
+									@click="showModal"
+								>
 									Add Guarantors
 								</h4>
-								<h4 v-else class="mt-3 pt-md-5  pt-0 mb-md-5 mb-sm-4 " @click="showModal">
+								<h4
+									v-else
+									class="mt-3 pt-md-5  pt-0 mb-md-5 mb-sm-4 "
+									@click="showModal"
+								>
 									View Guarantors
 								</h4>
 							</div>
@@ -241,18 +251,18 @@
 				<div v-if="full">Full profile goes here</div>
 			</div>
 			<modal
-			name="customer-guarantor"
-			:adaptive="true"
-			:height="'auto'"
-			:clickToClose="false"
-			:reset="true"
-		>
-			<customer-guarantors-modal
-				:modalItem="customer.guarantor_paystack"
-				:customer="customer"
-				@close="hide('customer-guarantor')"
-			/>
-		</modal>
+				name="customer-guarantor"
+				:adaptive="true"
+				:height="'auto'"
+				:clickToClose="false"
+				:reset="true"
+			>
+				<customer-guarantors-modal
+					:modalItem="customer.guarantor_paystack"
+					:customer="customer"
+					@close="hide('customer-guarantor')"
+				/>
+			</modal>
 		</div>
 	</transition>
 </template>
@@ -266,7 +276,7 @@
 	import CustomerMobileButton from '../components/customerMobileSms/customerMobileButton.vue';
 	import paystack from 'vue-paystack';
 	import CustomerGuarantorsModal from '../components/modals/CustomerGuarantorsModal.vue';
-import { post } from '../utilities/api';
+	import { post } from '../utilities/api';
 
 	export default {
 		props: ['viewCustomer'],
@@ -277,14 +287,13 @@ import { post } from '../utilities/api';
 			CustomSMSButton,
 			CustomerMobileButton,
 			paystack,
-			CustomerGuarantorsModal
+			CustomerGuarantorsModal,
 		},
 
 		data() {
 			return {
 				customer: '',
 				showCustomer: false,
-				
 			};
 		},
 
@@ -292,8 +301,6 @@ import { post } from '../utilities/api';
 			full() {
 				return this.$route.meta.mode === 'full';
 			},
-
-			
 
 			passport() {
 				return `${process.env.VUE_APP_S3_URL}/${this.customer.document.passport_url}`;
@@ -323,11 +330,10 @@ import { post } from '../utilities/api';
 				this.showCustomer = true;
 			},
 
-			showModal(){
+			showModal() {
 				this.show('customer-guarantor');
 			},
 
-			
 			show(modal) {
 				this.$modal.show(modal);
 			},
@@ -335,8 +341,6 @@ import { post } from '../utilities/api';
 			hide(modal) {
 				this.$modal.hide(modal);
 			},
-
-			
 
 			...mapActions('ModalAccess', [
 				'addCustomerOptionsModalsToDom',
@@ -347,8 +351,6 @@ import { post } from '../utilities/api';
 		destroyed() {
 			this.removeCustomerOptionsModalsFromDom();
 		},
-
-		
 	};
 </script>
 <style>

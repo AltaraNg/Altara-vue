@@ -47,9 +47,9 @@
 		</div>
 
 		<div v-else class="modal-body text-center">
-            <div>
-                <h3>No Guarantor Added Yet</h3>
-            </div>
+			<div>
+				<h3>No Guarantor Added Yet</h3>
+			</div>
 			<paystack
 				:amount="10000"
 				:email="customer ? customer.email : ''"
@@ -68,9 +68,9 @@
 
 <script>
 	import paystack from 'vue-paystack';
-import { post } from '../../utilities/api';
-import { EventBus } from '../../utilities/event-bus';
-import flash from '../../utilities/flash';
+	import { post } from '../../utilities/api';
+	import { EventBus } from '../../utilities/event-bus';
+	import flash from '../../utilities/flash';
 
 	export default {
 		components: {
@@ -80,9 +80,9 @@ import flash from '../../utilities/flash';
 			modalItem: {
 				required: true,
 			},
-            customer: {
-                required: true
-            }
+			customer: {
+				required: true,
+			},
 		},
 		data() {
 			return {
@@ -115,7 +115,8 @@ import flash from '../../utilities/flash';
 									customer_id: this.customer.id,
 									auth_code: this.authorization_code,
 									guarantor_email: data.data.customer.email,
-									guarantor_name: guarantorName ===" " ? "test user" : guarantorName
+									guarantor_name:
+										guarantorName === ' ' ? 'test user' : guarantorName,
 								})
 									.then((res) => {
 										this.done('AuthCode set successfully!');
@@ -145,16 +146,12 @@ import flash from '../../utilities/flash';
 				return response.json();
 			},
 			closePayStackModal: () => {},
-            done(message) {
+			done(message) {
 				flash.setSuccess(message);
 				this.$scrollToTop();
 				this.$LIPS(false);
 				this.message = null;
 				EventBus.$emit('updateUser', this.customer.id);
-
-                
-
-
 			},
 		},
 

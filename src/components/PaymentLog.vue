@@ -522,7 +522,7 @@
               Confirm Transfer
             </button>
             <paystack
-              :amount="this.fPayment * 100"
+              :amount="computedPayment((fPayment + singleRepayment), fPayment)" 
               :email="customer_email"
               :paystackkey="paystackkey"
               :reference="reference"

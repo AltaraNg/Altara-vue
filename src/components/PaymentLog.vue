@@ -319,6 +319,7 @@
               >
                 <div
                   class="col d-flex align-items-center"
+                  :class="this.customer.guarantor_paystack.length > 0 ?'': 'disableToggle' "
                   v-if="(addDownpayment && isAltaraPay) || stillShowToggle"
                 >
                   <toggle-button
@@ -1334,6 +1335,8 @@ export default {
       this.addDownpayment = !this.addDownpayment;
       this.addDownpayment = value;
       this.stillShowToggle = true;
+      console.log(this.customer.guarantor_paystack, );
+      
     },
 
     triggerToggleEvent(value, switchName) {
@@ -1384,6 +1387,10 @@ export default {
   color: forestgreen;
   display: block;
   float: right;
+}
+.disableToggle{
+  pointer-events: none;
+  opacity: 0.7;
 }
 .discount {
   left: 130px;

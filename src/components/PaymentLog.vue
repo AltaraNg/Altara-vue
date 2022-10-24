@@ -54,6 +54,7 @@
                 <AutoComplete
                   v-on:childToParent="selectedItem"
                   :apiUrl="apiUrls.getProduct"
+                  ref="clearInputValue"
                 />
               </div>
 
@@ -588,6 +589,7 @@ export default {
   },
   data() {
     return {
+      currentValue:"",
       stillShowToggle: null,
       addDownpayment: null,
       productOrder: false,
@@ -766,7 +768,6 @@ export default {
       } else return secondvalue;
     },
     watchCashPrice() {
-      console.log(this.salesLogForm?.business_type_id?.id);
 
       if (
         this.salesLogForm?.product?.product?.category == "cash loan" &&
@@ -1042,7 +1043,7 @@ export default {
         const cycle = Math.ceil(28 / this.repaymentCircle);
         console.log(cycle, "repaymentduration");
         const additionalRepayment = this.rPayment / (months * cycle);
-        console.log(this.salesLogForm?.business_type_id?.id);
+        console.log(this.selectedProduct.price, 'proce');
 
         if (
           (this.selectedProduct.price > 80000 &&
@@ -1233,13 +1234,16 @@ export default {
       this.serial === true ? (this.serial = false) : (this.serial = true);
     },
     toggleProductType() {
+      this.test0=true
       this.transfer = false;
       this.isBank54 = false;
       this.getBusinessTypes();
+      this.selectedProduct.product_name= ""
       this.isAltaraPay = !this.isAltaraPay;
       this.isAltaraPay ? "" : (this.card_expiry = null);
       this.salesLogForm = {};
       this.salesLogForm.discount = "0_discount";
+     this.$refs.clearInputValue.setValue("");
     },
     async processPaymentPayStackPayment(resp) {
       this.paystackReference = resp.reference;

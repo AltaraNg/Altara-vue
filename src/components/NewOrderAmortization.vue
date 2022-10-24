@@ -564,9 +564,6 @@ export default {
   
     },
   },
-   mounted(){
-    console.log(this.order.amortization)
-    },
   created() {
     this.calcDebt(this.order.amortization) === 0
       ? (this.completed = true)

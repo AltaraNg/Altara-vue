@@ -1041,9 +1041,7 @@ export default {
         const months = this.rDuration / 30;
 
         const cycle = Math.ceil(28 / this.repaymentCircle);
-        console.log(cycle, "repaymentduration");
         const additionalRepayment = this.rPayment / (months * cycle);
-        console.log(this.selectedProduct.price, 'proce');
 
         if (
           (this.selectedProduct.price > 80000 &&
@@ -1339,7 +1337,6 @@ export default {
       this.addDownpayment = !this.addDownpayment;
       this.addDownpayment = value;
       this.stillShowToggle = true;
-      console.log(this.customer.guarantor_paystack, );
       
     },
 

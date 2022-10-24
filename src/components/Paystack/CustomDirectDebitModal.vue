@@ -1,5 +1,5 @@
 <template>
-	<div id="CustomDirectDebitModal" class="modal fade">
+	<div id="CustomDirectDebitModal" class="modal fade" v-if="customer">
 		<div class="modal-dialog">
 			<form
 				action="javascript:"
@@ -26,16 +26,25 @@
 					<div class="form-group clearfix">
 						<div class="clearfix">
 							<div class="form-group">
-								<label>Order Number</label>
+								<label>Order Number: </label>
 								<span class="font-weight-bold mx-2">{{
 									order.order_number
 								}}</span>
 							</div>
 
 							<div class="form-group">
+								<label>Payer</label>
+								<br>
+								<select class="custom-select w-50" name="payer" v-model="payer">
+									<option selected :value="0">Self</option>
+									<option v-if="customer !== null && customer.guarantor_paystack.length > 0" v-for="guarantor in customer.guarantor_paystack" :value="guarantor.id">{{guarantor.guarantor_name}}</option>
+								</select>
+							</div>
+
+							<div class="form-group">
 								<label>Amount</label>
 								<currency-input
-									class="form-control"
+									class="form-control w-50"
 									placeholder="Amount"
 									v-model="amount"
 									:options="{
@@ -86,6 +95,8 @@
 			return {
 				order: null,
 				amount: null,
+				customer: null,
+				payer:null
 			};
 		},
 		methods: {
@@ -96,6 +107,7 @@
 					const response = await post('api/charge/customer', {
 						order_id: this.order.id,
 						amount: this.amount,
+						payer: this.payer
 					});
 					if (response.data.status == 'success') {
 						this.$LIPS(false);
@@ -118,9 +130,11 @@
 				}
 				return;
 			},
-			async handleModalToggle({ amount, order }) {
+			async handleModalToggle({ amount, order, customer }) {
 				await Vue.set(this.$data, 'order', order);
 				await Vue.set(this.$data, 'amount', amount);
+				await Vue.set(this.$data, 'customer', customer);
+
 				this.toggleModal();
 			},
 			toggleModal() {
@@ -134,7 +148,7 @@
 				this.message = null;
 			},
 		},
-		created() {
+		mounted() {
 			EventBus.$on('CustomDirectDebitModal', this.handleModalToggle);
 		},
 		components: { CurrencyInput },

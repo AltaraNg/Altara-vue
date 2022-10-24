@@ -11,11 +11,12 @@
 
         props: {
             order: {default: null},
+            customer: {default: null}
         },
 
         methods: {
             toggleModal(modalName) {
-                EventBus.$emit(modalName, {order: this.order});
+                EventBus.$emit(modalName, {order: this.order, customer: this.customer});
             }
         }
     };

@@ -138,22 +138,22 @@
                   :customer="customer"
                 />
               </div>
-              <div class="float-right  col-md-4 col-sm-6 small-center pointer text-center rounded-2">
-                <h4
-				class="mt-3 py-2 mb-md-5 mb-sm-4 relative bg-default rounded-2"
+              <div class="float-left  col-md-4 col-sm-6 small-center pointer text-center rounded-2">
+                <h6
+				class="mt-3 py-3 mb-md-5 mb-sm-4 relative bg-default rounded-2"
 
                   v-if="customer.guarantor_paystack.length === 0"
                   @click="showModal"
                 >
                   Add Guarantors
-                </h4>
-                <h4
+                </h6>
+                <h6
                   v-else
-                  class="mt-3 py-2 mb-md-5 mb-sm-4 relative bg-default rounded-2"
+                  class="mt-3 py-3 mb-md-5 mb-sm-4 relative bg-default rounded-2"
                   @click="showModal"
                 >
                   View Guarantors<span class="badge rounded position-absolute border-0 top-0 p-1 text-white">{{customer.guarantor_paystack.length}}</span>
-                </h4>
+                </h6>
 				
               </div>
             </div>

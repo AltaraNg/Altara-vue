@@ -232,6 +232,7 @@
 										<CustomDirectDebitModalButton
 											:order="order"
 											:key="order.id"
+											:customer="customer"
 										></CustomDirectDebitModalButton>
 									</span>
 									{{ order.order_number }}

@@ -1,10 +1,10 @@
 <template>
   <div class="h-50">
-    <div class="modal-header py-2">
+    <div class="modal-header py-0">
       <h4>Customer Guarantors</h4>
       <a
         aria-label="Close"
-        class="close py-1"
+        class="close"
         data-dismiss="modal"
         @click="closeModal"
       >

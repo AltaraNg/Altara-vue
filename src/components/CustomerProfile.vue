@@ -138,10 +138,11 @@
                   :customer="customer"
                 />
               </div>
-              <div class="float-left  col-md-4 col-sm-6 small-center pointer text-center rounded-2">
+              <div
+                class="float-left px-5 col-4 col-md-4 col-sm-6 small-center pointer position-relative mt-2"
+              >
                 <h6
-				class="mt-3 py-3 mb-md-5 mb-sm-4 relative bg-default rounded-2"
-
+                  class="mt-2 py-3 mx-auto  bg-default rounded-2 w-75 text-center"
                   v-if="customer.guarantor_paystack.length === 0"
                   @click="showModal"
                 >
@@ -149,12 +150,14 @@
                 </h6>
                 <h6
                   v-else
-                  class="mt-3 py-3 mb-md-5 mb-sm-4 relative bg-default rounded-2"
+                  class="mt-2 py-3 mx-auto bg-default rounded-2 w-75 text-center"
                   @click="showModal"
                 >
-                  View Guarantors<span class="badge rounded position-absolute border-0 top-0 p-1 text-white">{{customer.guarantor_paystack.length}}</span>
+                  View Guarantors<span
+                    class="badge mt-0 border-0 h6"
+                    >{{ customer.guarantor_paystack.length }}</span
+                  >
                 </h6>
-				
               </div>
             </div>
             <div class="pt-4">

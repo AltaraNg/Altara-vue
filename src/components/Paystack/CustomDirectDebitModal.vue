@@ -33,10 +33,10 @@
 							</div>
 
 							<div class="form-group">
-								<label>Payer</label>
+								<label>Account</label>
 								<br>
-								<select class="custom-select w-50" name="payer" v-model="payer">
-									<option selected :value="0">Self</option>
+								<select class="custom-select w-50" name="payer" v-model="account">
+									<option :value="0">Self</option>
 									<option v-if="customer !== null && customer.guarantor_paystack.length > 0" v-for="guarantor in customer.guarantor_paystack" :value="guarantor.id">{{guarantor.guarantor_name}}</option>
 								</select>
 							</div>
@@ -96,7 +96,7 @@
 				order: null,
 				amount: null,
 				customer: null,
-				payer:null
+				account:0
 			};
 		},
 		methods: {
@@ -107,7 +107,7 @@
 					const response = await post('api/charge/customer', {
 						order_id: this.order.id,
 						amount: this.amount,
-						payer: this.payer
+						account: this.account
 					});
 					if (response.data.status == 'success') {
 						this.$LIPS(false);
@@ -116,6 +116,7 @@
 							title: response.data.message,
 						});
 						this.done(response.data.message);
+
 					} else {
 						Flash.setError(response.data.message);
 					}
@@ -140,7 +141,12 @@
 			toggleModal() {
 				$('#CustomDirectDebitModal').modal('toggle');
 			},
+			resetValues(){
+				this.account = 0;
+				this.amount = null;
+			},
 			done(message) {
+				this.resetValues();
 				Flash.setSuccess(message);
 				this.$scrollToTop();
 				EventBus.$emit('updateUser', this.order.customer_id);

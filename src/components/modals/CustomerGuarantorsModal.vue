@@ -1,7 +1,7 @@
 <template>
   <div class="h-50">
     <div class="modal-header py-0">
-      <h4>Customer Guarantors</h4>
+      <h4 class="my-2">Customer Guarantors</h4>
       <a
         aria-label="Close"
         class="close"

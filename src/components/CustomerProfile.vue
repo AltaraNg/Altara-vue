@@ -153,8 +153,9 @@
                   class="mt-2 py-3 mx-auto bg-default rounded-2 w-75 text-center"
                   @click="showModal"
                 >
-                  View Guarantors<span
-                    class="badge mt-0 border-0 h6"
+                  View Guarantor(s)<span
+                    class="badge border-0 h6 mt-0 position-absolute top-0 start-0
+                    "
                     >{{ customer.guarantor_paystack.length }}</span
                   >
                 </h6>

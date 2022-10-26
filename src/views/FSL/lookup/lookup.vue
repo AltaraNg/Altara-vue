@@ -293,7 +293,7 @@
 								>
 									<button
 										:class="
-											calcDebt(order.amortization) === 0
+											order.status === 'Completed'
 												? 'approved'
 												: 'pending'
 										"
@@ -303,7 +303,7 @@
 										View Plan
 										<i
 											:class="
-												calcDebt(order.amortization) === 0
+												order.status === 'Completed'
 													? 'fa-check-circle'
 													: 'fa-hourglass-half'
 											"

@@ -456,9 +456,13 @@
                     <!-- <td class="font-weight-bold">{{this.customerId}}</td> -->
                     <th>{{ this.selectedProduct.product_name }}</th>
                     <th>{{ $formatCurrency(pPrice) }}</th>
-                    <th>{{ $formatCurrency(fPayment) }}</th>
+                    <th>{{$formatCurrency(
+                        computedPayment(fPayment + singleRepayment, fPayment)
+                      )}}</th>
                     <td class>
-                      {{ $formatCurrency(rPayment) }}
+                      {{  $formatCurrency(
+                        computedPayment(rPayment - singleRepayment, rPayment)
+                      ) }}
                       <div class="modal_cover">
                         <discount
                           class="modal_discount"

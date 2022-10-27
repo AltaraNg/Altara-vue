@@ -316,7 +316,7 @@
             <br />
             <div>
               <div
-                :style="addDownpayment && isAltaraPay ? 'display:flex; ' : ''"
+                :style="(addDownpayment && isAltaraPay) || stillShowToggle ? 'display:flex; ' : ''"
               >
                 <div
                   class="col d-flex align-items-center"
@@ -334,7 +334,7 @@
                 <div
                   class="text-center "
                   :style="
-                    addDownpayment && isAltaraPay
+                    (addDownpayment && isAltaraPay) || stillShowToggle
                       ? 'position:absolute; left:50%; '
                       : ''
                   "

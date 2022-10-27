@@ -63,8 +63,6 @@ export default {
         },
         searchEvent() {
             this.getproduct();
-
-            // this.inputValue = this.currentValue;
         },
 
         async getproduct() {

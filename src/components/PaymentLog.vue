@@ -320,15 +320,15 @@
               >
                 <div
                   class="col d-flex align-items-center"
-                  :class="this.customer.guarantor_paystack.length > 0 ?'': 'disableToggle' "
+                  :class="this.customer.guarantor_paystack.length > 0 ?'': '' "
                   v-if="(addDownpayment && isAltaraPay) || stillShowToggle"
                 >
                   <toggle-button
                     v-on:valueChangedEvent="triggerToggleEvent"
-                    :switchName="'addDownpayment'"
-                    :key="'addDownpayment'"
-                    :defaultState="addDownpayment"
-                    :label="'Add Repayment'"
+                    switchName="addDownpayment"
+                    key="addDownpayment"
+                    defaultState="addDownpayment"
+                    label="Add Repayment"
                   />
                 </div>
                 <div
@@ -364,7 +364,7 @@
           </form>
         </div>
       </div>
-      <div v-if="!test0" class="col-md-4">
+      <div v-if="!hideOrderSummary" class="col-md-4">
         <div class="card">
           <div class="card-body">
             <h5 class="mt-3 mb-0">Order Information</h5>
@@ -607,7 +607,7 @@ export default {
       amortization: [],
       calculation: [],
       salesCategories: [],
-      test0: true,
+      hideOrderSummary: true,
       test1: true,
       apiUrls: {
         repaymentDuration: `/api/repayment_duration`,
@@ -772,7 +772,12 @@ export default {
       if (
         this.salesLogForm?.product?.product?.category == "cash loan" &&
         this.salesLogForm?.repayment_duration_id?.name == "six_months"
-      ) {
+      )
+      //check if it is cashloan and six months duration, return addDownpayment= true only if
+      //businesstype is (5 or10) and product amount is >110000
+      //OR
+      //businesstype is (9 or7) and product amount is > 80000
+       {
         this.addDownpayment =
           ((this.salesLogForm?.business_type_id?.id == 5 ||
             this.salesLogForm?.business_type_id?.id == 10) &&
@@ -1118,7 +1123,7 @@ export default {
         product_name: this.selectedProduct.product_name,
         product: this.selectedProduct,
       };
-      this.test0 = false;
+      this.hideOrderSummary = false;
       this.watchSalesLogForm();
       this.getCalc();
     },
@@ -1232,7 +1237,7 @@ export default {
       this.serial === true ? (this.serial = false) : (this.serial = true);
     },
     toggleProductType() {
-      this.test0=true
+      this.hideOrderSummary=true
       this.transfer = false;
       this.isBank54 = false;
       this.getBusinessTypes();

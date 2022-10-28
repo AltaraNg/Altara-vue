@@ -554,16 +554,16 @@ export default {
 			},
     calcDebt(amortization) {
       // * Assumed equal distribution of amortization
-      if (amortization[0] !== undefined) {
-        let res = amortization.filter((amor) => {
-          return amor.actual_amount === 0;
-        });
-        return res.length * amortization[0].expected_amount;
-      }
+       const totalRepayment = amortization?.reduce((total, item) => {
+    return total + Number(item.expected_amount);
+  }, 0);
+         const totalPaid = amortization?.reduce((total, item) => {
+    return total + Number(item.actual_amount);
+  }, 0)
+  return totalRepayment-totalPaid
+  
     },
   },
-  async mounted(){
-    },
   created() {
     this.calcDebt(this.order.amortization) === 0
       ? (this.completed = true)

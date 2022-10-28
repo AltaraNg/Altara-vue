@@ -13,7 +13,11 @@
         :pageTitleSmall="'Customer Profile'"
         v-if="full"
       />
-      <div class="pt-md-3 pt-2 verification" id="employeeRegister" v-if="show">
+      <div
+        class="pt-md-3 pt-2 verification"
+        id="employeeRegister"
+        v-if="showCustomer"
+      >
         <div class="customer-profile card position-relative">
           <div class="design"></div>
           <div
@@ -108,8 +112,8 @@
                   class="mt-0 pt-md-4 pt-sm-3 pt-0 mb-md-5 mb-sm-4 mb-4 px-3"
                   v-if="
                     auth('DVAAccess') ||
-                    auth('ALTARAPAYAccess') ||
-                    auth('FSLAccess')
+                      auth('ALTARAPAYAccess') ||
+                      auth('FSLAccess')
                   "
                 >
                   <CustomerMobileButton
@@ -133,6 +137,28 @@
                   :key="customer.id"
                   :customer="customer"
                 />
+              </div>
+              <div
+                class="float-left px-5 col-4 col-md-4 col-sm-6 small-center pointer position-relative mt-2"
+              >
+                <h6
+                  class="mt-2 py-3 mx-auto  bg-default rounded-2 w-75 text-center"
+                  v-if="customer.guarantor_paystack.length === 0"
+                  @click="showModal"
+                >
+                  Add Guarantors
+                </h6>
+                <h6
+                  v-else
+                  class="mt-2 py-3 mx-auto bg-default rounded-2 w-75 text-center"
+                  @click="showModal"
+                >
+                  View Guarantor(s)<span
+                    class="badge border-0 h6 mt-0 position-absolute top-0 start-0
+                    "
+                    >{{ customer.guarantor_paystack.length }}</span
+                  >
+                </h6>
               </div>
             </div>
             <div class="pt-4">
@@ -177,16 +203,16 @@
                     <th class="text-muted">
                       <i class="mr-3 fas fa-briefcase"></i
                       >{{
-                        customer.employment_status === "formal" ||
-                        customer.employment_status === "salaried"
-                          ? "Occupation"
-                          : "Kind of business"
+                        customer.employment_status === 'formal' ||
+                        customer.employment_status === 'salaried'
+                          ? 'Occupation'
+                          : 'Kind of business'
                       }}
                     </th>
                     <td>
                       {{
                         !customer.occupation
-                          ? "Not Available"
+                          ? 'Not Available'
                           : customer.occupation
                       }}
                     </td>
@@ -196,14 +222,16 @@
                       <i class="mr-3 fas fa-envelope"></i>Email
                     </th>
                     <td>
-                      {{ !customer.email ? "Not Available" : customer.email }}
+                      {{ !customer.email ? 'Not Available' : customer.email }}
                     </td>
                   </tr>
                   <tr>
                     <th class="text-muted">
                       <i class="mr-3 fas fa-gift"></i>Registered On
                     </th>
-                    <td>{{ customer.date_of_registration }}</td>
+                    <td>
+                      {{ customer.date_of_registration }}
+                    </td>
                   </tr>
                   <tr>
                     <th class="text-muted">
@@ -213,7 +241,7 @@
                       {{
                         customer.user
                           ? customer.user.full_name
-                          : "user not in record" | capitalize
+                          : 'user not in record' | capitalize
                       }}
                     </td>
                   </tr>
@@ -230,81 +258,117 @@
         </div>
         <div v-if="full">Full profile goes here</div>
       </div>
+      <modal
+        name="customer-guarantor"
+        :adaptive="true"
+        :height="'auto'"
+        :clickToClose="false"
+        :reset="true"
+      >
+        <customer-guarantors-modal
+          :modalItem="customer.guarantor_paystack"
+          :customer="customer"
+          @close="hide('customer-guarantor')"
+        />
+      </modal>
     </div>
   </transition>
 </template>
 <script>
-import Vue from "vue";
-import { mapActions, mapGetters } from "vuex";
-import { EventBus } from "../utilities/event-bus";
-import AppNavigation from "../components/AppNavigation";
-import ApprovalStatusButton from "../components/ApprovalStatusButton";
-import CustomSMSButton from "../components/CustomSMSButton/CustomSMSButton";
-import CustomerMobileButton from "../components/customerMobileSms/customerMobileButton.vue";
+import Vue from 'vue'
+import { mapActions, mapGetters } from 'vuex'
+import { EventBus } from '../utilities/event-bus'
+import AppNavigation from '../components/AppNavigation'
+import ApprovalStatusButton from '../components/ApprovalStatusButton'
+import CustomSMSButton from '../components/CustomSMSButton/CustomSMSButton'
+import CustomerMobileButton from '../components/customerMobileSms/customerMobileButton.vue'
+import paystack from 'vue-paystack'
+import CustomerGuarantorsModal from '../components/modals/CustomerGuarantorsModal.vue'
+import { post } from '../utilities/api'
+import { relative } from 'path'
 
 export default {
-  props: ["viewCustomer"],
+  props: ['viewCustomer'],
 
   components: {
     ApprovalStatusButton,
     AppNavigation,
     CustomSMSButton,
     CustomerMobileButton,
+    paystack,
+    CustomerGuarantorsModal,
   },
 
   data() {
     return {
-      customer: "",
-      show: false,
-    };
+      customer: '',
+      showCustomer: false,
+    }
   },
 
   computed: {
     full() {
-      return this.$route.meta.mode === "full";
+      return this.$route.meta.mode === 'full'
     },
 
     passport() {
-      return `${process.env.VUE_APP_S3_URL}/${this.customer.document.passport_url}`;
+      return `${process.env.VUE_APP_S3_URL}/${this.customer.document.passport_url}`
     },
 
     branch() {
-      return `${this.customer.branch.description} ${this.customer.branch.name}`;
+      return `${this.customer.branch.description} ${this.customer.branch.name}`
     },
 
     approved() {
-      return this.$getCustomerApprovalStatus(this.customer.verification);
+      return this.$getCustomerApprovalStatus(this.customer.verification)
     },
 
-    ...mapGetters(["auth"]),
+    ...mapGetters(['auth']),
   },
 
   created() {
-    $(".tooltip").remove();
-    if (this.viewCustomer) this.setCustomer(this.viewCustomer);
-    EventBus.$on("customer", (customer) => this.setCustomer(customer));
-    this.addCustomerOptionsModalsToDom();
+    $('.tooltip').remove()
+    if (this.viewCustomer) this.setCustomer(this.viewCustomer)
+    EventBus.$on('customer', customer => this.setCustomer(customer))
+    this.addCustomerOptionsModalsToDom()
   },
 
   methods: {
     setCustomer(customer) {
-      Vue.set(this.$data, "customer", customer);
-      this.show = true;
+      Vue.set(this.$data, 'customer', customer)
+      this.showCustomer = true
     },
 
-    ...mapActions("ModalAccess", [
-      "addCustomerOptionsModalsToDom",
-      "removeCustomerOptionsModalsFromDom",
+    showModal() {
+      this.show('customer-guarantor')
+    },
+
+    show(modal) {
+      this.$modal.show(modal)
+    },
+
+    hide(modal) {
+      this.$modal.hide(modal)
+    },
+
+    ...mapActions('ModalAccess', [
+      'addCustomerOptionsModalsToDom',
+      'removeCustomerOptionsModalsFromDom',
     ]),
   },
 
   destroyed() {
-    this.removeCustomerOptionsModalsFromDom();
+    this.removeCustomerOptionsModalsFromDom()
   },
-};
+}
 </script>
 <style>
 .pad {
   margin: 0 2px;
+}
+
+.add-g h4:active {
+  background-color: beige;
+  border: 1px solid cadetblue;
 }
 </style>

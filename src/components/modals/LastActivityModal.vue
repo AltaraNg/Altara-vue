@@ -28,10 +28,6 @@
                             <td>{{item.attributes.creator}}</td>
                             <td>{{item.attributes.feedback}}</td>
                             <td>{{item.attributes.renewal_prompter_status}}</td>
-
-
-
-
                         </tr>
 					</tbody>
 				</table>

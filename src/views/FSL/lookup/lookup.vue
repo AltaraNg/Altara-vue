@@ -232,6 +232,7 @@
 										<CustomDirectDebitModalButton
 											:order="order"
 											:key="order.id"
+											:customer="customer"
 										></CustomDirectDebitModalButton>
 									</span>
 									{{ order.order_number }}
@@ -292,7 +293,7 @@
 								>
 									<button
 										:class="
-											calcDebt(order.amortization) === 0
+											order.status === 'Completed'
 												? 'approved'
 												: 'pending'
 										"
@@ -302,7 +303,7 @@
 										View Plan
 										<i
 											:class="
-												calcDebt(order.amortization) === 0
+												order.status === 'Completed'
 													? 'fa-check-circle'
 													: 'fa-hourglass-half'
 											"

@@ -35,29 +35,31 @@ export default {
     name: "AutoComplete",
     props: {
         apiUrl: "",
-        currentValue: {
-            type: String,
-            default: ""
-        }
+        // inputValue: {
+        //     type: String,
+        //     default: ""
+        // },
     },
     data() {
         return {
             selectedItem: {},
-            inputValue: "",
             itemList: [],
-            apiLoaded: false
-        };
+            apiLoaded: false,
+        inputValue:null,
+        }
     },
 
-    mounted(){
-        this.inputValue = this.currentValue;
-    },
+
 
     methods: {
+        setValue: function(value) {
+            this.inputValue = value;
+        },
         selectItem(data) {
             this.inputValue = this.formatInput(data);
             this.apiLoaded = false;
             this.$emit("childToParent", data);
+            
         },
         searchEvent() {
             this.getproduct();

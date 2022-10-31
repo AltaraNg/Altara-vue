@@ -154,7 +154,7 @@
                   @click="showModal"
                 >
                   View Guarantor(s)<span
-                    class="badge border-0 h6 mt-0 position-absolute top-0 start-0
+                    class="badge border-0 h6 mt-0 position-absolute px-2
                     "
                     >{{ customer.guarantor_paystack.length }}</span
                   >

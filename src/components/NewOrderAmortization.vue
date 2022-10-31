@@ -256,7 +256,7 @@
             <h5>
               <div class="d-flex justify-content-between">
                 <div>Update Amortization</div>
-                <div @click="closeModal()"><i class="fa fa-times"></i></div>
+                <div @click="closeAmmoModal()"><i class="fa fa-times"></i></div>
               </div>
             </h5>
             <div class="card">
@@ -494,7 +494,12 @@ export default {
 			},
     closeModal() {
       this.showModal = false;
+     
       // $(`#viewEdit`).modal("toggle");
+    },
+
+    closeAmmoModal(){
+      this.showAmmoModal = false;
     },
     save() {
       this.$LIPS(true);

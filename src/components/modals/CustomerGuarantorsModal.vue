@@ -125,7 +125,6 @@ export default {
                   flash.setError(err.message)
                 })
                 .finally(() => {
-                  this.$LIPS(false)
                 })
             }
           })
@@ -149,7 +148,6 @@ export default {
     done(message) {
       flash.setSuccess(message)
       this.$scrollToTop()
-      this.$LIPS(false)
       this.message = null
       EventBus.$emit('updateUser', this.customer.id)
     },

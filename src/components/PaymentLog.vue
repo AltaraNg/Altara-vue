@@ -327,7 +327,7 @@
                     v-on:valueChangedEvent="triggerToggleEvent"
                     switchName="addDownpayment"
                     key="addDownpayment"
-                    defaultState="addDownpayment"
+                    :defaultState="addDownpayment"
                     label="Add Repayment"
                   />
                 </div>
@@ -701,6 +701,7 @@ export default {
     await this.getOrderTypes();
   },
   watch: {
+
     "salesLogForm.sales_category_id": {
       handler(newData) {
         this.watchBusinessType(newData);

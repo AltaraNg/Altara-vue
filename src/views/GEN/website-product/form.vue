@@ -176,7 +176,6 @@ export default {
       Vue.set(this.$data, 'mode', this.$route.meta.mode)
 
       if (this.mode === 'edit') {
-        //TODO change the edit form
         this.store = `/api/website-product/${this.$route.params.id}`
         this.method = 'PUT'
         let form = {}

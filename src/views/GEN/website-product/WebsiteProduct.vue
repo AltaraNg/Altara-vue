@@ -262,7 +262,7 @@ export default {
 
   computed: {
     productImage(){
-      return `${process.env.VUE_APP_AWS_URL}/${this.productItem.image_url}`
+      return `${process.env.VUE_APP_S3_URL}/${this.productItem.image_url}`
     }
   }
 }

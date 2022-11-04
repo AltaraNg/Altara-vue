@@ -183,7 +183,7 @@ export default {
         form.description = data.description
         form.price = data.price
         console.log(form)
-        this.preloaded_image = `${process.env.VUE_APP_AWS_URL}/${data.image_url}`
+        this.preloaded_image = `${process.env.VUE_APP_S3_URL}/${data.image_url}`
         Vue.set(this.$data, 'form', form)
       } else {
         Vue.set(this.$data, 'form', data)

@@ -45,13 +45,13 @@
       <!-- check boxes -->
 
       <button
-        class="btn btn-primary bg-default myBtn float-right my-2"
+        class="btn btn-primary bg-default  float-right my-2"
         @click="searchEvent"
       >
         <i class="fa fa-search" aria-hidden="true"></i>
       </button>
        <button
-        class="btn btn-primary bg-default myBtn float-right my-2"
+        class="btn btn-primary bg-default float-right my-2"
         @click="clearQuery"
       >
         <i class="fa fa-trash" aria-hidden="true"></i>

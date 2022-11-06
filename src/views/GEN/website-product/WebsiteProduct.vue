@@ -29,7 +29,7 @@
         <div class="col-md-2">
           <router-link :to="{ name: 'websiteProductCreate' }">
             <button
-              class="btn btn-primary bg-default mt-0 myBtn float-right my-2"
+              class="btn btn-primary bg-default mt-0 myBtn float-right my-5"
             >
               <i class="fa fa-plus" aria-hidden="true"></i>
             </button>
@@ -74,8 +74,8 @@
       <div class="modal fade repayment" id="viewProduct">
         <div class="modal-dialog " role="document">
           <div class="modal-content" v-if="showModalContent">
-            <div class="modal-header py-2">
-              <h4>{{ productItem.name }}</h4>
+            <div class="modal-header py-0">
+              <h4 class="my-3">{{ productItem.name }}</h4>
               <a aria-label="Close" class="close py-1" data-dismiss="modal">
                 <span aria-hidden="true" class="modal-close text-danger">
                   <i class="fas fa-times"></i>
@@ -83,28 +83,41 @@
               </a>
             </div>
             <div class="modal-body px-5">
-              <div class="w-75 " >
+              <div class="w-75 ">
                 <img
                   class="card-img-top block mx-auto"
                   :src="productImage"
                   alt="image"
                   width="250"
                   height="200"
+                  onerror="this.onerror=null;this.src = '../../../assets/placeholder-image.png'"
                 />
-                <div class="card-body h6">
-                  <p class="card-text">Price: <b class="h5">{{productItem.price | currency('₦')}}</b></p>
-                  <p class="card-text">Description: <b class="h5">{{productItem.description}}</b></p>
-                  <p class="card-text">Date Added: <b class="h5">{{productItem.created_at}}</b></p>
-                 
+                <div class="card-body ">
+                  <p class="card-text">
+                    Price:
+                    <b >{{ productItem.price | currency('₦') }}</b>
+                  </p>
+                  <p class="card-text">
+                    Description: <b >{{ productItem.description }}</b>
+                  </p>
+                  <p class="card-text">
+                    Date Added: <b >{{ productItem.created_at }}</b>
+                  </p>
                 </div>
               </div>
             </div>
-            <div class="modal-footer justify-content-center">
+            <div class="modal-footer justify-content-end">
               <button
                 @click="edit(productItem.id)"
-                class="text-center btn bg-default"
+                class="text-center btn bg-default mx-2"
               >
                 Edit
+              </button>
+              <button
+                class="text-center btn btn-default btn-danger"
+                @click="confirmModal"
+              >
+                Delete
               </button>
             </div>
           </div>
@@ -115,11 +128,18 @@
         <base-pagination :page-param="pageParams" @fetchData="fetchData">
         </base-pagination>
       </div>
+
+      <div>
+        <confirm-modal
+          :show="showPrompt"
+          @touched="deleteProduct($event)"
+        ></confirm-modal>
+      </div>
     </div>
   </transition>
 </template>
 <script>
-import { get } from '../../../utilities/api'
+import { get, del } from '../../../utilities/api'
 import Vue from 'vue'
 import Flash from '../../../utilities/flash'
 import Vue2Filters from 'vue2-filters'
@@ -129,6 +149,7 @@ import CustomHeader from '../../../components/customHeader'
 import BasePagination from '../../../components/Pagination/BasePagination'
 import ResueableSearch from '../../../components/ReusableSearch.vue'
 import { truncate } from 'fs'
+import ConfirmModal from '../../../components/modals/ConfirmModal.vue'
 Vue.use(Vue2Filters)
 export default {
   props: {
@@ -137,12 +158,11 @@ export default {
     urlToFetchOrders: { default: '/api/website-product' },
   },
 
-  components: { CustomHeader, BasePagination, ResueableSearch },
-
-  computed: { ...mapGetters(['getBranches']) },
+  components: { CustomHeader, BasePagination, ResueableSearch, ConfirmModal },
 
   data() {
     return {
+      imageLoading: false,
       branch_id: '',
       OId: null,
       showModalContent: false,
@@ -167,6 +187,7 @@ export default {
       ],
       brands: [],
       categories: [],
+      showPrompt: false,
     }
   },
 
@@ -226,7 +247,36 @@ export default {
       this.showModalContent = false
       $(`#viewProduct`).modal('toggle')
 
-      return this.$router.push({ name: 'websiteProductEdit', params: { id: item } })
+      return this.$router.push({
+        name: 'websiteProductEdit',
+        params: { id: item },
+      })
+    },
+
+    deleteProduct() {
+      this.$LIPS(true)
+      del(`${this.urlToFetchOrders}/${this.productItem.id}`)
+        .then(res => {
+          console.log(res)
+          this.fetchData()
+        })
+        .catch(err => {})
+        .finally(() => {
+          this.$LIPS(false)
+        });
+
+        this.showPrompt = false;
+        this.showModalContent = false;
+
+
+    },
+
+    confirmModal() {
+      if (this.showPrompt === true) {
+        this.showPrompt = false
+      } else {
+        this.showPrompt = true
+      }
     },
 
     searchEvent(data) {
@@ -261,10 +311,15 @@ export default {
   },
 
   computed: {
-    productImage(){
+    productImage() {
       return `${process.env.VUE_APP_S3_URL}/${this.productItem.image_url}`
-    }
-  }
+    },
+  },
+  watch: {
+    'productItem.url': function() {
+      this.imageLoading = true
+    },
+  },
 }
 </script>
 

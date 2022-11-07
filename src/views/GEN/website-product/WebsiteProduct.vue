@@ -37,7 +37,8 @@
         </div>
       </div>
 
-      <div class="mt-5 mb-3 attendance-head">
+      <div v-if="products.length > 0 && !$isProcessing">
+        <div class="mt-5 mb-3 attendance-head">
         <div class="w-100 my-5 mx-0 hr"></div>
         <div class="row px-4 pt-3 pb-4 text-center">
           <div class="col light-heading" style="max-width: 120px">S/N</div>
@@ -71,6 +72,19 @@
           </div>
         </div>
       </div>
+      </div>
+      <div v-else-if="!$isProcessing" class="mx-4">
+					<zero-state
+						:title="'No reminder List'"
+						:message="'There are currrently no customer on the reminder list'"
+					>
+						<template v-slot:image>
+							<img src="../../../assets/thumb-up.png" />
+						</template>
+					</zero-state>
+				</div>
+
+      
       <div class="modal fade repayment" id="viewProduct">
         <div class="modal-dialog " role="document">
           <div class="modal-content" v-if="showModalContent">
@@ -83,15 +97,17 @@
               </a>
             </div>
             <div class="modal-body px-5">
-              <div class="w-75 ">
-                <img
-                  class="card-img-top block mx-auto"
+              <div class=" ">
+                <div id="preview">
+                  <img
                   :src="productImage"
                   alt="image"
                   width="250"
                   height="200"
                   onerror="this.onerror=null;this.src = '../../../assets/placeholder-image.png'"
                 />
+                </div>
+                
                 <div class="card-body ">
                   <p class="card-text">
                     Price:
@@ -148,7 +164,8 @@ import { mapGetters, mapActions } from 'vuex'
 import CustomHeader from '../../../components/customHeader'
 import BasePagination from '../../../components/Pagination/BasePagination'
 import ResueableSearch from '../../../components/ReusableSearch.vue'
-import { truncate } from 'fs'
+import { truncate } from 'fs';
+import ZeroState from '../../../components/ZeroState.vue';
 import ConfirmModal from '../../../components/modals/ConfirmModal.vue'
 Vue.use(Vue2Filters)
 export default {
@@ -158,7 +175,7 @@ export default {
     urlToFetchOrders: { default: '/api/website-product' },
   },
 
-  components: { CustomHeader, BasePagination, ResueableSearch, ConfirmModal },
+  components: { CustomHeader, BasePagination, ResueableSearch, ConfirmModal, ZeroState },
 
   data() {
     return {
@@ -253,8 +270,9 @@ export default {
       })
     },
 
-    deleteProduct() {
-      this.$LIPS(true)
+    deleteProduct($event) {
+      if($event){
+        this.$LIPS(true)
       del(`${this.urlToFetchOrders}/${this.productItem.id}`)
         .then(res => {
           this.fetchData()
@@ -263,9 +281,15 @@ export default {
         .finally(() => {
           this.$LIPS(false)
         });
-
         this.showPrompt = false;
         this.showModalContent = false;
+      }
+      else{
+        this.showPrompt = false;
+
+      }
+     
+
 
 
     },

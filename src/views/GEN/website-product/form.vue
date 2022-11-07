@@ -8,7 +8,7 @@
       />
 
       <div class="attendance-body">
-        <form @submit.prevent="onSave">
+        <form @submit.prevent="onSave" enctype="multipart/form-data">
           <div class="my-4 clearfix p-5 row bg-white shadow-sm card-radius">
             <div class="form-group col-md-6 col-12 float-left px-0 px-md-3">
               <label>Product name</label>
@@ -55,6 +55,7 @@
                 :placeholder="showPrice"
                 v-model="form.price"
                 v-validate="'required|numeric'"
+                :value="price"
               ></currency-input>
               <small v-if="errors.first('price')">{{
                 errors.first('price')
@@ -139,6 +140,7 @@ export default {
   props: {},
   data() {
     return {
+      price: null,
       preloaded_image: null,
       url: null,
       form: {},
@@ -176,12 +178,12 @@ export default {
       Vue.set(this.$data, 'mode', this.$route.meta.mode)
 
       if (this.mode === 'edit') {
-        this.store = `/api/website-product/${this.$route.params.id}`
-        this.method = 'PUT'
-        let form = {}
-        form.name = data.name
-        form.description = data.description
-        form.price = data.price
+        this.store = `/api/website-product/${this.$route.params.id}`;
+        this.method = 'PUT';
+        let form = {};
+        form.name = data.name;
+        form.description = data.description;
+        this.price = data.price;
         this.preloaded_image = `${process.env.VUE_APP_S3_URL}/${data.image_url}`
         Vue.set(this.$data, 'form', form)
       } else {
@@ -201,8 +203,8 @@ export default {
       this.$validator.validateAll().then(result => {
         if (result) {
           if (this.$network()) {
-            this.$LIPS(true)
-            ;(this.mode === 'edit'
+            this.$LIPS(true);
+            (this.mode === 'edit'
               ? put(this.store, this.form)
               : post(this.store, form)
             )

@@ -18,7 +18,7 @@
                 placeholder="product name"
                 type="text"
                 v-model="form.name"
-                v-validate="'required|alpha|max:50'"
+                v-validate="'required|max:50'"
               />
               <i v-show="errors.has('name')" class="fa fa-warning"></i>
               <small v-if="errors.has('name')">{{
@@ -104,7 +104,7 @@
                 class="btn bg-default"
                 type="submit"
               >
-                {{ mode | capitalize }} Product
+                {{ 'Save' | capitalize }} Product
                 <i class="far fa-paper-plane ml-1"></i>
               </button>
             </div>

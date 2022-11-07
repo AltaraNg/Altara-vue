@@ -257,7 +257,6 @@ export default {
       this.$LIPS(true)
       del(`${this.urlToFetchOrders}/${this.productItem.id}`)
         .then(res => {
-          console.log(res)
           this.fetchData()
         })
         .catch(err => {})
@@ -272,11 +271,7 @@ export default {
     },
 
     confirmModal() {
-      if (this.showPrompt === true) {
-        this.showPrompt = false
-      } else {
-        this.showPrompt = true
-      }
+     this.showPrompt = !this.showPrompt;
     },
 
     searchEvent(data) {

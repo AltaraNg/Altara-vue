@@ -1,6 +1,6 @@
 <template>
     <transition name="fade">
-       <div>
+       <div class="my-5">
           <div v-for="(portal, index) in portals" :key="index">
              <portal-card :desc="portal.desc" :title="portal.title" :url="portal.url" :url_c="portal.url_c"/>
           </div>

@@ -1,13 +1,13 @@
 <template>
-    <div id="changeCustomerManagerModal" class="modal fade">
+    <div id="changeCustomerManagerModal" class="modal fade w-50 mx-auto">
         <div class="modal-dialog">
             <div class="modal-content">
                 
                 <div class="modal-body" id="index" >
-                    <p class="text-center">Are you sure?</p>
+                    <p class="text-center h3">Are you sure?</p>
                     <div class="row text-center">
                     <div class="form-group clearfix col">
-                        <button class="btn bg-default bg-danger" @click="$emit('touched', true)">Yes</button>
+                        <button class="btn bg-default" @click="$emit('touched', true)">Yes</button>
                     </div>
                     <div class="form-group clearfix col">
                         <button class="btn bg-info" @click="$emit('touched', false)">No</button>

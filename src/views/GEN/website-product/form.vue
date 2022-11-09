@@ -14,10 +14,13 @@
               <label>Product name</label>
               <input
                 name="name"
-                :class="{'form-control': true, 'border-danger': errors.has('name')}"
+                :class="{
+                  'form-control': true,
+                  'border-danger': errors.has('name'),
+                }"
                 placeholder="product name"
                 type="text"
-                v-model="form.name"
+                v-model="name"
                 v-validate="'required|max:50'"
               />
               <i v-show="errors.has('name')" class="fa fa-warning"></i>
@@ -32,7 +35,7 @@
                 name="description"
                 placeholder="Description"
                 type="text"
-                v-model="form.description"
+                v-model="description"
                 v-validate="'required|max:50'"
               />
               <small v-if="errors.first('description')">{{
@@ -48,14 +51,9 @@
               <currency-input
                 :name="'price'"
                 class="form-control"
-                :options="{
-                  currency: 'NGN',
-                  hideGroupingSeparatorOnFocus: false,
-                }"
-                :placeholder="showPrice"
-                v-model="form.price"
+                :options="inputOptions"
+                v-model="price"
                 v-validate="'required|numeric'"
-                :value="price"
               ></currency-input>
               <small v-if="errors.first('price')">{{
                 errors.first('price')
@@ -67,7 +65,7 @@
                 name="image"
                 :usage="`cv`"
                 class="form-control w-75"
-                v-model="form.image"
+                v-model="image"
                 @getChange="onFileChange"
               />
               <small v-if="errors.first('image')">{{
@@ -76,13 +74,13 @@
 
               <div id="preview">
                 <img
-                  v-if="form.image"
+                  v-if="image"
                   :src="imageUrl"
                   width="150"
                   height="100"
                 />
                 <img
-                  v-if="mode === 'edit' && preloaded_image && !form.image"
+                  v-if="mode === 'edit' && preloaded_image && !image"
                   :src="preloaded_image"
                   width="150"
                   height="100"
@@ -117,7 +115,6 @@
 </template>
 <script>
 import Vue from 'vue'
-import { log } from '../../../utilities/log'
 import ImageUpload from '../../../components/ImageUpload'
 
 import Flash from '../../../utilities/flash'
@@ -140,9 +137,22 @@ export default {
   props: {},
   data() {
     return {
-      price: null,
+      inputOptions: {
+        currency: 'NGN',
+        currencyDisplay: 'symbol',
+        hideCurrencySymbolOnFocus: false,
+        hideGroupingSeparatorOnFocus: false,
+        hideNegligibleDecimalDigitsOnFocus: true,
+        autoDecimalDigits: false,
+        useGrouping: true,
+        accountingSign: false,
+      },
       preloaded_image: null,
+      name: '',
+      description: '',
+      price: null,
       url: null,
+      image: null,
       form: {},
       product_types: [],
       mode: null,
@@ -178,14 +188,12 @@ export default {
       Vue.set(this.$data, 'mode', this.$route.meta.mode)
 
       if (this.mode === 'edit') {
-        this.store = `/api/website-product/${this.$route.params.id}`;
-        this.method = 'PUT';
-        let form = {};
-        form.name = data.name;
-        form.description = data.description;
-        this.price = data.price;
+        this.store = `/api/website-product/${this.$route.params.id}`
+        this.method = 'PUT'
+        this.name = data.name
+        this.description = data.description
+        this.price = data.price
         this.preloaded_image = `${process.env.VUE_APP_S3_URL}/${data.image_url}`
-        Vue.set(this.$data, 'form', form)
       } else {
         Vue.set(this.$data, 'form', data)
       }
@@ -199,15 +207,20 @@ export default {
     },
 
     onSave() {
-      let form = toMulipartedForm(this.form)
+      console.log(this.form);
+      this.form = {
+        name: this.name,
+        price: this.price,
+        description: this.description,
+        image: this.image
+      }
+      let form = toMulipartedForm(this.form);
+      this.mode === 'edit' ? form.append('_method', 'PUT') : ''
       this.$validator.validateAll().then(result => {
         if (result) {
           if (this.$network()) {
-            this.$LIPS(true);
-            (this.mode === 'edit'
-              ? put(this.store, this.form)
-              : post(this.store, form)
-            )
+            this.$LIPS(true)
+            ;post(this.store, form)
               .then(({ data }) => {
                 if (data.status === 'success') {
                   Vue.set(this.$data, 'form', {})
@@ -227,7 +240,11 @@ export default {
                 let { data, status } = r
                 if (status === 422) {
                   this.error = data.errors ? data.errors : data
-                  this.$networkErr('unique')
+                  let errors = this.error.data.errors;
+                  for(const key in errors){
+                    this.$networkErr('',30000, errors[key][0]);
+                  }
+                  
                 }
               })
               .finally(() => {
@@ -242,7 +259,7 @@ export default {
   watch: {},
   computed: {
     imageUrl() {
-      return URL.createObjectURL(this.form.image)
+      return URL.createObjectURL(this.image)
     },
     showPrice() {
       return this.form.price

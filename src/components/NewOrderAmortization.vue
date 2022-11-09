@@ -61,7 +61,7 @@
             <div>Amortization Schedule</div>
           </div>
         </h5>
-        <div>
+        <div class="amor-table row px-4">
           <table class="table table-bordered">
             <tbody class="text-center">
               <tr>
@@ -595,7 +595,7 @@ export default {
 </script>
 <style scoped>
 .amor-table {
-  width: 80%;
+ 
   overflow-x: auto;
 }
 .status-sign{

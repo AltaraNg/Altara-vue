@@ -75,8 +75,8 @@
       </div>
       <div v-else-if="!$isProcessing" class="mx-4">
 					<zero-state
-						:title="'No reminder List'"
-						:message="'There are currrently no customer on the reminder list'"
+						:title="'No product uploaded'"
+						:message="'No product to view'"
 					>
 						<template v-slot:image>
 							<img src="../../../assets/thumb-up.png" />
@@ -275,6 +275,10 @@ export default {
         this.$LIPS(true)
       del(`${this.urlToFetchOrders}/${this.productItem.id}`)
         .then(res => {
+          this.$swal({
+                    icon: 'success',
+                    title: 'Product deleted successfully'              
+                  })
           this.fetchData()
         })
         .catch(err => {})

@@ -126,9 +126,9 @@
         </div>
         <div v-if="lateFEES && lateFEES.length >0">
           <h5 class="mt-5 mb-0 d-flex justify-content-between"  style="color: red;">
-            Late Fee
+            Late Fees
           </h5>
-        <div class="amor-table">
+        <div class="another">
           <table class="table table-bordered">
             <tbody class="text-center" >
               <tr class="table-separator">
@@ -597,6 +597,10 @@ export default {
 .amor-table {
  
   overflow-x: auto;
+}
+.another{
+  width: 1092px;
+		overflow: scroll;
 }
 .status-sign{
   width: 100%;

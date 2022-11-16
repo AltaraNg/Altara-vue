@@ -494,7 +494,7 @@ export default {
 			},
     closeModal() {
       this.showModal = false;
-     
+
       // $(`#viewEdit`).modal("toggle");
     },
 
@@ -566,7 +566,7 @@ export default {
     return total + Number(item.actual_amount);
   }, 0)
   return totalRepayment-totalPaid
-  
+
     },
   },
   created() {
@@ -595,7 +595,7 @@ export default {
 </script>
 <style scoped>
 .amor-table {
- 
+
   overflow-x: auto;
 }
 .another{
@@ -608,20 +608,20 @@ export default {
 }
 
 .green {
-  color: #0cd68c;  
+  color: #0cd68c;
   background: rgba(10, 232, 150, 0.274);
 }
 
 .magenta {
-  color: #FF00FF;  
+  color: #FF00FF;
   background: rgba(200, 0, 140, 0.09);
 }
 .pending {
-  color: #FFA500;  
+  color: #FFA500;
   background: rgba(253, 253, 150, 0.5);
 }
 .red {
-  color: red;  
+  color: red;
   background: rgba(236, 0, 0, 0.09);
 }
 .td-back {

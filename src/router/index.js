@@ -73,6 +73,11 @@ const ACC = () => import('../views/ACC/index.vue');
 const ACCHome = () => import('../views/ACC/HomePage.vue');
 const Reconcile = () => import('../views/ACC/reconcile/reconcile.vue');
 const ShowRoomDashboard = () => import('../views/FSL/dashboard/Dashboard.vue');
+const GenUtils = () => import('../views/GEN/index.vue');
+const GenUtilsHome = () => import('../views/GEN/HomePage.vue');
+const WebsiteProduct = () => import('../views/GEN/website-product/WebsiteProduct.vue');
+const WebsiteProductForm = () => import('../views/GEN/website-product/form.vue');
+
 
 const CreditWorthy = () =>
 	import('../views/AltaraLoan/credit_worthy/credit_worthy.vue');
@@ -173,6 +178,36 @@ const router = new VueRouter({
           component: ReminderReportingTool,
           name: "ReminderReporting",
         },
+      ],
+    },
+     {
+      path: "/gen-utils",
+      component: GenUtils,
+      meta: { requiresAuth: true },
+      children: [
+        { path: "/", redirect: { name: "GenUtilsHome" } },
+        {
+          path: "home",
+          component: GenUtilsHome,
+          name: "GenUtilsHome",
+        }, 
+        {
+          path: "website-product",
+          component: WebsiteProduct,
+          name: "WebsiteProduct",
+        },
+        {
+          path: "website-product/:id/edit",
+          component: WebsiteProductForm,
+          name: "websiteProductEdit",
+          meta: { mode: "edit" },
+        },
+        {
+          path: "website-product/create",
+          component: WebsiteProductForm,
+          name: "websiteProductCreate",
+          meta: { mode: "create" },
+        },           
       ],
     },
     {

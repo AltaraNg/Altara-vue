@@ -55,7 +55,7 @@
 							max="31"
 							v-model="form1[0]"
 						/> -->
-						<currency-input :options=" { currency: 'NGN', hideGroupingSeparatorOnFocus: false}" v-model="form1[0]"  class="form-control w-100" />
+						<currency-input :options=" inputOptions" v-model="form1[0]"  class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="amount" class="form-control-label"
@@ -132,13 +132,13 @@
 						<label for="7th-day" class="form-control-label"
 							>Max Balance (6th, 7th, 8th)
 						</label>
-						<currency-input :options=" { currency: 'NGN', hideGroupingSeparatorOnFocus: false}" v-model="form2[0]" class="form-control w-100" />
+						<currency-input :options="inputOptions" v-model="form2[0]" class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="14th-day" class="form-control-label"
 							>Max Balance (13th, 14th, 15th)
 						</label>
-						<currency-input :options=" { currency: 'NGN', hideGroupingSeparatorOnFocus: false}" v-model="form2[1]" class="form-control w-100" />
+						<currency-input :options=" inputOptions" v-model="form2[1]" class="form-control w-100" />
 					</div>
 				</div>
 				<br />
@@ -147,13 +147,13 @@
 						<label for="21st-day" class="form-control-label"
 							>Max Balance (20th, 21st, 22nd)
 						</label>
-						<currency-input :options=" { currency: 'NGN', hideGroupingSeparatorOnFocus: false}" v-model="form2[2]" class="form-control w-100" />
+						<currency-input :options="inputOptions" v-model="form2[2]" class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="28th-day" class="form-control-label"
 							>Max Balance (27th, 28th, 29th)
 						</label>
-						<currency-input :options=" { currency: 'NGN', hideGroupingSeparatorOnFocus: false}" v-model="form2[3]" class="form-control w-100" />
+						<currency-input :options="inputOptions" v-model="form2[3]" class="form-control w-100" />
 					</div>
 				</div>
 			</tab-content>
@@ -163,13 +163,13 @@
 						<label for="custom-date" class="form-control-label"
 							>Max Balance (6th, 7th, 8th)
 						</label>
-						<currency-input :options=" { currency: 'NGN', hideGroupingSeparatorOnFocus: false}" v-model="form3[0]" class="form-control w-100" />
+						<currency-input :options="inputOptions" v-model="form3[0]" class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
 							>Max Balance (13th, 14th, 15th)
 						</label>
-						<currency-input :options=" { currency: 'NGN', hideGroupingSeparatorOnFocus: false}" v-model="form3[1]" class="form-control w-100" />
+						<currency-input :options="inputOptions" v-model="form3[1]" class="form-control w-100" />
 					</div>
 				</div>
 				<br />
@@ -178,13 +178,13 @@
 						<label for="custom-date" class="form-control-label"
 							>Max Balance (20th, 21st, 22nd)
 						</label>
-						<currency-input :options=" { currency: 'NGN', hideGroupingSeparatorOnFocus: false}" v-model="form3[2]" class="form-control w-100" />
+						<currency-input :options="inputOptions" v-model="form3[2]" class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
 							>Max Balance (27th, 28th, 29th)
 						</label>
-						<currency-input :options=" { currency: 'NGN', hideGroupingSeparatorOnFocus: false}" v-model="form3[3]" class="form-control w-100" />
+						<currency-input :options="inputOptions" v-model="form3[3]" class="form-control w-100" />
 					</div>
 				</div>
 			</tab-content>
@@ -194,13 +194,13 @@
 						<label for="custom-date" class="form-control-label"
 							>Max Balance (6th, 7th, 8th)
 						</label>
-						<currency-input :options=" { currency: 'NGN', hideGroupingSeparatorOnFocus: false}" v-model="form4[0]" class="form-control w-100" />
+						<currency-input :options="inputOptions" v-model="form4[0]" class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
 							>Max Balance (13th, 14th, 15th)
 						</label>
-						<currency-input :options=" { currency: 'NGN', hideGroupingSeparatorOnFocus: false}" v-model="form4[1]" class="form-control w-100" />
+						<currency-input :options="inputOptions" v-model="form4[1]" class="form-control w-100" />
 					</div>
 				</div>
 				<br />
@@ -209,13 +209,13 @@
 						<label for="custom-date" class="form-control-label"
 							>Max Balance (20th, 21st, 22nd)
 						</label>
-						<currency-input :options=" { currency: 'NGN', hideGroupingSeparatorOnFocus: false}" v-model="form4[2]" class="form-control w-100" />
+						<currency-input :options="inputOptions" v-model="form4[2]" class="form-control w-100" />
 					</div>
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
 							>Max Balance (27th, 28th, 29th)
 						</label>
-						<currency-input :options=" { currency: 'NGN', hideGroupingSeparatorOnFocus: false}" v-model="form4[3]" class="form-control w-100" />
+						<currency-input :options="inputOptions" v-model="form4[3]" class="form-control w-100" />
 					</div>
 				</div>
 			</tab-content>
@@ -244,6 +244,16 @@ CurrencyInput
 	    },
 	    data() {
 	        return {
+				inputOptions: {
+					currency: 'NGN',
+        			currencyDisplay: 'symbol',
+        			hideCurrencySymbolOnFocus: false,
+        			hideGroupingSeparatorOnFocus: false,
+        			hideNegligibleDecimalDigitsOnFocus: true,
+        			autoDecimalDigits: false,
+        			useGrouping: true,
+        			accountingSign: false,
+				},
 	            error: {},
 	            product: "",
 	            salesLogForm: {},

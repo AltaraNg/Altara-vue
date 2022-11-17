@@ -61,7 +61,7 @@
             <div>Amortization Schedule</div>
           </div>
         </h5>
-        <div>
+        <div class="amor-table row px-4">
           <table class="table table-bordered">
             <tbody class="text-center">
               <tr>
@@ -126,9 +126,9 @@
         </div>
         <div v-if="lateFEES && lateFEES.length >0">
           <h5 class="mt-5 mb-0 d-flex justify-content-between"  style="color: red;">
-            Late Fee
+            Late Fees
           </h5>
-        <div class="amor-table">
+        <div class="another">
           <table class="table table-bordered">
             <tbody class="text-center" >
               <tr class="table-separator">
@@ -256,7 +256,7 @@
             <h5>
               <div class="d-flex justify-content-between">
                 <div>Update Amortization</div>
-                <div @click="closeModal()"><i class="fa fa-times"></i></div>
+                <div @click="closeAmmoModal()"><i class="fa fa-times"></i></div>
               </div>
             </h5>
             <div class="card">
@@ -494,7 +494,12 @@ export default {
 			},
     closeModal() {
       this.showModal = false;
+
       // $(`#viewEdit`).modal("toggle");
+    },
+
+    closeAmmoModal(){
+      this.showAmmoModal = false;
     },
     save() {
       this.$LIPS(true);
@@ -554,16 +559,16 @@ export default {
 			},
     calcDebt(amortization) {
       // * Assumed equal distribution of amortization
-      if (amortization[0] !== undefined) {
-        let res = amortization.filter((amor) => {
-          return amor.actual_amount === 0;
-        });
-        return res.length * amortization[0].expected_amount;
-      }
+       const totalRepayment = amortization?.reduce((total, item) => {
+    return total + Number(item.expected_amount);
+  }, 0);
+         const totalPaid = amortization?.reduce((total, item) => {
+    return total + Number(item.actual_amount);
+  }, 0)
+  return totalRepayment-totalPaid
+
     },
   },
-  async mounted(){
-    },
   created() {
     this.calcDebt(this.order.amortization) === 0
       ? (this.completed = true)
@@ -590,8 +595,12 @@ export default {
 </script>
 <style scoped>
 .amor-table {
-  width: 80%;
+
   overflow-x: auto;
+}
+.another{
+  width: 1092px;
+		overflow: scroll;
 }
 .status-sign{
   width: 100%;
@@ -599,20 +608,20 @@ export default {
 }
 
 .green {
-  color: #0cd68c;  
+  color: #0cd68c;
   background: rgba(10, 232, 150, 0.274);
 }
 
 .magenta {
-  color: #FF00FF;  
+  color: #FF00FF;
   background: rgba(200, 0, 140, 0.09);
 }
 .pending {
-  color: #FFA500;  
+  color: #FFA500;
   background: rgba(253, 253, 150, 0.5);
 }
 .red {
-  color: red;  
+  color: red;
   background: rgba(236, 0, 0, 0.09);
 }
 .td-back {

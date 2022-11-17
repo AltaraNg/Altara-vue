@@ -20,6 +20,7 @@
                   :label="'Financed by Bank54'"
                 />
               </div>
+
               <div class="col">
                 <button
                   class="btn btn-md float-right"
@@ -53,6 +54,7 @@
                 <AutoComplete
                   v-on:childToParent="selectedItem"
                   :apiUrl="apiUrls.getProduct"
+                  ref="clearInputValue"
                 />
               </div>
 
@@ -313,16 +315,40 @@
             </div>
             <br />
             <div>
-              <div class="text-center">
-                <button
-                  class="btn bg-default"
-                  :disabled="test1"
-                  type="submit"
-                  v-on:click="getCalc()"
+              <div
+                :style="(addDownpayment && isAltaraPay) || stillShowToggle ? 'display:flex; ' : ''"
+              >
+                <div
+                  class="col d-flex align-items-center"
+                  :class="this.customer.guarantor_paystack.length > 0 ?'': '' "
+                  v-if="(addDownpayment && isAltaraPay) || stillShowToggle"
                 >
-                  View Amortization
-                </button>
-                <br />
+                  <toggle-button
+                    v-on:valueChangedEvent="triggerToggleEvent"
+                    switchName="addDownpayment"
+                    key="addDownpayment"
+                    :defaultState="addDownpayment"
+                    label="Add Repayment"
+                  />
+                </div>
+                <div
+                  class="text-center "
+                  :style="
+                    (addDownpayment && isAltaraPay) || stillShowToggle
+                      ? 'position:absolute; left:50%; '
+                      : ''
+                  "
+                >
+                  <button
+                    class="btn bg-default"
+                    :disabled="test1"
+                    type="submit"
+                    v-on:click="getCalc()"
+                  >
+                    View Amortization
+                  </button>
+                  <br />
+                </div>
               </div>
               <div class="text-right" v-if="isAltaraPay">
                 <button
@@ -338,7 +364,7 @@
           </form>
         </div>
       </div>
-      <div v-if="!test0" class="col-md-4">
+      <div v-if="!hideOrderSummary" class="col-md-4">
         <div class="card">
           <div class="card-body">
             <h5 class="mt-3 mb-0">Order Information</h5>
@@ -353,14 +379,40 @@
                   <th>Product Price</th>
                   <td>{{ $formatCurrency(pPrice) }}</td>
                 </tr>
+                <tr
+                  class="table-separator"
+                  v-if="singleRepayment && addDownpayment"
+                >
+                  <th>Estimating Downpayment</th>
+                  <td>
+                    {{ $formatCurrency(fPayment) }}
+                    <span
+                      style="font-size: 12px; text-decoration: underline; font-weight: 900;"
+                    >
+                      + {{ $formatCurrency(singleRepayment) }}</span
+                    >
+                  </td>
+                </tr>
                 <tr class="table-separator">
                   <th>First Payment</th>
-                  <td>{{ $formatCurrency(fPayment) }}</td>
+                  <td>
+                    {{
+                      $formatCurrency(
+                        computedPayment(fPayment + singleRepayment, fPayment)
+                      )
+                    }}
+                  </td>
                 </tr>
 
                 <tr class="table-separator">
                   <th>Repayment</th>
-                  <td class>{{ $formatCurrency(rPayment) }}</td>
+                  <td class>
+                    {{
+                      $formatCurrency(
+                        computedPayment(rPayment - singleRepayment, rPayment)
+                      )
+                    }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -404,15 +456,19 @@
                     <!-- <td class="font-weight-bold">{{this.customerId}}</td> -->
                     <th>{{ this.selectedProduct.product_name }}</th>
                     <th>{{ $formatCurrency(pPrice) }}</th>
-                    <th>{{ $formatCurrency(fPayment) }}</th>
+                    <th>{{$formatCurrency(
+                        computedPayment(fPayment + singleRepayment, fPayment)
+                      )}}</th>
                     <td class>
-                      {{ $formatCurrency(rPayment) }}
+                      {{  $formatCurrency(
+                        computedPayment(rPayment - singleRepayment, rPayment)
+                      ) }}
                       <div class="modal_cover">
                         <discount
                           class="modal_discount"
                           v-if="
                             salesLogForm.discount !== '0_discount' &&
-                            rPayment > 0
+                              rPayment > 0
                           "
                           :percent="selected_discount.percentage_discount"
                         />
@@ -472,7 +528,7 @@
               Confirm Transfer
             </button>
             <paystack
-              :amount="this.fPayment * 100"
+              :amount="computedPayment((fPayment + singleRepayment) *100, fPayment *100)" 
               :email="customer_email"
               :paystackkey="paystackkey"
               :reference="reference"
@@ -537,6 +593,9 @@ export default {
   },
   data() {
     return {
+      currentValue:"",
+      stillShowToggle: null,
+      addDownpayment: null,
       productOrder: false,
       card_expiry: null,
       error: {},
@@ -552,7 +611,7 @@ export default {
       amortization: [],
       calculation: [],
       salesCategories: [],
-      test0: true,
+      hideOrderSummary: true,
       test1: true,
       apiUrls: {
         repaymentDuration: `/api/repayment_duration`,
@@ -626,6 +685,7 @@ export default {
       isBank54: false,
       financed_by: "altara",
       flag: null,
+      singleRepayment: null,
     };
   },
   async beforeMount() {
@@ -641,18 +701,34 @@ export default {
     await this.getOrderTypes();
   },
   watch: {
+
     "salesLogForm.sales_category_id": {
       handler(newData) {
         this.watchBusinessType(newData);
         this.watchSalesLogForm(newData);
+        this.watchCashPrice(newData);
       },
     },
     "salesLogForm.business_type_id": {
       handler(newData) {
+        this.watchCashPrice(newData);
         this.watchBusinessType(newData);
         this.watchSalesLogForm(newData);
         this.getCalc();
       },
+    },
+    "salesLogForm.product": {
+      handler(newData) {
+        this.watchCashPrice(newData);
+        this.getCalc();
+      },
+      deep: true,
+    },
+    "salesLogForm.repayment_duration_id": {
+      handler(newData) {
+        this.watchCashPrice(newData);
+      },
+      deep: true,
     },
   },
 
@@ -691,6 +767,34 @@ export default {
     },
   },
   methods: {
+    computedPayment(firstvalue, secondvalue) {
+      if (this.singleRepayment && this.addDownpayment) {
+        return firstvalue;
+      } else return secondvalue;
+    },
+    watchCashPrice() {
+
+      if (
+        this.salesLogForm?.product?.product?.category == "cash loan" &&
+        this.salesLogForm?.repayment_duration_id?.name == "six_months"
+      )
+      //check if it is cashloan and six months duration, return addDownpayment= true only if
+      //businesstype is (5 or10) and product amount is >110000
+      //OR
+      //businesstype is (9 or7) and product amount is > 80000
+       {
+        this.addDownpayment =
+          ((this.salesLogForm?.business_type_id?.id == 5 ||
+            this.salesLogForm?.business_type_id?.id == 10) &&
+            this.selectedProduct.price > 110000) ||
+          ((this.salesLogForm?.business_type_id?.id == 9 ||
+            this.salesLogForm?.business_type_id?.id == 7) &&
+            this.selectedProduct.price > 80000)
+            ? true
+            : false;
+      } else this.addDownpayment = false;
+      this.stillShowToggle = this.addDownpayment;
+    },
     watchSalesLogForm() {
       this.salesLogForm.discount =
         this.salesLogForm?.sales_category_id == "2" &&
@@ -727,6 +831,10 @@ export default {
       });
 
       const data = {
+        amortization_downpayment:
+          this.singleRepayment && this.addDownpayment
+            ? this.singleRepayment
+            : 0,
         order_type_id: orderType.id,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
@@ -808,6 +916,10 @@ export default {
       this.cardError = false;
       this.salesLogForm.customer_id = this.customerId;
       const data = {
+        amortization_downpayment:
+          this.singleRepayment && this.addDownpayment
+            ? this.singleRepayment
+            : 0,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
@@ -936,6 +1048,30 @@ export default {
         this.rPayment = rePayment;
         this.pPrice = total;
         this.test1 = false;
+        const months = this.rDuration / 30;
+
+        const cycle = Math.ceil(28 / this.repaymentCircle);
+        const additionalRepayment = this.rPayment / (months * cycle);
+
+        if (
+          (this.selectedProduct.price > 80000 &&
+            this.selectedProduct.price <= 110000 &&
+            (this.salesLogForm?.business_type_id?.id == 7 ||
+              this.salesLogForm?.business_type_id?.id == 9)) ||
+          ((this.salesLogForm?.business_type_id?.id == 5 ||
+            this.salesLogForm?.business_type_id?.id == 10) &&
+            this.selectedProduct.price > 110000)
+        ) {
+          this.singleRepayment =
+            cycle == 1 ? additionalRepayment / 2 : additionalRepayment;
+        } else if (
+          this.selectedProduct.price > 110000 &&
+          (this.salesLogForm.business_type_id.id == 7 ||
+            this.salesLogForm?.business_type_id?.id == 9)
+        ) {
+          this.singleRepayment =
+            cycle == 1 ? additionalRepayment : additionalRepayment * 2;
+        }
       } catch (e) {
         // this.$swal({
         //     icon: "error",
@@ -986,11 +1122,13 @@ export default {
     },
     selectedItem(value) {
       this.selectedProduct = value;
+
       this.salesLogForm = {
         ...this.salesLogForm,
         product_name: this.selectedProduct.product_name,
+        product: this.selectedProduct,
       };
-      this.test0 = false;
+      this.hideOrderSummary = false;
       this.watchSalesLogForm();
       this.getCalc();
     },
@@ -1104,13 +1242,16 @@ export default {
       this.serial === true ? (this.serial = false) : (this.serial = true);
     },
     toggleProductType() {
+      this.hideOrderSummary=true
       this.transfer = false;
       this.isBank54 = false;
       this.getBusinessTypes();
+      this.selectedProduct.product_name= ""
       this.isAltaraPay = !this.isAltaraPay;
       this.isAltaraPay ? "" : (this.card_expiry = null);
       this.salesLogForm = {};
       this.salesLogForm.discount = "0_discount";
+     this.$refs.clearInputValue.setValue("");
     },
     async processPaymentPayStackPayment(resp) {
       this.paystackReference = resp.reference;
@@ -1192,7 +1333,7 @@ export default {
           Flash.setError("Error: " + err.message);
         });
     },
-    canLogBank54Payment: function () {
+    canLogBank54Payment: function() {
       this.flag = localStorage.getItem("flag");
       return this.flag === "beta";
     },
@@ -1202,6 +1343,13 @@ export default {
     triggerToggleEventTransfer(value) {
       this.transfer = value;
     },
+    triggerToggleEventaddDownpayment(value) {
+      this.addDownpayment = !this.addDownpayment;
+      this.addDownpayment = value;
+      this.stillShowToggle = true;
+      
+    },
+
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value);
     },
@@ -1250,6 +1398,10 @@ export default {
   color: forestgreen;
   display: block;
   float: right;
+}
+.disableToggle{
+  pointer-events: none;
+  opacity: 0.7;
 }
 .discount {
   left: 130px;

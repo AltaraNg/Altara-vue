@@ -65,8 +65,8 @@ export default {
 .toggle__button {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: 40px;
+  height: 23px;
 }
 .toggle__button input {
   opacity: 0;
@@ -87,9 +87,9 @@ export default {
 .toggle__switch:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
+  height: 16px;
+  width: 16px;
+  left: 3px;
   bottom: 4px;
   background-color: white;
   -webkit-transition: 0.4s;
@@ -97,23 +97,23 @@ export default {
 }
 /* Rounded sliders */
 .toggle__switch.round {
-  border-radius: 34px;
+  border-radius: 16px;
 }
 
 .toggle__switch.round:before {
   border-radius: 50%;
 }
 .toggle_check:checked + .toggle__switch {
-  background-color: green;
+  background-color: #074A74;
 }
 
 .toggle_check:focus + .toggle__switch {
-  box-shadow: 0 0 1px green;
+  box-shadow: 0 0 1px #074A74;
 }
 
 .toggle_check:checked + .toggle__switch:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+  -webkit-transform: translateX(15px);
+  -ms-transform: translateX(15px);
+  transform: translateX(15px);
 }
 </style>

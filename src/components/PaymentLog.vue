@@ -910,7 +910,7 @@ export default {
         });
         await this.paystackCustomer(
           this.customer.id,
-          createdPaystackCustomer.data.customer_code
+          createdPaystackCustomer?.data?.customer_code
         );
       }
       this.cardError = false;

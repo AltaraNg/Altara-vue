@@ -12,9 +12,13 @@
 					<customer-profile :view-customer="customer" />
 					<!--             // TODO:: cleanup       </div>-->
 
-					<custom-header :title="'All order(s)'" />
-
-					<div class="mt-5 mb-3 attendance-head">
+					<div style="display: flex; ">
+						<custom-header :title="'All order(s)'"  @click.native="selectType('order')" :style="!states.order ?'opacity: 0.2;' :'' " />
+					<custom-header :title="'Recommendations'" @click.native="selectType('recommendation')" :style="!states.recommendation ?'opacity: 0.2;' :'' " />
+					</div>
+					<hr/>
+					<div v-if="states.order">
+						<div class="mt-5 mb-3 attendance-head" >
 						<div class="row px-4 pt-3 pb-4 text-center">
 							<div class="col light-heading" style="max-width: 100px">
 								S/No.
@@ -28,7 +32,6 @@
 							</div>
 						</div>
 					</div>
-
 					<div class="tab-content mt-1 attendance-body">
 						<div
 							class="tab-pane active text-center"
@@ -332,6 +335,8 @@
 							</div>
 						</div>
 					</div>
+					</div>
+					<div v-else>hellooo</div>
 
 					<PaymentLog
 						:customerId="customer.id"
@@ -857,7 +862,7 @@
 	import CustomDirectDebitModalButton from '../../../components/Paystack/CustomDirectDebitModalButton.vue';
 	import { EventBus } from '../../../utilities/event-bus';
 	import Roles from '../../../utilities/roles';
-
+	import {selectType} from "../../../utilities/log.js"
 	export default {
 		components: {
 			CustomHeader,
@@ -878,6 +883,10 @@
 
 		data() {
 			return {
+				states:{
+					order:true,
+					recommendation:false
+				},
 				editOrder: {},
 				Order: Order,
 				newOrder: false,
@@ -930,6 +939,9 @@
 		},
 
 		methods: {
+			selectType(type){
+      selectType(type, this.states)
+    },
 			getClickedOrder(order) {
 				this.clickedOrder = order;
 			},

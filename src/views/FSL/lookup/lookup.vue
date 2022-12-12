@@ -336,7 +336,92 @@
 						</div>
 					</div>
 					</div>
-					<div v-else>hellooo</div>
+					<div v-if="states.recommendation">
+					<div class="mt-5 mb-3 text-center"   style="width: 100%; display: flex;justify-items: center; ">
+						
+							<div class="light-heading pl-5" style="width: 10%">
+								S/No.
+							</div>
+							<div class="light-heading" style="width: 15%">
+								Date
+							</div>
+							<div class="light-heading" style="width: 10%">
+								Type
+							</div>
+							<div class="light-heading" style="width: 45%">
+								Input Data
+							</div>
+							<div class="light-heading" style="width: 20%">
+								Repayment Plans
+							</div>
+							
+						
+					</div>
+					<div class="tab-content mt-1 attendance-body">
+						<div
+							class="tab-pane active text-center"
+							v-if="recommendationList"
+						>
+							<div
+								class="mb-3 row attendance-item" style="width:100%; display: flex;justify-items: center; align-items: center;"
+								v-for="(recommendation, index) in recommendationList"
+								:key="index"
+							>
+								<div  style="width:10%" class="pl-5">
+									<span class="user mx-auto">{{ index + 1 }}</span>
+									
+								</div>
+								<div style="width:15%" class=" py-5">
+									{{ formatDate(recommendation.created_at) }}
+								</div>
+								<div style="width:10%" class=" py-5">
+									{{recommendation.type}}
+								</div>
+								<div style="width:45%; border: 1px solid lightgray; display: flex; align-items: center; justify-items: center;" class=" py-5">
+									<div v-if="recommendation.type == 'formal'" style="display: flex; flex-wrap: wrap; display: flex; align-items: center; justify-items: center;">
+										<p style="width:50%" >Salary: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).salary}}</span></p>
+										<p style="width:50%" >Total Price: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).total_price}}</span></p>
+										<p style="width:50%" >Plan: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).plan}} percent</span></p>
+										<p style="width:50%" >Duration: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).duration}}</span></p>
+										<p style="width:50%" >Cycle: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).cycle}}</span></p>
+									</div>
+									<div v-else style="display: flex; flex-wrap: wrap; display: flex; align-items: center; justify-items: center;">
+										<p style="width:50%" >Month 1: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).month1}}</span></p>
+										<p style="width:50%" >Month 2: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).month2}}</span></p>
+										<p style="width:50%" >Month 3: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).month3}}</span></p>
+										<p style="width:50%" >Total Price: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).total_price}}</span></p>
+										<p style="width:50%" >Plan: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).plan}} percent</span></p>
+										<p style="width:50%" >Duration: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).duration}}</span></p>
+										<p style="width:50%" >Cycle: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).cycle}}</span></p>
+									</div>
+									
+								</div>
+								<div style="width:20%" class=" py-5">
+									{{computeDownpayment(recommendation)}}
+								</div>
+								
+								
+							</div>
+							
+						</div>
+
+						<div class="tab-pane active text-center" v-else>
+							<div class="mb-3 row attendance-item">
+								<div
+									class="
+                    col
+                    d-flex
+                    light-heading
+                    align-items-center
+                    justify-content-center
+                  "
+								>
+									No records found!
+								</div>
+							</div>
+						</div>
+					</div>
+					</div>
 
 					<PaymentLog
 						:customerId="customer.id"
@@ -883,6 +968,7 @@
 
 		data() {
 			return {
+				recommendationList:null,
 				states:{
 					order:true,
 					recommendation:false
@@ -912,6 +998,12 @@
 					'Total Product Price',
 					'Type',
 					'Customer Type',
+					'Repayment Plans',
+				],
+				recommendationHeaders: [
+					'Date',
+					'Type',
+					'Input Data',
 					'Repayment Plans',
 				],
 				products: [],
@@ -1016,12 +1108,24 @@
 			done() {
 				this.show = false;
 			},
+			getRecommendationList(id){
+								get(`/api/customer-recommendation/${id}`)
+					.then((res) => {
+						this.recommendationList = res.data.data
+					})
+					.catch((e) => {
+						this.$LIPS(false);
+						Flash.setError('Error Fetching customer detail');
+					});
+			},
 			processForm(id) {
 				this.show = false;
 				this.$LIPS(true);
+				this.getRecommendationList(id)
 				get(`/api/customer/lookup/${id}`)
 					.then((res) => {
 						this.updateView(res.data);
+						
 					})
 					.catch((e) => {
 						this.$LIPS(false);
@@ -1295,6 +1399,10 @@
 				let index = this.customer.new_orders.indexOf(element);
 				Vue.set(this.$data.customer.new_orders, index, element);
 			},
+			computeDownpayment(result){
+				return typeof JSON.parse(result.result).ans == 'object' ? `${JSON.parse(result.result).ans[0]}% downpayment` : JSON.parse(result.result).ans
+			},
+
 		},
 
 		computed: {
@@ -1308,7 +1416,7 @@
 			check() {
 				return !(!this.$isProcessing && !!this.customer_id);
 			},
-
+			
 			isReadOnly() {
 				return this.$route.meta.readOnly;
 			},

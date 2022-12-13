@@ -348,22 +348,27 @@
 					<div v-if="states.recommendation">
 					<div class="mt-5 mb-3 text-center"   style="width: 100%; display: flex;justify-items: center; ">
 						
-							<div class="light-heading pl-5" style="width: 10%">
+							<div class="light-heading " style="width: 14%">
 								S/No.
 							</div>
-							<div class="light-heading" style="width: 15%">
+							<div class="light-heading" style="width: 14%">
 								Date
 							</div>
-							<div class="light-heading" style="width: 10%">
+							<div class="light-heading" style="width: 14%">
 								Type
 							</div>
-							<div class="light-heading" style="width: 45%">
-								Input Data
+							<div class="light-heading" style="width: 14%">
+								Product Price
 							</div>
-							<div class="light-heading" style="width: 20%">
+							<div class="light-heading" style="width: 14%">
+								Duration
+							</div>
+							<div class="light-heading" style="width: 14%">
 								Recommended Plans
 							</div>
-							
+							<div class="light-heading" style="width: 14%">
+								Input Data
+							</div>
 						
 					</div>
 					<div class="tab-content mt-1 attendance-body">
@@ -372,42 +377,37 @@
 							v-if="recommendationList.length > 0"
 						>
 							<div
-								class="mb-3 row attendance-item" style="width:100%; display: flex;justify-items: center; align-items: center;"
+								class="mb-2   attendance-item" style="width:100%; display: flex;justify-items: center; align-items: center; "
 								v-for="(recommendation, index) in recommendationList"
 								:key="index"
 							>
-								<div  style="width:10%" class="pl-5">
+								<div  style="width:14%" class="pl-5">
 									<span class="user mx-auto">{{ index + 1 }}</span>
 									
 								</div>
-								<div style="width:15%" class="align-items-center d-flex ">
+								<div style="width:14%; padding-top:25px" class=" ">
 									{{ formatDate(recommendation.created_at) }}
 								</div>
-								<div style="width:10%" class=" align-items-center d-flex ">
+								<div style="width:14%; padding-top:25px" class="  ">
 									{{recommendation.type}}
 								</div>
-								<div style="width:45%; border: 1px solid lightgray; display: flex; align-items: center; justify-items: center;" class=" align-items-center d-flex ">
-									<div v-if="recommendation.type == 'formal'" style="display: flex; flex-wrap: wrap; display: flex; align-items: center; justify-items: center;">
-										<p style="width:50%" >Salary: <span style="font-weight: 800;">{{ $formatCurrency(JSON.parse(recommendation.input_data).salary)}}</span></p>
-										<p style="width:50%" >Total Price: <span style="font-weight: 800;">{{ $formatCurrency(JSON.parse(recommendation.input_data).total_price)}}</span></p>
-										<p style="width:50%" >Plan: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).plan}} percent</span></p>
-										<p style="width:50%" >Duration: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).duration}}</span></p>
-										<p style="width:50%" >Cycle: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).cycle}}</span></p>
-									</div>
-									<div v-else style="display: flex; flex-wrap: wrap; display: flex; align-items: center; justify-items: center;">
-										<p style="width:50%" >Month 1: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).month1}}</span></p>
-										<p style="width:50%" >Month 2: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).month2}}</span></p>
-										<p style="width:50%" >Month 3: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).month3}}</span></p>
-										<p style="width:50%" >Total Price: <span style="font-weight: 800;">{{ $formatCurrency(JSON.parse(recommendation.input_data).total_price)}}</span></p>
-										<p style="width:50%" >Plan: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).plan}} percent</span></p>
-										<p style="width:50%" >Duration: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).duration}}</span></p>
-										<p style="width:50%" >Cycle: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).cycle}}</span></p>
-									</div>
-									
+								<div style="width:14%; padding-top:25px" class="  ">
+									{{ $formatCurrency(JSON.parse(recommendation.input_data).total_price)}}
 								</div>
-								<div style="width:20%; padding-left:50px;" class=" align-items-center d-flex align-text-center" >
+								<div style="width:14%; padding-top:25px" class="  ">
+									{{JSON.parse(recommendation.input_data).duration}}
+								</div>
+								
+								<div style="width:14%; padding-top:25px; " class="  align-text-center" >
 									{{computeDownpayment(recommendation)}}
 								</div>
+								<button
+										@click="displayActiveRecommendation(recommendation)"
+										class="btn status approved" style="color:'#074A74'; margin-left: 50px;"
+									>
+										See More
+										
+									</button>
 								
 								
 							</div>
@@ -431,8 +431,6 @@
 						</div>
 					</div>
 					</div>
-
-					
 				</div>
 			</transition>
 
@@ -522,7 +520,6 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="modal fade repayment" id="amortization">
 				<div class="modal-dialog modal-xl" role="document">
 					<div class="modal-content" v-if="showModalContent">
@@ -917,7 +914,69 @@
 					</div>
 				</div>
 			</div>
-		</div>
+			
+                                <div class="modal fade repayment" id="recommendation" >
+				<div class="modal-dialog modal-md" role="document" style="margin-top: 20%;">
+					<div class="modal-content" v-if="displayMore">
+						
+							<div class="modal-header py-2">
+								<h6 class="modal-title py-1">
+									More Details
+									
+								</h6>
+								</div>
+								
+							<div class="modal-body">
+								 <div v-if="activeRecommendation.type == 'formal'">
+                                        <p style="width:50%" >Salary: <span style="font-weight: 800;">{{ $formatCurrency(JSON.parse(activeRecommendation.input_data).salary)}}</span></p>
+                                        </div>
+                                        <div v-else>
+                                            <p style="width:50%" >Month 1: <span style="font-weight: 800;">{{JSON.parse(activeRecommendation.input_data).month1}}</span></p>
+										<p style="width:50%" >Month 2: <span style="font-weight: 800;">{{JSON.parse(activeRecommendation.input_data).month2}}</span></p>
+										<p style="width:50%" >Month 3: <span style="font-weight: 800;">{{JSON.parse(activeRecommendation.input_data).month3}}</span></p>
+                                        </div>
+										
+										<p style="width:50%" >Total Price: <span style="font-weight: 800;">{{ $formatCurrency(JSON.parse(activeRecommendation.input_data).total_price)}}</span></p>
+										<p style="width:50%" >Plan: <span style="font-weight: 800;">{{JSON.parse(activeRecommendation.input_data).plan}} percent</span></p>
+										<p style="width:50%" >Duration: <span style="font-weight: 800;">{{JSON.parse(activeRecommendation.input_data).duration}}</span></p>
+										<p style="width:50%" >Cycle: <span style="font-weight: 800;">{{JSON.parse(activeRecommendation.input_data).cycle}}</span></p>
+									</div>	
+							</div>
+							
+						</div>
+						
+					</div>
+
+					<div class="modal fade repayment" id="viewEdit">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content" v-if="showModal">
+								<div class="modal-header py-2">
+									<h4>edit payment</h4>
+									<a aria-label="Close" class="close py-1" data-dismiss="modal">
+										<span aria-hidden="true" class="modal-close text-danger">
+											<i class="fas fa-times"></i>
+										</span>
+									</a>
+								</div>
+								<div class="modal-body px-5">
+									<input
+										name="ammo"
+										class="custom-select"
+										v-model="actual_amount"
+										:placeholder="ammo_item.actual_amount"
+									/>
+								</div>
+								<div class="modal-footer justify-content-center">
+									<button class="text-center btn bg-default" @click="save">
+										Save
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+		
 	</transition>
 </template>
 <script>
@@ -969,6 +1028,8 @@
 
 		data() {
 			return {
+				displayMore:false,
+				activeRecommendation:null,
 				recommendationList:null,
 				states:{
 					order:true,
@@ -1145,6 +1206,13 @@
 					});
 					return res.length * amortization[0].expected_amount;
 				}
+			},
+			displayActiveRecommendation(recommendation){
+				
+				this.activeRecommendation = recommendation
+				console.log(this.activeRecommendation, this.displayMore);
+				this.displayMore = true
+				return $(`#recommendation`).modal('toggle');
 			},
 
 			async displayAmortization(order) {

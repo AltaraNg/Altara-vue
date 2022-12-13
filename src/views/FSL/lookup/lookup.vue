@@ -14,7 +14,7 @@
 
 					<div style="display: flex; ">
 						<custom-header :title="'All order(s)'"  @click.native="selectType('order')" :style="!states.order ?'opacity: 0.2; cursor:pointer;' :'' " />
-					<custom-header :title="'Recommendations'" @click.native="selectType('recommendation')" :style="!states.recommendation ?'opacity: 0.2; cursor:pointer;' :'' " style="margin-left:-10px" />
+					<custom-header :title="'Recommendations'" @click.native="selectType('recommendation')" :style="!states.recommendation ?'opacity: 0.2; cursor:pointer;' :' ' " style="margin-left:-10px" />
 					</div>
 					<hr/>
 					<div v-if="states.order">

@@ -13,8 +13,8 @@
 					<!--             // TODO:: cleanup       </div>-->
 
 					<div style="display: flex; ">
-						<custom-header :title="'All order(s)'"  @click.native="selectType('order')" :style="!states.order ?'opacity: 0.2;' :'' " />
-					<custom-header :title="'Recommendations'" @click.native="selectType('recommendation')" :style="!states.recommendation ?'opacity: 0.2;' :'' " />
+						<custom-header :title="'All order(s)'"  @click.native="selectType('order')" :style="!states.order ?'opacity: 0.2; cursor:pointer;' :'' " />
+					<custom-header :title="'Recommendations'" @click.native="selectType('recommendation')" :style="!states.recommendation ?'opacity: 0.2; cursor:pointer;' :'' " style="margin-left:-10px" />
 					</div>
 					<hr/>
 					<div v-if="states.order">
@@ -335,6 +335,15 @@
 							</div>
 						</div>
 					</div>
+					<PaymentLog
+						:customerId="customer.id"
+						@done="this.done"
+						v-if="logger === 'payment'"
+						:customer="customer"
+					/>
+					<div class="mt-5 mb-3 attendance-head">
+						<div class="w-100 my-5 mx-0 hr"></div>
+					</div>
 					</div>
 					<div v-if="states.recommendation">
 					<div class="mt-5 mb-3 text-center"   style="width: 100%; display: flex;justify-items: center; ">
@@ -352,7 +361,7 @@
 								Input Data
 							</div>
 							<div class="light-heading" style="width: 20%">
-								Repayment Plans
+								Recommended Plans
 							</div>
 							
 						
@@ -360,7 +369,7 @@
 					<div class="tab-content mt-1 attendance-body">
 						<div
 							class="tab-pane active text-center"
-							v-if="recommendationList"
+							v-if="recommendationList.length > 0"
 						>
 							<div
 								class="mb-3 row attendance-item" style="width:100%; display: flex;justify-items: center; align-items: center;"
@@ -371,16 +380,16 @@
 									<span class="user mx-auto">{{ index + 1 }}</span>
 									
 								</div>
-								<div style="width:15%" class=" py-5">
+								<div style="width:15%" class="align-items-center d-flex ">
 									{{ formatDate(recommendation.created_at) }}
 								</div>
-								<div style="width:10%" class=" py-5">
+								<div style="width:10%" class=" align-items-center d-flex ">
 									{{recommendation.type}}
 								</div>
-								<div style="width:45%; border: 1px solid lightgray; display: flex; align-items: center; justify-items: center;" class=" py-5">
+								<div style="width:45%; border: 1px solid lightgray; display: flex; align-items: center; justify-items: center;" class=" align-items-center d-flex ">
 									<div v-if="recommendation.type == 'formal'" style="display: flex; flex-wrap: wrap; display: flex; align-items: center; justify-items: center;">
-										<p style="width:50%" >Salary: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).salary}}</span></p>
-										<p style="width:50%" >Total Price: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).total_price}}</span></p>
+										<p style="width:50%" >Salary: <span style="font-weight: 800;">{{ $formatCurrency(JSON.parse(recommendation.input_data).salary)}}</span></p>
+										<p style="width:50%" >Total Price: <span style="font-weight: 800;">{{ $formatCurrency(JSON.parse(recommendation.input_data).total_price)}}</span></p>
 										<p style="width:50%" >Plan: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).plan}} percent</span></p>
 										<p style="width:50%" >Duration: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).duration}}</span></p>
 										<p style="width:50%" >Cycle: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).cycle}}</span></p>
@@ -389,14 +398,14 @@
 										<p style="width:50%" >Month 1: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).month1}}</span></p>
 										<p style="width:50%" >Month 2: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).month2}}</span></p>
 										<p style="width:50%" >Month 3: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).month3}}</span></p>
-										<p style="width:50%" >Total Price: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).total_price}}</span></p>
+										<p style="width:50%" >Total Price: <span style="font-weight: 800;">{{ $formatCurrency(JSON.parse(recommendation.input_data).total_price)}}</span></p>
 										<p style="width:50%" >Plan: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).plan}} percent</span></p>
 										<p style="width:50%" >Duration: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).duration}}</span></p>
 										<p style="width:50%" >Cycle: <span style="font-weight: 800;">{{JSON.parse(recommendation.input_data).cycle}}</span></p>
 									</div>
 									
 								</div>
-								<div style="width:20%" class=" py-5">
+								<div style="width:20%; padding-left:50px;" class=" align-items-center d-flex align-text-center" >
 									{{computeDownpayment(recommendation)}}
 								</div>
 								
@@ -405,7 +414,7 @@
 							
 						</div>
 
-						<div class="tab-pane active text-center" v-else>
+						<div class="tab-pane active text-center" v-if="recommendationList.length ==0">
 							<div class="mb-3 row attendance-item">
 								<div
 									class="
@@ -423,15 +432,7 @@
 					</div>
 					</div>
 
-					<PaymentLog
-						:customerId="customer.id"
-						@done="this.done"
-						v-if="logger === 'payment'"
-						:customer="customer"
-					/>
-					<div class="mt-5 mb-3 attendance-head">
-						<div class="w-100 my-5 mx-0 hr"></div>
-					</div>
+					
 				</div>
 			</transition>
 
@@ -1112,6 +1113,7 @@
 								get(`/api/customer-recommendation/${id}`)
 					.then((res) => {
 						this.recommendationList = res.data.data
+						this.recommendationList.reverse()
 					})
 					.catch((e) => {
 						this.$LIPS(false);
@@ -1121,10 +1123,12 @@
 			processForm(id) {
 				this.show = false;
 				this.$LIPS(true);
-				this.getRecommendationList(id)
+				
 				get(`/api/customer/lookup/${id}`)
 					.then((res) => {
 						this.updateView(res.data);
+						this.getRecommendationList(id)
+						this.show= true
 						
 					})
 					.catch((e) => {
@@ -1400,7 +1404,7 @@
 				Vue.set(this.$data.customer.new_orders, index, element);
 			},
 			computeDownpayment(result){
-				return typeof JSON.parse(result.result).ans == 'object' ? `${JSON.parse(result.result).ans[0]}% downpayment` : JSON.parse(result.result).ans
+				return typeof JSON.parse(result.result).ans == 'object' && JSON.parse(result.result).ans[1] == 0  ? `${JSON.parse(result.result).ans[0]}% downpayment` : typeof JSON.parse(result.result).ans == 'string' ? JSON.parse(result.result).ans : `${JSON.parse(result.result).ans[0]}% downpayment and ${JSON.parse(result.result).ans[1]}%`
 			},
 
 		},

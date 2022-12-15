@@ -1041,7 +1041,7 @@
                 <h6 class="modal-title py-1 pr-4">Salary:</h6>
                 <p >{{$formatCurrency( JSON.parse(activeRecommendation.input_data).salary)}}</p>
               </div>
-              <div style="margin-top:25px">
+              <div :style="activeRecommendation.type == 'formal' ? 'margin-top:5px' :'margin-top:25px' ">
                 <h6 class="modal-title py-1">
                Preferred Plan
               </h6>

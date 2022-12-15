@@ -354,7 +354,7 @@
               <div class="w-100 my-5 mx-0 hr"></div>
             </div>
           </div>
-          <div v-if="states.recommendation">
+          <div v-if="states.recommendation" class="mb-5">
             <div class="mt-5 mb-3 attendance-head">
               <div class="row px-4 pt-3 pb-4 text-center">
                 <div class="col light-heading" style="max-width: 150px">
@@ -463,7 +463,9 @@
                   >
                      <button
                       @click="displayActiveRecommendation(recommendation)"
-                      class="btn status approved"
+                      class="btn status"
+                      :class="computeDownpayment(recommendation) == 'There is no suitable plan' ? 'not-approved':'approved'"
+
                     >
                       View
                     </button>
@@ -994,15 +996,18 @@
             </div>
 
             <div class="modal-body">
-              <div v-if="activeRecommendation.type !== 'formal'">
-                 <table class="styled-table" style="margin-bottom: 15px; width:100%">
+              <div v-if="activeRecommendation.type !== 'formal'" >
+                <h6 class="modal-title py-1">
+                Account Balance
+              </h6>
+                 <table class="styled-table" style="margin-bottom: 25px; width:100%">
     <thead>
         <tr style="width:100%">
           <th style="width:20%; border: 1px lightgray solid; text-align: center;">Month</th>
-            <th style="width:20%; border: 1px lightgray solid; text-align: center;">First Payment</th>
-            <th style="width:20%; border: 1px lightgray solid; text-align: center;">Second Payment</th>
-            <th style="width:20%; border: 1px lightgray solid; text-align: center;">Third Payment</th>
-            <th style="width:20%; border: 1px lightgray solid; text-align: center;">Fourth Payment</th>
+            <th style="width:20%; border: 1px lightgray solid; text-align: center;">First Week</th>
+            <th style="width:20%; border: 1px lightgray solid; text-align: center;">Second Week</th>
+            <th style="width:20%; border: 1px lightgray solid; text-align: center;">Third Week</th>
+            <th style="width:20%; border: 1px lightgray solid; text-align: center;">Fourth Week</th>
         </tr>
     </thead>
     <tbody>
@@ -1032,10 +1037,18 @@
     </tbody>
 </table>
               </div>
-              <table class="styled-table" style="margin-bottom: 15px; width:100%">
+              <div v-else style="display:flex">
+                <h6 class="modal-title py-1 pr-4">Salary:</h6>
+                <p >{{$formatCurrency( JSON.parse(activeRecommendation.input_data).salary)}}</p>
+              </div>
+              <div style="margin-top:25px">
+                <h6 class="modal-title py-1">
+               Preferred Plan
+              </h6>
+               <table class="styled-table" style="margin-bottom: 15px; width:100%">
     <thead>
         <tr style="width:100%">
-          <th style="width:20%; border: 1px lightgray solid; text-align: center;" v-if="activeRecommendation.type == 'formal'">Salary</th>
+          
             <th style="width:20%; border: 1px lightgray solid; text-align: center;">Total Price</th>
             <th style="width:20%; border: 1px lightgray solid; text-align: center;">Plan</th>
             <th style="width:20%; border: 1px lightgray solid; text-align: center;">Duration</th>
@@ -1044,9 +1057,7 @@
     </thead>
     <tbody>
        <tr >
-            <td style=" border:1px lightgray solid; text-align: center;" v-if="activeRecommendation.type == 'formal'">{{$formatCurrency(
-                      JSON.parse(activeRecommendation.input_data).salary
-                    )}}</td>
+            
             <td style=" border:1px lightgray solid; text-align: center;">{{ $formatCurrency(
                       JSON.parse(activeRecommendation.input_data).total_price
                     )}}</td>
@@ -1058,6 +1069,8 @@
         <!-- and so on... -->
     </tbody>
 </table>
+              </div>
+             
              
              
               

@@ -1340,7 +1340,6 @@ export default {
     },
     displayActiveRecommendation(recommendation) {
       this.activeRecommendation = recommendation
-      console.log(this.activeRecommendation, this.displayMore)
       this.displayMore = true
       return $(`#recommendation`).modal('toggle')
     },

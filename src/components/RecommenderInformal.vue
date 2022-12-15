@@ -454,7 +454,6 @@ CurrencyInput
 	                    post(this.apiUrls.recommend, data)
 	                        .then(res => {
 	                            this.$LIPS(false);
-								console.log(data);
 	                            const resData = res.data.data.ans;
 	                            resData === 'There is no suitable plan'
                                 ? this.$swal({

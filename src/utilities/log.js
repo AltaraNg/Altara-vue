@@ -10,11 +10,6 @@ export function log(action, description) {
 }
 export const selectType=(type, obj) => {
   Object.keys(obj).forEach(key => {
-    if (key === type) {
-      obj[key] = true
-    }else{
-       obj[key] = false;
-    }
-   
+    obj[key] = key === type ? true:false
   });
 }

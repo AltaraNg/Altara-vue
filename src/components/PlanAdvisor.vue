@@ -1,6 +1,12 @@
 <template>
 	<div style="margin-left: 5rem; margin-right: 5rem">
+					<AutocompleteSearch
+				title="Formal Recommendation Service"
+				@customer-selected="processForm"
+				:url="'/api/customer/autocomplete'"
+			/>
 		<form-wizard
+			v-if="customer"
 			@on-complete="logAmounts()"
 			title="Get to know your best plan!!"
 			subtitle=""
@@ -9,7 +15,7 @@
 			shape="square"
 		>
 			<tab-content title="Customer Details" :before-change="beforeTabSwitch1">
-				<div class="row">
+				<div class="row"> 
 					<div class="col form-group">
 						<label for="custom-date" class="form-control-label"
 							>Total Product Price
@@ -107,6 +113,7 @@
 	import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 	import CurrencyInput from './CurrencyInput.vue';
 	import downPaymentSort from "../utilities/downPayment.js"
+	import AutocompleteSearch from "../components/AutocompleteSearch/AutocompleteSearch.vue"
 	//component code
 
 	export default {
@@ -114,6 +121,7 @@
 			FormWizard,
 			TabContent,
 			CurrencyInput,
+			AutocompleteSearch
 		},
 		data() {
 			return {
@@ -149,6 +157,7 @@
 				downPaymentRates: [],
 				repaymentDuration: [],
 				businessTypes: [],
+				customer:null
 			};
 		},
 		async mounted() {
@@ -159,6 +168,18 @@
 		},
 
 		methods: {
+			processForm(id) {
+				this.$LIPS(true);
+				get(`/api/customer/lookup/${id}`)
+					.then((res) => {
+						this.customer = res.data.customer[0]
+						this.$LIPS(false);
+					})
+					.catch((e) => {
+						this.$LIPS(false);
+						Flash.setError('Error Fetching customer detail');
+					});
+			},
 			isDisable1() {
 				if (!this.form1[0]) {
 					this.next1 = false;
@@ -251,6 +272,7 @@
 				this.formData.duration = this.form2[1];
 				this.formData.cycle = this.form2[2];
 				this.formData.type = 'formal';
+				this.formData.customer_id = this.customer.id
 
 				this.$validator.validateAll().then((result) => {
 					if (result) {
@@ -258,6 +280,7 @@
 						post(this.apiUrls.recommend, this.formData)
 							.then((res) => {
 								this.$LIPS(false);
+								
 								const resData = res.data.data.ans;
 
 								resData === 'There is no suitable plan'

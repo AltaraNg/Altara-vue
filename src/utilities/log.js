@@ -8,3 +8,8 @@ export function log(action, description) {
     post('/api/log', {action, description});
     //and logs then on the log table;
 }
+export const selectType=(type, obj) => {
+  Object.keys(obj).forEach(key => {
+    obj[key] = key === type ? true:false
+  });
+}

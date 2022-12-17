@@ -1,11 +1,17 @@
 <template>
 	<div style="margin-left: 5rem; margin-right: 5rem;">
+		<AutocompleteSearch
+				title="Informal Recommendation Service"
+				@customer-selected="processForm"
+				:url="'/api/customer/autocomplete'"
+			/>
 		<form-wizard
 			@on-complete="logAmounts()"
 			title="Fill Form to know recommended plan"
 			subtitle=""
 			color="#2975A5"
 			error-color="#FF0000"
+			v-if="customer"
 		>
 
 			<tab-content title="Plan Details" :before-change="beforeTabSwitch1">
@@ -231,7 +237,7 @@
 	import CurrencyInput from "./CurrencyInput.vue";
 import Flash from "../utilities/flash";
 import downPaymentSort from "../utilities/downPayment.js"
-
+import AutocompleteSearch from "../components/AutocompleteSearch/AutocompleteSearch.vue"
 	//component code
 
 	export default {
@@ -240,6 +246,7 @@ import downPaymentSort from "../utilities/downPayment.js"
 	        FormWizard,
 	        TabContent,
 			CurrencyInput,
+			AutocompleteSearch,
 CurrencyInput
 	    },
 	    data() {
@@ -279,7 +286,8 @@ CurrencyInput
 				downPaymentRates: [],
 				repaymentDuration: [],
                 businessTypes: [],
-				customer_type: ''
+				customer_type: '',
+				customer:null
 	        };
 	    },
 	    async mounted() {
@@ -290,6 +298,18 @@ CurrencyInput
 		},
 
 	    methods: {
+			processForm(id) {
+				this.$LIPS(true);
+				get(`/api/customer/lookup/${id}`)
+					.then((res) => {
+						this.customer = res.data.customer[0]
+						this.$LIPS(false);
+					})
+					.catch((e) => {
+						this.$LIPS(false);
+						Flash.setError('Error Fetching customer detail');
+					});
+			},
 	        isDisable1() {
 	            if (
 	                !this.form1[0] ||
@@ -425,7 +445,8 @@ CurrencyInput
 					plan_id: this.form1[1],
 					duration: this.form1[2],
 					cycle: this.form1[3],
-					customer_type: this.customer_type
+					customer_type: this.customer_type,
+					customer_id : this.customer.id
                     };
 	            this.$validator.validateAll().then(result => {
 	                if (result) {

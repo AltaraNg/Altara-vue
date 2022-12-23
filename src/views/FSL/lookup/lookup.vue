@@ -1070,6 +1070,10 @@
     </tbody>
 </table>
               </div>
+              <div style="display:flex">
+                <h6 class="modal-title py-1 pr-4">Recommended Plan:</h6>
+                <p >{{computeDownpayment(activeRecommendation)}}</p>
+              </div>
              
              
              

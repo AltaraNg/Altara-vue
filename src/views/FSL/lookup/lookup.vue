@@ -1069,10 +1069,10 @@
         <!-- and so on... -->
     </tbody>
 </table>
-              </div>
-              <div style="display:flex">
-                <h6 class="modal-title py-1 pr-4">Recommended Plan:</h6>
-                <p :style="computeDownpayment(activeRecommendation) == 'There is no suitable plan' ? 'color:red' :'color:green' ">{{computeDownpayment(activeRecommendation)}}</p>
+              </div> 
+              <div style="display:flex; align-items: center;  ">
+                <h6 class="modal-title  pr-4">Recommended Plan:</h6>
+                <div :style="computeDownpayment(activeRecommendation) == 'There is no suitable plan' ? 'color:red' :'color:green' " style="font-size: 16px;">{{computeDownpayment(activeRecommendation)}}</div>
               </div>
              
              

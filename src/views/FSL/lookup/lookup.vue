@@ -363,7 +363,7 @@
                 <div
                   class="col light-heading"
                   v-for="(header, index) in recommendationHeaders"
-                  
+
                   :key="index"
                   style="text-align: left; "
                 >
@@ -385,12 +385,12 @@
                     class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
-                    
+
                   "
                   style="max-width: 150px; margin-left: -15px;"
                   >
                     <span class="user mx-auto">{{ index + 1 }}</span>
-                   
+
                   </div>
                   <div
                     class="
@@ -398,7 +398,7 @@
                     d-flex
                     user-name
                     align-items-center
-                    
+
                   "
                    style="padding-left:30px"
                   >
@@ -410,9 +410,9 @@
                     d-flex
                     user-name
                     align-items-center
-                    
+
                   "
-                  
+
                   >
                     {{ recommendation.type }}
                   </div>
@@ -421,9 +421,9 @@
                     col-12 col-xs-3 col-md col-lg
                     d-flex
                     align-items-center
-                    
+
                   "
-                  
+
                   >
                      {{
                       $formatCurrency(
@@ -436,9 +436,9 @@
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
-                    
+
                   "
-                  
+
                   >
                    {{ JSON.parse(recommendation.input_data).duration }}
                   </div>
@@ -447,18 +447,18 @@
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
-                    
+
                   "
                   >
                      {{ computeDownpayment(recommendation) }}
                   </div>
-                 
+
                   <div
                     class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
-                    
+
                   "
                   >
                      <button
@@ -1032,14 +1032,14 @@
               <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month3[2]) }}</td>
               <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month3[3]) }}</td>
                   </tr>
-                   
+
         <!-- and so on... -->
     </tbody>
 </table>
               </div>
-              <div v-else style="display:flex">
+              <div v-else style="display:flex; align-items: center;">
                 <h6 class="modal-title py-1 pr-4">Salary:</h6>
-                <p >{{$formatCurrency( JSON.parse(activeRecommendation.input_data).salary)}}</p>
+                <div  style="font-size: 16px;">{{$formatCurrency( JSON.parse(activeRecommendation.input_data).salary)}}</div>
               </div>
               <div :style="activeRecommendation.type == 'formal' ? 'margin-top:5px' :'margin-top:25px' ">
                 <h6 class="modal-title py-1">
@@ -1048,7 +1048,7 @@
                <table class="styled-table" style="margin-bottom: 15px; width:100%">
     <thead>
         <tr style="width:100%">
-          
+
             <th style="width:20%; border: 1px lightgray solid; text-align: center;">Total Price</th>
             <th style="width:20%; border: 1px lightgray solid; text-align: center;">Plan</th>
             <th style="width:20%; border: 1px lightgray solid; text-align: center;">Duration</th>
@@ -1057,23 +1057,36 @@
     </thead>
     <tbody>
        <tr >
-            
+
             <td style=" border:1px lightgray solid; text-align: center;">{{ $formatCurrency(
                       JSON.parse(activeRecommendation.input_data).total_price
                     )}}</td>
               <td style=" border:1px lightgray solid; text-align: center;">{{JSON.parse(activeRecommendation.input_data).plan}}</td>
               <td style=" border:1px lightgray solid; text-align: center;">{{JSON.parse(activeRecommendation.input_data).duration}}</td>
               <td style=" border:1px lightgray solid; text-align: center;">{{JSON.parse(activeRecommendation.input_data).cycle}}</td>
-          </tr>      
-             
+          </tr>
+
         <!-- and so on... -->
     </tbody>
 </table>
               </div>
-             
-             
-             
-              
+              <div style="display:flex; align-items: center;  ">
+                <h6 class="modal-title  pr-4">Recommended Plan:</h6>
+                <div :style="computeDownpayment(activeRecommendation) == 'There is no suitable plan' ? 'color:red' :'color:green' " style="font-size: 16px;">{{computeDownpayment(activeRecommendation)}}</div>
+              </div>
+
+
+
+
+            </div>
+            <div class="px-5 pb-4" style="display:flex; justify-content:end">
+              <button
+                  class=" mt-3 px-5 py-3"
+                  data-dismiss="modal"
+                  href="javascript:"
+                  style="text-align: right; border:none; border-radius: 3px; background-color: #074A74; color: white; font-weight: 700;"
+                  >Cancel</button
+                >
             </div>
           </div>
         </div>

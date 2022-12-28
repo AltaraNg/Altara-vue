@@ -1081,10 +1081,10 @@
             </div>
             <div class="px-5 pb-4" style="display:flex; justify-content:end">
               <button
-                  class=" mt-3 px-4 py-1"
+                  class=" mt-3 px-5 py-3"
                   data-dismiss="modal"
                   href="javascript:"
-                  style="text-align: right; border:none; border-radius: 3px; background-color: #074A74; color: white; font-weight: 600;"
+                  style="text-align: right; border:none; border-radius: 3px; background-color: #074A74; color: white; font-weight: 700;"
                   >Cancel</button
                 >
             </div>

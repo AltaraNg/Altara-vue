@@ -1037,9 +1037,9 @@
     </tbody>
 </table>
               </div>
-              <div v-else style="display:flex">
+              <div v-else style="display:flex; align-items: center;">
                 <h6 class="modal-title py-1 pr-4">Salary:</h6>
-                <p >{{$formatCurrency( JSON.parse(activeRecommendation.input_data).salary)}}</p>
+                <div  style="font-size: 16px;">{{$formatCurrency( JSON.parse(activeRecommendation.input_data).salary)}}</div>
               </div>
               <div :style="activeRecommendation.type == 'formal' ? 'margin-top:5px' :'margin-top:25px' ">
                 <h6 class="modal-title py-1">
@@ -1069,11 +1069,24 @@
         <!-- and so on... -->
     </tbody>
 </table>
+              </div> 
+              <div style="display:flex; align-items: center;  ">
+                <h6 class="modal-title  pr-4">Recommended Plan:</h6>
+                <div :style="computeDownpayment(activeRecommendation) == 'There is no suitable plan' ? 'color:red' :'color:green' " style="font-size: 16px;">{{computeDownpayment(activeRecommendation)}}</div>
               </div>
              
              
              
               
+            </div>
+            <div class="px-5 pb-4" style="display:flex; justify-content:end">
+              <button
+                  class=" mt-3 px-5 py-3"
+                  data-dismiss="modal"
+                  href="javascript:"
+                  style="text-align: right; border:none; border-radius: 3px; background-color: #074A74; color: white; font-weight: 700;"
+                  >Cancel</button
+                >
             </div>
           </div>
         </div>

@@ -16,13 +16,19 @@
             <custom-header
               :title="'All order(s)'"
               @click.native="selectType('order')"
-              :style="!states.order ? 'opacity: 0.2; cursor:pointer;' : 'cursor:pointer;'"
+              :style="
+                !states.order
+                  ? 'opacity: 0.2; cursor:pointer;'
+                  : 'cursor:pointer;'
+              "
             />
             <custom-header
               :title="'Recommendations'"
               @click.native="selectType('recommendation')"
               :style="
-                !states.recommendation ? 'opacity: 0.2; cursor:pointer;' : 'cursor:pointer; '
+                !states.recommendation
+                  ? 'opacity: 0.2; cursor:pointer;'
+                  : 'cursor:pointer; '
               "
               style="margin-left:-10px"
             />
@@ -221,7 +227,6 @@
                     <span
                       v-if="
                         order.order_type === 'Altara Pay' &&
-                          !order.paystack_auth_code &&
                           order.payment_gateway === 'Paystack'
                       "
                     >
@@ -239,7 +244,6 @@
                       v-if="
                         order.payment_gateway === 'Paystack' &&
                           order.paystack_auth_code != null &&
-                          role === roles.software_engineer &&
                           order.status !== 'Completed'
                       "
                     >
@@ -363,7 +367,6 @@
                 <div
                   class="col light-heading"
                   v-for="(header, index) in recommendationHeaders"
-
                   :key="index"
                   style="text-align: left; "
                 >
@@ -374,7 +377,7 @@
             <div class="tab-content mt-1 attendance-body">
               <div
                 class="tab-pane active "
-               v-if="recommendationList.length > 0"
+                v-if="recommendationList.length > 0"
               >
                 <div
                   class="mb-3 row attendance-item"
@@ -387,10 +390,9 @@
                     d-flex
 
                   "
-                  style="max-width: 150px; margin-left: -15px;"
+                    style="max-width: 150px; margin-left: -15px;"
                   >
                     <span class="user mx-auto">{{ index + 1 }}</span>
-
                   </div>
                   <div
                     class="
@@ -400,7 +402,7 @@
                     align-items-center
 
                   "
-                   style="padding-left:30px"
+                    style="padding-left:30px"
                   >
                     {{ formatDate(recommendation.created_at) }}
                   </div>
@@ -412,7 +414,6 @@
                     align-items-center
 
                   "
-
                   >
                     {{ recommendation.type }}
                   </div>
@@ -423,9 +424,8 @@
                     align-items-center
 
                   "
-
                   >
-                     {{
+                    {{
                       $formatCurrency(
                         JSON.parse(recommendation.input_data).total_price
                       )
@@ -438,9 +438,8 @@
                     align-items-center
 
                   "
-
                   >
-                   {{ JSON.parse(recommendation.input_data).duration }}
+                    {{ JSON.parse(recommendation.input_data).duration }}
                   </div>
                   <div
                     class="
@@ -450,7 +449,7 @@
 
                   "
                   >
-                     {{ computeDownpayment(recommendation) }}
+                    {{ computeDownpayment(recommendation) }}
                   </div>
 
                   <div
@@ -461,11 +460,15 @@
 
                   "
                   >
-                     <button
+                    <button
                       @click="displayActiveRecommendation(recommendation)"
                       class="btn status"
-                      :class="computeDownpayment(recommendation) == 'There is no suitable plan' ? 'not-approved':'approved'"
-
+                      :class="
+                        computeDownpayment(recommendation) ==
+                        'There is no suitable plan'
+                          ? 'not-approved'
+                          : 'approved'
+                      "
                     >
                       View
                     </button>
@@ -996,97 +999,297 @@
             </div>
 
             <div class="modal-body">
-              <div v-if="activeRecommendation.type !== 'formal'" >
+              <div v-if="activeRecommendation.type !== 'formal'">
                 <h6 class="modal-title py-1">
-                Account Balance
-              </h6>
-                 <table class="styled-table" style="margin-bottom: 25px; width:100%">
-    <thead>
-        <tr style="width:100%">
-          <th style="width:20%; border: 1px lightgray solid; text-align: center;">Month</th>
-            <th style="width:20%; border: 1px lightgray solid; text-align: center;">First Week</th>
-            <th style="width:20%; border: 1px lightgray solid; text-align: center;">Second Week</th>
-            <th style="width:20%; border: 1px lightgray solid; text-align: center;">Third Week</th>
-            <th style="width:20%; border: 1px lightgray solid; text-align: center;">Fourth Week</th>
-        </tr>
-    </thead>
-    <tbody>
-       <tr >
-            <td style=" border:1px lightgray solid; text-align: center;">Month 1</td>
-            <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month1[0]) }}</td>
-              <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month1[1]) }}</td>
-              <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month1[2]) }}</td>
-              <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month1[3]) }}</td>
-                  </tr>
-                  <tr >
-            <td style=" border:1px lightgray solid; text-align: center;">Month 2</td>
-            <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month2[0])}}</td>
-              <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month2[1])}}</td>
-              <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month2[2])}}</td>
-              <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month2[3])}}</td>
-                  </tr>
-              <tr >
-            <td style=" border:1px lightgray solid; text-align: center;">Month 3</td>
-            <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month3[0]) }}</td>
-              <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month3[1]) }}</td>
-              <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month3[2]) }}</td>
-              <td style=" border:1px lightgray solid; text-align: center;">{{$formatCurrency(JSON.parse(activeRecommendation.input_data).month3[3]) }}</td>
-                  </tr>
+                  Account Balance
+                </h6>
+                <table
+                  class="styled-table"
+                  style="margin-bottom: 25px; width:100%"
+                >
+                  <thead>
+                    <tr style="width:100%">
+                      <th
+                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                      >
+                        Month
+                      </th>
+                      <th
+                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                      >
+                        First Week
+                      </th>
+                      <th
+                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                      >
+                        Second Week
+                      </th>
+                      <th
+                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                      >
+                        Third Week
+                      </th>
+                      <th
+                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                      >
+                        Fourth Week
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        Month 1
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          $formatCurrency(
+                            JSON.parse(activeRecommendation.input_data)
+                              .month1[0]
+                          )
+                        }}
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          $formatCurrency(
+                            JSON.parse(activeRecommendation.input_data)
+                              .month1[1]
+                          )
+                        }}
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          $formatCurrency(
+                            JSON.parse(activeRecommendation.input_data)
+                              .month1[2]
+                          )
+                        }}
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          $formatCurrency(
+                            JSON.parse(activeRecommendation.input_data)
+                              .month1[3]
+                          )
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        Month 2
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          $formatCurrency(
+                            JSON.parse(activeRecommendation.input_data)
+                              .month2[0]
+                          )
+                        }}
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          $formatCurrency(
+                            JSON.parse(activeRecommendation.input_data)
+                              .month2[1]
+                          )
+                        }}
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          $formatCurrency(
+                            JSON.parse(activeRecommendation.input_data)
+                              .month2[2]
+                          )
+                        }}
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          $formatCurrency(
+                            JSON.parse(activeRecommendation.input_data)
+                              .month2[3]
+                          )
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        Month 3
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          $formatCurrency(
+                            JSON.parse(activeRecommendation.input_data)
+                              .month3[0]
+                          )
+                        }}
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          $formatCurrency(
+                            JSON.parse(activeRecommendation.input_data)
+                              .month3[1]
+                          )
+                        }}
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          $formatCurrency(
+                            JSON.parse(activeRecommendation.input_data)
+                              .month3[2]
+                          )
+                        }}
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          $formatCurrency(
+                            JSON.parse(activeRecommendation.input_data)
+                              .month3[3]
+                          )
+                        }}
+                      </td>
+                    </tr>
 
-        <!-- and so on... -->
-    </tbody>
-</table>
+                    <!-- and so on... -->
+                  </tbody>
+                </table>
               </div>
               <div v-else style="display:flex; align-items: center;">
                 <h6 class="modal-title py-1 pr-4">Salary:</h6>
-                <div  style="font-size: 16px;">{{$formatCurrency( JSON.parse(activeRecommendation.input_data).salary)}}</div>
+                <div style="font-size: 16px;">
+                  {{
+                    $formatCurrency(
+                      JSON.parse(activeRecommendation.input_data).salary
+                    )
+                  }}
+                </div>
               </div>
-              <div :style="activeRecommendation.type == 'formal' ? 'margin-top:5px' :'margin-top:25px' ">
+              <div
+                :style="
+                  activeRecommendation.type == 'formal'
+                    ? 'margin-top:5px'
+                    : 'margin-top:25px'
+                "
+              >
                 <h6 class="modal-title py-1">
-               Preferred Plan
-              </h6>
-               <table class="styled-table" style="margin-bottom: 15px; width:100%">
-    <thead>
-        <tr style="width:100%">
+                  Preferred Plan
+                </h6>
+                <table
+                  class="styled-table"
+                  style="margin-bottom: 15px; width:100%"
+                >
+                  <thead>
+                    <tr style="width:100%">
+                      <th
+                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                      >
+                        Total Price
+                      </th>
+                      <th
+                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                      >
+                        Plan
+                      </th>
+                      <th
+                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                      >
+                        Duration
+                      </th>
+                      <th
+                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                      >
+                        Cycle
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          $formatCurrency(
+                            JSON.parse(activeRecommendation.input_data)
+                              .total_price
+                          )
+                        }}
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{ JSON.parse(activeRecommendation.input_data).plan }}
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{
+                          JSON.parse(activeRecommendation.input_data).duration
+                        }}
+                      </td>
+                      <td
+                        style=" border:1px lightgray solid; text-align: center;"
+                      >
+                        {{ JSON.parse(activeRecommendation.input_data).cycle }}
+                      </td>
+                    </tr>
 
-            <th style="width:20%; border: 1px lightgray solid; text-align: center;">Total Price</th>
-            <th style="width:20%; border: 1px lightgray solid; text-align: center;">Plan</th>
-            <th style="width:20%; border: 1px lightgray solid; text-align: center;">Duration</th>
-            <th style="width:20%; border: 1px lightgray solid; text-align: center;">Cycle</th>
-        </tr>
-    </thead>
-    <tbody>
-       <tr >
-
-            <td style=" border:1px lightgray solid; text-align: center;">{{ $formatCurrency(
-                      JSON.parse(activeRecommendation.input_data).total_price
-                    )}}</td>
-              <td style=" border:1px lightgray solid; text-align: center;">{{JSON.parse(activeRecommendation.input_data).plan}}</td>
-              <td style=" border:1px lightgray solid; text-align: center;">{{JSON.parse(activeRecommendation.input_data).duration}}</td>
-              <td style=" border:1px lightgray solid; text-align: center;">{{JSON.parse(activeRecommendation.input_data).cycle}}</td>
-          </tr>
-
-        <!-- and so on... -->
-    </tbody>
-</table>
+                    <!-- and so on... -->
+                  </tbody>
+                </table>
               </div>
               <div style="display:flex; align-items: center;  ">
                 <h6 class="modal-title  pr-4">Recommended Plan:</h6>
-                <div :style="computeDownpayment(activeRecommendation) == 'There is no suitable plan' ? 'color:red' :'color:green' " style="font-size: 16px;">{{computeDownpayment(activeRecommendation)}}</div>
+                <div
+                  :style="
+                    computeDownpayment(activeRecommendation) ==
+                    'There is no suitable plan'
+                      ? 'color:red'
+                      : 'color:green'
+                  "
+                  style="font-size: 16px;"
+                >
+                  {{ computeDownpayment(activeRecommendation) }}
+                </div>
               </div>
-
-
-
-
             </div>
             <div class="px-5 pb-4" style="display:flex; justify-content:end">
               <button
-                  class=" mt-3 px-5 py-3"
-                  data-dismiss="modal"
-                  href="javascript:"
-                  style="text-align: right; border:none; border-radius: 3px; background-color: #074A74; color: white; font-weight: 700;"
-                  >Cancel</button
-                >
+                class=" mt-3 px-5 py-3"
+                data-dismiss="modal"
+                href="javascript:"
+                style="text-align: right; border:none; border-radius: 3px; background-color: #074A74; color: white; font-weight: 700;"
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
@@ -1683,10 +1886,10 @@ export default {
   margin-left: 10px;
 }
 .col2 {
-    -ms-flex-preferred-size: 0;
-    flex-basis: 0;
-    -ms-flex-positive: 1;
-    flex-grow: 1;
-    max-width: 100%
+  -ms-flex-preferred-size: 0;
+  flex-basis: 0;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  max-width: 100%;
 }
 </style>

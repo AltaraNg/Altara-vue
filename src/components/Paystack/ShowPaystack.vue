@@ -139,7 +139,6 @@ export default {
 
   methods: {
     async processPaymentPayStackPayment(resp) {
-      console.log('got here')
       this.paystackReference = resp.reference
       if (resp.status == 'success' && resp.message == 'Approved') {
         await this.verifyPaystackPayment()
@@ -226,7 +225,6 @@ export default {
 
   created() {
     EventBus.$on('ShowPaystack', this.handleModalToggle)
-    console.log(this.customer)
   },
 }
 </script>

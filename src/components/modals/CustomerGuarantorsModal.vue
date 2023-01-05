@@ -58,7 +58,14 @@
       <div>
         <h3>No Guarantor Added Yet</h3>
       </div>
+      <div
+        v-if="customer && !validateEmail(customer.email)"
+        class="text-center text-danger pr-2"
+      >
+        customer email is invalid
+      </div>
       <paystack
+        :disabled="customer && !validateEmail(customer.email)"
         :amount="10000"
         :email="customer ? customer.email : ''"
         :paystackkey="paystackkey"
@@ -150,6 +157,15 @@ export default {
         },
       })
       return response.json()
+    },
+    validateEmail(mail) {
+      {
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+          return true
+        }
+
+        return false
+      }
     },
     closePayStackModal: () => {},
     done(message) {

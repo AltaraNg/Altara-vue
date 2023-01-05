@@ -46,7 +46,7 @@
             </div>
           </div>
         </div>
-		<div v-if="customer && !validateEmail(customer.email)" class="text-right text-danger mr-4">Email is invalid. Please enter a valid one</div>
+		<div v-if="customer && !validateEmail(customer.email)" class="text-right text-danger mr-5 pr-2">customer email is invalid</div>
         <div class="modal-footer d-flex justify-content-end">
           <paystack
 			:disabled="customer && !validateEmail(customer.email)"

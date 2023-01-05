@@ -446,7 +446,7 @@
             <div class="table-responsive">
               <div
                 v-if="!validateEmail(customer_email)"
-                class=" text-danger mr-5 pr-2"
+                class=" text-danger mr-5 pr-2 h5"
               >
                 customer email is invalid
               </div>

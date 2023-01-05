@@ -32,7 +32,15 @@
           </tbody>
         </table>
       </div>
+      <div
+        v-if="customer && !validateEmail(customer.email)"
+        class="text-right text-danger mr-5 pr-2"
+      >
+        customer email is invalid
+      </div>
+
       <paystack
+        :disabled="customer && !validateEmail(customer.email)"
         :amount="10000"
         :email="customer ? customer.email : ''"
         :paystackkey="paystackkey"
@@ -124,8 +132,7 @@ export default {
                 .catch(err => {
                   flash.setError(err.message)
                 })
-                .finally(() => {
-                })
+                .finally(() => {})
             }
           })
           .catch(error => {

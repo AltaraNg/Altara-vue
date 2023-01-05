@@ -45,7 +45,7 @@
                 <label for="amount" class="form-control-label w-100">
                   Product Name
                   <span class="serial" @click="toggleSerial()">
-                    {{ serial === true ? "Remove" : "Add" }} serial number
+                    {{ serial === true ? 'Remove' : 'Add' }} serial number
                   </span>
                   <span :class="{ renewal: eligible }" v-if="eligible"
                     >Entitled to renewal discount!!!</span
@@ -266,7 +266,7 @@
                     :value="type.id"
                     :key="type.id"
                     v-for="type in getPaymentMethods.filter(
-                      (element) => element.name !== 'direct-debit'
+                      element => element.name !== 'direct-debit'
                     )"
                   >
                     {{ type.name }}
@@ -316,11 +316,15 @@
             <br />
             <div>
               <div
-                :style="(addDownpayment && isAltaraPay) || stillShowToggle ? 'display:flex; ' : ''"
+                :style="
+                  (addDownpayment && isAltaraPay) || stillShowToggle
+                    ? 'display:flex; '
+                    : ''
+                "
               >
                 <div
                   class="col d-flex align-items-center"
-                  :class="this.customer.guarantor_paystack.length > 0 ?'': '' "
+                  :class="this.customer.guarantor_paystack.length > 0 ? '' : ''"
                   v-if="(addDownpayment && isAltaraPay) || stillShowToggle"
                 >
                   <toggle-button
@@ -440,6 +444,12 @@
           </div>
           <div class="modal-body">
             <div class="table-responsive">
+              <div
+                v-if="!validateEmail(customer_email)"
+                class=" text-danger mr-5 pr-2 h5 mb-1"
+              >
+                customer email is invalid
+              </div>
               <h5 class="mt-3 mb-0">Order Information</h5>
               <table class="table table-bordered">
                 <tbody>
@@ -456,13 +466,19 @@
                     <!-- <td class="font-weight-bold">{{this.customerId}}</td> -->
                     <th>{{ this.selectedProduct.product_name }}</th>
                     <th>{{ $formatCurrency(pPrice) }}</th>
-                    <th>{{$formatCurrency(
-                        computedPayment(fPayment + singleRepayment, fPayment)
-                      )}}</th>
+                    <th>
+                      {{
+                        $formatCurrency(
+                          computedPayment(fPayment + singleRepayment, fPayment)
+                        )
+                      }}
+                    </th>
                     <td class>
-                      {{  $formatCurrency(
-                        computedPayment(rPayment - singleRepayment, rPayment)
-                      ) }}
+                      {{
+                        $formatCurrency(
+                          computedPayment(rPayment - singleRepayment, rPayment)
+                        )
+                      }}
                       <div class="modal_cover">
                         <discount
                           class="modal_discount"
@@ -506,8 +522,8 @@
             <p class="d-block text-danger">
               {{
                 !transfer
-                  ? "Push Button If Customer Transferred Payment"
-                  : "Push Button To Pay With Credit Card"
+                  ? 'Push Button If Customer Transferred Payment'
+                  : 'Push Button To Pay With Credit Card'
               }}
             </p>
             <div class="col d-flex justify-content-center">
@@ -528,7 +544,13 @@
               Confirm Transfer
             </button>
             <paystack
-              :amount="computedPayment((fPayment + singleRepayment) *100, fPayment *100)" 
+              :disabled="!validateEmail(customer_email)"
+              :amount="
+                computedPayment(
+                  (fPayment + singleRepayment) * 100,
+                  fPayment * 100
+                )
+              "
               :email="customer_email"
               :paystackkey="paystackkey"
               :reference="reference"
@@ -570,17 +592,17 @@
 </template>
 
 <script>
-import { get, post } from "../utilities/api";
-import { mapGetters } from "vuex";
-import AutoComplete from "./AutoComplete.vue";
-import { calculate, cashLoan } from "../utilities/calculator";
-import VerificationCollectionData from "./modals/VerificationCollectionData";
-import Flash from "../utilities/flash";
-import discount from "./discount.vue";
-import paystack from "vue-paystack";
-import moment from "moment";
-import roles from "../utilities/roles";
-import ToggleButton from "./ToggleButton.vue";
+import { get, post } from '../utilities/api'
+import { mapGetters } from 'vuex'
+import AutoComplete from './AutoComplete.vue'
+import { calculate, cashLoan } from '../utilities/calculator'
+import VerificationCollectionData from './modals/VerificationCollectionData'
+import Flash from '../utilities/flash'
+import discount from './discount.vue'
+import paystack from 'vue-paystack'
+import moment from 'moment'
+import roles from '../utilities/roles'
+import ToggleButton from './ToggleButton.vue'
 
 export default {
   props: { customerId: null, customer: null },
@@ -593,14 +615,14 @@ export default {
   },
   data() {
     return {
-      currentValue:"",
+      currentValue: '',
       stillShowToggle: null,
       addDownpayment: null,
       productOrder: false,
       card_expiry: null,
       error: {},
       users: [],
-      product: "",
+      product: '',
       salesLogForm: {},
       repaymentDuration: [],
       repaymentCyclesopt: [],
@@ -629,25 +651,25 @@ export default {
         verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
         paystackCustomerApi: `https://api.paystack.co/customer`,
       },
-      inputValue: "",
+      inputValue: '',
       paymentGateways: [
         {
           id: 1,
-          name: "paystack",
+          name: 'paystack',
         },
         {
           id: 2,
-          name: "remitta",
+          name: 'remitta',
         },
       ],
       selectedProduct: {},
       selected_discount: {},
-      userRole: parseInt(localStorage.getItem("role")),
-      fPayment: "",
-      pPrice: "",
-      rPayment: "",
-      repaymentCircle: "",
-      rDuration: "",
+      userRole: parseInt(localStorage.getItem('role')),
+      fPayment: '',
+      pPrice: '',
+      rPayment: '',
+      repaymentCircle: '',
+      rDuration: '',
       cardError: false,
       customDateToggle: false,
       discounts: null,
@@ -657,132 +679,129 @@ export default {
       isAltaraPay: false,
       useCreditCard: false,
       transfer: false,
-      customer_email: this.customer.email || "somedefaultemail",
-      paystackkey: process.env.VUE_APP_PAYSTACK_KEY || "",
+      customer_email: this.customer.email || 'somedefaultemail',
+      paystackkey: process.env.VUE_APP_PAYSTACK_KEY || '',
       paystackReference: null,
       newOrderId: null,
       verificationCollectionData: {
         salary_day_1: 1,
         salary_day_2: 1,
         salary_day_3: 1,
-        proof_of_credit: "SMS Alert Screenshot",
-        guarantor_signed: "No",
-        address_visited: "No",
-        credit_report_status: "No",
-        credit_point_status: "Bad",
+        proof_of_credit: 'SMS Alert Screenshot',
+        guarantor_signed: 'No',
+        address_visited: 'No',
+        credit_report_status: 'No',
+        credit_point_status: 'Bad',
       },
       proof_of_credits: [
-        "SMS Alert Screenshot",
-        "E-statement",
-        "Stamped-statement",
-        "Bank App History Screenshot",
+        'SMS Alert Screenshot',
+        'E-statement',
+        'Stamped-statement',
+        'Bank App History Screenshot',
       ],
-      guarantor_signed: ["2 - Yes", "1 - Yes", "No"],
-      address_visited: ["Yes", "No"],
-      credit_report_status: ["Bad", "Fair", "No", "Good"],
-      credit_point_status: ["Bad", "Average", "Good"],
-      financiers: ["altara", "bank54"],
+      guarantor_signed: ['2 - Yes', '1 - Yes', 'No'],
+      address_visited: ['Yes', 'No'],
+      credit_report_status: ['Bad', 'Fair', 'No', 'Good'],
+      credit_point_status: ['Bad', 'Average', 'Good'],
+      financiers: ['altara', 'bank54'],
       isBank54: false,
-      financed_by: "altara",
+      financed_by: 'altara',
       flag: null,
       singleRepayment: null,
-    };
+    }
   },
   async beforeMount() {
-    this.canLogBank54Payment();
-    this.checkIfDiscountElig();
-    await this.getRepaymentDuration();
-    await this.getSalesCategory();
-    await this.getRepaymentCycles();
-    await this.getDownPaymentRates();
-    await this.getBusinessTypes();
-    await this.getCalculation();
-    await this.getDiscounts();
-    await this.getOrderTypes();
+    this.canLogBank54Payment()
+    this.checkIfDiscountElig()
+    await this.getRepaymentDuration()
+    await this.getSalesCategory()
+    await this.getRepaymentCycles()
+    await this.getDownPaymentRates()
+    await this.getBusinessTypes()
+    await this.getCalculation()
+    await this.getDiscounts()
+    await this.getOrderTypes()
   },
   watch: {
-
-    "salesLogForm.sales_category_id": {
+    'salesLogForm.sales_category_id': {
       handler(newData) {
-        this.watchBusinessType(newData);
-        this.watchSalesLogForm(newData);
-        this.watchCashPrice(newData);
+        this.watchBusinessType(newData)
+        this.watchSalesLogForm(newData)
+        this.watchCashPrice(newData)
       },
     },
-    "salesLogForm.business_type_id": {
+    'salesLogForm.business_type_id': {
       handler(newData) {
-        this.watchCashPrice(newData);
-        this.watchBusinessType(newData);
-        this.watchSalesLogForm(newData);
-        this.getCalc();
+        this.watchCashPrice(newData)
+        this.watchBusinessType(newData)
+        this.watchSalesLogForm(newData)
+        this.getCalc()
       },
     },
-    "salesLogForm.product": {
+    'salesLogForm.product': {
       handler(newData) {
-        this.watchCashPrice(newData);
-        this.getCalc();
+        this.watchCashPrice(newData)
+        this.getCalc()
       },
       deep: true,
     },
-    "salesLogForm.repayment_duration_id": {
+    'salesLogForm.repayment_duration_id': {
       handler(newData) {
-        this.watchCashPrice(newData);
+        this.watchCashPrice(newData)
       },
       deep: true,
     },
   },
 
   computed: {
-    ...mapGetters(["getPaymentMethods", "getBanks"]),
+    ...mapGetters(['getPaymentMethods', 'getBanks']),
     downPaymentRatesFiltered() {
-      let result = [];
+      let result = []
       this.isAltaraPay
         ? (result = this.downPaymentRates)
-        : (result = this.downPaymentRates.filter((item) => {
-            return !item.name.includes("plus");
-          }));
-      return result;
+        : (result = this.downPaymentRates.filter(item => {
+            return !item.name.includes('plus')
+          }))
+      return result
     },
     reference() {
-      let text = "";
+      let text = ''
       let possible =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
       for (let i = 0; i < 10; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-      return text;
+        text += possible.charAt(Math.floor(Math.random() * possible.length))
+      return text
     },
 
     repaymentCycleFiltered() {
-      let newArray = [];
+      let newArray = []
       this.isAltaraPay
-        ? (newArray = this.repaymentCyclesopt.filter((item) => {
-            return item.name !== "monthly";
+        ? (newArray = this.repaymentCyclesopt.filter(item => {
+            return item.name !== 'monthly'
           }))
-        : (newArray = this.repaymentCyclesopt);
-      return newArray;
+        : (newArray = this.repaymentCyclesopt)
+      return newArray
     },
 
     compHeader() {
-      return this.isAltaraPay ? "Altara Pay" : "Altara Credit";
+      return this.isAltaraPay ? 'Altara Pay' : 'Altara Credit'
     },
   },
   methods: {
     computedPayment(firstvalue, secondvalue) {
       if (this.singleRepayment && this.addDownpayment) {
-        return firstvalue;
-      } else return secondvalue;
+        return firstvalue
+      } else return secondvalue
     },
     watchCashPrice() {
-
       if (
-        this.salesLogForm?.product?.product?.category == "cash loan" &&
-        this.salesLogForm?.repayment_duration_id?.name == "six_months"
-      )
-      //check if it is cashloan and six months duration, return addDownpayment= true only if
-      //businesstype is (5 or10) and product amount is >110000
-      //OR
-      //businesstype is (9 or7) and product amount is > 80000
-       {
+        this.salesLogForm?.product?.product?.category == 'cash loan' &&
+        this.salesLogForm?.repayment_duration_id?.name == 'six_months'
+      ) {
+        //check if it is cashloan and six months duration, return addDownpayment= true only if
+        //businesstype is (5 or10) and product amount is >110000
+        //OR
+        //businesstype is (9 or7) and product amount is > 80000
         this.addDownpayment =
           ((this.salesLogForm?.business_type_id?.id == 5 ||
             this.salesLogForm?.business_type_id?.id == 10) &&
@@ -791,44 +810,42 @@ export default {
             this.salesLogForm?.business_type_id?.id == 7) &&
             this.selectedProduct.price > 80000)
             ? true
-            : false;
-      } else this.addDownpayment = false;
-      this.stillShowToggle = this.addDownpayment;
+            : false
+      } else this.addDownpayment = false
+      this.stillShowToggle = this.addDownpayment
     },
     watchSalesLogForm() {
       this.salesLogForm.discount =
-        this.salesLogForm?.sales_category_id == "2" &&
-        !this.salesLogForm.product_name.includes("cash") &&
+        this.salesLogForm?.sales_category_id == '2' &&
+        !this.salesLogForm.product_name.includes('cash') &&
         this.productOrder
-          ? "5_discount"
-          : "0_discount";
+          ? '5_discount'
+          : '0_discount'
     },
     watchBusinessType() {
       this.productOrder =
-        this.salesLogForm?.business_type_id?.slug?.includes("ap_products") ||
-        this.salesLogForm?.business_type_id?.slug?.includes("ac_products");
+        this.salesLogForm?.business_type_id?.slug?.includes('ap_products') ||
+        this.salesLogForm?.business_type_id?.slug?.includes('ac_products')
     },
     customDate(event) {
-      this.salesLogForm.repayment_cycle_id.name === "custom"
+      this.salesLogForm.repayment_cycle_id.name === 'custom'
         ? (this.customDateToggle = true)
-        : (this.customDateToggle = false);
+        : (this.customDateToggle = false)
 
-      this.getCalc();
+      this.getCalc()
     },
     async logSale() {
-      this.salesLogForm.customer_id = this.customerId;
-      let renewal = "";
+      this.salesLogForm.customer_id = this.customerId
+      let renewal = ''
       this.eligible
-        ? (renewal = this.discounts.find((item) => {
-            return item.name === "renewal";
+        ? (renewal = this.discounts.find(item => {
+            return item.name === 'renewal'
           })?.id)
-        : (renewal = "");
-      let orderType = "";
-      orderType = this.orderTypes.find((item) => {
-        return (
-          item.name === (this.isAltaraPay ? "Altara Pay" : "Altara Credit")
-        );
-      });
+        : (renewal = '')
+      let orderType = ''
+      orderType = this.orderTypes.find(item => {
+        return item.name === (this.isAltaraPay ? 'Altara Pay' : 'Altara Credit')
+      })
 
       const data = {
         amortization_downpayment:
@@ -841,7 +858,7 @@ export default {
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
         repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
         business_type_id: this.salesLogForm.business_type_id.id,
-        branch_id: localStorage.getItem("branch_id"),
+        branch_id: localStorage.getItem('branch_id'),
         down_payment: this.fPayment,
         repayment: this.rPayment,
         bank_id: this.isAltaraPay ? 1 : this.salesLogForm.bank_id,
@@ -850,52 +867,52 @@ export default {
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.isAltaraPay
           ? this.transfer
-            ? this.getPaymentMethods.find((el) => (el.name = "transfer")).id
-            : this.getPaymentMethods.find((el) => (el.name = "direct-debit")).id
+            ? this.getPaymentMethods.find(el => (el.name = 'transfer')).id
+            : this.getPaymentMethods.find(el => (el.name = 'direct-debit')).id
           : this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
-      };
-      if (this.isBank54) {
-        this.financed_by = "bank54";
-        data.bvn = this.salesLogForm.bvn;
       }
-      data.financed_by = this.financed_by;
+      if (this.isBank54) {
+        this.financed_by = 'bank54'
+        data.bvn = this.salesLogForm.bvn
+      }
+      data.financed_by = this.financed_by
       this.salesLogForm.payment_gateway_id
         ? (data.payment_gateway_id = this.salesLogForm.payment_gateway_id)
-        : "";
-      data.authorization_code = this.salesLogForm?.authorization_code;
+        : ''
+      data.authorization_code = this.salesLogForm?.authorization_code
       if (this.eligible && renewal) {
-        data.discount = [renewal];
+        data.discount = [renewal]
       }
       this.salesLogForm.repayment_cycle_id?.id == 3
         ? (data.custom_date = parseInt(this.salesLogForm.custom_date))
-        : "";
-      this.$validator.validateAll().then((result) => {
+        : ''
+      this.$validator.validateAll().then(result => {
         if (result) {
-          this.$LIPS(true);
+          this.$LIPS(true)
           post(this.apiUrls.createOrder, data)
-            .then((res) => {
-              this.newOrderId = res.data.data.id;
-              this.$LIPS(false);
-              $(`#amortizationPreview`).modal("toggle");
+            .then(res => {
+              this.newOrderId = res.data.data.id
+              this.$LIPS(false)
+              $(`#amortizationPreview`).modal('toggle')
 
               this.$swal({
-                icon: "success",
-                title: "Sale Successfully Logged",
-              });
-              this.$emit("done");
-              return res;
+                icon: 'success',
+                title: 'Sale Successfully Logged',
+              })
+              this.$emit('done')
+              return res
             })
-            .catch((err) => {
-              this.$LIPS(false);
-              Flash.setError("Error: " + err.message);
-            });
-        } else this.$networkErr("form");
-      });
+            .catch(err => {
+              this.$LIPS(false)
+              Flash.setError('Error: ' + err.message)
+            })
+        } else this.$networkErr('form')
+      })
     },
     async previewAmortization() {
       if (this.isAltaraPay) {
@@ -905,16 +922,16 @@ export default {
           this.customer.first_name,
           this.customer.last_name,
           this.customer.telephone
-        ).then((data) => {
-          return data;
-        });
+        ).then(data => {
+          return data
+        })
         await this.paystackCustomer(
           this.customer.id,
           createdPaystackCustomer?.data?.customer_code
-        );
+        )
       }
-      this.cardError = false;
-      this.salesLogForm.customer_id = this.customerId;
+      this.cardError = false
+      this.salesLogForm.customer_id = this.customerId
       const data = {
         amortization_downpayment:
           this.singleRepayment && this.addDownpayment
@@ -925,7 +942,7 @@ export default {
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
         repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
         business_type_id: this.salesLogForm.business_type_id.id,
-        branch_id: localStorage.getItem("branch_id"),
+        branch_id: localStorage.getItem('branch_id'),
         down_payment: this.$formatMoney(this.fPayment),
         down_payment_rate_id: this.salesLogForm.payment_type_id.id,
         repayment: this.$formatMoney(this.rPayment),
@@ -933,102 +950,100 @@ export default {
         product_price: this.$formatMoney(this.pPrice),
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.isAltaraPay
-          ? this.getPaymentMethods.find((el) => (el.name = "direct-debit")).id
+          ? this.getPaymentMethods.find(el => (el.name = 'direct-debit')).id
           : this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
-      };
+      }
 
       if (this.isBank54) {
-        this.financed_by = "bank54";
-        data.bvn = this.salesLogForm.bvn;
+        this.financed_by = 'bank54'
+        data.bvn = this.salesLogForm.bvn
       }
-      data.financed_by = this.financed_by;
+      data.financed_by = this.financed_by
 
       this.salesLogForm.serial_number !== null
         ? (data.serial_number = this.salesLogForm.serial_number)
-        : "";
+        : ''
       this.salesLogForm.repayment_cycle_id?.id == 3
         ? (data.custom_date = parseInt(this.salesLogForm.custom_date))
-        : "";
+        : ''
 
       if (this.card_expiry) {
-        let expiry_date = moment(this.card_expiry);
-        let duration = parseInt(this.salesLogForm.repayment_duration_id.value);
-        let allowed_date = moment().add(duration + 60, "days");
+        let expiry_date = moment(this.card_expiry)
+        let duration = parseInt(this.salesLogForm.repayment_duration_id.value)
+        let allowed_date = moment().add(duration + 60, 'days')
 
         if (expiry_date.isBefore(allowed_date)) {
-          this.cardError = true;
-          return;
+          this.cardError = true
+          return
         }
       }
-      this.$validator.validateAll().then((result) => {
+      this.$validator.validateAll().then(result => {
         if (result) {
-          this.$LIPS(true);
+          this.$LIPS(true)
           post(this.apiUrls.previewAmortization, data)
-            .then((res) => {
-              this.$LIPS(false);
-              this.amortization = res.data.data;
-              $(`#amortizationPreview`).modal("toggle");
+            .then(res => {
+              this.$LIPS(false)
+              this.amortization = res.data.data
+              $(`#amortizationPreview`).modal('toggle')
             })
-            .catch((err) => {
-              this.$LIPS(false);
-              Flash.setError("Error: " + err.message);
-            });
-        } else this.$networkErr("form");
-      });
+            .catch(err => {
+              this.$LIPS(false)
+              Flash.setError('Error: ' + err.message)
+            })
+        } else this.$networkErr('form')
+      })
     },
 
     async getRepaymentDuration() {
       try {
-        const fetchRepaymentDuration = await get(
-          this.apiUrls.repaymentDuration
-        );
-        this.repaymentDuration = fetchRepaymentDuration.data.data.data;
+        const fetchRepaymentDuration = await get(this.apiUrls.repaymentDuration)
+        this.repaymentDuration = fetchRepaymentDuration.data.data.data
       } catch (err) {
-        this.$displayErrorMessage(err);
+        this.$displayErrorMessage(err)
       }
     },
     async getDiscounts() {
       try {
-        const fetchDiscounts = await get(this.apiUrls.discounts);
-        this.discounts = fetchDiscounts.data.data.data;
+        const fetchDiscounts = await get(this.apiUrls.discounts)
+        this.discounts = fetchDiscounts.data.data.data
         this.discounts = this.discounts.sort((a, b) => {
-          return a.percentage_discount - b.percentage_discount;
-        });
+          return a.percentage_discount - b.percentage_discount
+        })
       } catch (err) {
-        this.$displayErrorMessage(err);
+        this.$displayErrorMessage(err)
       }
     },
     getCalc() {
       try {
-        this.salesLogForm.customer_id = this.customerId;
+        this.salesLogForm.customer_id = this.customerId
         const data0 = {
           discount_slug: this.salesLogForm.discount,
           ...this.salesLogForm,
           ...{
-            branch_id: localStorage.getItem("branch_id"),
+            branch_id: localStorage.getItem('branch_id'),
             status_id: 1,
           },
-        };
+        }
 
-        const caly = this.calculation;
+        const caly = this.calculation
         const data = caly.filter(
-          (x) =>
+          x =>
             x.business_type_id === data0.business_type_id?.id &&
             x.down_payment_rate_id === data0.payment_type_id.id &&
             x.repayment_duration_id === data0.repayment_duration_id.id
-        )[0];
+        )[0]
 
-        this.selected_discount = this.discounts.find((item) => {
-          return item.slug == this.salesLogForm.discount;
-        });
+        this.selected_discount = this.discounts.find(item => {
+          return item.slug == this.salesLogForm.discount
+        })
         const { total, actualDownpayment, rePayment } =
-          data0.business_type_id.slug.includes("cash_loan") ||
-          data0.business_type_id.slug.includes("ap_rentals") ||
-          data0.business_type_id.slug.includes("ap_super") ||
-          data0.business_type_id.slug.includes("ap_starter")
+          data0.business_type_id.slug.includes('cash_loan') ||
+          data0.business_type_id.slug.includes('ap_rentals') ||
+          data0.business_type_id.slug.includes('ap_super') ||
+          data0.business_type_id.slug.includes('ap_starter')
             ? cashLoan(
                 this.selectedProduct.price,
                 data0,
@@ -1040,18 +1055,18 @@ export default {
                 data0,
                 data,
                 this.selected_discount?.percentage_discount
-              );
+              )
 
-        this.repaymentCircle = data0.repayment_cycle_id.value;
-        this.rDuration = data0.repayment_duration_id.value;
-        this.fPayment = actualDownpayment;
-        this.rPayment = rePayment;
-        this.pPrice = total;
-        this.test1 = false;
-        const months = this.rDuration / 30;
+        this.repaymentCircle = data0.repayment_cycle_id.value
+        this.rDuration = data0.repayment_duration_id.value
+        this.fPayment = actualDownpayment
+        this.rPayment = rePayment
+        this.pPrice = total
+        this.test1 = false
+        const months = this.rDuration / 30
 
-        const cycle = Math.ceil(28 / this.repaymentCircle);
-        const additionalRepayment = this.rPayment / (months * cycle);
+        const cycle = Math.ceil(28 / this.repaymentCircle)
+        const additionalRepayment = this.rPayment / (months * cycle)
 
         if (
           (this.selectedProduct.price > 80000 &&
@@ -1063,39 +1078,39 @@ export default {
             this.selectedProduct.price > 110000)
         ) {
           this.singleRepayment =
-            cycle == 1 ? additionalRepayment / 2 : additionalRepayment;
+            cycle == 1 ? additionalRepayment / 2 : additionalRepayment
         } else if (
           this.selectedProduct.price > 110000 &&
           (this.salesLogForm.business_type_id.id == 7 ||
             this.salesLogForm?.business_type_id?.id == 9)
         ) {
           this.singleRepayment =
-            cycle == 1 ? additionalRepayment : additionalRepayment * 2;
+            cycle == 1 ? additionalRepayment : additionalRepayment * 2
         }
       } catch (e) {
         // this.$swal({
         //     icon: "error",
         //     title: "Plan is not available"
         // });
-        this.test1 = true;
-        this.repaymentCircle = "0";
-        this.rDuration = "0";
-        this.fPayment = "0";
-        this.rPayment = "0";
-        this.pPrice = "0";
+        this.test1 = true
+        this.repaymentCircle = '0'
+        this.rDuration = '0'
+        this.fPayment = '0'
+        this.rPayment = '0'
+        this.pPrice = '0'
       }
       // }
       // });
     },
     getRepaymentDate(count) {
-      const paymentDate = this.repaymentCircle * count;
-      const date = new Date();
+      const paymentDate = this.repaymentCircle * count
+      const date = new Date()
       const newDate = new Date(
         date.getFullYear(),
         date.getMonth(),
         date.getDate() + paymentDate
-      ).toLocaleDateString("en-US");
-      return newDate;
+      ).toLocaleDateString('en-US')
+      return newDate
     },
     preview() {
       // const plan = [];
@@ -1111,193 +1126,191 @@ export default {
     },
     async getCalculation() {
       try {
-        const fetchGetCalclations = await get(this.apiUrls.getCalculation);
+        const fetchGetCalclations = await get(this.apiUrls.getCalculation)
 
-        const unwrapped = fetchGetCalclations.data.data;
-        this.calculation = unwrapped;
-        const unwrapped0 = JSON.stringify(unwrapped);
+        const unwrapped = fetchGetCalclations.data.data
+        this.calculation = unwrapped
+        const unwrapped0 = JSON.stringify(unwrapped)
       } catch (err) {
-        this.$displayErrorMessage(err);
+        this.$displayErrorMessage(err)
       }
     },
     selectedItem(value) {
-      this.selectedProduct = value;
+      this.selectedProduct = value
 
       this.salesLogForm = {
         ...this.salesLogForm,
         product_name: this.selectedProduct.product_name,
         product: this.selectedProduct,
-      };
-      this.hideOrderSummary = false;
-      this.watchSalesLogForm();
-      this.getCalc();
+      }
+      this.hideOrderSummary = false
+      this.watchSalesLogForm()
+      this.getCalc()
     },
     async getProduct() {
       try {
-        const fetchProduct = await get(this.apiUrls.getProduct + this.product);
+        const fetchProduct = await get(this.apiUrls.getProduct + this.product)
       } catch (err) {
-        this.$displayErrorMessage(err);
+        this.$displayErrorMessage(err)
       }
     },
     async getRepaymentCycles() {
       try {
-        const fetchRepaymentCycles = await get(this.apiUrls.repaymentCycles);
-        this.repaymentCyclesopt = fetchRepaymentCycles.data.data.data;
+        const fetchRepaymentCycles = await get(this.apiUrls.repaymentCycles)
+        this.repaymentCyclesopt = fetchRepaymentCycles.data.data.data
       } catch (err) {
-        this.$displayErrorMessage(err);
+        this.$displayErrorMessage(err)
       }
     },
 
     async getOrderTypes() {
       try {
-        const orderTypes = await get(this.apiUrls.orderType);
-        this.orderTypes = orderTypes.data.orderTypes;
+        const orderTypes = await get(this.apiUrls.orderType)
+        this.orderTypes = orderTypes.data.orderTypes
       } catch (err) {
-        this.$displayErrorMessage(err);
+        this.$displayErrorMessage(err)
       }
     },
     async getDownPaymentRates() {
       try {
-        const fetchDownPaymentRates = await get(this.apiUrls.downPaymentRates);
-        this.downPaymentRates = fetchDownPaymentRates.data.data.data;
+        const fetchDownPaymentRates = await get(this.apiUrls.downPaymentRates)
+        this.downPaymentRates = fetchDownPaymentRates.data.data.data
         this.downPaymentRates = this.downPaymentRates.sort((a, b) => {
-          return a.percent - b.percent;
-        });
+          return a.percent - b.percent
+        })
       } catch (err) {
-        this.$displayErrorMessage(err);
+        this.$displayErrorMessage(err)
       }
     },
     async getSalesCategory() {
       try {
-        const fetchSalesCategory = await get(this.apiUrls.salesCategoryUrl);
-        this.salesCategories = fetchSalesCategory.data.data.data;
+        const fetchSalesCategory = await get(this.apiUrls.salesCategoryUrl)
+        this.salesCategories = fetchSalesCategory.data.data.data
       } catch (err) {
-        this.$displayErrorMessage(err);
+        this.$displayErrorMessage(err)
       }
     },
 
     async getUsers(salesCat = 1) {
-      this.$LIPS(true);
-      await get(`/api/sales-category/${salesCat}/roles`).then((res) => {
-        this.users = this.mergeArrays(res.data.data);
-      });
+      this.$LIPS(true)
+      await get(`/api/sales-category/${salesCat}/roles`).then(res => {
+        this.users = this.mergeArrays(res.data.data)
+      })
 
-      this.$LIPS(false);
-      this.getCalc();
+      this.$LIPS(false)
+      this.getCalc()
     },
     mergeArrays(parent) {
-      let result = [];
-      parent.forEach((elem) => {
-        result = result.concat(elem.active_users);
-      });
-      return result;
+      let result = []
+      parent.forEach(elem => {
+        result = result.concat(elem.active_users)
+      })
+      return result
     },
     async getBusinessTypes() {
       try {
-        const fetchBusinessTypes = await get(this.apiUrls.businessTypes);
-        this.businessTypes = fetchBusinessTypes.data.data.data;
-        this.businessTypes = this.businessTypes.filter((item) => {
+        const fetchBusinessTypes = await get(this.apiUrls.businessTypes)
+        this.businessTypes = fetchBusinessTypes.data.data.data
+        this.businessTypes = this.businessTypes.filter(item => {
           if (this.isAltaraPay) {
-            return item.slug.includes("ap_");
+            return item.slug.includes('ap_')
           }
-          return item.slug.includes("ac_");
-        });
+          return item.slug.includes('ac_')
+        })
       } catch (err) {
-        this.$displayErrorMessage(err);
+        this.$displayErrorMessage(err)
       }
     },
     mergeArrays(parent) {
-      let result = [];
-      parent.forEach((elem) => {
-        result = result.concat(elem.users);
-      });
-      return result.sort((a, b) =>
-        a["full_name"].localeCompare(b["full_name"])
-      );
+      let result = []
+      parent.forEach(elem => {
+        result = result.concat(elem.users)
+      })
+      return result.sort((a, b) => a['full_name'].localeCompare(b['full_name']))
     },
     checkIfDiscountElig() {
       if (this.customer.new_orders.length > 0) {
-        let arrLength = this.customer.new_orders.length;
+        let arrLength = this.customer.new_orders.length
         if (
           this.calcDebt(
             this.customer.new_orders[arrLength - 1].amortization
           ) === 0
         ) {
-          this.eligible = true;
+          this.eligible = true
         }
       }
     },
     calcDebt(amortization) {
       // I assumed that all repayments are uniform and are not varied
       if (amortization[0] !== undefined) {
-        let res = amortization.filter((amor) => {
-          return amor.actual_amount === 0;
-        });
-        return res.length * amortization[0].expected_amount;
+        let res = amortization.filter(amor => {
+          return amor.actual_amount === 0
+        })
+        return res.length * amortization[0].expected_amount
       }
-      return;
+      return
     },
 
     toggleSerial() {
-      this.serial === true ? (this.serial = false) : (this.serial = true);
+      this.serial === true ? (this.serial = false) : (this.serial = true)
     },
     toggleProductType() {
-      this.hideOrderSummary=true
-      this.transfer = false;
-      this.isBank54 = false;
-      this.getBusinessTypes();
-      this.selectedProduct.product_name= ""
-      this.isAltaraPay = !this.isAltaraPay;
-      this.isAltaraPay ? "" : (this.card_expiry = null);
-      this.salesLogForm = {};
-      this.salesLogForm.discount = "0_discount";
-     this.$refs.clearInputValue.setValue("");
+      this.hideOrderSummary = true
+      this.transfer = false
+      this.isBank54 = false
+      this.getBusinessTypes()
+      this.selectedProduct.product_name = ''
+      this.isAltaraPay = !this.isAltaraPay
+      this.isAltaraPay ? '' : (this.card_expiry = null)
+      this.salesLogForm = {}
+      this.salesLogForm.discount = '0_discount'
+      this.$refs.clearInputValue.setValue('')
     },
     async processPaymentPayStackPayment(resp) {
-      this.paystackReference = resp.reference;
-      if (resp.status == "success" && resp.message == "Approved") {
+      this.paystackReference = resp.reference
+      if (resp.status == 'success' && resp.message == 'Approved') {
         this.salesLogForm.payment_gateway_id = this.paymentGateways.find(
-          (item) => item.name === "paystack"
-        ).id;
+          item => item.name === 'paystack'
+        ).id
         await this.verifyPaystackPayment()
-          .then((data) => {
-            if (data.status && data.message == "Verification successful") {
+          .then(data => {
+            if (data.status && data.message == 'Verification successful') {
               this.salesLogForm.authorization_code =
-                data.data.authorization.authorization_code;
+                data.data.authorization.authorization_code
             }
           })
-          .catch((error) => {
-            this.$displayErrorMessage(error);
-          });
-        this.logSale();
+          .catch(error => {
+            this.$displayErrorMessage(error)
+          })
+        this.logSale()
       }
     },
     closePayStackModal: () => {},
     showCollectionModal() {
-      this.$modal.show("verification-collection-data");
+      this.$modal.show('verification-collection-data')
     },
     closeCollectionModal() {
-      this.$modal.hide("verification-collection-data");
+      this.$modal.hide('verification-collection-data')
     },
     collectCollectionVerificationData(data) {
-      this.CollectionVerificationData = data;
-      this.closeCollectionModal();
+      this.CollectionVerificationData = data
+      this.closeCollectionModal()
     },
 
     async verifyPaystackPayment() {
-      const url = `${this.apiUrls.verifyPaymentUrl}${this.paystackReference}`;
+      const url = `${this.apiUrls.verifyPaymentUrl}${this.paystackReference}`
       const response = await fetch(url, {
-        method: "GET",
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${process.env.VUE_APP_PAYSTACK_SECRET_KEY}`,
         },
-      });
-      return response.json();
+      })
+      return response.json()
     },
     async createCustomer(id, email, firstName, lastName, phoneNo) {
       return await fetch(this.apiUrls.paystackCustomerApi, {
         // Adding method type
-        method: "POST",
+        method: 'POST',
         // Adding body or contents to send
         body: JSON.stringify({
           email: email,
@@ -1308,53 +1321,62 @@ export default {
         }),
         // Adding headers to the request
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${process.env.VUE_APP_PAYSTACK_SECRET_KEY}`,
         },
       }) // Converting to JSON
-        .then((response) => response.json())
+        .then(response => response.json())
         // Displaying results to console
-        .then((json) => json)
-        .catch((err) => {
-          this.$LIPS(false);
-          Flash.setError("Error: " + err.message);
-        });
+        .then(json => json)
+        .catch(err => {
+          this.$LIPS(false)
+          Flash.setError('Error: ' + err.message)
+        })
     },
     async paystackCustomer(id, customer_code) {
       post(this.apiUrls.paystackCustomerCodeUrl, {
         id: id,
         customer_code: customer_code,
       })
-        .then((res) => {
-          return res;
+        .then(res => {
+          return res
         })
-        .catch((err) => {
-          this.$LIPS(false);
-          Flash.setError("Error: " + err.message);
-        });
+        .catch(err => {
+          this.$LIPS(false)
+          Flash.setError('Error: ' + err.message)
+        })
+    },
+
+    validateEmail(mail) {
+      {
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+          return true
+        }
+
+        return false
+      }
     },
     canLogBank54Payment: function() {
-      this.flag = localStorage.getItem("flag");
-      return this.flag === "beta";
+      this.flag = localStorage.getItem('flag')
+      return this.flag === 'beta'
     },
     triggerToggleEventBank54(value) {
-      this.isBank54 = value;
+      this.isBank54 = value
     },
     triggerToggleEventTransfer(value) {
-      this.transfer = value;
+      this.transfer = value
     },
     triggerToggleEventaddDownpayment(value) {
-      this.addDownpayment = !this.addDownpayment;
-      this.addDownpayment = value;
-      this.stillShowToggle = true;
-      
+      this.addDownpayment = !this.addDownpayment
+      this.addDownpayment = value
+      this.stillShowToggle = true
     },
 
     triggerToggleEvent(value, switchName) {
-      this[`triggerToggleEvent${switchName}`](value);
+      this[`triggerToggleEvent${switchName}`](value)
     },
   },
-};
+}
 </script>
 
 <style scoped>
@@ -1399,7 +1421,7 @@ export default {
   display: block;
   float: right;
 }
-.disableToggle{
+.disableToggle {
   pointer-events: none;
   opacity: 0.7;
 }

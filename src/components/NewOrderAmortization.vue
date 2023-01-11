@@ -47,7 +47,7 @@
               </th>
               <th>{{ order.payment_gateway }}</th>
               <td class="font-weight-bold">{{ order.branch }}</td>
-               <td class="font-weight-bold">{{ order.financed_by }}</td>
+              <td class="font-weight-bold">{{ order.financed_by }}</td>
               <td class="font-weight-bold td-back">ok</td>
               <!-- <td
                         :class="getOrderStatusClass(getOrderStatus(order))"
@@ -86,13 +86,35 @@
               <tr class="table-separator status-row">
                 <th>Status</th>
                 <td v-for="armo in amortizationData">
-                  <div v-if="armo.actual_payment_date && armo.actual_amount >= armo.expected_amount && Date.parse(armo.actual_payment_date) <= Date.parse(armo.expected_payment_date)" class="green status-sign">
+                  <div
+                    v-if="
+                      armo.actual_payment_date &&
+                        armo.actual_amount >= armo.expected_amount &&
+                        Date.parse(armo.actual_payment_date) <=
+                          Date.parse(armo.expected_payment_date)
+                    "
+                    class="green status-sign"
+                  >
                     <i class="fa fa-check"></i>
                   </div>
-                  <div v-else-if="armo.actual_payment_date && armo.actual_amount >= armo.expected_amount && Date.parse(armo.actual_payment_date) > Date.parse(armo.expected_payment_date)" class="magenta status-sign">
+                  <div
+                    v-else-if="
+                      armo.actual_payment_date &&
+                        armo.actual_amount >= armo.expected_amount &&
+                        Date.parse(armo.actual_payment_date) >
+                          Date.parse(armo.expected_payment_date)
+                    "
+                    class="magenta status-sign"
+                  >
                     <i class="fa fa-check"></i>
                   </div>
-                  <div v-else-if="armo.actual_payment_date && armo.actual_amount < armo.expected_amount " class="pending status-sign">
+                  <div
+                    v-else-if="
+                      armo.actual_payment_date &&
+                        armo.actual_amount < armo.expected_amount
+                    "
+                    class="pending status-sign"
+                  >
                     <i class="fa fa-hourglass-start"></i>
                   </div>
                   <div
@@ -124,67 +146,71 @@
             </tbody>
           </table>
         </div>
-        <div v-if="lateFEES && lateFEES.length >0">
-          <h5 class="mt-5 mb-0 d-flex justify-content-between"  style="color: red;">
+        <div v-if="lateFEES && lateFEES.length > 0">
+          <h5
+            class="mt-5 mb-0 d-flex justify-content-between"
+            style="color: red;"
+          >
             Late Fees
           </h5>
-        <div class="another">
-          <table class="table table-bordered">
-            <tbody class="text-center" >
-              <tr class="table-separator">
-                <th>Penalty Date</th>
-                <td style="font-weight: 800;" v-for="latefee in lateFEES" >
-                  {{ new Date(latefee.date_created).toLocaleDateString() }}
-                </td>
-              </tr>
-             <tr class="table-separator">
-									<th>Late Fee Amount Due</th>
-									<td
-										style="font-weight: 800;"
-										v-for="latefee in lateFEES"
-									>
-										{{ $formatCurrency(latefee.amount_due) }}
-									</td>
-								</tr>
-
-				<tr>
-					<th>Late Fee Amount Paid</th>
-									<td
-										style="font-weight: 800;"
-										v-for="(latefee, index) in lateFEES"
-										@click="updateLateFee(latefee, index)"
-										class="pointer"
-									>
-										{{ $formatCurrency(latefee.amount_paid)}}
-									</td>
-				</tr>
-				<tr class="table-separator status-row">
-									<th>Status</th>
-									<td v-for="latefee in lateFEES">
-										<div
-											v-if="latefee.amount_due === latefee.amount_paid"
-											class="green"
-										>
-											<i class="fa fa-check"></i>
-										</div>
-										<div v-else class="red">
-											<i class="fa fa-times"></i>
-										</div>
-									</td>
-								</tr>
+          <div class="another">
+            <table class="table table-bordered">
+              <tbody class="text-center">
+                <tr class="table-separator">
+                  <th>Penalty Date</th>
+                  <td style="font-weight: 800;" v-for="latefee in lateFEES">
+                    {{ new Date(latefee.date_created).toLocaleDateString() }}
+                  </td>
+                </tr>
+                <tr class="table-separator">
+                  <th>Late Fee Amount Due</th>
+                  <td style="font-weight: 800;" v-for="latefee in lateFEES">
+                    {{ $formatCurrency(latefee.amount_due) }}
+                  </td>
+                </tr>
 
                 <tr>
-					<th>Date Paid</th>
-									<td
-										style="font-weight: 800;"
-										v-for="(latefee, index) in lateFEES"
-									>
-										{{ latefee.date_paid !== null ? new Date(latefee.date_paid).toLocaleDateString(): 'N/A'  }}
-									</td>
-				</tr>
-            </tbody>
-          </table>
-        </div>
+                  <th>Late Fee Amount Paid</th>
+                  <td
+                    style="font-weight: 800;"
+                    v-for="(latefee, index) in lateFEES"
+                    @click="updateLateFee(latefee, index)"
+                    class="pointer"
+                  >
+                    {{ $formatCurrency(latefee.amount_paid) }}
+                  </td>
+                </tr>
+                <tr class="table-separator status-row">
+                  <th>Status</th>
+                  <td v-for="latefee in lateFEES">
+                    <div
+                      v-if="latefee.amount_due === latefee.amount_paid"
+                      class="green"
+                    >
+                      <i class="fa fa-check"></i>
+                    </div>
+                    <div v-else class="red">
+                      <i class="fa fa-times"></i>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th>Date Paid</th>
+                  <td
+                    style="font-weight: 800;"
+                    v-for="(latefee, index) in lateFEES"
+                  >
+                    {{
+                      latefee.date_paid !== null
+                        ? new Date(latefee.date_paid).toLocaleDateString()
+                        : 'N/A'
+                    }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <h5 class="mt-5 mb-0">Payment Summary</h5>
@@ -196,7 +222,7 @@
                 {{
                   order.discount[0]
                     ? order.discount[0].name
-                    : "Null" | capitalize
+                    : 'Null' | capitalize
                 }}
               </th>
               <td>Total Before Discount</td>
@@ -206,12 +232,12 @@
             </tr>
             <tr>
               <td class="text-left">Discount Amount</td>
-              <th>{{ order.discountAmount || "null" }}</th>
+              <th>{{ order.discountAmount || 'null' }}</th>
               <td>Total After Discount</td>
-              <th>{{ order.discountedTotal || "null" }}</th>
+              <th>{{ order.discountedTotal || 'null' }}</th>
               <td>Total Debt</td>
               <th>
-                {{ $formatCurrency(calcDebt(order.amortization)) || "null" }}
+                {{ $formatCurrency(calcDebt(order.amortization)) || 'null' }}
               </th>
             </tr>
             <tr>
@@ -220,7 +246,7 @@
               <td>Total Plus Default Fee</td>
               <th>{{ $formatCurrency($roundDownAmt(order.product_price)) }}</th>
               <td>Default Fee</td>
-              <th>{{ order.defaultFee || "null" }}</th>
+              <th>{{ order.defaultFee || 'null' }}</th>
             </tr>
           </tbody>
         </table>
@@ -322,31 +348,31 @@
       </div>
     </div>
 
-	<div class="modal fade repayment" id="viewEditLateFee">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content" v-if="showLateFeeModal">
-					<div>
-						<h5>
-							<div class="d-flex justify-content-between">
-								<div>Update LateFee</div>
-								<div @click="closeModal()"><i class="fa fa-times"></i></div>
-							</div>
-						</h5>
-						<div class="card">
-							<form class="card-body" @submit.prevent="saveLateFee">
-								<div class="row">
-									<div class="col form-group">
-										<label for="amount" class="form-control-label"
-											>Actual Amount</label
-										>
-										<br />
-										<input
-											name="ammo"
-											class="custom-select"
-											v-model="lateFeeItem.amount_paid"
+    <div class="modal fade repayment" id="viewEditLateFee">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content" v-if="showLateFeeModal">
+          <div>
+            <h5>
+              <div class="d-flex justify-content-between">
+                <div>Update LateFee</div>
+                <div @click="closeModal()"><i class="fa fa-times"></i></div>
+              </div>
+            </h5>
+            <div class="card">
+              <form class="card-body" @submit.prevent="saveLateFee">
+                <div class="row">
+                  <div class="col form-group">
+                    <label for="amount" class="form-control-label"
+                      >Actual Amount</label
+                    >
+                    <br />
+                    <input
+                      name="ammo"
+                      class="custom-select"
+                      v-model="lateFeeItem.amount_paid"
                       v-validate="'required'"
-										/>
-									</div>
+                    />
+                  </div>
                   <div class="col form-group">
                     <label for="amount" class="form-control-label"
                       >Date Paid</label
@@ -358,46 +384,46 @@
                       placeholder="Date"
                     ></date-picker>
                   </div>
-								</div>
-								<div class="row">
-									<div class="col form-group">
-										<label for="amount" class="form-control-label"
-											>Expected Amount</label
-										>
-										<br />
+                </div>
+                <div class="row">
+                  <div class="col form-group">
+                    <label for="amount" class="form-control-label"
+                      >Expected Amount</label
+                    >
+                    <br />
 
-										<input
-											class="custom-select"
-											disabled
-											name="amount"
-											v-model="lateFeeItem.amount_due"
-										/>
-									</div>
-								</div>
-								<br />
+                    <input
+                      class="custom-select"
+                      disabled
+                      name="amount"
+                      v-model="lateFeeItem.amount_due"
+                    />
+                  </div>
+                </div>
+                <br />
 
-								<div class="text-center">
-									<button class="text-center btn bg-default">Save</button>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+                <div class="text-center">
+                  <button class="text-center btn bg-default">Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
-import Flash from "../utilities/flash";
-import { mapGetters } from "vuex";
-import Auth from "../utilities/auth";
-import LogForm from "./LogForm";
-import { get, patch, put } from "../utilities/api";
-import DatePicker from "vue2-datepicker";
-import "vue2-datepicker/index.css";
+import Flash from '../utilities/flash'
+import { mapGetters } from 'vuex'
+import Auth from '../utilities/auth'
+import LogForm from './LogForm'
+import { get, patch, put } from '../utilities/api'
+import DatePicker from 'vue2-datepicker'
+import 'vue2-datepicker/index.css'
 
 export default {
-  name: "NewOrderAmortization",
+  name: 'NewOrderAmortization',
   components: { LogForm, DatePicker },
   props: {
     order: {
@@ -407,14 +433,14 @@ export default {
       type: Object,
     },
     lateFEES: {
-      type: Array
+      type: Array,
     },
     paymentForm: {
       type: Object,
     },
     paymentFormType: {
       type: String,
-      default: "add",
+      default: 'add',
     },
     standAlone: {
       type: Boolean,
@@ -431,10 +457,10 @@ export default {
       showModal: false,
       canEditPayment: true,
       isReadOnly: false,
-	  showAmmoModal: false,
-	showLateFeeModal: false,
-	lateFeeItem: null,
-				lateFeeIndex: null,
+      showAmmoModal: false,
+      showLateFeeModal: false,
+      lateFeeItem: null,
+      lateFeeIndex: null,
 
       canAddPayment: true,
       user: {
@@ -442,167 +468,170 @@ export default {
         id: Auth.state.user_id,
       },
       amortizationData: this.order.amortization,
-
-    };
+    }
   },
   methods: {
     done() {
-      this.show = false;
+      this.show = false
 
-      this.$LIPS(true);
+      this.$LIPS(true)
       get(`/api/customer/lookup/${this.customer.id}`)
-        .then((res) => {
-          this.$LIPS(false);
+        .then(res => {
+          this.$LIPS(false)
           this.amortizationData = res.data.customer[0].new_orders.find(
-            (x) => x.order_number === this.order.order_number
-          ).amortization;
-          this.$emit("childToParent", res.data);
+            x => x.order_number === this.order.order_number
+          ).amortization
+          this.$emit('childToParent', res.data)
         })
-        .catch((e) => {
-          this.$LIPS(false);
-          Flash.setError("Error Fetching customer detail");
-        });
+        .catch(e => {
+          this.$LIPS(false)
+          Flash.setError('Error Fetching customer detail')
+        })
     },
     addPaymentForm(data) {
-      this.$emit("addPayment", data);
+      this.$emit('addPayment', data)
     },
 
     deletePayment(index) {
-      this.$emit("deletePayment", index);
+      this.$emit('deletePayment', index)
     },
     preparePayments() {
-      this.$emit("preparePayments");
+      this.$emit('preparePayments')
     },
 
     updateAmmo(armo, index) {
       if (this.canEditAmmoPayment && this.standAlone === false) {
-        this.showAmmoModal = true;
-        this.ammo_item = armo;
-        this.ammoIndex = index;
+        this.showAmmoModal = true
+        this.ammo_item = armo
+        this.ammoIndex = index
 
-        return $(`#viewEdit`).modal("toggle");
+        return $(`#viewEdit`).modal('toggle')
       }
     },
-	updateLateFee(lateFee, index) {
-				if (this.standAlone === false) {
-					this.showLateFeeModal = true;
-					this.lateFeeItem = lateFee;
-					this.lateFeeIndex = index;
+    updateLateFee(lateFee, index) {
+      if (this.standAlone === false) {
+        this.showLateFeeModal = true
+        this.lateFeeItem = lateFee
+        this.lateFeeIndex = index
 
-					return $(`#viewEditLateFee`).modal('toggle');
-				}
-			},
+        return $(`#viewEditLateFee`).modal('toggle')
+      }
+    },
     closeModal() {
-      this.showModal = false;
+      this.showModal = false
 
       // $(`#viewEdit`).modal("toggle");
     },
 
-    closeAmmoModal(){
-      this.showAmmoModal = false;
+    closeAmmoModal() {
+      this.showAmmoModal = false
     },
     save() {
-      this.$LIPS(true);
+      this.$LIPS(true)
       const updateData = {
-        user_id: localStorage.getItem("user_id"),
+        user_id: localStorage.getItem('user_id'),
         actual_amount: this.ammo_item.actual_amount,
         actual_payment_date: this.ammo_item.actual_payment_date,
         expected_payment_date: this.ammo_item.expected_payment_date,
         expected_amount: this.ammo_item.expected_amount,
-      };
+      }
 
       put(`/api/amortization/${this.ammo_item.id}`, updateData)
-        .then((res) => {
+        .then(res => {
           this.$swal({
-            icon: "success",
-            title: "Amortization Updated Successfully",
-          });
-          this.amortizationData[this.ammoIndex] = res.data.data;
-          this.$LIPS(false);
-          return $(`#viewEdit`).modal("toggle");
+            icon: 'success',
+            title: 'Amortization Updated Successfully',
+          })
+          this.amortizationData[this.ammoIndex] = res.data.data
+          this.$LIPS(false)
+          return $(`#viewEdit`).modal('toggle')
         })
-        .catch((err) => {
-          this.$LIPS(false);
+        .catch(err => {
+          this.$LIPS(false)
 
-          Flash.setError("Unable to update payment");
-          return $(`#viewEdit`).modal("toggle");
+          Flash.setError('Unable to update payment')
+          return $(`#viewEdit`).modal('toggle')
         })
         .finally(() => {
-          $(`#viewEdit`).modal("toggle");
-          this.showModal = false;
-        });
+          $(`#viewEdit`).modal('toggle')
+          this.showModal = false
+        })
     },
 
-	saveLateFee() {
-				this.$LIPS(true);
-        this.lateFeeItem.amount_paid = parseFloat(this.lateFeeItem.amount_paid).toFixed(2);
-				patch(`/api/late_fee/${this.lateFeeItem.id}`, this.lateFeeItem)
-					.then((res) => {
-						this.$swal({
-							icon: 'success',
-							title: 'LateFee Updated Successfully',
-						});
-						this.lateFEES[this.lateFeeIndex] = res.data.data;
-						this.$LIPS(false);
-						return $(`#viewEdit`).modal('toggle');
-					})
-					.catch((err) => {
-						this.$LIPS(false);
+    saveLateFee() {
+      this.$LIPS(true)
+      this.lateFeeItem.amount_paid = parseFloat(
+        this.lateFeeItem.amount_paid
+      ).toFixed(2)
+      patch(`/api/late_fee/${this.lateFeeItem.id}`, this.lateFeeItem)
+        .then(res => {
+          this.$swal({
+            icon: 'success',
+            title: 'LateFee Updated Successfully',
+          })
+          this.lateFEES[this.lateFeeIndex] = res.data.data
+          this.$LIPS(false)
+          return $(`#viewEdit`).modal('toggle')
+        })
+        .catch(err => {
+          this.$LIPS(false)
 
-						Flash.setError('Unable to update late fee');
-						return $(`#viewLateFeeEdit`).modal('toggle');
-					})
-					.finally(() => {
-						$(`#viewLateFeeEdit`).modal('toggle');
-						this.showLateFeeModal = false;
-					});
-			},
+          Flash.setError('Unable to update late fee')
+          return $(`#viewLateFeeEdit`).modal('toggle')
+        })
+        .finally(() => {
+          $(`#viewLateFeeEdit`).modal('toggle')
+          this.showLateFeeModal = false
+        })
+    },
     calcDebt(amortization) {
       // * Assumed equal distribution of amortization
-       const totalRepayment = amortization?.reduce((total, item) => {
-    return total + Number(item.expected_amount);
-  }, 0);
-         const totalPaid = amortization?.reduce((total, item) => {
-    return total + Number(item.actual_amount);
-  }, 0)
-  return totalRepayment-totalPaid
-
+      const totalRepayment = amortization?.reduce((total, item) => {
+        return total + Number(item.expected_amount)
+      }, 0)
+      const totalPaid = amortization?.reduce((total, item) => {
+        return total + Number(item.actual_amount)
+      }, 0)
+      return totalRepayment - totalPaid
     },
   },
   created() {
     this.calcDebt(this.order.amortization) === 0
       ? (this.completed = true)
-      : (this.completed = false);
+      : (this.completed = false)
   },
   updated() {
     this.calcDebt(this.order.amortization) === 0
       ? (this.completed = true)
-      : (this.completed = false);
+      : (this.completed = false)
   },
   watch: {
-    order: function () {
-      this.amortizationData = this.order.amortization;
+    order: function() {
+      this.amortizationData = this.order.amortization
     },
   },
   computed: {
-    ...mapGetters(["auth", "getAuthUserDetails"]),
+    ...mapGetters(['auth', 'getAuthUserDetails']),
 
     canEditAmmoPayment() {
-      if (this.auth("AdminAccess")) return true;
+      if (this.order.payment_gateway === 'Paystack') {
+        if (this.auth('AdminAccess')) return true
+      } else {
+        if (this.auth('FSLLead') || this.auth('DVALead')) return true
+      }
     },
   },
-};
+}
 </script>
 <style scoped>
 .amor-table {
-
   overflow-x: auto;
 }
-.another{
+.another {
   width: 1092px;
-		overflow: scroll;
+  overflow: scroll;
 }
-.status-sign{
+.status-sign {
   width: 100%;
   font-size: 1.3em;
 }
@@ -613,11 +642,11 @@ export default {
 }
 
 .magenta {
-  color: #FF00FF;
+  color: #ff00ff;
   background: rgba(200, 0, 140, 0.09);
 }
 .pending {
-  color: #FFA500;
+  color: #ffa500;
   background: rgba(253, 253, 150, 0.5);
 }
 .red {
@@ -636,4 +665,3 @@ export default {
   cursor: pointer;
 }
 </style>
-

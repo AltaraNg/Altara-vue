@@ -588,7 +588,7 @@ export default {
     ...mapGetters(["auth", "getAuthUserDetails"]),
 
     canEditAmmoPayment() {
-      if (this.auth("FSLLead") || this.auth("DVALead")) return true;
+      if (this.auth("AdminAccess")) return true;
     },
   },
 };

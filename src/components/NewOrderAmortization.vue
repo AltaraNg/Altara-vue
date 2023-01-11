@@ -615,10 +615,10 @@ export default {
 
     canEditAmmoPayment() {
       if (this.order.payment_gateway === 'Paystack') {
-        if (this.auth('AdminAccess')) return true
-      } else {
-        if (this.auth('FSLLead') || this.auth('DVALead')) return true
-      }
+        return this.auth('AdminAccess');
+      } 
+      return this.auth('FSLLead') || this.auth('DVALead')
+      
     },
   },
 }

@@ -17,7 +17,7 @@
     </div>
     <div class="modal-body px-2 py-5">
       <form>
-        <div class="form-group d-flex mx-4">
+        <div class="form-group d-flex mx-4 my-2">
           <input
             placeholder="First Name"
             type="text"
@@ -26,11 +26,49 @@
           <input
             placeholder="Last Name"
             type="text"
-            class="form-control w-50 mx-1"
+            class="form-control w-50 mx-1 border-dark"
           />
         </div>
+        <div class="form-group d-flex mx-4 my-2">
+          <input
+            placeholder="Email"
+            type="email"
+            class="form-control w-100 mx-1 border-dark"
+          />
+          <input
+            placeholder="Phone Number"
+            type="text"
+            class="form-control w-100 mx-1 border-dark"
+          />
+        </div>
+        <div class="form-group d-flex mx-4 my-2">
+          <div class="w-100">
+            <label>
+              <input type="radio" class="custom-radio" name="gender"/>
+              Male
+            </label>
+            <label>
+              <input type="radio" class="custom-radio" name="gender" />
+              Female
+            </label>
+          </div>
+          <div class="w-100">
+            <label>
+              <input type="radio" class="custom-radio" name="marital" />
+              Single
+            </label>
+            <label>
+              <input type="radio" class="custom-radio" name="marital" />
+              Married
+            </label>
+          </div>
+        </div>
         <div class="form-group d-flex mx-4">
-
+          <input
+            placeholder="Address"
+            type="text"
+            class="form-control w-100 mx-1 border-dark"
+          />
         </div>
       </form>
     </div>
@@ -110,6 +148,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-input::placeholder{
-    color: darkslategrey;
-}</style>
+input::placeholder {
+  color: darkslategrey;
+}
+</style>

@@ -92,6 +92,11 @@ const Admin = () => import('../views/Admin/Index.vue');
 const AdminHome = () => import('../views/Admin/HomePage.vue');
 const ReportingTool = () => import('../views/Admin/ReportingTool.vue');
 const ReminderReportingTool = () => import('../views/Admin/ReminderCollectionData.vue');
+const BNPL_Vendors = () => import('../views/BNPL/Vendors.vue');
+const BNPL_Dashboard = () => import('../views/BNPL/BNPL_Dashboard.vue');
+const BNPL_Orders = () => import('../views/BNPL/Orders.vue');
+const BNPLHome = () => import('../views/BNPL/HomePage.vue');
+const BNPL = () => import('../views/BNPL/index.vue')
 const OrderRequest = () => import('../views/FSL/order_request/orderRequest.vue');
 
 
@@ -178,6 +183,7 @@ const router = new VueRouter({
           component: ReminderReportingTool,
           name: "ReminderReporting",
         },
+        
       ],
     },
      {
@@ -251,6 +257,35 @@ const router = new VueRouter({
           name: "credit-worthy",
           meta: { mode: "create" },
         },
+      ],
+    },
+
+    {
+      path: "/bnpl",
+      component: BNPL,
+      meta: { requiresAuth: true },
+      children: [
+        { path: "/", redirect: { name: "BNPLHome" } },
+        {
+          path: "home",
+          component: BNPLHome,
+          name: "BNPLHome",
+        },
+        {
+          path: "bnpl-vendors",
+          component: BNPL_Vendors,
+          name: "BNLPVendors"
+        },
+        {
+          path: "bnpl-orders",
+          component: BNPL_Orders,
+          name: "BNLPOrders"
+        },
+        {
+          path: "bnpl-dashboard",
+          component: BNPL_Dashboard,
+          name: "BNLPDashboard"
+        }
       ],
     },
     {

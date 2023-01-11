@@ -1,0 +1,401 @@
+<template>
+    <transition name="fade">
+      <div id="reminder" class="attendance">
+        <custom-header :title="'Product List'" />
+  
+        <div class="mt-2 mt-lg-3 row attendance-head ">
+          <div class="col-md-8">
+            <resueable-search
+              @childToParent="prepareList"
+              :url="urlToFetchOrders"
+              :showBranch="false"
+              :showDate="false"
+            >
+              <template #default="{ searchQuery }">
+                <div class="col-md">
+                  <div>
+                    <label class="form-control-label">Name: </label>
+                  </div>
+                  <input
+                    type="text"
+                    v-model="searchQuery.name"
+                    class="form-control"
+                  />
+                </div>
+              </template>
+            </resueable-search>
+          </div>
+  
+          <div class="col-md-4 ">
+            <router-link :to="{ name: 'BrandCreate' }">
+              <button
+                class="btn btn-primary bg-default mt-0 myBtn float-right my-2"
+              >
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+            </router-link>
+          </div>
+        </div>
+  
+        <div class="mt-5 mb-3 attendance-head">
+          <div class="w-100 my-5 mx-0 hr"></div>
+          <div class="row px-4 pt-3 pb-4 text-center">
+            <div class="col dark-heading font-weight-bolder" style="max-width: 120px">S/N</div>
+            <div class="col dark-heading font-weight-bolder" v-for="header in headings">
+              {{ header }}
+            </div>
+          </div>
+        </div>
+        <div class="tab-content mt-1 attendance-body">
+          <div
+            class="mb-3 row attendance-item"
+            :key="index"
+            v-for="(brand, index) in brands"
+          >
+            <div class="col d-flex align-items-center" style="max-width: 120px">
+              <span class="user mx-auto">{{ index + OId }}</span>
+            </div>
+            <div
+              class="col d-flex align-items-center justify-content-center hover"
+              @click="viewBrand(brand)"
+            >
+              {{ brand.name }}
+            </div>
+            <div class="col d-flex align-items-center justify-content-center">
+              {{ brand.is_active === 1 ? 'Active' : 'Inactive' }}
+            </div>
+            <div
+              class="col d-flex align-items-center justify-content-center"
+              @click="showCategory(brand)"
+            >
+              <span class="small">View Categories</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade repayment" id="viewBrand">
+          <div class="modal-dialog " role="document">
+            <div class="modal-content" v-if="showModalContent">
+              <div class="modal-header py-2">
+                <h4>
+                  {{
+                    viewCategory ? `${brandItem.name} Categories` : brandItem.name
+                  }}
+                </h4>
+                <a aria-label="Close" class="close py-1" data-dismiss="modal">
+                  <span aria-hidden="true" class="modal-close text-danger">
+                    <i class="fas fa-times"></i>
+                  </span>
+                </a>
+              </div>
+              <div class="modal-body px-5">
+                <div class="table-responsive" v-if="!viewCategory">
+                  <table class="table table-bordered table-striped">
+                    <tbody>
+                      <tr>
+                        <th>Name</th>
+                        <td>{{ brandItem.name || 'Not Available' }}</td>
+                      </tr>
+                      <tr>
+                        <th>Status</th>
+                        <td>{{ brandItem.is_active | status }}</td>
+                      </tr>
+  
+                      <tr>
+                        <th>Date</th>
+                        <td>
+                          {{
+                            brandItem.created_at
+                              ? brandItem.created_at.split(' ')[0]
+                              : 'Not Available'
+                          }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Time</th>
+                        <td>
+                          {{
+                            brandItem.created_at
+                              ? brandItem.created_at.split(' ')[1]
+                              : 'Not Available'
+                          }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+  
+                <div v-else class="categories">
+                  <div v-for="item in brandItem.categories" class="brand-cat">
+                    <span>{{ item.name }}</span
+                    ><span
+                      class="modal-close text-danger"
+                      @click="removeCat(item)"
+                      ><i class="fas fa-times"></i
+                    ></span>
+                  </div>
+  
+                  <div class="new-cat" @click="toggleCat">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i>Add
+                  </div>
+                  <div v-if="showCat === true" class="categories">
+                    <span
+                      v-for="cat in categories"
+                      @click="addCat(brandItem, cat)"
+                      >{{ cat.name }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer justify-content-center">
+                <button
+                  @click="edit(brandItem.id)"
+                  class="text-center btn bg-default"
+                  v-if="!viewCategory"
+                >
+                  Edit
+                </button>
+                <button
+                  @click="addFinish"
+                  class="text-center btn bg-default"
+                  v-else
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div v-if="pageParams">
+          <base-pagination :page-param="pageParams" @fetchData="fetchData">
+          </base-pagination>
+        </div>
+      </div>
+    </transition>
+  </template>
+  
+  <script>
+  import { get, patch } from '../../utilities/api'
+  import Vue from 'vue'
+  
+  import Flash from '../../utilities/flash'
+  
+  import { mapGetters, mapActions } from 'vuex'
+  import CustomHeader from '../../components/customHeader'
+  import BasePagination from '../../components/Pagination/BasePagination'
+  import ResueableSearch from '../../components/ReusableSearch.vue'
+  
+  export default {
+    props: {
+      //TODO::verify if its necessary to make this a prop
+      withBranchFilter: { default: true },
+      urlToFetchOrders: { default: '/api/brand' },
+    },
+  
+    components: { CustomHeader, BasePagination, ResueableSearch },
+  
+    computed: { ...mapGetters(['getBranches']) },
+  
+    data() {
+      return {
+        branch_id: '',
+        showCat: false,
+        OId: null,
+        viewCategory: false,
+        showModalContent: false,
+        pageParams: {},
+        page_size: 10,
+        date_from: null,
+        date_to: null,
+        page: 1,
+        filters: [
+          { name: 'date from', model: 'date_from' },
+          { name: 'date to', model: 'date_to' },
+        ],
+        brands: null,
+        categories: null,
+        brandItem: null,
+        response: {},
+        show: false,
+        headings: ['Vendor Name', 'Location', 'Date Joined'],
+        searchColumns: [{ title: 'Name', column: 'name' }, { title: 'Location', column: 'location' }],
+      }
+    },
+  
+    methods: {
+      fetchData() {
+        this.$scrollToTop()
+        this.$LIPS(true)
+        let { page, page_size } = this.$data
+        get(
+          `${this.urlToFetchOrders}${
+            !!this.pageParams.page ? `?page=${this.pageParams.page}` : ''
+          }` +
+            `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ''}`
+        )
+          .then(({ data }) => this.prepareList(data))
+          .catch(() => Flash.setError('Error Preparing form'))
+      },
+  
+      prepareList(response) {
+        let {
+          current_page,
+          first_page_url,
+          from,
+          last_page,
+          last_page_url,
+          data,
+          per_page,
+          next_page_url,
+          to,
+          total,
+          prev_page_url,
+        } = response.data
+        this.pageParams = Object.assign({}, this.pageParams, {
+          current_page,
+          first_page_url,
+          from,
+          last_page,
+          last_page_url,
+          per_page,
+          next_page_url,
+          to,
+          total,
+          prev_page_url,
+        })
+        this.brands = data
+        this.OId = from
+        this.$LIPS(false)
+      },
+      addFinish() {
+        this.$LIPS(true)
+        let form = []
+        this.brandItem.categories.forEach(item => {
+          form.push(item.id)
+        })
+  
+        let data = {
+          categories: form,
+        }
+  
+        patch(`/api/brand/${this.brandItem.id}/categories`, data)
+          .then(res => {
+            this.$swal({
+              icon: 'success',
+              title: res.message,
+            })
+          })
+          .catch(() => Flash.setError('Error Adding categories'))
+          .finally(() => {
+            this.$LIPS(false)
+            this.showModalContent = false
+          })
+      },
+  
+      next(firstPage = null) {
+        if (this.pageParams.next_page_url) {
+          this.page = firstPage ? firstPage : parseInt(this.page) + 1
+          this.fetchData()
+        }
+      },
+  
+      prev(lastPage = null) {
+        if (this.pageParams.prev_page_url) {
+          this.page = lastPage ? lastPage : parseInt(this.page) - 1
+          this.fetchData()
+        }
+      },
+  
+      showCategory(item) {
+        this.showModalContent = true
+        this.brandItem = item
+        this.viewCategory = true
+        return $(`#viewBrand`).modal('toggle')
+      },
+      addCat(brand, category) {
+        if (brand.categories.some(cat => cat.id === category.id)) {
+          alert(`${category.name} category already exists`)
+        } else {
+          brand.categories.push(category)
+          this.categories = this.categories.filter(function(item, index, arr) {
+            return category.id !== item.id
+          })
+        }
+      },
+      getCategories() {
+        get('/api/category?isActive=true')
+          .then(res => {
+            Vue.set(this.$data, 'categories', res.data.data.data)
+          })
+          .catch(err => {})
+      },
+      toggleCat() {
+        if (!this.showCat) {
+          Vue.set(this.$data, 'showCat', true)
+        } else {
+          Vue.set(this.$data, 'showCat', false)
+        }
+      },
+  
+      viewBrand(brand) {
+        this.viewCategory = false
+        this.showModalContent = true
+        this.brandItem = brand
+        return $(`#viewBrand`).modal('toggle')
+      },
+      edit(item) {
+        this.showModalContent = false
+        $(`#viewBrand`).modal('toggle')
+  
+        return this.$router.push({ name: 'BrandEdit', params: { id: item } })
+      },
+  
+      removeCat(cat) {
+        this.brandItem.categories = this.brandItem.categories.filter(function(
+          item,
+          index,
+          arr
+        ) {
+          return item.id !== cat.id
+        })
+        if (!this.categories.some(catItem => catItem.id === cat.id)) {
+          this.categories.push(cat)
+        }
+      },
+  
+      searchEvent(data) {
+        get(this.urlToFetchOrders + data)
+          .then(({ data }) => this.prepareList(data))
+          .catch(() => Flash.setError('Error Preparing form'))
+      },
+  
+      ...mapActions('ModalAccess', [
+        'addCustomerOptionsModalsToDom',
+        'removeCustomerOptionsModalsFromDom',
+      ]),
+    },
+  
+    created() {
+      this.$props.withBranchFilter &&
+        this.filters.unshift({ name: 'branch', model: 'branch_id' })
+      this.addCustomerOptionsModalsToDom()
+      this.$prepareBranches()
+      this.getCategories()
+      this.fetchData()
+    },
+  
+    destroyed() {
+      this.removeCustomerOptionsModalsFromDom()
+    },
+    filters: {
+      status: function(value) {
+        if (value === 1) {
+          return 'Active'
+        } else return 'Inactive'
+      },
+    },
+  }
+  </script>
+  
+  <style lang="scss" scoped></style>
+  

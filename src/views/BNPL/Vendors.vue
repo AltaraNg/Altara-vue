@@ -346,8 +346,11 @@ export default {
     },
 
     createVendor() {
-      this.$modal.show(AddVendorsModal, {
-        draggable: true,
+      this.$modal.show(AddVendorsModal,{}, {
+        draggable: false,
+        height: "auto",
+        clickToClose: false
+
       })
     },
 

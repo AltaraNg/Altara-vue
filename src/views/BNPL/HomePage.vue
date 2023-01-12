@@ -13,14 +13,14 @@
   </transition>
 </template>
 <script>
-import PortalCard from "../../components/portalCard";
+import PortalCard from '../../components/portalCard'
 
 export default {
   components: { PortalCard },
   data() {
     return {
       portals: [
-      {
+        {
           url: 'bnpl-vendors',
           title: 'BNPL Vendors',
           url_c: 'Manage BNPL Vendors',
@@ -32,14 +32,14 @@ export default {
           url_c: 'Manage BNPL Orders',
           desc: 'Manage BNPL Orders',
         },
-        {
-          url: 'bnpl-dashboard',
-          title: 'BNPL Dashboard',
-          url_c: 'View BNPL Dashboard',
-          desc: 'View BNPL Dashboard',
-        },
+        // {
+        //   url: 'bnpl-dashboard',
+        //   title: 'BNPL Dashboard',
+        //   url_c: 'View BNPL Dashboard',
+        //   desc: 'View BNPL Dashboard',
+        // },
       ],
-    };
+    }
   },
-};
+}
 </script>

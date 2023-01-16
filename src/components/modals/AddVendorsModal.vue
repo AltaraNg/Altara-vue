@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3">
+  <div class="">
     <div class="modal-header py-2">
       <div class="p-2 my-2">
         <span class="h4 mx-3">Add Vendor</span>
@@ -16,10 +16,16 @@
       </a>
     </div>
     <div class="modal-body px-4 mx-2 py-2 mt-5">
+      <div class="mx-4">
+        <small v-for="item in err" class="text-danger d-block h6 text-center">{{
+          item[0]
+        }}</small>
+      </div>
       <form @submit.prevent="createVendor">
         <div class="form-group d-flex mx-4 my-4">
           <div class="w-100 mx-4">
             <input
+              v-model="firstName"
               name="first_name"
               placeholder="First Name"
               v-validate="'required'"
@@ -32,6 +38,7 @@
           </div>
           <div class="w-100 mx-4">
             <input
+              v-model="lastName"
               name="last_name"
               v-validate="'required'"
               placeholder="Last Name"
@@ -46,6 +53,7 @@
         <div class="form-group d-flex mx-4 my-4">
           <div class="w-100 mx-4">
             <input
+              v-model="email"
               name="email"
               v-validate="'required|email'"
               placeholder="Email"
@@ -58,6 +66,7 @@
           </div>
           <div class="w-100 mx-4">
             <input
+              v-model="phone"
               name="phone"
               v-validate="'required'"
               placeholder="Phone Number"
@@ -72,6 +81,7 @@
         <div class="form-group d-flex mx-4 my-4">
           <div class="w-100 mx-4">
             <input
+              v-model="address"
               name="address"
               v-validate="'required'"
               placeholder="Address"
@@ -89,12 +99,12 @@
               DOB:
             </label>
             <input
+              v-model="dateOfBirth"
               name="dob"
               placeholder="Date of Birth"
               type="date"
               class="form-control border-dark w-100"
               v-validate="'required'"
-
             />
             <small v-if="errors.first('dob')">{{ errors.first('dob') }}</small>
           </div>
@@ -103,29 +113,59 @@
           <div class="w-100 mx-2">
             <div class="my-2">Gender</div>
             <label class="mx-2 pointer">
-              <input type="radio" class="custom-radio" name="gender" v-validate="'required'" />
+              <input
+                v-model="gender"
+                value="male"
+                type="radio"
+                class="custom-radio"
+                name="gender"
+                v-validate="'required'"
+              />
               Male
             </label>
             <label class="mx-2 pointer">
-              <input type="radio" class="custom-radio" name="gender" v-validate="'required'" />
+              <input
+                v-model="gender"
+                value="female"
+                type="radio"
+                class="custom-radio"
+                name="gender"
+                v-validate="'required'"
+              />
               Female
             </label>
-            <small v-if="errors.first('gender')">{{ errors.first('gender') }}</small>
-
+            <small v-if="errors.first('gender')">{{
+              errors.first('gender')
+            }}</small>
           </div>
           <div class="w-100 mx-2">
             <div class="my-2">Marital Status</div>
 
             <label class="mx-2 pointer">
-              <input type="radio" class="custom-radio" name="marital" v-validate="'required'" />
+              <input
+                value="single"
+                v-model="maritalStatus"
+                type="radio"
+                class="custom-radio"
+                name="marital"
+                v-validate="'required'"
+              />
               Single
             </label>
             <label class="mx-2 pointer">
-              <input type="radio" class="custom-radio" name="marital" v-validate="'required'" />
+              <input
+                value="married"
+                v-model="maritalStatus"
+                type="radio"
+                class="custom-radio"
+                name="marital"
+                v-validate="'required'"
+              />
               Married
             </label>
-            <small v-if="errors.first('marital')">{{ errors.first('marital') }}</small>
-
+            <small v-if="errors.first('marital')">{{
+              errors.first('marital')
+            }}</small>
           </div>
         </div>
 
@@ -159,12 +199,16 @@ export default {
   data() {
     return {
       showError: false,
-      apiUrl: {
-        feedback: '/api/recollection/feedback',
-      },
-      feedback: '',
-      reason: '',
-      date: '',
+      apiUrl: `${process.env.VUE_APP_BNPL_URL}/api/create/vendor`,
+
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      address: '',
+      dateOfBirth: '',
+      gender: '',
+      maritalStatus: '',
       err: [],
     }
   },
@@ -175,39 +219,37 @@ export default {
     },
 
     createVendor() {
-      this.$validator.validateAll().then(async result => {})
-    },
+      this.$validator.validateAll().then(async result => {
+        if (result) {
+          try {
+            let data = {
+              full_name: `${this.firstName} ${this.lastName}`,
+              email: this.email,
+              phone_number: this.phone,
+              marital_status: this.maritalStatus,
+              address: this.address,
+              gender: this.gender,
+              date_of_birth: this.dateOfBirth,
+            }
+            this.$LIPS(true)
 
-    async addFeedback() {
-      try {
-        let data = {
-          new_order_id: this.modalItem?.id,
-          follow_up_date: this.date,
-          feedback: this.feedback,
-          reason_id: this.reason,
-          data: {},
+            const response = await post(this.apiUrl, data)
+
+            this.$swal({
+              icon: 'success',
+              title: 'Vendor added Successfully',
+            })
+            this.$root.$emit('fetchVendors')
+
+            this.closeModal()
+          } catch (e) {
+            this.err = e.response.data.errors
+            // console.log(e.response)
+          } finally {
+            this.$LIPS(false)
+          }
         }
-        this.$LIPS(true)
-
-        const response = await post(this.apiUrl.feedback, data)
-        if (response.data.status === 'success') {
-          this.$swal({
-            icon: 'success',
-            title: 'Feedback added Successfully',
-          })
-          this.$root.$emit('fetchOrders')
-
-          this.closeModal()
-        } else {
-          this.$swal({
-            icon: 'error',
-            title: 'There was a problem in adding feedback',
-          })
-        }
-      } catch (e) {
-      } finally {
-        this.$LIPS(false)
-      }
+      })
     },
   },
 }

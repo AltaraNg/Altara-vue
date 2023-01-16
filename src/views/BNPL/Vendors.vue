@@ -206,6 +206,7 @@ export default {
 
   data() {
     return {
+      apiUrl: `${process.env.VUE_APP_BNPL_URL}/api/all/vendors`,
       branch_id: '',
       showCat: false,
       OId: null,
@@ -236,7 +237,7 @@ export default {
       this.$LIPS(true)
       let { page, page_size } = this.$data
       get(
-        `${this.urlToFetchOrders}${
+        `${this.apiUrl}${
           !!this.pageParams.page ? `?page=${this.pageParams.page}` : ''
         }` +
           `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ''}`
@@ -246,6 +247,7 @@ export default {
     },
 
     prepareList(response) {
+      console.log(response)
       let {
         current_page,
         first_page_url,
@@ -258,7 +260,7 @@ export default {
         to,
         total,
         prev_page_url,
-      } = response.data
+      } = response.result.vendors
       this.pageParams = Object.assign({}, this.pageParams, {
         current_page,
         first_page_url,

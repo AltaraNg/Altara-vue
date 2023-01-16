@@ -257,6 +257,7 @@
               :customerId="customer.id"
               :orderId="order.id"
               @done="this.done"
+              :order="order"
             />
           </div>
         </div>

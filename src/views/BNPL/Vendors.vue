@@ -4,7 +4,7 @@
       <custom-header :title="'Vendors List'" />
 
       <div class="my-2 mt-lg-3 row attendance-head ">
-        <div class="col">
+        <div class="col row">
           <resueable-search
             @childToParent="prepareList"
             :url="urlToFetchOrders"
@@ -12,17 +12,18 @@
             :showDate="false"
           >
             <template #default="{ searchQuery }">
-              <div class="col-md">
+              <div class="col w-100">
                 <div>
                   <label class="form-control-label">Name: </label>
                 </div>
                 <input
+                size="100"
                   type="text"
                   v-model="searchQuery.full_name"
                   class="form-control"
                 />
               </div>
-              <div class="col-md">
+              <div class="col">
                 <div>
                   <label class="form-control-label">Phone: </label>
                 </div>
@@ -36,7 +37,7 @@
           </resueable-search>
         </div>
 
-        <div class="col float-right">
+        <div class="col float-right mt-5">
           <button
             class="btn btn-primary bg-default mt-0 myBtn float-right my-2"
             @click="createVendor"
@@ -413,7 +414,7 @@ export default {
     },
 
     searchEvent(data) {
-      get(this.urlToFetchOrders + data)
+      get(this.apiUrl + data)
         .then(({ data }) => this.prepareList(data))
         .catch(() => Flash.setError('Error Preparing form'))
     },

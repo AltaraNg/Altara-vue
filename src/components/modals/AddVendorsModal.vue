@@ -21,7 +21,7 @@
           item[0]
         }}</small>
       </div>
-      <form @submit.prevent="createVendor">
+      <form >
         <div class="form-group d-flex mx-4 my-4">
           <div class="w-100 mx-4">
             <input
@@ -169,16 +169,17 @@
         </div>
 
         <div class="text-right mt-5 mb-2">
-          <button class="bg-danger border-0 text-white p-3 rounded-2 mx-2">
+          <span class="bg-danger border-0 text-white p-3 rounded-2 mx-2 pointer" @click="closeModal">
             Cancel
-          </button>
+          </span>
 
-          <button
-            class="bg-default border-0 p-3 rounded-2 mx-2 "
+          <span
+            class="bg-default border-0 p-3 rounded-2 mx-2 pointer"
             style="font-size="
+            @click="createVendor"
           >
             Submit
-          </button>
+          </span>
         </div>
       </form>
     </div>

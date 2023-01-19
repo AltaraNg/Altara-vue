@@ -615,11 +615,7 @@ export default {
     ...mapGetters(['auth', 'getAuthUserDetails']),
 
     canEditAmmoPayment() {
-      if (this.order.payment_gateway === 'Paystack') {
-        return this.auth('AdminAccess');
-      } 
       return this.auth('FSLLead') || this.auth('DVALead')
-      
     },
   },
 }

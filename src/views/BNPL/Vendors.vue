@@ -94,7 +94,7 @@
           </div>
         </div>
       </div>
-      <div v-else class="mx-2 px-4">
+      <div v-else class="mx-2 px-4 ">
         <zero-state
           :title="'No vendors to view'"
           :message="'There are currrently no Vendors'"

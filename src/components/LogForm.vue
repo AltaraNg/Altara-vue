@@ -63,7 +63,7 @@
           <button
             class="btn bg-default"
             type="submit"
-            :disabled="!canLogPaystackRepayment"
+            
           >
             Submit
           </button>

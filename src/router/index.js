@@ -276,6 +276,7 @@ const router = new VueRouter({
           component: BNPL_Vendors,
           name: "BNLPVendors"
         },
+        
         {
           path: "bnpl-orders",
           component: BNPL_Orders,

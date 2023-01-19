@@ -3,8 +3,8 @@
     <div id="reminder" class="attendance">
       <custom-header :title="'Vendors List'" />
 
-      <div class="mt-2 mt-lg-3 row attendance-head ">
-        <div class="col-md-8">
+      <div class="my-2 mt-lg-3 row attendance-head ">
+        <div class="col" >
           <resueable-search
             @childToParent="prepareList"
             :url="urlToFetchOrders"
@@ -18,7 +18,17 @@
                 </div>
                 <input
                   type="text"
-                  v-model="searchQuery.name"
+                  v-model="searchQuery.full_name"
+                  class="form-control"
+                />
+              </div>
+              <div class="col-md">
+                <div>
+                  <label class="form-control-label">Phone: </label>
+                </div>
+                <input
+                  type="text"
+                  v-model="searchQuery.phone_number"
                   class="form-control"
                 />
               </div>
@@ -26,7 +36,7 @@
           </resueable-search>
         </div>
 
-        <div class="col-md-4 ">
+        <div class="col float-right">
           <button
             class="btn btn-primary bg-default mt-0 myBtn float-right my-2"
             @click="createVendor"
@@ -36,7 +46,7 @@
         </div>
       </div>
 
-      <div class="mt-5 mb-3 attendance-head">
+      <div class="mt-5 mb-3 attendance-head" v-if="vendors.length > 0">
         <div class="w-100 my-5 mx-0 hr"></div>
         <div class="row px-4 pt-3 pb-4 text-center">
           <div
@@ -53,40 +63,59 @@
           </div>
         </div>
       </div>
-      <div class="tab-content mt-1 attendance-body">
+      <div class="tab-content mt-1 attendance-body" v-if="vendors.length > 0">
         <div
           class="mb-3 row attendance-item"
           :key="index"
-          v-for="(brand, index) in brands"
+          v-for="(vendor, index) in vendors"
         >
           <div class="col d-flex align-items-center" style="max-width: 120px">
-            <span class="user mx-auto">{{ index + OId }}</span>
+            <span class="user mx-auto text-white" :class="{'bg-success' : vendor.portal_access, 'bg-danger' : !vendor.portal_access}">{{ index + OId }}</span>
           </div>
           <div
             class="col d-flex align-items-center justify-content-center hover"
-            @click="viewBrand(brand)"
+            @click="viewVendor(vendor)"
           >
-            {{ brand.name }}
+            {{ vendor.full_name }}
           </div>
           <div class="col d-flex align-items-center justify-content-center">
-            {{ brand.is_active === 1 ? 'Active' : 'Inactive' }}
+            {{ vendor.staff_id }}
           </div>
-          <div
-            class="col d-flex align-items-center justify-content-center"
-            @click="showCategory(brand)"
-          >
-            <span class="small">View Categories</span>
+          <div class="col d-flex align-items-center justify-content-center">
+            {{ vendor.email }}
+          </div>
+          <div class="col d-flex align-items-center justify-content-center">
+            {{ $humanizeDate(vendor.created_at) }}
+          </div>
+          <div class="col d-flex align-items-center justify-content-center">
+            <button class="bg-default py-2 px-3" @click="confirmModal(vendor)" :disabled="!vendor.portal_access">
+              {{vendor.portal_access ? 'Deactivate' : 'Activate'}}
+            </button>
           </div>
         </div>
+      </div>
+      <div v-else class="mx-2 px-4">
+        <zero-state
+          :title="'No vendors to view'"
+          :message="'There are currrently no Vendors'"
+        >
+          <template v-slot:image>
+            <img src="../../assets/thumb-up.png" />
+          </template>
+        </zero-state>
+      </div>
+      <div>
+        <confirm-modal
+          :show="showPrompt"
+          @touched="deactivateVendor($event)"
+        ></confirm-modal>
       </div>
       <div class="modal fade repayment" id="viewBrand">
         <div class="modal-dialog " role="document">
           <div class="modal-content" v-if="showModalContent">
             <div class="modal-header py-2">
               <h4>
-                {{
-                  viewCategory ? `${brandItem.name} Categories` : brandItem.name
-                }}
+                {{ vendorItem.full_name }}
               </h4>
               <a aria-label="Close" class="close py-1" data-dismiss="modal">
                 <span aria-hidden="true" class="modal-close text-danger">
@@ -95,85 +124,47 @@
               </a>
             </div>
             <div class="modal-body px-5">
-              <div class="table-responsive" v-if="!viewCategory">
+              <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                   <tbody>
                     <tr>
-                      <th>Name</th>
-                      <td>{{ brandItem.name || 'Not Available' }}</td>
+                      <th>Vendor ID</th>
+                      <td>{{ vendorItem.staff_id || 'Not Available' }}</td>
                     </tr>
                     <tr>
-                      <th>Status</th>
-                      <td>{{ brandItem.is_active | status }}</td>
-                    </tr>
-
-                    <tr>
-                      <th>Date</th>
-                      <td>
-                        {{
-                          brandItem.created_at
-                            ? brandItem.created_at.split(' ')[0]
-                            : 'Not Available'
-                        }}
-                      </td>
+                      <th>Address</th>
+                      <td>{{ vendorItem.address || 'Not Available' }}</td>
                     </tr>
                     <tr>
-                      <th>Time</th>
-                      <td>
-                        {{
-                          brandItem.created_at
-                            ? brandItem.created_at.split(' ')[1]
-                            : 'Not Available'
-                        }}
-                      </td>
+                      <th>Email</th>
+                      <td>{{ vendorItem.email || 'Not Available' }}</td>
+                    </tr>
+                    <tr>
+                      <th>Gender</th>
+                      <td>{{ vendorItem.gender || 'Not Available' }}</td>
+                    </tr>
+                    <tr>
+                      <th>Phone Number</th>
+                      <td>{{ vendorItem.phone_number || 'Not Available' }}</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-
-              <div v-else class="categories">
-                <div v-for="item in brandItem.categories" class="brand-cat">
-                  <span>{{ item.name }}</span
-                  ><span
-                    class="modal-close text-danger"
-                    @click="removeCat(item)"
-                    ><i class="fas fa-times"></i
-                  ></span>
-                </div>
-
-                <div class="new-cat" @click="toggleCat">
-                  <i class="fa fa-plus-circle" aria-hidden="true"></i>Add
-                </div>
-                <div v-if="showCat === true" class="categories">
-                  <span
-                    v-for="cat in categories"
-                    @click="addCat(brandItem, cat)"
-                    >{{ cat.name }}</span
-                  >
-                </div>
-              </div>
             </div>
             <div class="modal-footer justify-content-center">
               <button
-                @click="edit(brandItem.id)"
+                @click="edit(vendorItem)"
                 class="text-center btn bg-default"
                 v-if="!viewCategory"
               >
                 Edit
-              </button>
-              <button
-                @click="addFinish"
-                class="text-center btn bg-default"
-                v-else
-              >
-                Save
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div v-if="pageParams">
+      <div v-if="pageParams.next_page_url || pageParams.prev_page_url">
         <base-pagination :page-param="pageParams" @fetchData="fetchData">
         </base-pagination>
       </div>
@@ -189,9 +180,13 @@ import Flash from '../../utilities/flash'
 
 import { mapGetters, mapActions } from 'vuex'
 import CustomHeader from '../../components/customHeader'
+import ZeroState from '../../components/ZeroState.vue'
+
 import BasePagination from '../../components/Pagination/BasePagination'
 import ResueableSearch from '../../components/ReusableSearch.vue'
 import AddVendorsModal from '../../components/modals/AddVendorsModal.vue'
+import EditVendorsModal from '../../components/modals/EditVendorsModal.vue'
+import ConfirmModal from '../../components/modals/ConfirmModal.vue'
 
 export default {
   props: {
@@ -200,12 +195,19 @@ export default {
     urlToFetchOrders: { default: '/api/brand' },
   },
 
-  components: { CustomHeader, BasePagination, ResueableSearch },
+  components: {
+    CustomHeader,
+    BasePagination,
+    ResueableSearch,
+    ZeroState,
+    ConfirmModal,
+  },
 
   computed: { ...mapGetters(['getBranches']) },
 
   data() {
     return {
+      apiUrlDeactivate: `${process.env.VUE_APP_BNPL_URL}/api/deactivate/vendor`,
       apiUrl: `${process.env.VUE_APP_BNPL_URL}/api/all/vendors`,
       branch_id: '',
       showCat: false,
@@ -213,20 +215,22 @@ export default {
       viewCategory: false,
       showModalContent: false,
       pageParams: {},
+      showPrompt: false,
       page_size: 10,
       date_from: null,
       date_to: null,
+      selectedOrder: null,
       page: 1,
       filters: [
         { name: 'date from', model: 'date_from' },
         { name: 'date to', model: 'date_to' },
       ],
-      brands: null,
-      categories: null,
-      brandItem: null,
+      vendors: [],
+
+      vendorItem: null,
       response: {},
       show: false,
-      headings: ['Name', 'Vendor Name', 'Location', 'Date Joined'],
+      headings: ['Name', 'Vendor ID', 'Email', 'Date Joined', 'Action'],
       searchColumns: [{ title: 'Name', column: 'name' }],
     }
   },
@@ -243,7 +247,9 @@ export default {
           `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ''}`
       )
         .then(({ data }) => this.prepareList(data))
-        .catch(() => Flash.setError('Error Preparing form'))
+        .catch(() => Flash.setError('Error Fetching Vendors')).finally(() => {
+          this.$LIPS(false);
+        })
     },
 
     prepareList(response) {
@@ -273,33 +279,9 @@ export default {
         total,
         prev_page_url,
       })
-      this.brands = data
+      this.vendors = data
       this.OId = from
       this.$LIPS(false)
-    },
-    addFinish() {
-      this.$LIPS(true)
-      let form = []
-      this.brandItem.categories.forEach(item => {
-        form.push(item.id)
-      })
-
-      let data = {
-        categories: form,
-      }
-
-      patch(`/api/brand/${this.brandItem.id}/categories`, data)
-        .then(res => {
-          this.$swal({
-            icon: 'success',
-            title: res.message,
-          })
-        })
-        .catch(() => Flash.setError('Error Adding categories'))
-        .finally(() => {
-          this.$LIPS(false)
-          this.showModalContent = false
-        })
     },
 
     next(firstPage = null) {
@@ -316,29 +298,6 @@ export default {
       }
     },
 
-    showCategory(item) {
-      this.showModalContent = true
-      this.brandItem = item
-      this.viewCategory = true
-      return $(`#viewBrand`).modal('toggle')
-    },
-    addCat(brand, category) {
-      if (brand.categories.some(cat => cat.id === category.id)) {
-        alert(`${category.name} category already exists`)
-      } else {
-        brand.categories.push(category)
-        this.categories = this.categories.filter(function(item, index, arr) {
-          return category.id !== item.id
-        })
-      }
-    },
-    getCategories() {
-      get('/api/category?isActive=true')
-        .then(res => {
-          Vue.set(this.$data, 'categories', res.data.data.data)
-        })
-        .catch(err => {})
-    },
     toggleCat() {
       if (!this.showCat) {
         Vue.set(this.$data, 'showCat', true)
@@ -348,38 +307,72 @@ export default {
     },
 
     createVendor() {
-      this.$modal.show(AddVendorsModal,{}, {
-        draggable: false,
-        height: "auto",
-        clickToClose: false
-
-      })
+      this.$modal.show(
+        AddVendorsModal,
+        {},
+        {
+          draggable: false,
+          height: 'auto',
+          clickToClose: false,
+        }
+      )
+    },
+    confirmModal(order) {
+      console.log(order)
+      if (this.showPrompt === true) {
+        this.showPrompt = false
+      } else {
+        this.showPrompt = true
+      }
+      this.selectedOrder = order
     },
 
-    viewBrand(brand) {
-      this.viewCategory = false
+    viewVendor(vendor) {
       this.showModalContent = true
-      this.brandItem = brand
+      this.vendorItem = vendor
       return $(`#viewBrand`).modal('toggle')
     },
     edit(item) {
       this.showModalContent = false
       $(`#viewBrand`).modal('toggle')
+      this.$modal.show(
+        EditVendorsModal,
+        { vendor: this.vendorItem },
+        {
+          draggable: false,
+          height: 'auto',
+          clickToClose: false,
+        }
+      )
 
-      return this.$router.push({ name: 'BrandEdit', params: { id: item } })
+      // return this.$router.push({ name: 'BrandEdit', params: { id: item } })
     },
+    async deactivateVendor(item) {
+      if (item) {
+        try {
+          this.$LIPS(true);
+          console.log('Got here');
 
-    removeCat(cat) {
-      this.brandItem.categories = this.brandItem.categories.filter(function(
-        item,
-        index,
-        arr
-      ) {
-        return item.id !== cat.id
-      })
-      if (!this.categories.some(catItem => catItem.id === cat.id)) {
-        this.categories.push(cat)
+          get(this.apiUrlDeactivate + `/${this.selectedOrder.id}`).then(res => {
+          console.log(res);
+
+          })
+
+          this.$swal({
+            icon: 'success',
+            title: 'Vendor deactivated Successfully',
+          })
+
+          this.showPrompt = false
+        } catch (e) {
+          console.log(e)
+          // this.err = e.response.data.errors
+          // console.log(e.response)
+        } finally {
+          this.$LIPS(false)
+        }
       }
+      this.showPrompt = false
     },
 
     searchEvent(data) {
@@ -399,7 +392,6 @@ export default {
       this.filters.unshift({ name: 'branch', model: 'branch_id' })
     this.addCustomerOptionsModalsToDom()
     this.$prepareBranches()
-    this.getCategories()
     this.fetchData()
   },
 

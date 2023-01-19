@@ -4,7 +4,7 @@
       <custom-header :title="'Vendors List'" />
 
       <div class="my-2 mt-lg-3 row attendance-head ">
-        <div class="col" >
+        <div class="col">
           <resueable-search
             @childToParent="prepareList"
             :url="urlToFetchOrders"
@@ -70,7 +70,14 @@
           v-for="(vendor, index) in vendors"
         >
           <div class="col d-flex align-items-center" style="max-width: 120px">
-            <span class="user mx-auto text-white" :class="{'bg-success' : vendor.portal_access, 'bg-danger' : !vendor.portal_access}">{{ index + OId }}</span>
+            <span
+              class="user mx-auto text-white"
+              :class="{
+                'bg-success': vendor.portal_access,
+                'bg-danger': !vendor.portal_access,
+              }"
+              >{{ index + OId }}</span
+            >
           </div>
           <div
             class="col d-flex align-items-center justify-content-center hover"
@@ -89,7 +96,7 @@
           </div>
           <div class="col d-flex align-items-center justify-content-center">
             <button class="bg-default py-2 px-3" @click="confirmModal(vendor)">
-              {{vendor.portal_access ? 'Deactivate' : 'Activate'}}
+              {{ vendor.portal_access ? 'Deactivate' : 'Activate' }}
             </button>
           </div>
         </div>
@@ -107,7 +114,11 @@
       <div>
         <confirm-modal
           :show="showPrompt"
-          @touched="selectedOrder.portal_access?  deactivateVendor($event) : reactivateVendor($event)"
+          @touched="
+            selectedOrder.portal_access
+              ? deactivateVendor($event)
+              : reactivateVendor($event)
+          "
         ></confirm-modal>
       </div>
       <div class="modal fade repayment" id="viewBrand">
@@ -249,8 +260,9 @@ export default {
           `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ''}`
       )
         .then(({ data }) => this.prepareList(data))
-        .catch(() => Flash.setError('Error Fetching Vendors')).finally(() => {
-          this.$LIPS(false);
+        .catch(() => Flash.setError('Error Fetching Vendors'))
+        .finally(() => {
+          this.$LIPS(false)
         })
     },
 
@@ -352,11 +364,11 @@ export default {
     async deactivateVendor(item) {
       if (item) {
         try {
-          this.$LIPS(true);
-          console.log('Got here');
+          this.$LIPS(true)
+          console.log('Got here')
 
           get(this.apiUrlDeactivate + `/${this.selectedOrder.id}`).then(res => {
-
+            this.fetchData()
           })
 
           this.$swal({
@@ -378,10 +390,10 @@ export default {
     async reactivateVendor(item) {
       if (item) {
         try {
-          this.$LIPS(true);
+          this.$LIPS(true)
 
           get(this.apiUrlReactivate + `/${this.selectedOrder.id}`).then(res => {
-
+            this.fetchData()
           })
 
           this.$swal({

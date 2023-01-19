@@ -88,7 +88,7 @@
             {{ $humanizeDate(vendor.created_at) }}
           </div>
           <div class="col d-flex align-items-center justify-content-center">
-            <button class="bg-default py-2 px-3" @click="confirmModal(vendor)" :disabled="!vendor.portal_access">
+            <button class="bg-default py-2 px-3" @click="confirmModal(vendor)">
               {{vendor.portal_access ? 'Deactivate' : 'Activate'}}
             </button>
           </div>
@@ -107,7 +107,7 @@
       <div>
         <confirm-modal
           :show="showPrompt"
-          @touched="deactivateVendor($event)"
+          @touched="selectedOrder.portal_access?  deactivateVendor($event) : reactivateVendor($event)"
         ></confirm-modal>
       </div>
       <div class="modal fade repayment" id="viewBrand">
@@ -208,6 +208,8 @@ export default {
   data() {
     return {
       apiUrlDeactivate: `${process.env.VUE_APP_BNPL_URL}/api/deactivate/vendor`,
+      apiUrlReactivate: `${process.env.VUE_APP_BNPL_URL}/api/reactivate/vendor`,
+
       apiUrl: `${process.env.VUE_APP_BNPL_URL}/api/all/vendors`,
       branch_id: '',
       showCat: false,
@@ -354,7 +356,6 @@ export default {
           console.log('Got here');
 
           get(this.apiUrlDeactivate + `/${this.selectedOrder.id}`).then(res => {
-          console.log(res);
 
           })
 
@@ -365,7 +366,31 @@ export default {
 
           this.showPrompt = false
         } catch (e) {
-          console.log(e)
+          // this.err = e.response.data.errors
+          // console.log(e.response)
+        } finally {
+          this.$LIPS(false)
+        }
+      }
+      this.showPrompt = false
+    },
+
+    async reactivateVendor(item) {
+      if (item) {
+        try {
+          this.$LIPS(true);
+
+          get(this.apiUrlReactivate + `/${this.selectedOrder.id}`).then(res => {
+
+          })
+
+          this.$swal({
+            icon: 'success',
+            title: 'Vendor Reactivated Successfully',
+          })
+
+          this.showPrompt = false
+        } catch (e) {
           // this.err = e.response.data.errors
           // console.log(e.response)
         } finally {

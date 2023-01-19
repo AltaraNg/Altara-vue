@@ -55,7 +55,6 @@
             <input
               v-model="email"
               name="email"
-              v-validate="'required|email'"
               placeholder="Email"
               type="email"
               class="form-control w-100  border-dark"

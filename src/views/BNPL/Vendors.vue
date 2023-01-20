@@ -7,7 +7,7 @@
         <div class="col row">
           <resueable-search
             @childToParent="prepareList"
-            :url="urlToFetchOrders"
+            :url="apiUrl"
             :showBranch="false"
             :showDate="false"
           >
@@ -17,7 +17,7 @@
                   <label class="form-control-label">Name: </label>
                 </div>
                 <input
-                size="100"
+                  size="100"
                   type="text"
                   v-model="searchQuery.full_name"
                   class="form-control"
@@ -268,7 +268,6 @@ export default {
     },
 
     prepareList(response) {
-      console.log(response)
       let {
         current_page,
         first_page_url,
@@ -329,6 +328,9 @@ export default {
           draggable: false,
           height: 'auto',
           clickToClose: false,
+        },
+        {
+          fetchVendors: this.fetchData,
         }
       )
     },
@@ -357,6 +359,9 @@ export default {
           draggable: false,
           height: 'auto',
           clickToClose: false,
+        },
+        {
+          fetchVendors: this.fetchData,
         }
       )
 

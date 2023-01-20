@@ -1,6 +1,6 @@
 <template>
-    <div id="changeCustomerManagerModal" class="modal fade w-50 mx-auto">
-        <div class="modal-dialog">
+    <div id="changeCustomerManagerModal" class="modal fade w-50 mx-auto h-50 my-auto">
+        <div class="modal-dialog ">
             <div class="modal-content">
                 
                 <div class="modal-body" id="index" >

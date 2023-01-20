@@ -81,8 +81,8 @@
       </div>
       <div v-else>
         <zero-state
-          :title="'No vendors to view'"
-          :message="'There are currrently no Vendors'"
+          :title="'No Orders to view'"
+          :message="'There are currently no Orders'"
         >
           <template v-slot:image>
             <img src="../../assets/thumb-up.png" />

@@ -6,7 +6,7 @@
       <div class="my-2 mt-lg-3 row attendance-head ">
         <div class="col row">
           <resueable-search
-            @childToParent="prepareList"
+            @childToParent="prepareListFromSearch"
             :url="apiUrl"
             :showBranch="false"
             :showDate="false"
@@ -268,6 +268,7 @@ export default {
     },
 
     prepareList(response) {
+      console.log(response)
       let {
         current_page,
         first_page_url,
@@ -281,6 +282,38 @@ export default {
         total,
         prev_page_url,
       } = response.result.vendors
+      this.pageParams = Object.assign({}, this.pageParams, {
+        current_page,
+        first_page_url,
+        from,
+        last_page,
+        last_page_url,
+        per_page,
+        next_page_url,
+        to,
+        total,
+        prev_page_url,
+      })
+      this.vendors = data
+      this.OId = from
+      this.$LIPS(false)
+    },
+
+    prepareListFromSearch(response) {
+      console.log(response)
+      let {
+        current_page,
+        first_page_url,
+        from,
+        last_page,
+        last_page_url,
+        data,
+        per_page,
+        next_page_url,
+        to,
+        total,
+        prev_page_url,
+      } = response.data?.data?.result?.vendors;
       this.pageParams = Object.assign({}, this.pageParams, {
         current_page,
         first_page_url,

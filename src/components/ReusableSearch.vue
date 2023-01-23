@@ -113,7 +113,7 @@ export default {
         value: "",
       });
     },
-    searchEvent() {
+    async searchEvent() {
       if (this.url === '/api/new_order?renewalList=true'){
         this.searchQuery.renewalList = 'true';
         this.url = this.url.slice(0, 14);

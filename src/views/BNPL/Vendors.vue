@@ -123,9 +123,9 @@
         ></confirm-modal>
       </div>
       <div class="modal fade repayment" id="viewBrand">
-        <div class="modal-dialog " role="document">
+        <div class="modal-dialog" role="document">
           <div class="modal-content" v-if="showModalContent">
-            <div class="modal-header py-2">
+            <div class="modal-header my-0 py-0">
               <h4>
                 {{ vendorItem.full_name }}
               </h4>
@@ -199,6 +199,7 @@ import ResueableSearch from '../../components/ReusableSearch.vue'
 import AddVendorsModal from '../../components/modals/AddVendorsModal.vue'
 import EditVendorsModal from '../../components/modals/EditVendorsModal.vue'
 import ConfirmModal from '../../components/modals/ConfirmModal.vue'
+import { EventBus } from '../../utilities/event-bus'
 
 export default {
   props: {
@@ -313,7 +314,7 @@ export default {
         to,
         total,
         prev_page_url,
-      } = response.data?.data?.result?.vendors;
+      } = response.data?.data?.result?.vendors
       this.pageParams = Object.assign({}, this.pageParams, {
         current_page,
         first_page_url,
@@ -469,6 +470,7 @@ export default {
     this.addCustomerOptionsModalsToDom()
     this.$prepareBranches()
     this.fetchData()
+    EventBus.$on('fetchVendors', this.fetchData())
   },
 
   destroyed() {

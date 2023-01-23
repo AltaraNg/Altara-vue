@@ -4,7 +4,7 @@
       <custom-header :title="'Orders List'" />
 
       <div class="mt-2 mt-lg-3 row attendance-head ">
-        <div class="col-md-8" v-if="vendors.length > 0">
+        <div class="col row" v-if="vendors.length > 0">
           <resueable-search
             @childToParent="prepareList"
             :url="urlToFetchOrders"
@@ -26,10 +26,10 @@
           </resueable-search>
         </div>
 
-        <div class="col-md-4 ">
+        <div class="col float-right mt-5">
           <button
             class="btn btn-primary bg-default mt-0 myBtn float-right my-2"
-            @click="createVendor"
+            @click="createOrder"
           >
             <i class="fa fa-plus" aria-hidden="true"></i>
           </button>
@@ -340,7 +340,7 @@ export default {
       this.filters.unshift({ name: 'branch', model: 'branch_id' })
     this.addCustomerOptionsModalsToDom()
     this.$prepareBranches()
-    this.fetchData()
+    // this.fetchData()
   },
 
   destroyed() {

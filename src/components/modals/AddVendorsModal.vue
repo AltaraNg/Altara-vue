@@ -21,7 +21,7 @@
           item[0]
         }}</small>
       </div>
-      <form >
+      <form>
         <div class="form-group d-flex mx-4 my-4">
           <div class="w-100 mx-4">
             <input
@@ -137,39 +137,13 @@
               errors.first('gender')
             }}</small>
           </div>
-          <div class="w-100 mx-2">
-            <div class="my-2">Marital Status</div>
-
-            <label class="mx-2 pointer">
-              <input
-                value="single"
-                v-model="maritalStatus"
-                type="radio"
-                class="custom-radio"
-                name="marital"
-                v-validate="'required'"
-              />
-              Single
-            </label>
-            <label class="mx-2 pointer">
-              <input
-                value="married"
-                v-model="maritalStatus"
-                type="radio"
-                class="custom-radio"
-                name="marital"
-                v-validate="'required'"
-              />
-              Married
-            </label>
-            <small v-if="errors.first('marital')">{{
-              errors.first('marital')
-            }}</small>
-          </div>
         </div>
 
         <div class="text-right mt-5 mb-2">
-          <span class="bg-danger border-0 text-white p-3 rounded-2 mx-2 pointer" @click="closeModal">
+          <span
+            class="bg-danger border-0 text-white p-3 rounded-2 mx-2 pointer"
+            @click="closeModal"
+          >
             Cancel
           </span>
 
@@ -208,7 +182,6 @@ export default {
       address: '',
       dateOfBirth: '',
       gender: '',
-      maritalStatus: '',
       err: [],
     }
   },
@@ -226,7 +199,6 @@ export default {
               full_name: `${this.firstName} ${this.lastName}`,
               email: this.email,
               phone_number: this.phone,
-              marital_status: this.maritalStatus,
               address: this.address,
               gender: this.gender,
               date_of_birth: this.dateOfBirth,

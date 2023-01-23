@@ -137,35 +137,6 @@
               errors.first('gender')
             }}</small>
           </div>
-          <div class="w-100 mx-2">
-            <div class="my-2">Marital Status</div>
-
-            <label class="mx-2 pointer">
-              <input
-                value="single"
-                v-model="maritalStatus"
-                type="radio"
-                class="custom-radio"
-                name="marital"
-                v-validate="'required'"
-              />
-              Single
-            </label>
-            <label class="mx-2 pointer">
-              <input
-                value="married"
-                v-model="maritalStatus"
-                type="radio"
-                class="custom-radio"
-                name="marital"
-                v-validate="'required'"
-              />
-              Married
-            </label>
-            <small v-if="errors.first('marital')">{{
-              errors.first('marital')
-            }}</small>
-          </div>
         </div>
 
         <div class="text-right mt-5 mb-2">
@@ -189,6 +160,7 @@
 import { get, patch } from '../../utilities/api'
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
+import {EventBus} from '../../utilities/event-bus'
 
 export default {
   components: {
@@ -211,7 +183,6 @@ export default {
       address: this.vendor.address,
       dateOfBirth: this.vendor.date_of_birth,
       gender: this.vendor.gender,
-      maritalStatus: this.vendor.marital_status,
       err: [],
     }
   },
@@ -229,7 +200,6 @@ export default {
               full_name: `${this.firstName} ${this.lastName}`,
               email: this.email,
               phone_number: this.phone,
-              marital_status: this.maritalStatus,
               address: this.address,
               gender: this.gender,
               date_of_birth: this.dateOfBirth,
@@ -242,7 +212,7 @@ export default {
               icon: 'success',
               title: 'Vendor updated Successfully',
             })
-            this.$root.$emit('fetchVendors')
+            EventBus.$emit('fetchVendors')
 
             this.closeModal()
           } catch (e) {

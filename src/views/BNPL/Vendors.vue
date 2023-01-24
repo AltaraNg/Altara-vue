@@ -427,8 +427,6 @@ export default {
 
           this.showPrompt = false
         } catch (e) {
-          // this.err = e.response.data.errors
-          // console.log(e.response)
         } finally {
           this.$LIPS(false)
         }

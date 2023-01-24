@@ -70,7 +70,7 @@
               v-validate="'required'"
               placeholder="Phone Number"
               type="text"
-              class="form-control w-100  border-dark"
+              class="form-control w-100 border-dark"
             />
             <small v-if="errors.first('phone')">{{
               errors.first('phone')
@@ -175,14 +175,13 @@ export default {
     return {
       showError: false,
       apiUrl: `${process.env.VUE_APP_BNPL_URL}/api/update/vendor/${this.vendor.id}`,
-
-      firstName: this.vendor.full_name.split(' ')[0],
-      lastName: this.vendor.full_name.split(' ')[1],
-      email: this.vendor.email,
-      phone: this.vendor.phone_number,
-      address: this.vendor.address,
-      dateOfBirth: this.vendor.date_of_birth,
-      gender: this.vendor.gender,
+      firstName: this.vendor?.full_name?.split(' ')[0],
+      lastName: this.vendor?.full_name?.split(' ')[1],
+      email: this.vendor?.email,
+      phone: this.vendor?.phone_number,
+      address: this.vendor?.address,
+      dateOfBirth: this.vendor?.date_of_birth,
+      gender: this.vendor?.gender,
       err: [],
     }
   },
@@ -217,7 +216,6 @@ export default {
             this.closeModal()
           } catch (e) {
             this.err = e.response.data.errors
-            // console.log(e.response)
           } finally {
             this.$LIPS(false)
           }

@@ -220,7 +220,6 @@ export default {
     },
 
     prepareList(response) {
-      console.log(response)
       let {
         current_page,
         first_page_url,
@@ -319,8 +318,6 @@ export default {
           clickToClose: false,
         }
       )
-
-      // return this.$router.push({ name: 'BrandEdit', params: { id: item } })
     },
 
     searchEvent(data) {
@@ -348,9 +345,7 @@ export default {
   },
   filters: {
     status: function(value) {
-      if (value === 1) {
-        return 'Active'
-      } else return 'Inactive'
+      return value === 1 ? 'Active' : 'Inactive'
     },
   },
 }

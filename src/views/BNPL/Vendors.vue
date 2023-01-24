@@ -269,7 +269,6 @@ export default {
     },
 
     prepareList(response) {
-      console.log(response)
       let {
         current_page,
         first_page_url,
@@ -301,7 +300,6 @@ export default {
     },
 
     prepareListFromSearch(response) {
-      console.log(response)
       let {
         current_page,
         first_page_url,
@@ -347,11 +345,7 @@ export default {
     },
 
     toggleCat() {
-      if (!this.showCat) {
-        Vue.set(this.$data, 'showCat', true)
-      } else {
-        Vue.set(this.$data, 'showCat', false)
-      }
+      Vue.set(this.$data, 'showCat', !this.showCat)
     },
 
     createVendor() {
@@ -369,12 +363,7 @@ export default {
       )
     },
     confirmModal(order) {
-      console.log(order)
-      if (this.showPrompt === true) {
-        this.showPrompt = false
-      } else {
-        this.showPrompt = true
-      }
+      this.showPrompt = !this.showPrompt
       this.selectedOrder = order
     },
 
@@ -398,14 +387,11 @@ export default {
           closed: this.fetchData,
         }
       )
-
-      // return this.$router.push({ name: 'BrandEdit', params: { id: item } })
     },
     async deactivateVendor(item) {
       if (item) {
         try {
           this.$LIPS(true)
-          console.log('Got here')
 
           get(this.apiUrlDeactivate + `/${this.selectedOrder.id}`).then(res => {
             this.fetchData()
@@ -418,8 +404,6 @@ export default {
 
           this.showPrompt = false
         } catch (e) {
-          // this.err = e.response.data.errors
-          // console.log(e.response)
         } finally {
           this.$LIPS(false)
         }
@@ -478,9 +462,7 @@ export default {
   },
   filters: {
     status: function(value) {
-      if (value === 1) {
-        return 'Active'
-      } else return 'Inactive'
+      return value === 1 ? 'Active' : 'Inactive'
     },
   },
 }

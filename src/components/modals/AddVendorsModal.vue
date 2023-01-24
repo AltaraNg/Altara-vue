@@ -215,8 +215,7 @@ export default {
 
             this.closeModal()
           } catch (e) {
-            this.err = e.response.data.errors
-            // console.log(e.response)
+            this.err = e.response?.data?.errors
           } finally {
             this.$LIPS(false)
           }

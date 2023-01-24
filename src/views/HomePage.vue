@@ -61,7 +61,10 @@
         },
         mounted(){
             let flag = localStorage.getItem('flag');
-            flag === 'demo'? this.cards.push({name: "BNPL", url: 'bnpl/home', icon: 'fa-money-bill-alt'}) : ''
+            if(flag === 'demo'){
+                this.cards.push({name: "BNPL", url: 'bnpl/home', icon: 'fa-money-bill-alt'});
+            }
+           
         }
     }
 </script>

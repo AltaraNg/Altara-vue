@@ -364,7 +364,7 @@ export default {
           clickToClose: false,
         },
         {
-          fetchVendors: this.fetchData,
+          closed: this.fetchData,
         }
       )
     },
@@ -395,7 +395,7 @@ export default {
           clickToClose: false,
         },
         {
-          fetchVendors: this.fetchData,
+          closed: this.fetchData,
         }
       )
 

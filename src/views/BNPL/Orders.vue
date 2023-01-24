@@ -282,11 +282,7 @@ export default {
     },
 
     toggleCat() {
-      if (!this.showCat) {
-        Vue.set(this.$data, 'showCat', true)
-      } else {
-        Vue.set(this.$data, 'showCat', false)
-      }
+      Vue.set(this.$data, 'showCat', !this.showCat)
     },
 
     createVendor() {

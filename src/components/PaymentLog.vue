@@ -21,22 +21,33 @@
                 />
               </div>
 
-              <div class="col">
+              <div class="col text-right">
                 <button
-                  class="btn btn-md float-right"
-                  @click="toggleProductType"
-                  :class="[isAltaraPay ? 'bg-default' : 'bt-default']"
+                  class="btn btn-md "
+                  @click="toggleProductType('ap')"
+                  :class="[isAltaraPay ? 'bg-default' : 'btn-default']"
+                  :disabled="isAltaraPay"
                   type="button"
                 >
                   Altara Pay
                 </button>
                 <button
-                  class="btn btn-md float-right mr-0"
-                  @click="toggleProductType"
-                  :class="[!isAltaraPay ? 'bg-default' : 'btn-default']"
+                  class="btn btn-md  mr-0"
+                  @click="toggleProductType('ac')"
+                  :class="[isAltaraCredit ? 'bg-default' : 'btn-default']"
                   type="button"
+                  :disabled="isAltaraCredit"
                 >
                   Altara Credit
+                </button>
+                <button
+                  class="btn btn-md  mr-0"
+                  @click="toggleProductType('cnc')"
+                  :class="[isCashNCarry ? 'bg-default' : 'btn-default']"
+                  type="button"
+                  :disabled="isCashNCarry"
+                >
+                  Cash N Carry
                 </button>
               </div>
             </div>
@@ -90,6 +101,16 @@
                   </option>
                 </select>
               </div>
+              <div class="col form-group" v-if="isCashNCarry">
+                <label for="amount" class="form-control-label w-100"
+                  >Product Price</label
+                >
+                <currency-input
+                  :options="inputOptions"
+                  v-model="productPrice"
+                  class="form-control w-100"
+                />
+              </div>
 
               <div class="col form-group">
                 <label for="amount" class="form-control-label"
@@ -100,6 +121,7 @@
                   class="custom-select w-100"
                   v-model="salesLogForm.sales_category_id"
                   v-validate="'required'"
+                  :disabled="isCashNCarry"
                 >
                   <option disabled selected="selected">Sales Category</option>
                   <option
@@ -136,7 +158,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col form-group">
+              <div class="col form-group" v-if="!isCashNCarry">
                 <label for="amount" class="form-control-label"
                   >Repayment Cycle</label
                 >
@@ -145,6 +167,7 @@
                   v-model="salesLogForm.repayment_cycle_id"
                   v-validate="'required'"
                   @change="customDate($event)"
+                  :disabled="isCashNCarry"
                 >
                   <option disabled selected="selected">Repayment Cycle</option>
                   <option
@@ -169,7 +192,7 @@
                   v-validate="'required'"
                 />
               </div>
-              <div class="col form-group">
+              <div class="col form-group" v-if="!isCashNCarry">
                 <label for="amount" class="form-control-label"
                   >Repayment Duration</label
                 >
@@ -178,6 +201,7 @@
                   class="custom-select w-100"
                   v-model="salesLogForm.repayment_duration_id"
                   v-validate="'required'"
+                  :disabled="isCashNCarry"
                 >
                   <option disabled selected="selected">
                     Repayment Duration
@@ -192,7 +216,7 @@
                 </select>
               </div>
 
-              <div class="col form-group">
+              <div class="col form-group" v-if="!isCashNCarry">
                 <label for="amount" class="form-control-label"
                   >Downpayment Rates</label
                 >
@@ -201,6 +225,7 @@
                   v-model="salesLogForm.payment_type_id"
                   v-validate="'required'"
                   @change="getCalc()"
+                  :disabled="isCashNCarry"
                 >
                   <option disabled selected="selected">
                     Downpayment Rates
@@ -214,7 +239,7 @@
                   </option>
                 </select>
               </div>
-              <div class="col form-group">
+              <div class="col form-group" v-if="!isCashNCarry">
                 <label for="amount" class="form-control-label"
                   >Business Type</label
                 >
@@ -223,6 +248,7 @@
                   v-model="salesLogForm.business_type_id"
                   v-validate="'required'"
                   @change="getCalc()"
+                  :disabled="isCashNCarry"
                 >
                   <option disabled selected="selected">Business Type</option>
                   <option
@@ -345,11 +371,11 @@
                 >
                   <button
                     class="btn bg-default"
-                    :disabled="test1"
+                    :disabled="test1 && !isCashNCarry"
                     type="submit"
                     v-on:click="getCalc()"
                   >
-                    View Amortization
+                    {{ isCashNCarry ? 'View Summary' : 'View Amortization' }}
                   </button>
                   <br />
                 </div>
@@ -368,7 +394,7 @@
           </form>
         </div>
       </div>
-      <div v-if="!hideOrderSummary" class="col-md-4">
+      <div v-if="!hideOrderSummary && !isCashNCarry" class="col-md-4">
         <div class="card">
           <div class="card-body">
             <h5 class="mt-3 mb-0">Order Information</h5>
@@ -465,18 +491,32 @@
                   <tr>
                     <!-- <td class="font-weight-bold">{{this.customerId}}</td> -->
                     <th>{{ this.selectedProduct.product_name }}</th>
-                    <th>{{ $formatCurrency(pPrice) }}</th>
+                    <th>
+                      {{
+                        $formatCurrency(isCashNCarry ? productPrice : pPrice)
+                      }}
+                    </th>
                     <th>
                       {{
                         $formatCurrency(
-                          computedPayment(fPayment + singleRepayment, fPayment)
+                          isCashNCarry
+                            ? productPrice
+                            : computedPayment(
+                                fPayment + singleRepayment,
+                                fPayment
+                              )
                         )
                       }}
                     </th>
                     <td class>
                       {{
                         $formatCurrency(
-                          computedPayment(rPayment - singleRepayment, rPayment)
+                          isCashNCarry
+                            ? 0
+                            : computedPayment(
+                                rPayment - singleRepayment,
+                                rPayment
+                              )
                         )
                       }}
                       <div class="modal_cover">
@@ -496,8 +536,8 @@
                 </tbody>
               </table>
 
-              <h5 class="mt-5 mb-0">Amortization Schedule</h5>
-              <div class="payment-table">
+              <h5 class="mt-5 mb-0" v-if="!isCashNCarry">Amortization Schedule</h5>
+              <div class="payment-table" v-if="!isCashNCarry">
                 <table class="table table-bordered">
                   <tbody class="text-center">
                     <tr class="table-separator">
@@ -603,6 +643,7 @@ import paystack from 'vue-paystack'
 import moment from 'moment'
 import roles from '../utilities/roles'
 import ToggleButton from './ToggleButton.vue'
+import CurrencyInput from './CurrencyInput.vue'
 
 export default {
   props: { customerId: null, customer: null },
@@ -612,9 +653,21 @@ export default {
     paystack,
     VerificationCollectionData,
     ToggleButton,
+    CurrencyInput,
   },
   data() {
     return {
+      inputOptions: {
+        currency: 'NGN',
+        currencyDisplay: 'symbol',
+        hideCurrencySymbolOnFocus: false,
+        hideGroupingSeparatorOnFocus: false,
+        hideNegligibleDecimalDigitsOnFocus: true,
+        autoDecimalDigits: false,
+        useGrouping: true,
+        accountingSign: false,
+      },
+      productPrice: 0,
       currentValue: '',
       stillShowToggle: null,
       addDownpayment: null,
@@ -677,6 +730,8 @@ export default {
       serial: false,
       renewalState: false,
       isAltaraPay: false,
+      isAltaraCredit: true,
+      isCashNCarry: false,
       useCreditCard: false,
       transfer: false,
       customer_email: this.customer.email || 'somedefaultemail',
@@ -784,7 +839,11 @@ export default {
     },
 
     compHeader() {
-      return this.isAltaraPay ? 'Altara Pay' : 'Altara Credit'
+      return this.isAltaraPay
+        ? 'Altara Pay'
+        : this.isAltaraCredit
+        ? 'Altara Credit'
+        : 'Cash N Carry'
     },
   },
   methods: {
@@ -828,7 +887,7 @@ export default {
         this.salesLogForm?.business_type_id?.slug?.includes('ac_products')
     },
     customDate(event) {
-      this.salesLogForm.repayment_cycle_id.name === 'custom'
+      this.salesLogForm?.repayment_cycle_id?.name === 'custom'
         ? (this.customDateToggle = true)
         : (this.customDateToggle = false)
 
@@ -859,10 +918,10 @@ export default {
         repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
         business_type_id: this.salesLogForm.business_type_id.id,
         branch_id: localStorage.getItem('branch_id'),
-        down_payment: this.fPayment,
-        repayment: this.rPayment,
+        down_payment: this.isCashNCarry ? this.productPrice : this.fPayment,
+        repayment: this.isCashNCarry ? 0 : this.rPayment,
         bank_id: this.isAltaraPay ? 1 : this.salesLogForm.bank_id,
-        product_price: this.$formatMoney(this.pPrice),
+        product_price: this.$formatMoney(this.isCashNCarry ? this.productPrice : this.pPrice),
         down_payment_rate_id: this.salesLogForm.payment_type_id.id,
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.isAltaraPay
@@ -943,11 +1002,15 @@ export default {
         repayment_cycle_id: this.salesLogForm.repayment_cycle_id.id,
         business_type_id: this.salesLogForm.business_type_id.id,
         branch_id: localStorage.getItem('branch_id'),
-        down_payment: this.$formatMoney(this.fPayment),
+        down_payment: this.$formatMoney(
+          this.isCashNCarry ? this.productPrice : this.fPayment
+        ),
         down_payment_rate_id: this.salesLogForm.payment_type_id.id,
-        repayment: this.$formatMoney(this.rPayment),
+        repayment: this.$formatMoney(this.isCashNCarry ? 0 : this.rPayment),
         bank_id: this.isAltaraPay ? 1 : this.salesLogForm.bank_id,
-        product_price: this.$formatMoney(this.pPrice),
+        product_price: this.$formatMoney(
+          this.isCashNCarry ? this.productPrice : this.pPrice
+        ),
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.isAltaraPay
           ? this.getPaymentMethods.find(el => (el.name = 'direct-debit')).id
@@ -1211,12 +1274,12 @@ export default {
       try {
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes)
         this.businessTypes = fetchBusinessTypes.data.data.data
-        this.businessTypes = this.businessTypes.filter(item => {
-          if (this.isAltaraPay) {
-            return item.slug.includes('ap_')
-          }
-          return item.slug.includes('ac_')
-        })
+        // this.businessTypes = this.businessTypes.filter(item => {
+        //   if (this.isAltaraPay) {
+        //     return item.slug.includes('ap_')
+        //   }
+        //   return !item.slug.includes('ap_')
+        // })
       } catch (err) {
         this.$displayErrorMessage(err)
       }
@@ -1254,17 +1317,44 @@ export default {
     toggleSerial() {
       this.serial === true ? (this.serial = false) : (this.serial = true)
     },
-    toggleProductType() {
-      this.hideOrderSummary = true
-      this.transfer = false
-      this.isBank54 = false
-      this.getBusinessTypes()
-      this.selectedProduct.product_name = ''
-      this.isAltaraPay = !this.isAltaraPay
-      this.isAltaraPay ? '' : (this.card_expiry = null)
-      this.salesLogForm = {}
-      this.salesLogForm.discount = '0_discount'
-      this.$refs.clearInputValue.setValue('')
+    toggleProductType(mode) {
+      if (mode === 'ap') {
+        this.hideOrderSummary = true
+        this.transfer = false
+        this.isBank54 = false
+        this.selectedProduct.product_name = ''
+        this.isAltaraPay = true
+        this.isAltaraCredit = false
+        this.isCashNCarry = false
+        this.selectedProduct.product_name = ''
+        this.isAltaraPay ? '' : (this.card_expiry = null)
+        this.salesLogForm = {}
+        this.salesLogForm.discount = '0_discount'
+        this.$refs.clearInputValue.setValue('')
+      } else if (mode === 'ac') {
+        this.isAltaraPay = false
+        this.isAltaraCredit = true
+        this.isCashNCarry = false
+      } else {
+        this.isAltaraPay = false
+        this.isAltaraCredit = false
+        this.isCashNCarry = true
+        this.salesLogForm.sales_category_id = 8;
+        this.salesLogForm.payment_type_id = this.downPaymentRates.filter(
+          item => item.name === 'Hundred'
+        )[0]
+        this.salesLogForm.repayment_duration_id = this.repaymentDuration.filter(
+          item => item.name === 'six_months'
+        )[0]
+        this.salesLogForm.repayment_cycle_id = this.repaymentCyclesopt.filter(
+          item => item.name === 'monthly'
+        )[0]
+        this.salesLogForm.business_type_id = this.businessTypes.filter(
+          item => item.name === 'Cash n Carry'
+        )[0];
+        this.getUsers(8);
+        // this.salesLogForm.sales_category_id = this.salesCategories.filter(item => item.name === )
+      }
     },
     async processPaymentPayStackPayment(resp) {
       this.paystackReference = resp.reference

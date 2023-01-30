@@ -11,11 +11,11 @@
         @click="closeModal"
       >
         <span aria-hidden="true" class="modal-close text-danger">
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times close-button"></i>
         </span>
       </a>
     </div>
-    <div class="modal-body px-4 mx-2 py-2 mt-5">
+    <div class="modal-body px-4 mx-3 py-2 mt-5">
       <div class="mx-4">
         <small v-for="item in err" class="text-danger d-block h6 text-center">{{
           item[0]
@@ -24,6 +24,9 @@
       <form @submit.prevent="createVendor">
         <div class="form-group d-flex mx-4 my-4">
           <div class="w-100 mx-4">
+            <label for="first_name" class="label">
+              First Name
+            </label>
             <input
               v-model="firstName"
               name="first_name"
@@ -37,6 +40,9 @@
             }}</small>
           </div>
           <div class="w-100 mx-4">
+            <label for="last_name" class="label">
+              Last Name
+            </label>
             <input
               v-model="lastName"
               name="last_name"
@@ -52,6 +58,9 @@
         </div>
         <div class="form-group d-flex mx-4 my-4">
           <div class="w-100 mx-4">
+            <label for="email" class="label">
+              Email
+            </label>
             <input
               v-model="email"
               name="email"
@@ -64,6 +73,9 @@
             }}</small>
           </div>
           <div class="w-100 mx-4">
+            <label for="phone" class="label">
+              Phone
+            </label>
             <input
               v-model="phone"
               name="phone"
@@ -79,6 +91,9 @@
         </div>
         <div class="form-group d-flex mx-4 my-4">
           <div class="w-100 mx-4">
+            <label for="address" class="label">
+              Address
+            </label>
             <input
               v-model="address"
               name="address"
@@ -94,8 +109,8 @@
         </div>
         <div class="form-group d-flex mx-4 my-4">
           <div class="w-100 mx-4">
-            <label class="">
-              DOB:
+            <label class="label">
+              Date Of Birth:
             </label>
             <input
               v-model="dateOfBirth"
@@ -110,13 +125,14 @@
         </div>
         <div class="form-group d-flex mx-4 my-3 px-2">
           <div class="w-100 mx-2">
-            <div class="my-2">Gender</div>
+            <label class="my-2 label d-block">Gender</label>
+
             <label class="mx-2 pointer">
               <input
                 v-model="gender"
                 value="male"
                 type="radio"
-                class="custom-radio"
+                class="custom-radio  mt-3 mx-1"
                 name="gender"
                 v-validate="'required'"
               />
@@ -127,7 +143,7 @@
                 v-model="gender"
                 value="female"
                 type="radio"
-                class="custom-radio"
+                class="custom-radio mt-3 mx-1"
                 name="gender"
                 v-validate="'required'"
               />
@@ -139,17 +155,21 @@
           </div>
         </div>
 
-        <div class="text-right mt-5 mb-2">
-          <button class="bg-danger border-0 text-white p-3 rounded-2 mx-2">
+        <div class="text-right mt-5 mb-2 py-5 px-3">
+          <span
+            class="bg-danger border-0 text-white px-5 py-3 mx-3 pointer d-inline-block rounded"
+            @click="closeModal"
+          >
             Cancel
-          </button>
+          </span>
 
-          <button
-            class="bg-default border-0 p-3 rounded-2 mx-2 "
+          <span
+            class="bg-default border-0 px-5 py-3 mx-3 pointer d-inline-block rounded"
             style="font-size="
+            @click="createVendor"
           >
             Submit
-          </button>
+          </span>
         </div>
       </form>
     </div>
@@ -229,5 +249,8 @@ export default {
 <style lang="scss" scoped>
 input::placeholder {
   color: darkslategrey;
+}
+.close-button{
+  font-size: 24px;
 }
 </style>

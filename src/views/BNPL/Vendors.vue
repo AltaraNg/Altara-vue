@@ -102,7 +102,7 @@
           </div>
         </div>
       </div>
-      <div v-else class="mx-2 px-4 ">
+      <div v-else-if="vendors.length == 0 && !loading" class="mx-2 px-4 ">
         <zero-state
           :title="'No vendors to view'"
           :message="'There are currrently no Vendors'"
@@ -222,6 +222,7 @@ export default {
     return {
       apiUrlDeactivate: `${process.env.VUE_APP_BNPL_URL}/api/deactivate/vendor`,
       apiUrlReactivate: `${process.env.VUE_APP_BNPL_URL}/api/reactivate/vendor`,
+      loading: false,
 
       apiUrl: `${process.env.VUE_APP_BNPL_URL}/api/all/vendors`,
       branch_id: '',
@@ -251,7 +252,8 @@ export default {
   },
 
   methods: {
-    fetchData() {
+    async fetchData() {
+      this.loading = true;
       this.$scrollToTop()
       this.$LIPS(true)
       let { page, page_size } = this.$data
@@ -265,6 +267,7 @@ export default {
         .catch(() => Flash.setError('Error Fetching Vendors'))
         .finally(() => {
           this.$LIPS(false)
+          this.loading = false;
         })
     },
 
@@ -446,13 +449,13 @@ export default {
     ]),
   },
 
-  created() {
+  async mounted() {
     this.$props.withBranchFilter &&
       this.filters.unshift({ name: 'branch', model: 'branch_id' })
     this.addCustomerOptionsModalsToDom()
-    this.$prepareBranches()
-    this.fetchData()
-    EventBus.$on('fetchVendors', this.fetchData())
+    await this.$prepareBranches()
+    await this.fetchData()
+    EventBus.$on('fetchVendors', this.fetchData());
   },
 
   destroyed() {

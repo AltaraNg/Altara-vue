@@ -26,7 +26,6 @@
                   class="btn btn-md "
                   @click="toggleProductType('ap')"
                   :class="[isAltaraPay ? 'bg-default' : 'btn-default']"
-                  :disabled="isAltaraPay"
                   type="button"
                 >
                   Altara Pay
@@ -36,7 +35,6 @@
                   @click="toggleProductType('ac')"
                   :class="[isAltaraCredit ? 'bg-default' : 'btn-default']"
                   type="button"
-                  :disabled="isAltaraCredit"
                 >
                   Altara Credit
                 </button>
@@ -45,7 +43,6 @@
                   @click="toggleProductType('cnc')"
                   :class="[isCashNCarry ? 'bg-default' : 'btn-default']"
                   type="button"
-                  :disabled="isCashNCarry"
                 >
                   Cash N Carry
                 </button>
@@ -536,7 +533,9 @@
                 </tbody>
               </table>
 
-              <h5 class="mt-5 mb-0" v-if="!isCashNCarry">Amortization Schedule</h5>
+              <h5 class="mt-5 mb-0" v-if="!isCashNCarry">
+                Amortization Schedule
+              </h5>
               <div class="payment-table" v-if="!isCashNCarry">
                 <table class="table table-bordered">
                   <tbody class="text-center">
@@ -921,7 +920,9 @@ export default {
         down_payment: this.isCashNCarry ? this.productPrice : this.fPayment,
         repayment: this.isCashNCarry ? 0 : this.rPayment,
         bank_id: this.isAltaraPay ? 1 : this.salesLogForm.bank_id,
-        product_price: this.$formatMoney(this.isCashNCarry ? this.productPrice : this.pPrice),
+        product_price: this.$formatMoney(
+          this.isCashNCarry ? this.productPrice : this.pPrice
+        ),
         down_payment_rate_id: this.salesLogForm.payment_type_id.id,
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.isAltaraPay
@@ -1274,12 +1275,15 @@ export default {
       try {
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes)
         this.businessTypes = fetchBusinessTypes.data.data.data
-        // this.businessTypes = this.businessTypes.filter(item => {
-        //   if (this.isAltaraPay) {
-        //     return item.slug.includes('ap_')
-        //   }
-        //   return !item.slug.includes('ap_')
-        // })
+        this.businessTypes = this.businessTypes.filter(item => {
+          if (this.isAltaraPay) {
+            return item.slug.includes('ap_')
+          } else if (this.isAltaraCredit) {
+            return item.slug.includes('ac_')
+          } else {
+            return !(item.slug.includes('ac_') || item.slug.includes('ap_'))
+          }
+        })
       } catch (err) {
         this.$displayErrorMessage(err)
       }
@@ -1319,6 +1323,7 @@ export default {
     },
     toggleProductType(mode) {
       if (mode === 'ap') {
+        this.getBusinessTypes();
         this.hideOrderSummary = true
         this.transfer = false
         this.isBank54 = false
@@ -1332,14 +1337,21 @@ export default {
         this.salesLogForm.discount = '0_discount'
         this.$refs.clearInputValue.setValue('')
       } else if (mode === 'ac') {
+        this.getBusinessTypes()
+
         this.isAltaraPay = false
         this.isAltaraCredit = true
+        this.salesLogForm = {}
+
         this.isCashNCarry = false
       } else {
+        this.getBusinessTypes()
         this.isAltaraPay = false
         this.isAltaraCredit = false
         this.isCashNCarry = true
-        this.salesLogForm.sales_category_id = 8;
+        this.salesLogForm = {}
+
+        this.salesLogForm.sales_category_id = 8
         this.salesLogForm.payment_type_id = this.downPaymentRates.filter(
           item => item.name === 'Hundred'
         )[0]
@@ -1351,8 +1363,8 @@ export default {
         )[0]
         this.salesLogForm.business_type_id = this.businessTypes.filter(
           item => item.name === 'Cash n Carry'
-        )[0];
-        this.getUsers(8);
+        )[0]
+        this.getUsers(8)
         // this.salesLogForm.sales_category_id = this.salesCategories.filter(item => item.name === )
       }
     },

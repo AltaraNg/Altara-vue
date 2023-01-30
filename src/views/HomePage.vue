@@ -49,6 +49,7 @@ export default {
         { name: 'ACC', url: 'acc/home', icon: 'fa-coins' },
         { name: 'CASHLOAN', url: 'cashloan/home', icon: 'fa-id-card' },
         { name: 'ALTARAPAY', url: 'altarapay/home', icon: 'fa-money-bill-alt' },
+        { name: 'BNPL', url: 'bnpl/home', icon: 'fa-money-bill-alt' },
         { name: 'Admin', url: 'admin/home', icon: 'fa-user-shield' },
         { name: 'General', url: 'gen-utils/home', icon: 'fa-user-shield' },
       ],
@@ -64,15 +65,6 @@ export default {
     if (!this.$store.state.api_token && !this.$store.state.authRole)
       this.$store.dispatch('mutateAuth')
   },
-  mounted() {
-    let flag = localStorage.getItem('flag')
-    if (flag === 'demo') {
-      this.cards.push({
-        name: 'BNPL',
-        url: 'bnpl/home',
-        icon: 'fa-money-bill-alt',
-      })
-    }
-  },
+  
 }
 </script>

@@ -1273,6 +1273,7 @@ export default {
     },
     async getBusinessTypes() {
       try {
+        this.$LIPS(true);
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes)
         this.businessTypes = fetchBusinessTypes.data.data.data
         this.businessTypes = this.businessTypes.filter(item => {
@@ -1284,6 +1285,9 @@ export default {
             return !(item.slug.includes('ac_') || item.slug.includes('ap_'))
           }
         })
+
+        this.$LIPS(false);
+
       } catch (err) {
         this.$displayErrorMessage(err)
       }

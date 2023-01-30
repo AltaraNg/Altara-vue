@@ -1277,13 +1277,11 @@ export default {
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes)
         this.businessTypes = fetchBusinessTypes.data.data.data
         this.businessTypes = this.businessTypes.filter(item => {
-          if (this.isAltaraPay) {
-            return item.slug.includes('ap_')
-          } else if (this.isAltaraCredit) {
+          if (this.isAltaraCredit) {
             return item.slug.includes('ac_')
-          } else {
-            return !(item.slug.includes('ac_') || item.slug.includes('ap_'))
-          }
+          } else{
+            return item.slug.includes('ap_')
+          } 
         })
 
         this.$LIPS(false);
@@ -1325,9 +1323,8 @@ export default {
     toggleSerial() {
       this.serial === true ? (this.serial = false) : (this.serial = true)
     },
-    toggleProductType(mode) {
+    async toggleProductType(mode) {
       if (mode === 'ap') {
-        this.getBusinessTypes();
         this.hideOrderSummary = true
         this.transfer = false
         this.isBank54 = false
@@ -1340,22 +1337,25 @@ export default {
         this.salesLogForm = {}
         this.salesLogForm.discount = '0_discount'
         this.$refs.clearInputValue.setValue('')
-      } else if (mode === 'ac') {
-        this.getBusinessTypes()
+        await this.getBusinessTypes();
 
+      } else if (mode === 'ac') {
+        this.isCashNCarry = false
         this.isAltaraPay = false
         this.isAltaraCredit = true
         this.salesLogForm = {}
+        await this.getBusinessTypes()
 
-        this.isCashNCarry = false
+
       } else {
-        this.getBusinessTypes()
         this.isAltaraPay = false
         this.isAltaraCredit = false
         this.isCashNCarry = true
         this.salesLogForm = {}
 
         this.salesLogForm.sales_category_id = 8
+        await this.getBusinessTypes()
+
         this.salesLogForm.payment_type_id = this.downPaymentRates.filter(
           item => item.name === 'Hundred'
         )[0]

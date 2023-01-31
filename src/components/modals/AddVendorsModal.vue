@@ -15,7 +15,7 @@
         </span>
       </a>
     </div>
-    <div class="modal-body px-4 mx-3 py-2 mt-5">
+    <div class="px-4 mx-3 py-2 mt-5">
       <div class="mx-4">
         <small v-for="item in err" class="text-danger d-block h6 text-center">{{
           item[0]

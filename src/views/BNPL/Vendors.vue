@@ -114,13 +114,17 @@
       </div>
       <div>
         <confirm-modal
+        v-slot="selectedOrder"
+          :customer="selectedOrder"
           :show="showPrompt"
           @touched="
             selectedOrder.portal_access
               ? deactivateVendor($event)
               : reactivateVendor($event)
           "
-        ></confirm-modal>
+        >
+       {{ selectedOrder.customer.customer.portal_access ? "You are about to deactivate the selected vendor" : "You are about to reactivate the selected vendor" }}
+      </confirm-modal>
       </div>
       <div class="modal fade repayment" id="viewBrand">
         <div class="modal-dialog" role="document">

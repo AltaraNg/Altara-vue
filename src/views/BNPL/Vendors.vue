@@ -114,17 +114,21 @@
       </div>
       <div>
         <confirm-modal
-        v-slot="selectedOrder"
+          v-slot="selectedOrder"
           :customer="selectedOrder"
-          :show="showPrompt"
+          :show="showModal"
           @touched="
             selectedOrder.portal_access
               ? deactivateVendor($event)
               : reactivateVendor($event)
           "
         >
-       {{ selectedOrder.customer.customer.portal_access ? "You are about to deactivate the selected vendor" : "You are about to reactivate the selected vendor" }}
-      </confirm-modal>
+          {{
+            selectedOrder.customer.customer.portal_access
+              ? 'You are about to deactivate the selected vendor'
+              : 'You are about to reactivate the selected vendor'
+          }}
+        </confirm-modal>
       </div>
       <div class="modal fade repayment" id="viewBrand">
         <div class="modal-dialog" role="document">
@@ -235,7 +239,7 @@ export default {
       viewCategory: false,
       showModalContent: false,
       pageParams: {},
-      showPrompt: false,
+      showModal: false,
       page_size: 10,
       date_from: null,
       date_to: null,
@@ -257,7 +261,7 @@ export default {
 
   methods: {
     async fetchData() {
-      this.loading = true;
+      this.loading = true
       this.$scrollToTop()
       this.$LIPS(true)
       let { page, page_size } = this.$data
@@ -271,7 +275,7 @@ export default {
         .catch(() => Flash.setError('Error Fetching Vendors'))
         .finally(() => {
           this.$LIPS(false)
-          this.loading = false;
+          this.loading = false
         })
     },
 
@@ -370,7 +374,7 @@ export default {
       )
     },
     confirmModal(order) {
-      this.showPrompt = !this.showPrompt
+      this.showModal = !this.showModal
       this.selectedOrder = order
     },
 
@@ -409,13 +413,13 @@ export default {
             title: 'Vendor deactivated Successfully',
           })
 
-          this.showPrompt = false
+          this.showModal = false
         } catch (e) {
         } finally {
           this.$LIPS(false)
         }
       }
-      this.showPrompt = false
+      this.showModal = false
     },
 
     async reactivateVendor(item) {
@@ -432,13 +436,13 @@ export default {
             title: 'Vendor Reactivated Successfully',
           })
 
-          this.showPrompt = false
+          this.showModal = false
         } catch (e) {
         } finally {
           this.$LIPS(false)
         }
       }
-      this.showPrompt = false
+      this.showModal = false
     },
 
     searchEvent(data) {
@@ -459,7 +463,7 @@ export default {
     this.addCustomerOptionsModalsToDom()
     await this.$prepareBranches()
     await this.fetchData()
-    EventBus.$on('fetchVendors', this.fetchData());
+    EventBus.$on('fetchVendors', this.fetchData())
   },
 
   destroyed() {

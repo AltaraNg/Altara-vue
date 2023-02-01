@@ -56,12 +56,15 @@
             </tr>
           </tbody>
         </table>
-        <h5 class="mt-5 mb-0">
+        <h5 class="mt-5 mb-0" v-if="order.business_type !== 'Cash n Carry'">
           <div class="d-flex justify-content-between">
             <div>Amortization Schedule</div>
           </div>
         </h5>
-        <div class="amor-table row px-4">
+        <div
+          class="amor-table row px-4"
+          v-if="order.business_type !== 'Cash n Carry'"
+        >
           <table class="table table-bordered">
             <tbody class="text-center">
               <tr>

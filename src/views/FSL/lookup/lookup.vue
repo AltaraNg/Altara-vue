@@ -310,6 +310,7 @@
                   "
                   >
                     <button
+                      :disabled="order.business_type === 'Cash n Carry'"
                       :class="
                         order.status === 'Completed' ? 'approved' : 'pending'
                       "

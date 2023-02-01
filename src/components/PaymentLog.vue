@@ -367,12 +367,22 @@
                   "
                 >
                   <button
+                    v-if="isCashNCarry"
                     class="btn bg-default"
-                    :disabled="test1 && !isCashNCarry"
+                    :disabled="productPrice <= 0 || !selectedProduct.id"
                     type="submit"
                     v-on:click="getCalc()"
                   >
-                    {{ isCashNCarry ? 'View Summary' : 'View Amortization' }}
+                   View Summary
+                  </button>
+                  <button
+                    v-else
+                    class="btn bg-default"
+                    :disabled="test1"
+                    type="submit"
+                    v-on:click="getCalc()"
+                  >
+                    View Amortization
                   </button>
                   <br />
                 </div>
@@ -687,6 +697,8 @@ export default {
       salesCategories: [],
       hideOrderSummary: true,
       test1: true,
+      test2: true,
+
       apiUrls: {
         repaymentDuration: `/api/repayment_duration`,
         orderType: `/api/order-types`,
@@ -1082,6 +1094,7 @@ export default {
     },
     getCalc() {
       try {
+        
         this.salesLogForm.customer_id = this.customerId
         const data0 = {
           discount_slug: this.salesLogForm.discount,
@@ -1273,19 +1286,18 @@ export default {
     },
     async getBusinessTypes() {
       try {
-        this.$LIPS(true);
+        this.$LIPS(true)
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes)
         this.businessTypes = fetchBusinessTypes.data.data.data
         this.businessTypes = this.businessTypes.filter(item => {
           if (this.isAltaraCredit) {
             return item.slug.includes('ac_')
-          } else{
+          } else {
             return item.slug.includes('ap_')
-          } 
+          }
         })
 
-        this.$LIPS(false);
-
+        this.$LIPS(false)
       } catch (err) {
         this.$displayErrorMessage(err)
       }
@@ -1337,16 +1349,13 @@ export default {
         this.salesLogForm = {}
         this.salesLogForm.discount = '0_discount'
         this.$refs.clearInputValue.setValue('')
-        await this.getBusinessTypes();
-
+        await this.getBusinessTypes()
       } else if (mode === 'ac') {
         this.isCashNCarry = false
         this.isAltaraPay = false
         this.isAltaraCredit = true
         this.salesLogForm = {}
         await this.getBusinessTypes()
-
-
       } else {
         this.isAltaraPay = false
         this.isAltaraCredit = false

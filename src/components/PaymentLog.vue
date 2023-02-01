@@ -697,7 +697,6 @@ export default {
       salesCategories: [],
       hideOrderSummary: true,
       test1: true,
-      test2: true,
 
       apiUrls: {
         repaymentDuration: `/api/repayment_duration`,

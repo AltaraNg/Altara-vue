@@ -244,7 +244,8 @@
                       v-if="
                         order.payment_gateway === 'Paystack' &&
                           order.paystack_auth_code != null &&
-                          order.status !== 'Completed'
+                          order.status !== 'Completed' &&
+                          canLogDD
                       "
                     >
                       <CustomDirectDebitModalButton
@@ -1856,6 +1857,9 @@ export default {
     canEditPayment() {
       if (this.auth('EditPayment')) return true
     },
+    canLogDD(){
+      if(this.auth('LogDirectDebit')) return true
+    }
   },
 
   created() {

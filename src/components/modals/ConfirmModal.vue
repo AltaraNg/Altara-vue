@@ -6,24 +6,24 @@
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog" role="document">
-      <div class="modal-content rounded-2">
-        <div class="">
-          <button
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content rounded-2 py-0">
+        <div class="py-0">
+          <span
             type="button"
-            class="close"
+            class="close pointer"
             data-dismiss="modal"
             aria-label="Close"
           >
-            <span aria-hidden="true" class="h1 mr-3 text-danger">&times;</span>
-          </button>
+            <span aria-hidden="true" class="h2 mr-3 text-danger">&times;</span>
+          </span>
         </div>
 
-        <div class="modal-body row p-4" id="index">
-          <div class="col-2 w-100 text-center mt-2 px-1">
+        <div class="mt-0 row px-4" id="index">
+          <div class="col-2 w-100 text-center my-2 text-right">
             <!-- Heroicon name: outline/exclamation-triangle -->
             <svg
-              class="text-danger w-50"
+              class="text-danger w-50 text-right"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -38,14 +38,14 @@
               />
             </svg>
           </div>
-          <div class="col-10 px-1">
+          <div class="col-10 px-4">
             <h3 class="my-2 font-weight-bold">Attention!</h3>
-            <p class="text-left text-capitalize h5 font-weight-light mx-4 mt-4">
+            <p class="text-left text-capitalize h5 font-weight-light ">
               <slot :customer="{ customer }"></slot>
             </p>
-            <div class="d-flex justify-content-end mt-4 mx-3">
+            <div class="d-flex justify-content-end mt-4 mx-4">
               <div class="form-group  mx-2">
-                <button class="btn bg-danger my-0 h2 font-weight-light" data-dismiss="modal">
+                <button class="btn bg-danger rounded-1 my-0 h2 font-weight-light" data-dismiss="modal">
                   Cancel
                 </button>
               </div>

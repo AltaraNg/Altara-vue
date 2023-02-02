@@ -54,6 +54,7 @@ export const store = new Vuex.Store({
     LOGLead: [...admin, 11, 32],
     LOGAccess: [...admin, 11, 14, 32],
     CAGAccess: [...admin, 30],
+    LogDirectDebit: [...admin, 22],
     EditPayment: [...admin, 8, 32, 14],
     ACCAccess: [...admin, 26, 31],
     ALTARAPAYAccess: [...admin, 33],

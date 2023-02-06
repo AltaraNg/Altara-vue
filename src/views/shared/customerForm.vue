@@ -12,129 +12,269 @@
       <ul class="nav nav-tabs justify-content-center bg-default">
         <h6>{{ mode | capitalize }} Customer</h6>
       </ul>
-      <div class="card-body pl-4 pr-4 clearfix">
-        <form-wizard
-          @onComplete="register"
-          class="form-group m-top"
-          v-if="(mode === 'register') && !registered"
-        >
-          <tab-content title="Account Info">
-            <AccountInfoVue
-              :formData="formData"
-              :memberHasError="memberHasError"
-              :error="error"
-              :civilStatus="civilStatus"
-              :gender="gender"
-              :channels="channels"
-              :highestLevelOfEdu="highestLevelOfEdu"
-              :$v= $v
-            />
-          </tab-content>
-
-          <tab-content title="Contact Address">
-            <ContactAddressVue
-              :formData="formData"
-              :memberHasError="memberHasError"
-              :error="error"
-              :states="states"
-              :$v= $v
-            />
-          </tab-content>
-
-          <tab-content title="Household Info">
-            <HouseholdInfoVue
-              :formData="formData"
-              :memberHasError="memberHasError"
-              :error="error"
-              :typesOfHome="typesOfHome"
-              :noOfRooms="noOfRooms"
-              :$v= $v
-            />
-          </tab-content>
-          <tab-content title="Work Details">
-            <WorkDetailsVue
-              :formData="formData"
-              :memberHasError="memberHasError"
-              :error="error"
-              :occupations="occupations"
-              :occName="occName"
-              :isOther="isOther"
-              :checkOccupation="checkOccupation"
-              :isClick= "isClick"
-              :setOccupation="setOccupation"
-              :durations="durations"
-              :newCustomer="newCustomer"
-              :states="states"
-              :weekdays="weekdays"
-              :$v= $v
-              :receiveIncomeMeans="receiveIncomeMeans"
-              :paymentPeriod="paymentPeriod"
+      <div style="display: flex; ">
+        <custom-header
+          :title="'Customer Registration'"
+          @click.native="selectType('normalCustomer')"
+          :style="
+            !formMode.normalCustomer
+              ? 'opacity: 0.2; cursor:pointer;'
+              : 'cursor:pointer;'
+          "
+        />
+        <custom-header
+          v-if="mode !== 'update'"
+          :title="'Cash N Carry Customer Registration'"
+          @click.native="selectType('vendorCustomer')"
+          :style="
+            !formMode.vendorCustomer
+              ? 'opacity: 0.2; cursor:pointer;'
+              : 'cursor:pointer; '
+          "
+          style="margin-left:-10px"
+        />
+      </div>
+      <div v-if="formMode.normalCustomer">
+        <div class="card-body pl-4 pr-4 clearfix">
+          <form-wizard
+            @onComplete="register"
+            class="form-group m-top"
+            v-if="mode === 'register' && !registered"
+          >
+            <tab-content title="Account Info">
+              <AccountInfoVue
+                :formData="formData"
+                :memberHasError="memberHasError"
+                :error="error"
+                :civilStatus="civilStatus"
+                :gender="gender"
+                :channels="channels"
+                :highestLevelOfEdu="highestLevelOfEdu"
+                :$v="$v"
               />
-          </tab-content>
-        </form-wizard>
+            </tab-content>
 
-        <div v-if="registered" class="success">
-          <h2 class="headeer">SUCCESS !</h2>
-          <check />
-          <p class="text">
-            You have successfully signed up Customer ID is
-            <span class="id">{{ identity }}</span>
-          </p>
+            <tab-content title="Contact Address">
+              <ContactAddressVue
+                :formData="formData"
+                :memberHasError="memberHasError"
+                :error="error"
+                :states="states"
+                :$v="$v"
+              />
+            </tab-content>
+
+            <tab-content title="Household Info">
+              <HouseholdInfoVue
+                :formData="formData"
+                :memberHasError="memberHasError"
+                :error="error"
+                :typesOfHome="typesOfHome"
+                :noOfRooms="noOfRooms"
+                :$v="$v"
+              />
+            </tab-content>
+            <tab-content title="Work Details">
+              <WorkDetailsVue
+                :formData="formData"
+                :memberHasError="memberHasError"
+                :error="error"
+                :occupations="occupations"
+                :occName="occName"
+                :isOther="isOther"
+                :checkOccupation="checkOccupation"
+                :isClick="isClick"
+                :setOccupation="setOccupation"
+                :durations="durations"
+                :newCustomer="newCustomer"
+                :states="states"
+                :weekdays="weekdays"
+                :$v="$v"
+                :receiveIncomeMeans="receiveIncomeMeans"
+                :paymentPeriod="paymentPeriod"
+              />
+            </tab-content>
+          </form-wizard>
+
+          <div v-if="registered" class="success">
+            <h2 class="headeer">SUCCESS !</h2>
+            <check />
+            <p class="text">
+              You have successfully signed up Customer ID is
+              <span class="id">{{ identity }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div v-else>
+        <div class="card-body pl-4 pr-4 clearfix">
+          <div class="form-group">
+            <div class="form-group col-md-4 px-md-3 px-1 float-left">
+              <label>First Name</label>
+              <input
+                class="form-control "
+                data-vv-as="first name"
+                name="first_name"
+                placeholder="Enter First name here.."
+                type="text"
+                v-model="vendorCustomer.first_name"
+                v-validate="'required|max:25'"
+              />
+              <small v-if="errors.first('first_name')">
+                {{ errors.first('first_name') }}
+              </small>
+            </div>
+            <div class="form-group col-md-4 px-md-3 px-1 float-left">
+              <label>Middle Name</label>
+              <input
+                class="form-control"
+                placeholder="Enter Middle name here.."
+                type="text"
+                v-model="vendorCustomer.middle_name"
+              />
+            </div>
+
+            <div class="form-group col-md-4 px-md-3 px-1 float-left">
+              <label>Last Name</label>
+              <input
+                class="form-control"
+                data-vv-as="last name"
+                name="last_name"
+                placeholder="Enter Last name here.."
+                type="text"
+                v-model="vendorCustomer.last_name"
+                v-validate="'required|max:25'"
+              />
+
+              <small v-if="errors.first('last_name')">
+                {{ errors.first('last_name') }}
+              </small>
+            </div>
+            <div class="spaceAfter"></div>
+
+            <div class="form-group col-md-4 px-md-3 px-1 float-left">
+              <label>Phone Number</label>
+              <input
+                class="form-control"
+                name="telephone"
+                placeholder="Enter Phone number here.."
+                type="number"
+                v-model="vendorCustomer.telephone"
+                v-validate="'required|numeric|max:11|min:11'"
+              />
+              <small v-if="errors.first('telephone')">
+                {{ errors.first('telephone') }}
+              </small>
+              <small v-if="error.telephone">{{ error.telephone[0] }}</small>
+            </div>
+            <div class="form-group col-md-4 px-md-3 px-1 float-left">
+              <label>Address</label>
+              <input
+                class="form-control"
+                data-vv-as="add_street"
+                name="add_street"
+                placeholder="Enter Address here.."
+                type="text"
+                v-model="vendorCustomer.add_street"
+                v-validate="'required|max:25'"
+              />
+
+              <small v-if="errors.first('add_street')">
+                {{ errors.first('add_street') }}
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="text-center my-3">
+          <button class="btn bg-default" type="button" @click="registerCNC">Submit</button>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import AccountInfoVue from '../../components/FormSteps/AccountInfo.vue'
+import ContactAddressVue from '../../components/FormSteps/ContactAddress.vue'
+import WorkDetailsVue from '../../components/FormSteps/WorkDetails.vue'
+import HouseholdInfoVue from '../../components/FormSteps/HouseholdInfo.vue'
+import { FormWizard, TabContent, ValidationHelper } from 'mulltistep-checker'
+import CustomHeader from '../../components/customHeader'
 
-import AccountInfoVue from "../../components/FormSteps/AccountInfo.vue";
-import ContactAddressVue from "../../components/FormSteps/ContactAddress.vue";
-import WorkDetailsVue from "../../components/FormSteps/WorkDetails.vue";
-import HouseholdInfoVue from "../../components/FormSteps/HouseholdInfo.vue";
-import { FormWizard, TabContent, ValidationHelper } from "mulltistep-checker";
 import check from '../../assets/css/svgs/check.vue'
-import "../../assets/css/vue-step-wizard.css";
-import { Message } from "../../utilities/sms";
-import { log } from "../../utilities/log";
-import Flash from "../../utilities/flash";
-import { get, post } from "../../utilities/api";
-import Verification from "../DVA/verification/verification";
-import flash from "../../utilities/flash";
-import CustomerData from "../../mixins/CustomerData";
-export default {
-  components: { 
-    Verification, 
-    FormWizard, 
-    TabContent, 
-    check, 
-    AccountInfoVue, 
-    ContactAddressVue, 
-    HouseholdInfoVue, 
-    WorkDetailsVue 
-    },
-  mixins: [ValidationHelper, CustomerData],
-  
-  methods: {
+import '../../assets/css/vue-step-wizard.css'
+import { Message } from '../../utilities/sms'
+import { log } from '../../utilities/log'
+import Flash from '../../utilities/flash'
+import { get, post } from '../../utilities/api'
+import Verification from '../DVA/verification/verification'
+import flash from '../../utilities/flash'
+import CustomerData from '../../mixins/CustomerData'
+import { selectType } from '../../utilities/log.js'
 
-    register() {
-      $('input[name="occ"]').attr("disabled", false);
-      this.$validator.validateAll().then(async (result) => {
-        if (result) {
-          if (this.formData.newCustomer.employment_status === "unemployed") {
-            Flash.setError(
-              "you can only register customer from formal and informal sectors at the moment!"
-            );
-            return this.$scrollToTop();
-          }
+export default {
+  components: {
+    Verification,
+    FormWizard,
+    TabContent,
+    check,
+    AccountInfoVue,
+    ContactAddressVue,
+    HouseholdInfoVue,
+    WorkDetailsVue,
+    CustomHeader,
+  },
+  mixins: [ValidationHelper, CustomerData],
+
+  data() {
+    return {
+      formMode: {
+        normalCustomer: true,
+        vendorCustomer: false,
+      },
+      vendorCustomer: {
+        customer_type: "cash_carry"
+      },
+    }
+  },
+
+  methods: {
+    selectType(type) {
+      selectType(type, this.formMode)
+    },
+
+    async registerCNC(){
+      this.$validator.validateAll().then(async result => {
+
+        if(result){
           if (this.$network()) {
             this.$LIPS(true);
-            this.error = {};
-            if (this.mode === "update") {
-              let acc = this.$editAccess(this.user, this.formData.newCustomer);
-              if (!acc) return this.$networkErr("edit");
+            let res = await post('/api/customer', this.vendorCustomer);
+          }
+          
+        }
+      })
+    },
+
+    register() {
+      $('input[name="occ"]').attr('disabled', false)
+      this.$validator.validateAll().then(async result => {
+        if (result) {
+          if (this.formData.newCustomer.employment_status === 'unemployed') {
+            Flash.setError(
+              'you can only register customer from formal and informal sectors at the moment!'
+            )
+            return this.$scrollToTop()
+          }
+          if (this.$network()) {
+            this.$LIPS(true)
+            this.error = {}
+            if (this.mode === 'update') {
+              let acc = this.$editAccess(this.user, this.formData.newCustomer)
+              if (!acc) return this.$networkErr('edit')
             }
             await post(
-              `/api/customer${this.mode === "update" ? "/" + this.formData.newCustomer.id : ""
+              `/api/customer${
+                this.mode === 'update' ? '/' + this.formData.newCustomer.id : ''
               }`,
               this.formData.newCustomer
             )
@@ -145,86 +285,86 @@ export default {
                   id,
                   branch,
                   telephone: tel,
-                } = data.customer;
+                } = data.customer
                 this.identity = id
-                this.registered = true;
+                this.registered = true
                 this.formData.newCustomer = this.data
                 // Flash.setSuccess(
                 //   `Customer ${this.mode}ed successful! Customer ID is: ${id}`,
                 //   30000
                 // );
-                log(`${this.mode}ed Customer`, `Customer ID :${id}`);
-                if (this.mode === "register") {
-                  this.prepareForm(data.prepareForm);
+                log(`${this.mode}ed Customer`, `Customer ID :${id}`)
+                if (this.mode === 'register') {
+                  this.prepareForm(data.prepareForm)
                 }
-
               })
-              .catch((e) => {
-                e = e.response;
+              .catch(e => {
+                e = e.response
                 if (e.status === 422)
-                  this.error = e.data.errors ? e.data.errors : e.data;
-               
+                  this.error = e.data.errors ? e.data.errors : e.data
+
                 Flash.setError(
-                  e.status === 422 && e.data.data.errors.telephone && e.data.data.errors.email
-                    ? this.$displayErrorText("This customer's phone number and email is already taken")
-                    :e.status === 422 && e.data.data.errors.telephone
-                    ? this.$displayErrorText("This customer's phone number is already taken")
-                     :e.status === 422 && e.data.data.errors.email
-                    ? this.$displayErrorText("This customer's email is already taken")
+                  e.status === 422 &&
+                    e.data.data.errors.telephone &&
+                    e.data.data.errors.email
+                    ? this.$displayErrorText(
+                        "This customer's phone number and email is already taken"
+                      )
+                    : e.status === 422 && e.data.data.errors.telephone
+                    ? this.$displayErrorText(
+                        "This customer's phone number is already taken"
+                      )
+                    : e.status === 422 && e.data.data.errors.email
+                    ? this.$displayErrorText(
+                        "This customer's email is already taken"
+                      )
                     : e.message,
                   10000
-                );
+                )
               })
               .finally(() => {
-                this.$isProcessing = false;
-              });
-            this.$scrollToTop();
-            this.$LIPS(false);
-          } else this.$networkErr();
-        } else this.$networkErr("form");
-        $('input[name="occ"]').attr(
-          "disabled",
-          !(this.isOther && this.isClick)
-        );
-      });
+                this.$isProcessing = false
+              })
+            this.$scrollToTop()
+            this.$LIPS(false)
+          } else this.$networkErr()
+        } else this.$networkErr('form')
+        $('input[name="occ"]').attr('disabled', !(this.isOther && this.isClick))
+      })
     },
 
     checkOccupation(id) {
-      $(".occupation-title, .occupation-option").removeClass(
-        "active shadow-sm"
-      );
-      this.occupations.forEach((element) => {
+      $('.occupation-title, .occupation-option').removeClass('active shadow-sm')
+      this.occupations.forEach(element => {
         if (element.id === id) {
-          $(`.occupation-title[data-id="${id}"]`).addClass("active shadow-sm");
-          this.occName = element.names;
+          $(`.occupation-title[data-id="${id}"]`).addClass('active shadow-sm')
+          this.occName = element.names
           // this.formData.newCustomer.employment_status = element.category;
-          this.isClick = true;
-          this.isOther = element.id === 12 ? true : false;
+          this.isClick = true
+          this.isOther = element.id === 12 ? true : false
           if (element.id === 12) {
-            this.isOther = true;
+            this.isOther = true
           } else {
-            this.isOther = false;
+            this.isOther = false
           }
         }
-      });
+      })
     },
-
-   
 
     setOccupation(name) {
-      $(".occupation-option").removeClass("active shadow-sm");
-      this.occName.forEach((element) => {
+      $('.occupation-option').removeClass('active shadow-sm')
+      this.occName.forEach(element => {
         if (element == name) {
-          this.formData.newCustomer.occupation = element;
+          this.formData.newCustomer.occupation = element
           $(`.occupation-option[data-name="${name}"]`).addClass(
-            "active shadow-sm"
-          );
+            'active shadow-sm'
+          )
         }
-      });
+      })
     },
     prepareForm(data) {
-      this.states = data.states;
-      this.branches = data.branches;
+      this.states = data.states
+      this.branches = data.branches
       let newData = {}
       this.data = data.form
       if (data.form) {
@@ -236,30 +376,29 @@ export default {
       }
       this.formData.newCustomer = {
         ...this.formData.newCustomer,
-        ...newData
+        ...newData,
       }
-      this.user = data.user;
+      this.user = data.user
     },
     updateCustomer(customer) {
-      if (this.mode === "update")
-        [this.fillWorkGuarantor, this.fillPersonalGuarantor] = [true, true];
-      this.formData.newCustomer = customer;
+      if (this.mode === 'update')
+        [this.fillWorkGuarantor, this.fillPersonalGuarantor] = [true, true]
+      this.formData.newCustomer = customer
     },
     memberHasError(fieldName) {
       if (!fieldName) return false
 
-      let splitFields = fieldName.split(".")
-      let lastValidator = this.$v.formData;
+      let splitFields = fieldName.split('.')
+      let lastValidator = this.$v.formData
 
       if (!lastValidator) return false
 
       if (splitFields.length == 1) {
-        return fieldName in lastValidator && !lastValidator[fieldName].$error;
+        return fieldName in lastValidator && !lastValidator[fieldName].$error
       }
 
-
       for (let index = 0; index < splitFields.length; index++) {
-        const element = splitFields[index];
+        const element = splitFields[index]
         if (!lastValidator) {
           return false
         }
@@ -269,15 +408,12 @@ export default {
         }
 
         lastValidator = lastValidator[element]
-
       }
-      if(this.formData.newCustomer.civil_status == ""){
-        return lastValidator?.$error;
+      if (this.formData.newCustomer.civil_status == '') {
+        return lastValidator?.$error
       }
-      return lastValidator?.$error;
+      return lastValidator?.$error
     },
-
-
   },
   mounted() {
     if (localStorage.data) {
@@ -285,19 +421,19 @@ export default {
     }
   },
   watch: {
-    "formData.newCustomer": {
+    'formData.newCustomer': {
       handler(newData, oldData) {
         localStorage.data = JSON.stringify(newData)
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   created() {
-    get("/api/customer/create").then(({ data }) => this.prepareForm(data));
+    get('/api/customer/create').then(({ data }) => this.prepareForm(data))
     /*on create of the component fetch the data required to prepare the form
      * states, branches and the currently logged in dsa details*/
-  }
-};
+  },
+}
 </script>
 
 <style lang="scss">

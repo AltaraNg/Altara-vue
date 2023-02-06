@@ -1530,11 +1530,11 @@ export default {
           Flash.setError('Error Fetching customer detail')
         })
     },
-    processForm(id) {
+    async processForm(id) {
       this.show = false
       this.$LIPS(true)
 
-      get(`/api/customer/lookup/${id}`)
+      await get(`/api/customer/lookup/${id}`)
         .then(res => {
           this.updateView(res.data)
           this.getRecommendationList(id)
@@ -1544,6 +1544,7 @@ export default {
           this.$LIPS(false)
           Flash.setError('Error Fetching customer detail')
         })
+      this.$LIPS(false);
     },
 
     calcDebt(amortization) {

@@ -129,7 +129,6 @@ export default {
           account: this.account,
         })
         if (response.data.status == 'success') {
-          this.$LIPS(false)
           this.$swal({
             icon: 'success',
             title: response.data.message,

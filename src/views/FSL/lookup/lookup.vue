@@ -244,7 +244,8 @@
                       v-if="
                         order.payment_gateway === 'Paystack' &&
                           order.paystack_auth_code != null &&
-                          order.status !== 'Completed'
+                          order.status !== 'Completed' &&
+                          canLogDD
                       "
                     >
                       <CustomDirectDebitModalButton
@@ -1530,11 +1531,11 @@ export default {
           Flash.setError('Error Fetching customer detail')
         })
     },
-    processForm(id) {
+    async processForm(id) {
       this.show = false
       this.$LIPS(true)
 
-      get(`/api/customer/lookup/${id}`)
+      await get(`/api/customer/lookup/${id}`)
         .then(res => {
           this.updateView(res.data)
           this.getRecommendationList(id)
@@ -1544,6 +1545,7 @@ export default {
           this.$LIPS(false)
           Flash.setError('Error Fetching customer detail')
         })
+      this.$LIPS(false);
     },
 
     calcDebt(amortization) {
@@ -1856,6 +1858,9 @@ export default {
     canEditPayment() {
       if (this.auth('EditPayment')) return true
     },
+    canLogDD(){
+      if(this.auth('LogDirectDebit')) return true
+    }
   },
 
   created() {

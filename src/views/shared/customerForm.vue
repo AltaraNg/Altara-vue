@@ -186,7 +186,9 @@
           </div>
         </div>
         <div class="text-center my-3">
-          <button class="btn bg-default" type="button" @click="registerCNC">Submit</button>
+          <button class="btn bg-default" type="button" @click="registerCNC">
+            Submit
+          </button>
         </div>
       </div>
     </div>
@@ -232,7 +234,7 @@ export default {
         vendorCustomer: false,
       },
       vendorCustomer: {
-        customer_type: "cash_carry"
+        customer_type: 'cash_carry',
       },
     }
   },
@@ -242,15 +244,36 @@ export default {
       selectType(type, this.formMode)
     },
 
-    async registerCNC(){
+    async registerCNC() {
       this.$validator.validateAll().then(async result => {
-
-        if(result){
+        if (result) {
           if (this.$network()) {
-            this.$LIPS(true);
-            let res = await post('/api/customer', this.vendorCustomer);
+            this.$LIPS(true)
+            try {
+              let res = await post('/api/customer', this.vendorCustomer)
+              if (res.status === 200) {
+                this.$swal({
+                  icon: 'success',
+                  title: 'Customer Registered Successfully',
+                })
+                this.vendorCustomer = {}
+              } else {
+                this.$swal({
+                  icon: 'error',
+                  title: 'Unable to Complete',
+                  message: res.data.message,
+                })
+              }
+              this.$LIPS(false)
+            } catch (err) {
+              this.$swal({
+                icon: 'error',
+                title: 'Unable to Complete',
+                text: err.response.data.message,
+              })
+              this.$LIPS(false)
+            }
           }
-          
         }
       })
     },

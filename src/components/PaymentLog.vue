@@ -27,6 +27,9 @@
                   @click="toggleProductType('ap')"
                   :class="[isAltaraPay ? 'bg-default' : 'btn-default']"
                   type="button"
+                  v-if="
+                    customer.branch !== null && customer.cadd_addinfo !== null
+                  "
                 >
                   Altara Pay
                 </button>
@@ -35,6 +38,9 @@
                   @click="toggleProductType('ac')"
                   :class="[isAltaraCredit ? 'bg-default' : 'btn-default']"
                   type="button"
+                  v-if="
+                    customer.branch !== null && customer.cadd_addinfo !== null
+                  "
                 >
                   Altara Credit
                 </button>
@@ -373,7 +379,7 @@
                     type="submit"
                     v-on:click="getCalc()"
                   >
-                   View Summary
+                    View Summary
                   </button>
                   <button
                     v-else
@@ -1093,7 +1099,6 @@ export default {
     },
     getCalc() {
       try {
-        
         this.salesLogForm.customer_id = this.customerId
         const data0 = {
           discount_slug: this.salesLogForm.discount,
@@ -1489,6 +1494,13 @@ export default {
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value)
     },
+  },
+  mounted() {
+    if (this.customer.branch === null && this.customer.cadd_addinfo === null) {
+      this.isAltaraCredit = false
+      this.isAltaraPay = false
+      this.isCashNCarry = true
+    }
   },
 }
 </script>

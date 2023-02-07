@@ -1495,11 +1495,35 @@ export default {
       this[`triggerToggleEvent${switchName}`](value)
     },
   },
-  mounted() {
+  async mounted() {
     if (this.customer.branch === null && this.customer.cadd_addinfo === null) {
       this.isAltaraCredit = false
       this.isAltaraPay = false
       this.isCashNCarry = true
+
+      this.salesLogForm.sales_category_id = 8
+      await this.getCalculation()
+      await this.getDiscounts()
+      await this.getOrderTypes()
+      await this.getBusinessTypes()
+      await this.getRepaymentDuration()
+      await this.getSalesCategory()
+      await this.getRepaymentCycles()
+      await this.getDownPaymentRates()
+
+      this.salesLogForm.payment_type_id = this.downPaymentRates.filter(
+        item => item.name === 'Hundred'
+      )[0]
+      this.salesLogForm.repayment_duration_id = this.repaymentDuration.filter(
+        item => item.name === 'six_months'
+      )[0]
+      this.salesLogForm.repayment_cycle_id = this.repaymentCyclesopt.filter(
+        item => item.name === 'monthly'
+      )[0]
+      this.salesLogForm.business_type_id = this.businessTypes.filter(
+        item => item.name === 'Cash n Carry'
+      )[0]
+      this.getUsers(8)
     }
   },
 }

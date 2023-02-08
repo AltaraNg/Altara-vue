@@ -618,7 +618,8 @@ export default {
     ...mapGetters(['auth', 'getAuthUserDetails']),
 
     canEditAmmoPayment() {
-      return this.auth('FSLLead') || this.auth('DVALead')
+      // return this.auth('FSLLead') || this.auth('DVALead')
+      return this.auth('AdminAccess')
     },
   },
 }

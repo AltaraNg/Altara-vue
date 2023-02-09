@@ -139,7 +139,7 @@ export default {
           },
         },
       ],
-      channels: ["Facebook", "Sales App", "Billboard", "Radio"],
+      channels: ["Facebook", "Sales App", "Billboard", "Radio", "Website"],
       occupations: [
         {
           id: 1,

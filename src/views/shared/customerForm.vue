@@ -238,6 +238,7 @@ export default {
       vendorCustomer: {
         customer_type: "cash_carry",
       },
+      staff: {}
     }
   },
 
@@ -252,6 +253,12 @@ export default {
           if (this.$network()) {
             this.$LIPS(true)
             try {
+              this.vendorCustomer.branch_id = this.staff.branch_id;
+              this.vendorCustomer.employee_id = this.staff.id;
+              this.vendorCustomer.employee_name = this.staff.full_name;
+              this.vendorCustomer.date_of_registration = this.formData?.newCustomer?.date_of_registration;
+              this.vendorCustomer.user_id = this.formData?.newCustomer?.user_id;              
+
               let res = await post("/api/customer", this.vendorCustomer)
               if (res.status === 200) {
                 this.$swal({
@@ -389,6 +396,7 @@ export default {
       })
     },
     prepareForm(data) {
+      this.staff = data.user;
       this.states = data.states
       this.branches = data.branches
       let newData = {}

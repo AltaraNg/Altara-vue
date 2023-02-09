@@ -351,7 +351,7 @@
                   placeholder="Enter channel.."
                   type="registration_channel"
                   :class="memberHasError('newCustomer.registration_channel') ? 'is-invalid' : ''" >
-                  <option value="None" selected>None</option>
+                  <option value="Website" selected>Website</option>
                 <option :value="channel" v-for="channel in channels">{{channel}}
                 </option>
               </select>

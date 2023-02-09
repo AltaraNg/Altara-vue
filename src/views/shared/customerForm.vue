@@ -121,7 +121,7 @@
                 v-validate="'required|max:25'"
               />
               <small v-if="errors.first('first_name')" class="h6">
-                {{ errors.first('first_name') }}
+                {{ errors.first("first_name") }}
               </small>
             </div>
             <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -147,7 +147,7 @@
               />
 
               <small v-if="errors.first('last_name')" class="h6">
-                {{ errors.first('last_name') }}
+                {{ errors.first("last_name") }}
               </small>
             </div>
             <div class="spaceAfter"></div>
@@ -163,9 +163,11 @@
                 v-validate="'required|numeric|max:11|min:11'"
               />
               <small v-if="errors.first('telephone')" class="h6">
-                {{ errors.first('telephone') }}
+                {{ errors.first("telephone") }}
               </small>
-              <small v-if="error.telephone" class="h6">{{ error.telephone[0] }}</small>
+              <small v-if="error.telephone" class="h6">{{
+                error.telephone[0]
+              }}</small>
             </div>
             <div class="form-group col-md-4 px-md-3 px-1 float-left">
               <label>Address</label>
@@ -180,7 +182,7 @@
               />
 
               <small v-if="errors.first('add_street')" class="h6">
-                {{ errors.first('add_street') }}
+                {{ errors.first("add_street") }}
               </small>
             </div>
           </div>
@@ -195,23 +197,23 @@
   </div>
 </template>
 <script>
-import AccountInfoVue from '../../components/FormSteps/AccountInfo.vue'
-import ContactAddressVue from '../../components/FormSteps/ContactAddress.vue'
-import WorkDetailsVue from '../../components/FormSteps/WorkDetails.vue'
-import HouseholdInfoVue from '../../components/FormSteps/HouseholdInfo.vue'
-import { FormWizard, TabContent, ValidationHelper } from 'mulltistep-checker'
-import CustomHeader from '../../components/customHeader'
+import AccountInfoVue from "../../components/FormSteps/AccountInfo.vue"
+import ContactAddressVue from "../../components/FormSteps/ContactAddress.vue"
+import WorkDetailsVue from "../../components/FormSteps/WorkDetails.vue"
+import HouseholdInfoVue from "../../components/FormSteps/HouseholdInfo.vue"
+import { FormWizard, TabContent, ValidationHelper } from "mulltistep-checker"
+import CustomHeader from "../../components/customHeader"
 
-import check from '../../assets/css/svgs/check.vue'
-import '../../assets/css/vue-step-wizard.css'
-import { Message } from '../../utilities/sms'
-import { log } from '../../utilities/log'
-import Flash from '../../utilities/flash'
-import { get, post } from '../../utilities/api'
-import Verification from '../DVA/verification/verification'
-import flash from '../../utilities/flash'
-import CustomerData from '../../mixins/CustomerData'
-import { selectType } from '../../utilities/log.js'
+import check from "../../assets/css/svgs/check.vue"
+import "../../assets/css/vue-step-wizard.css"
+import { Message } from "../../utilities/sms"
+import { log } from "../../utilities/log"
+import Flash from "../../utilities/flash"
+import { get, post } from "../../utilities/api"
+import Verification from "../DVA/verification/verification"
+import flash from "../../utilities/flash"
+import CustomerData from "../../mixins/CustomerData"
+import { selectType } from "../../utilities/log.js"
 
 export default {
   components: {
@@ -234,7 +236,7 @@ export default {
         vendorCustomer: false,
       },
       vendorCustomer: {
-        customer_type: 'cash_carry',
+        customer_type: "cash_carry",
       },
     }
   },
@@ -250,26 +252,26 @@ export default {
           if (this.$network()) {
             this.$LIPS(true)
             try {
-              let res = await post('/api/customer', this.vendorCustomer)
+              let res = await post("/api/customer", this.vendorCustomer)
               if (res.status === 200) {
                 this.$swal({
-                  icon: 'success',
-                  title: 'Customer Registered Successfully',
-                  text: `Customer ID: ${res.data.customer.id}`
+                  icon: "success",
+                  title: "Customer Registered Successfully",
+                  text: `Customer ID: ${res.data.customer.id}`,
                 })
                 this.vendorCustomer = {}
               } else {
                 this.$swal({
-                  icon: 'error',
-                  title: 'Unable to Complete',
+                  icon: "error",
+                  title: "Unable to Complete",
                   message: res.data.message,
                 })
               }
               this.$LIPS(false)
             } catch (err) {
               this.$swal({
-                icon: 'error',
-                title: 'Unable to Complete',
+                icon: "error",
+                title: "Unable to Complete",
                 text: err.response?.data?.data?.errors?.telephone,
               })
               this.$LIPS(false)
@@ -280,25 +282,25 @@ export default {
     },
 
     register() {
-      $('input[name="occ"]').attr('disabled', false)
+      $('input[name="occ"]').attr("disabled", false)
       this.$validator.validateAll().then(async result => {
         if (result) {
-          if (this.formData.newCustomer.employment_status === 'unemployed') {
+          if (this.formData.newCustomer.employment_status === "unemployed") {
             Flash.setError(
-              'you can only register customer from formal and informal sectors at the moment!'
+              "you can only register customer from formal and informal sectors at the moment!"
             )
             return this.$scrollToTop()
           }
           if (this.$network()) {
             this.$LIPS(true)
             this.error = {}
-            if (this.mode === 'update') {
+            if (this.mode === "update") {
               let acc = this.$editAccess(this.user, this.formData.newCustomer)
-              if (!acc) return this.$networkErr('edit')
+              if (!acc) return this.$networkErr("edit")
             }
             await post(
               `/api/customer${
-                this.mode === 'update' ? '/' + this.formData.newCustomer.id : ''
+                this.mode === "update" ? "/" + this.formData.newCustomer.id : ""
               }`,
               this.formData.newCustomer
             )
@@ -318,7 +320,7 @@ export default {
                 //   30000
                 // );
                 log(`${this.mode}ed Customer`, `Customer ID :${id}`)
-                if (this.mode === 'register') {
+                if (this.mode === "register") {
                   this.prepareForm(data.prepareForm)
                 }
               })
@@ -352,16 +354,16 @@ export default {
             this.$scrollToTop()
             this.$LIPS(false)
           } else this.$networkErr()
-        } else this.$networkErr('form')
-        $('input[name="occ"]').attr('disabled', !(this.isOther && this.isClick))
+        } else this.$networkErr("form")
+        $('input[name="occ"]').attr("disabled", !(this.isOther && this.isClick))
       })
     },
 
     checkOccupation(id) {
-      $('.occupation-title, .occupation-option').removeClass('active shadow-sm')
+      $(".occupation-title, .occupation-option").removeClass("active shadow-sm")
       this.occupations.forEach(element => {
         if (element.id === id) {
-          $(`.occupation-title[data-id="${id}"]`).addClass('active shadow-sm')
+          $(`.occupation-title[data-id="${id}"]`).addClass("active shadow-sm")
           this.occName = element.names
           // this.formData.newCustomer.employment_status = element.category;
           this.isClick = true
@@ -376,12 +378,12 @@ export default {
     },
 
     setOccupation(name) {
-      $('.occupation-option').removeClass('active shadow-sm')
+      $(".occupation-option").removeClass("active shadow-sm")
       this.occName.forEach(element => {
         if (element == name) {
           this.formData.newCustomer.occupation = element
           $(`.occupation-option[data-name="${name}"]`).addClass(
-            'active shadow-sm'
+            "active shadow-sm"
           )
         }
       })
@@ -405,14 +407,14 @@ export default {
       this.user = data.user
     },
     updateCustomer(customer) {
-      if (this.mode === 'update')
+      if (this.mode === "update")
         [this.fillWorkGuarantor, this.fillPersonalGuarantor] = [true, true]
       this.formData.newCustomer = customer
     },
     memberHasError(fieldName) {
       if (!fieldName) return false
 
-      let splitFields = fieldName.split('.')
+      let splitFields = fieldName.split(".")
       let lastValidator = this.$v.formData
 
       if (!lastValidator) return false
@@ -433,7 +435,7 @@ export default {
 
         lastValidator = lastValidator[element]
       }
-      if (this.formData.newCustomer.civil_status == '') {
+      if (this.formData.newCustomer.civil_status == "") {
         return lastValidator?.$error
       }
       return lastValidator?.$error
@@ -445,7 +447,7 @@ export default {
     }
   },
   watch: {
-    'formData.newCustomer': {
+    "formData.newCustomer": {
       handler(newData, oldData) {
         localStorage.data = JSON.stringify(newData)
       },
@@ -453,7 +455,7 @@ export default {
     },
   },
   created() {
-    get('/api/customer/create').then(({ data }) => this.prepareForm(data))
+    get("/api/customer/create").then(({ data }) => this.prepareForm(data))
     /*on create of the component fetch the data required to prepare the form
      * states, branches and the currently logged in dsa details*/
   },

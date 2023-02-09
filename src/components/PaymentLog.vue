@@ -27,9 +27,7 @@
                   @click="toggleProductType('ap')"
                   :class="[isAltaraPay ? 'bg-default' : 'btn-default']"
                   type="button"
-                  v-if="
-                    customer.branch !== null && customer.cadd_addinfo !== null
-                  "
+                  v-if="customer.branch && customer.cadd_addinfo"
                 >
                   Altara Pay
                 </button>

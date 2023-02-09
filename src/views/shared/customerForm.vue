@@ -120,7 +120,7 @@
                 v-model="vendorCustomer.first_name"
                 v-validate="'required|max:25'"
               />
-              <small v-if="errors.first('first_name')" class="h6">
+              <small v-if="errors.first('first_name')" class="h6 text-danger">
                 {{ errors.first("first_name") }}
               </small>
             </div>
@@ -146,7 +146,7 @@
                 v-validate="'required|max:25'"
               />
 
-              <small v-if="errors.first('last_name')" class="h6">
+              <small v-if="errors.first('last_name')" class="h6 text-danger">
                 {{ errors.first("last_name") }}
               </small>
             </div>
@@ -162,7 +162,7 @@
                 v-model="vendorCustomer.telephone"
                 v-validate="'required|numeric|max:11|min:11'"
               />
-              <small v-if="errors.first('telephone')" class="h6">
+              <small v-if="errors.first('telephone')" class="h6 text-danger">
                 {{ errors.first("telephone") }}
               </small>
               <small v-if="error.telephone" class="h6">{{
@@ -173,16 +173,16 @@
               <label>Address</label>
               <input
                 class="form-control"
-                data-vv-as="add_street"
-                name="add_street"
+                data-vv-as="address"
+                name="address"
                 placeholder="Enter Address here.."
                 type="text"
                 v-model="vendorCustomer.add_street"
                 v-validate="'required|max:55'"
               />
 
-              <small v-if="errors.first('add_street')" class="h6">
-                {{ errors.first("add_street") }}
+              <small v-if="errors.first('address')" class="h6 text-danger">
+                {{ errors.first("address") }}
               </small>
             </div>
           </div>

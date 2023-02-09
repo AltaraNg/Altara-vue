@@ -120,7 +120,7 @@
                 v-model="vendorCustomer.first_name"
                 v-validate="'required|max:25'"
               />
-              <small v-if="errors.first('first_name')">
+              <small v-if="errors.first('first_name')" class="h6">
                 {{ errors.first('first_name') }}
               </small>
             </div>
@@ -146,7 +146,7 @@
                 v-validate="'required|max:25'"
               />
 
-              <small v-if="errors.first('last_name')">
+              <small v-if="errors.first('last_name')" class="h6">
                 {{ errors.first('last_name') }}
               </small>
             </div>
@@ -162,10 +162,10 @@
                 v-model="vendorCustomer.telephone"
                 v-validate="'required|numeric|max:11|min:11'"
               />
-              <small v-if="errors.first('telephone')">
+              <small v-if="errors.first('telephone')" class="h6">
                 {{ errors.first('telephone') }}
               </small>
-              <small v-if="error.telephone">{{ error.telephone[0] }}</small>
+              <small v-if="error.telephone" class="h6">{{ error.telephone[0] }}</small>
             </div>
             <div class="form-group col-md-4 px-md-3 px-1 float-left">
               <label>Address</label>
@@ -176,10 +176,10 @@
                 placeholder="Enter Address here.."
                 type="text"
                 v-model="vendorCustomer.add_street"
-                v-validate="'required|max:25'"
+                v-validate="'required|max:55'"
               />
 
-              <small v-if="errors.first('add_street')">
+              <small v-if="errors.first('add_street')" class="h6">
                 {{ errors.first('add_street') }}
               </small>
             </div>
@@ -255,6 +255,7 @@ export default {
                 this.$swal({
                   icon: 'success',
                   title: 'Customer Registered Successfully',
+                  text: `Customer ID: ${res.data.customer.id}`
                 })
                 this.vendorCustomer = {}
               } else {
@@ -269,7 +270,7 @@ export default {
               this.$swal({
                 icon: 'error',
                 title: 'Unable to Complete',
-                text: err.response.data.message,
+                text: err.response?.data?.data?.errors?.telephone,
               })
               this.$LIPS(false)
             }

@@ -17,7 +17,7 @@ export default {
           civil_status: "",
           year_together: "",
           gender: "",
-          registration_channel: "Website",
+          registration_channel: "None",
           level_of_education: "",
           add_street: "",
           add_houseno: "",

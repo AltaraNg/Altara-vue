@@ -373,6 +373,6 @@ hr.my-4 + span.occupation-option {
   right: 50%;
 }
 .invalid-feedback{
-  font-size:11.5px
+  font-size:10px
 }
 </style>

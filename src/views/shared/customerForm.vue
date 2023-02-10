@@ -120,7 +120,10 @@
                 v-model="vendorCustomer.first_name"
                 v-validate="'required|max:25'"
               />
-              <small v-if="errors.first('first_name')" class="h6 text-danger">
+              <small
+                v-if="errors.first('first_name')"
+                class="h6 text-lowercase font-weight-light text-danger"
+              >
                 {{ errors.first("first_name") }}
               </small>
             </div>
@@ -146,7 +149,10 @@
                 v-validate="'required|max:25'"
               />
 
-              <small v-if="errors.first('last_name')" class="h6 text-danger">
+              <small
+                v-if="errors.first('last_name')"
+                class="h6 text-lowercase font-weight-light text-danger"
+              >
                 {{ errors.first("last_name") }}
               </small>
             </div>
@@ -162,7 +168,10 @@
                 v-model="vendorCustomer.telephone"
                 v-validate="'required|numeric|max:11|min:11'"
               />
-              <small v-if="errors.first('telephone')" class="h6 text-danger">
+              <small
+                v-if="errors.first('telephone')"
+                class="h6 text-lowercase font-weight-light text-danger"
+              >
                 {{ errors.first("telephone") }}
               </small>
               <small v-if="error.telephone" class="h6">{{
@@ -181,7 +190,10 @@
                 v-validate="'required|max:55'"
               />
 
-              <small v-if="errors.first('address')" class="h6 text-danger">
+              <small
+                v-if="errors.first('address')"
+                class="h6 text-lowercase font-weight-light text-danger"
+              >
                 {{ errors.first("address") }}
               </small>
             </div>
@@ -238,7 +250,7 @@ export default {
       vendorCustomer: {
         customer_type: "cash_carry",
       },
-      staff: {}
+      staff: {},
     }
   },
 
@@ -253,11 +265,11 @@ export default {
           if (this.$network()) {
             this.$LIPS(true)
             try {
-              this.vendorCustomer.branch_id = this.staff.branch_id;
-              this.vendorCustomer.employee_id = this.staff.id;
-              this.vendorCustomer.employee_name = this.staff.full_name;
-              this.vendorCustomer.date_of_registration = this.formData?.newCustomer?.date_of_registration;
-              this.vendorCustomer.user_id = this.formData?.newCustomer?.user_id;              
+              this.vendorCustomer.branch_id = this.staff.branch_id
+              this.vendorCustomer.employee_id = this.staff.id
+              this.vendorCustomer.employee_name = this.staff.full_name
+              this.vendorCustomer.date_of_registration = this.formData?.newCustomer?.date_of_registration
+              this.vendorCustomer.user_id = this.formData?.newCustomer?.user_id
 
               let res = await post("/api/customer", this.vendorCustomer)
               if (res.status === 200) {
@@ -265,6 +277,7 @@ export default {
                   icon: "success",
                   title: "Customer Registered Successfully",
                   text: `Customer ID: ${res.data.customer.id}`,
+                  html: `<div class="h3">Customer ID: <b class="text-success">${res.data.customer.id}</b></div>`,
                 })
                 this.vendorCustomer = {}
               } else {
@@ -396,7 +409,7 @@ export default {
       })
     },
     prepareForm(data) {
-      this.staff = data.user;
+      this.staff = data.user
       this.states = data.states
       this.branches = data.branches
       let newData = {}

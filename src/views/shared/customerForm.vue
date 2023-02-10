@@ -120,12 +120,12 @@
                 v-model="vendorCustomer.first_name"
                 v-validate="'required|max:25'"
               />
-              <small
+              <span
                 v-if="errors.first('first_name')"
-                class="h6 text-lowercase font-weight-light text-danger"
+                class="font-weight-light text-danger"
               >
                 {{ errors.first("first_name") }}
-              </small>
+            </span>
             </div>
             <div class="form-group col-md-4 px-md-3 px-1 float-left">
               <label>Middle Name</label>
@@ -149,12 +149,12 @@
                 v-validate="'required|max:25'"
               />
 
-              <small
+              <span
                 v-if="errors.first('last_name')"
-                class="h6 text-lowercase font-weight-light text-danger"
+                class="font-weight-light text-danger"
               >
                 {{ errors.first("last_name") }}
-              </small>
+            </span>
             </div>
             <div class="spaceAfter"></div>
 
@@ -166,17 +166,15 @@
                 placeholder="Enter Phone number here.."
                 type="number"
                 v-model="vendorCustomer.telephone"
-                v-validate="'required|numeric|max:11|min:11'"
+                v-validate="'required|max:11|min:11'"
               />
-              <small
+              <span
                 v-if="errors.first('telephone')"
-                class="h6 text-lowercase font-weight-light text-danger"
+                class="font-weight-light text-danger"
               >
                 {{ errors.first("telephone") }}
-              </small>
-              <small v-if="error.telephone" class="h6">{{
-                error.telephone[0]
-              }}</small>
+            </span>
+             
             </div>
             <div class="form-group col-md-4 px-md-3 px-1 float-left">
               <label>Address</label>
@@ -190,12 +188,12 @@
                 v-validate="'required|max:55'"
               />
 
-              <small
+              <span
                 v-if="errors.first('address')"
-                class="h6 text-lowercase font-weight-light text-danger"
+                class="font-weight-light text-danger"
               >
                 {{ errors.first("address") }}
-              </small>
+            </span>
             </div>
           </div>
         </div>
@@ -215,7 +213,6 @@ import WorkDetailsVue from "../../components/FormSteps/WorkDetails.vue"
 import HouseholdInfoVue from "../../components/FormSteps/HouseholdInfo.vue"
 import { FormWizard, TabContent, ValidationHelper } from "mulltistep-checker"
 import CustomHeader from "../../components/customHeader"
-
 import check from "../../assets/css/svgs/check.vue"
 import "../../assets/css/vue-step-wizard.css"
 import { Message } from "../../utilities/sms"

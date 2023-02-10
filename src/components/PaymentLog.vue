@@ -27,7 +27,7 @@
                   @click="toggleProductType('ap')"
                   :class="[isAltaraPay ? 'bg-default' : 'btn-default']"
                   type="button"
-                  v-if="customer.cadd_addinfo"
+                  v-if="customer.document.guarantor_id_url"
                 >
                   Altara Pay
                 </button>
@@ -37,7 +37,7 @@
                   :class="[isAltaraCredit ? 'bg-default' : 'btn-default']"
                   type="button"
                   v-if="
-                    customer.cadd_addinfo
+                    customer.document.guarantor_id_url
                   "
                 >
                   Altara Credit
@@ -1494,7 +1494,7 @@ export default {
     },
   },
   async mounted() {
-    if (!this.customer.cadd_addinfo) {
+    if (!this.customer.document.guarantor_id_url) {
       this.isAltaraCredit = false
       this.isAltaraPay = false
       this.isCashNCarry = true

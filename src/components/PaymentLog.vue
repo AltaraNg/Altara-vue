@@ -27,7 +27,7 @@
                   @click="toggleProductType('ap')"
                   :class="[isAltaraPay ? 'bg-default' : 'btn-default']"
                   type="button"
-                  v-if="customer.nextofkin_telno !== ''"
+                  v-if="customer.city !== ''"
                 >
                   Altara Pay
                 </button>
@@ -37,7 +37,7 @@
                   :class="[isAltaraCredit ? 'bg-default' : 'btn-default']"
                   type="button"
                   v-if="
-                    customer.nextofkin_telno !== ''
+                    customer.city !== ''
                   "
                 >
                   Altara Credit
@@ -1494,7 +1494,7 @@ export default {
     },
   },
   async mounted() {
-    if (this.customer.nextofkin_telno === "") {
+    if (this.customer.city === "") {
       this.isAltaraCredit = false
       this.isAltaraPay = false
       this.isCashNCarry = true

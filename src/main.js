@@ -27,6 +27,7 @@ Vue.config.productionTip = false
 Object.defineProperty(Vue.prototype, '$_', { value: _ });
 VuexRouterSync.sync(store, router);
 Vue.use(VeeValidate, {
+    useConstraintAttrs: false,
     events: "",
     classes: true,
     classNames: { invalid: "is-invalid" }

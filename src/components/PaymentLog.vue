@@ -27,6 +27,7 @@
                   @click="toggleProductType('ap')"
                   :class="[isAltaraPay ? 'bg-default' : 'btn-default']"
                   type="button"
+                  v-if="customer.city !== ''"
                 >
                   Altara Pay
                 </button>
@@ -35,6 +36,9 @@
                   @click="toggleProductType('ac')"
                   :class="[isAltaraCredit ? 'bg-default' : 'btn-default']"
                   type="button"
+                  v-if="
+                    customer.city !== ''
+                  "
                 >
                   Altara Credit
                 </button>
@@ -373,7 +377,7 @@
                     type="submit"
                     v-on:click="getCalc()"
                   >
-                   View Summary
+                    View Summary
                   </button>
                   <button
                     v-else
@@ -1093,7 +1097,6 @@ export default {
     },
     getCalc() {
       try {
-        
         this.salesLogForm.customer_id = this.customerId
         const data0 = {
           discount_slug: this.salesLogForm.discount,
@@ -1489,6 +1492,37 @@ export default {
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value)
     },
+  },
+  async mounted() {
+    if (this.customer.city === "") {
+      this.isAltaraCredit = false
+      this.isAltaraPay = false
+      this.isCashNCarry = true
+
+      this.salesLogForm.sales_category_id = 8
+      await this.getCalculation()
+      await this.getDiscounts()
+      await this.getOrderTypes()
+      await this.getBusinessTypes()
+      await this.getRepaymentDuration()
+      await this.getSalesCategory()
+      await this.getRepaymentCycles()
+      await this.getDownPaymentRates()
+
+      this.salesLogForm.payment_type_id = this.downPaymentRates.filter(
+        item => item.name === 'Hundred'
+      )[0]
+      this.salesLogForm.repayment_duration_id = this.repaymentDuration.filter(
+        item => item.name === 'six_months'
+      )[0]
+      this.salesLogForm.repayment_cycle_id = this.repaymentCyclesopt.filter(
+        item => item.name === 'monthly'
+      )[0]
+      this.salesLogForm.business_type_id = this.businessTypes.filter(
+        item => item.name === 'Cash n Carry'
+      )[0]
+      this.getUsers(8)
+    }
   },
 }
 </script>

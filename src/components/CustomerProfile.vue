@@ -68,6 +68,11 @@
                   </div>
                 </span>
               </div>
+              <div class="text-center my-2">
+                <button class="btn bg-default" @click="verifyModal">
+                  Verify Customer
+                </button>
+              </div>
             </div>
           </div>
           <div
@@ -284,13 +289,14 @@ import CustomSMSButton from '../components/CustomSMSButton/CustomSMSButton'
 import CustomerMobileButton from '../components/customerMobileSms/customerMobileButton.vue'
 import paystack from 'vue-paystack'
 import CustomerGuarantorsModal from '../components/modals/CustomerGuarantorsModal.vue'
+import VerificationCheckList from '../components/modals/VerificationCheckList.vue'
 import { post } from '../utilities/api'
 import { relative } from 'path'
 
 export default {
   props: ['viewCustomer'],
 
-  components: {
+  components: {VerificationCheckList,
     ApprovalStatusButton,
     AppNavigation,
     CustomSMSButton,
@@ -349,6 +355,21 @@ export default {
 
     hide(modal) {
       this.$modal.hide(modal)
+    },
+    verifyModal(){
+      this.$modal.show(
+					VerificationCheckList,
+					{  },
+					{
+						classes: ['w-50', 'overflow-auto'],
+						adaptive: true,
+						resizable: true,
+						draggable: true,
+						height: 'auto',
+						width: '50%',
+						clickToClose: true,
+					}
+				);
     },
 
     ...mapActions('ModalAccess', [

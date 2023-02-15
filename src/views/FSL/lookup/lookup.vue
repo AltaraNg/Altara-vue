@@ -32,6 +32,16 @@
               "
               style="margin-left:-10px"
             />
+            <custom-header
+              :title="'Verifications'"
+              @click.native="selectType('verification')"
+              :style="
+                !states.verification
+                  ? 'opacity: 0.2; cursor:pointer;'
+                  : 'cursor:pointer; '
+              "
+              style="margin-left:-10px"
+            />
           </div>
           <hr />
           <div v-if="states.order">
@@ -481,6 +491,118 @@
               <div
                 class="tab-pane active text-center"
                 v-if="recommendationList.length == 0"
+              >
+                <div class="mb-3 row attendance-item">
+                  <div
+                    class="
+                    col
+                    d-flex
+                    light-heading
+                    align-items-center
+                    justify-content-center
+                  "
+                  >
+                    No records found!
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="states.verification" class="mb-5">
+            <div class="mt-5 mb-3 attendance-head">
+              <div class="row px-4 pt-3 pb-4 text-center">
+                <div class="col light-heading" style="max-width: 150px">
+                  S/No.
+                </div>
+                <div
+                  class="col light-heading"
+                  v-for="(header, index) in verificationHeaders"
+                  :key="index"
+                  style="text-align: left; "
+                >
+                  {{ header }}
+                </div>
+              </div>
+            </div>
+            <div class="tab-content mt-1 attendance-body">
+              <div
+                class="tab-pane active "
+                v-if="verificationList.length > 0"
+              >
+                <div
+                  class="mb-3 row attendance-item"
+                  v-for="(verification, index) in verificationList"
+                  :key="index"
+                >
+                  <div
+                    class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+
+                  "
+                    style="max-width: 150px; margin-left: -15px;"
+                  >
+                    <span class="user mx-auto">{{ index + 1 }}</span>
+                  </div>
+                  <div
+                    class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    user-name
+                    align-items-center
+
+                  "
+                    style="padding-left:30px"
+                  >
+                    {{ formatDate(verification.created_at) }}
+                  </div>
+                  <div
+                    class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    user-name
+                    align-items-center
+
+                  "
+                  >
+                    {{ verification.type }}
+                  </div>
+                  <div
+                    class="
+                    col-12 col-xs-3 col-md col-lg
+                    d-flex
+                    align-items-center
+
+                  "
+                  >
+                   {{ JSON.parse(verification.input_data).verifiedBy }}
+                  </div>
+                 
+                 
+
+                  <div
+                    class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    align-items-center
+
+                  "
+                  >
+                    <button
+                      @click="displayActiveVerification(verification)"
+                      class="btn status"
+                      
+                    >
+                      View
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="tab-pane active text-center"
+                v-if="verificationList.length == 0"
               >
                 <div class="mb-3 row attendance-item">
                   <div
@@ -1345,6 +1467,7 @@ import {
   getOrderStatus,
   getOrderStatusClass,
 } from '../../../components/order/orderStatusCssClass'
+import ViewVerificationCheckList from '../../../components/modals/ViewVerificationCheckList.vue'
 import LogForm from '../../../components/LogForm'
 import PaymentLog from '../../../components/PaymentLog'
 import DatePicker from 'vue2-datepicker'
@@ -1379,9 +1502,11 @@ export default {
       displayMore: false,
       activeRecommendation: null,
       recommendationList: null,
+      verificationList: null,
       states: {
         order: true,
         recommendation: false,
+        verification: false
       },
       editOrder: {},
       Order: Order,
@@ -1416,6 +1541,12 @@ export default {
         'Product Price',
         'Duration',
         'Recommended Plans',
+        'Input Data',
+      ],
+      verificationHeaders: [
+        'Date',
+        'Type',
+        'Verified By',
         'Input Data',
       ],
       products: [],
@@ -1523,8 +1654,15 @@ export default {
     getRecommendationList(id) {
       get(`/api/customer-recommendation/${id}`)
         .then(res => {
+          
           this.recommendationList = res.data.data
-          this.recommendationList.reverse()
+          this.verificationList = this.recommendationList.filter(item => {
+            return item.type === "verification"
+          })
+          this.recommendationList = this.recommendationList.filter(item => {
+            return item.type !== "verification"
+          })
+          this.recommendationList.reverse() 
         })
         .catch(e => {
           this.$LIPS(false)
@@ -1561,6 +1699,23 @@ export default {
       this.activeRecommendation = recommendation
       this.displayMore = true
       return $(`#recommendation`).modal('toggle')
+    },
+
+    displayActiveVerification(verification) {
+      this.$modal.show(
+        ViewVerificationCheckList,
+        { verification: JSON.parse(verification.input_data) },
+        {
+          name: 'verificationView',
+          classes: ['w-50', 'overflow-auto'],
+          adaptive: true,
+          resizable: true,
+          draggable: true,
+          height: 'auto',
+          width: '50%',
+          clickToClose: true,
+        }
+      )
     },
 
     async displayAmortization(order) {

@@ -68,7 +68,7 @@
                   </div>
                 </span>
               </div>
-              <div class="text-center my-2">
+              <div class="text-center my-2" v-if="canViewButton">
                 <button class="btn bg-default" @click="verifyModal">
                   Verify Customer
                 </button>
@@ -281,6 +281,7 @@
 </template>
 <script>
 import Vue from 'vue'
+import Auth from '../utilities/auth'
 import { mapActions, mapGetters } from 'vuex'
 import { EventBus } from '../utilities/event-bus'
 import AppNavigation from '../components/AppNavigation'
@@ -296,7 +297,8 @@ import { relative } from 'path'
 export default {
   props: ['viewCustomer'],
 
-  components: {VerificationCheckList,
+  components: {
+    VerificationCheckList,
     ApprovalStatusButton,
     AppNavigation,
     CustomSMSButton,
@@ -313,6 +315,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['auth']),
     full() {
       return this.$route.meta.mode === 'full'
     },
@@ -328,8 +331,9 @@ export default {
     approved() {
       return this.$getCustomerApprovalStatus(this.customer.verification)
     },
-
-    ...mapGetters(['auth']),
+    canViewButton() {
+      return this.auth('DVAAccess')
+    },
   },
 
   created() {
@@ -356,20 +360,21 @@ export default {
     hide(modal) {
       this.$modal.hide(modal)
     },
-    verifyModal(){
+    verifyModal() {
       this.$modal.show(
-					VerificationCheckList,
-					{  },
-					{
-						classes: ['w-50', 'overflow-auto'],
-						adaptive: true,
-						resizable: true,
-						draggable: true,
-						height: 'auto',
-						width: '50%',
-						clickToClose: true,
-					}
-				);
+        VerificationCheckList,
+        { customer: this.customer },
+        {
+          name: 'verificationForm',
+          classes: ['w-50', 'overflow-auto'],
+          adaptive: true,
+          resizable: true,
+          draggable: true,
+          height: 'auto',
+          width: '50%',
+          clickToClose: true,
+        }
+      )
     },
 
     ...mapActions('ModalAccess', [

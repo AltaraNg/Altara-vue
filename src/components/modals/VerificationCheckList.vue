@@ -293,19 +293,6 @@ export default {
   },
 
   methods: {
-    async fetchVerificationAgents() {
-      try {
-        this.$LIPS(true)
-        let res = await get('/api/get-users?role=21')
-        if (res) {
-          this.vAgents = res.data?.data?.data
-        }
-      } catch (err) {
-        console.log(err)
-      } finally {
-        this.$LIPS(false)
-      }
-    },
     async save() {
       this.$validator.validateAll().then(async result => {
         if (result) {
@@ -332,9 +319,7 @@ export default {
       })
     },
   },
-  created() {
-    this.fetchVerificationAgents()
-  },
+  
 }
 </script>
 

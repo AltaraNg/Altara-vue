@@ -75,8 +75,80 @@
                 v-model="verificationData.addressMatch"
                 type="radio"
                 class="form-check-input "
-                value="yes"
+                value="no"
                 name="checklist2"
+                v-validate="'required'"
+              />
+              <span class="px-2">No</span>
+              <span class="form-check-sign"> </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group my-3">
+          <label for="exampleFormControlSelect2"
+            >Was the customer's home visited?</label
+          >
+          <br />
+
+          <div class="form-check form-check-radio form-check-inline">
+            <label class="form-check-label">
+              <input
+                v-model="verificationData.homeVisited"
+                type="radio"
+                class="form-check-input "
+                value="yes"
+                name="checklist6"
+                v-validate="'required'"
+              />
+              <span class="px-2">Yes</span>
+              <span class="form-check-sign"> </span>
+            </label>
+          </div>
+          <div class="form-check form-check-radio form-check-inline">
+            <label class="form-check-label">
+              <input
+                v-model="verificationData.homeVisited"
+                type="radio"
+                class="form-check-input "
+                value="no"
+                name="checklist6"
+                v-validate="'required'"
+              />
+              <span class="px-2">No</span>
+              <span class="form-check-sign"> </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group my-3">
+          <label for="exampleFormControlSelect2"
+            >Was the guarantors' home visited?</label
+          >
+          <br />
+
+          <div class="form-check form-check-radio form-check-inline">
+            <label class="form-check-label">
+              <input
+                v-model="verificationData.guarantorHomeVisited"
+                type="radio"
+                class="form-check-input "
+                value="yes"
+                name="checklist7"
+                v-validate="'required'"
+              />
+              <span class="px-2">Yes</span>
+              <span class="form-check-sign"> </span>
+            </label>
+          </div>
+          <div class="form-check form-check-radio form-check-inline">
+            <label class="form-check-label">
+              <input
+                v-model="verificationData.guarantorHomeVisited"
+                type="radio"
+                class="form-check-input "
+                value="no"
+                name="checklist7"
                 v-validate="'required'"
               />
               <span class="px-2">No</span>
@@ -299,7 +371,9 @@ export default {
           try {
             this.$LIPS(true)
             this.verificationData.customer_id = this.customer.id
-            let res = await post('/api/saveVerification', this.verificationData)
+            this.verificationData.type = 'verification'
+
+            let res = await post('/api/recommendation', this.verificationData)
             if (res.status === 200) {
               this.$swal({
                 icon: 'success',

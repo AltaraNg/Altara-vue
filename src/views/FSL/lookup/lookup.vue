@@ -531,7 +531,7 @@
                 v-if="verificationList.length > 0"
               >
                 <div
-                  class="mb-3 row attendance-item"
+                  class="mb-3 row attendance-item text-center"
                   v-for="(verification, index) in verificationList"
                   :key="index"
                 >
@@ -557,17 +557,7 @@
                   >
                     {{ formatDate(verification.created_at) }}
                   </div>
-                  <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    user-name
-                    align-items-center
-
-                  "
-                  >
-                    {{ verification.type }}
-                  </div>
+                  
                   <div
                     class="
                     col-12 col-xs-3 col-md col-lg
@@ -591,7 +581,7 @@
                   >
                     <button
                       @click="displayActiveVerification(verification)"
-                      class="btn status"
+                      class="btn status approved"
                       
                     >
                       View
@@ -1545,9 +1535,8 @@ export default {
       ],
       verificationHeaders: [
         'Date',
-        'Type',
         'Verified By',
-        'Input Data',
+        'More Information',
       ],
       products: [],
       paymentForm: { payments: [] },
@@ -1659,8 +1648,9 @@ export default {
           this.verificationList = this.recommendationList.filter(item => {
             return item.type === "verification"
           })
+          this.verificationList.reverse()
           this.recommendationList = this.recommendationList.filter(item => {
-            return item.type !== "verification"
+            return item.type == "formal" || item.type == "informal"
           })
           this.recommendationList.reverse() 
         })

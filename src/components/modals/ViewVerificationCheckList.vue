@@ -22,14 +22,32 @@
           <label for="checklist1" class=""
             >What location was visited and verified?</label
           >
-          <p class="font-weight-bolder text-success">
+          <p class="display-text">
             {{ verification.location }}
           </p>
         </li>
         <li class="list-group-item my-3">
           <label for="checklist">If other, Specify</label>
-          <p class="font-weight-bolder text-success">
+          <p class="display-text">
             {{ verification.otherOption || 'N/A' }}
+          </p>
+        </li>
+
+        <li class="list-group-item my-3">
+          <label for="checklist1" class=""
+            >Was customer home visited?</label
+          >
+          <p class="display-text">
+            {{ verification.homeVisited }}
+          </p>
+        </li>
+
+        <li class="list-group-item my-3">
+          <label for="checklist1" class=""
+            >Was guarantor home visited?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorHomeVisited }}
           </p>
         </li>
         <li class="list-group-item my-3">
@@ -37,7 +55,7 @@
             >Does the Address match what was given in the application
             form</label
           >
-          <p class="font-weight-bolder text-success">
+          <p class="display-text">
             {{ verification.addressMatch }}
           </p>
         </li>
@@ -46,7 +64,7 @@
           <label for="exampleFormControlSelect2"
             >Does the Address match what was given in the Bank Statement</label
           >
-          <p class="font-weight-bolder text-success">
+          <p class="display-text">
             {{ verification.addressMatchBank }}
           </p>
         </li>
@@ -55,7 +73,7 @@
             >If no, what’s the reason? And who’s house is it? When did they move
             out from the address?</label
           >
-          <p class="font-weight-bolder text-success">
+          <p class="display-text">
             {{ verification.reasonForDiffer }}
           </p>
         </li>
@@ -64,7 +82,7 @@
           <label for="exampleFormControlSelect2"
             >Is this customer aware of what happens when he/she defaults?</label
           >
-          <p class="font-weight-bolder text-success">
+          <p class="display-text">
             {{ verification.awareOfPenalty }}
           </p>
         </li>
@@ -73,7 +91,7 @@
           <label for="exampleFormControlSelect2"
             >Was the customer double verified? i.e office/shop and home</label
           >
-          <p class="font-weight-bolder text-success">
+          <p class="display-text">
             {{ verification.locationDoubleChecked }}
           </p>
         </li>
@@ -84,7 +102,7 @@
             it look? Is it obvious the customer lives there? Family pictures ?
             business name?</label
           >
-          <p class="font-weight-bolder text-success">
+          <p class="display-text">
             {{ verification.natureOfLocation }}
           </p>
         </li>
@@ -93,7 +111,7 @@
           <label for="exampleFormControlTextarea1"
             >What was the feedback from the neighbour?</label
           >
-          <p class="font-weight-bolder text-success">
+          <p class="display-text">
             {{ verification.feedbackFromNeighbor }}
           </p>
         </li>
@@ -103,21 +121,21 @@
             >How long has the customer lived there, worked there or had their
             business there? Based on feedback from neighbour?</label
           >
-          <p class="font-weight-bolder text-success">
+          <p class="display-text">
             {{ verification.howLongInLocation }}
           </p>
         </li>
 
         <li class="list-group-item my-3">
           <label for="checklist">Date of verification</label>
-          <p class="font-weight-bolder text-success">
+          <p class="display-text">
             {{ verification.dateVerified }}
           </p>
         </li>
 
         <li class="list-group-item my-3">
           <label for="checklist">Verification was done by?</label>
-          <p class="font-weight-bolder text-success">
+          <p class="display-text">
             {{ verification.verifiedBy }}
           </p>
         </li>
@@ -161,5 +179,11 @@ export default {
 .modal-body {
   height: 80vh;
   overflow-y: auto;
+}
+.display-text{
+    color: black;
+    font-size: 1.5em;
+    font-weight: 500;
+    text-transform: capitalize;
 }
 </style>

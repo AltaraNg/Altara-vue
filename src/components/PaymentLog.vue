@@ -151,7 +151,7 @@
                   v-validate="'required'"
                 >
                   <option disabled selected="selected">Owner</option>
-                  <option selected="selected" value>None</option>
+                  <option selected="selected" value="none">None</option>
                   <option :value="user.id" :key="user.id" v-for="user in users">
                     {{ user.full_name }}
                   </option>
@@ -436,7 +436,7 @@
                 </tr>
                 <tr class="table-separator" v-if="pPrice >0 && commission.status">
                   <th>Commission</th>
-                  <td>{{ commission.amount }}</td>
+                  <td>{{  $formatCurrency(commission.amount) }}</td>
                 </tr>
                 <tr class="table-separator">
                   <th>First Payment</th>
@@ -467,7 +467,7 @@
                 v-if="salesLogForm.discount !== '0_discount' && rPayment > 0"
                 :percent="selected_discount.percentage_discount"
               />
-              <p  v-if="pPrice >0 && commission.status" class="commission" >{{commission.percentage}} Commission</p>
+              <p  v-if="pPrice >0 && commission.status" class="commission" >{{commission.percentage}}%  Commission</p>
             </div>
           </div>
         </div>
@@ -502,6 +502,7 @@
                     <td>First Payment</td>
                     <td>Repayment</td>
                     <td>Financed By</td>
+                    <td v-if="pPrice >0 && commission.status">Commission</td>
                     <!-- <th>Branch</th> -->
                   </tr>
                   <tr>
@@ -547,6 +548,7 @@
                       </div>
                     </td>
                     <td>{{ financed_by }}</td>
+                    <td v-if="pPrice >0 && commission.status">{{  $formatCurrency(commission.amount) }}</td>
                     <!-- <td class="font-weight-bold">Ikoyi</td> -->
                   </tr>
                 </tbody>
@@ -606,7 +608,7 @@
               :amount="
                 computedPayment(
                   (fPayment + singleRepayment) * 100,
-                  fPayment * 100
+                  (fPayment + commission.amount) * 100
                 )
               "
               :email="customer_email"
@@ -748,8 +750,8 @@ export default {
       eligible: false,
       serial: false,
       renewalState: false,
-      isAltaraPay: false,
-      isAltaraCredit: true,
+      isAltaraPay: true,
+      isAltaraCredit: false,
       isCashNCarry: false,
       useCreditCard: false,
       transfer: false,
@@ -785,9 +787,10 @@ export default {
       biz_type:null,
       commission:{
         status:null,
-        amount:null,
+        amount:0,
         percentage:null
       },
+      salesCategories:null,
 
     }
   },
@@ -833,6 +836,11 @@ export default {
       },
       deep: true,
     },
+    'isAltaraCredit':{
+      handler(newData){
+        this.setSalesCategory(newData)
+      }
+    }
   },
 
   computed: {
@@ -915,9 +923,9 @@ export default {
         //if sales-category is "NoBS"
         this.businessTypes = this.biz_type.filter((business_type)=>{
           //return only this business type, 
-          return business_type.name.includes('No BS')
+          return business_type?.slug.includes('bs')
         })
-        this.salesLogForm.business_type_id.id == 16
+        this.salesLogForm?.business_type_id?.slug == "ap_no_bs_renewal_verve"
         
       }else{
         this.commission.status = false
@@ -928,6 +936,16 @@ export default {
       }
       } 
       
+    },
+    setSalesCategory(){
+      if(this.isAltaraCredit){
+        this.salesCategories =  this.salesCategories2.filter((obj)=>{
+            return obj.id !== 9
+          })
+          
+        }else{
+          this.salesCategories = this.salesCategories2
+        }
     },
     watchBusinessType() {
       this.productOrder =
@@ -959,6 +977,8 @@ export default {
           this.singleRepayment && this.addDownpayment
             ? this.singleRepayment
             : 0,
+        commission_percentage : this.pPrice >0 && this.commission.status ? this.commission.percentage :0,
+        commission_amount : this.pPrice >0 && this.commission.status ? this.commission.amount :0,
         order_type_id: orderType.id,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
@@ -1046,6 +1066,8 @@ export default {
           this.singleRepayment && this.addDownpayment
             ? this.singleRepayment
             : 0,
+        commission_percentage : this.pPrice >0 && this.commission.status ? this.commission.percentage :0,
+        commission_amount : this.pPrice >0 && this.commission.status ? this.commission.amount :0,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
         repayment_duration_id: this.salesLogForm.repayment_duration_id.id,
@@ -1147,7 +1169,6 @@ export default {
             x.down_payment_rate_id === data0.payment_type_id.id &&
             x.repayment_duration_id === data0.repayment_duration_id.id
         )[0]
-        // console.log('beginning' , data, this.salesLogForm.sales_category_id, this.isAltaraPay, this.salesLogForm.business_type_id.id )
         this.selected_discount = this.discounts.find(item => {
           return item.slug == this.salesLogForm.discount
         })
@@ -1181,19 +1202,17 @@ export default {
         
         if(this.isAltaraPay && this.salesLogForm.sales_category_id == 9){
           //check if on altara pay and New BS sales category
-          console.log('hello 1');
           
            if(this.salesLogForm.business_type_id.id == 16 || this.salesLogForm.business_type_id.id ==  15){
           //if biz-type is BS-new customer
-          this.commission.percentage = "6%"
+          this.commission.percentage = 6
           this.commission.amount =  this.pPrice * (6/100)
           
           //add a 6% commision on the downpayment
         }else if(this.salesLogForm.business_type_id.id == 17 || this.salesLogForm.business_type_id.id ==  18){
           //BS-renewal
-          this.commission.percentage = "3%"
+          this.commission.percentage = 3
           this.commission.amount =  this.pPrice * (3/100)
-          console.log(this.commission.amount, 'renewal customer');
         }
         }
 
@@ -1264,7 +1283,6 @@ export default {
         const filter = this.calculation.filter((obj)=>{
           return obj.business_type_id >=15
         })
-        console.log(filter);
         const unwrapped0 = JSON.stringify(unwrapped)
       } catch (err) {
         this.$displayErrorMessage(err)
@@ -1320,8 +1338,8 @@ export default {
     async getSalesCategory() {
       try {
         const fetchSalesCategory = await get(this.apiUrls.salesCategoryUrl)
-        this.salesCategories = fetchSalesCategory.data.data.data
-        
+         this.salesCategories2 = fetchSalesCategory.data.data.data
+         this.salesCategories = fetchSalesCategory.data.data.data
         
       } catch (err) {
         this.$displayErrorMessage(err)
@@ -1522,7 +1540,6 @@ export default {
           Flash.setError('Error: ' + err.message)
         })
     },
-
     validateEmail(mail) {
       {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
@@ -1547,42 +1564,14 @@ export default {
       this.addDownpayment = value
       this.stillShowToggle = true
     },
-
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value)
     },
   },
-  async mounted() {
-    if (this.customer.city === "") {
-      this.isAltaraCredit = false
-      this.isAltaraPay = false
-      this.isCashNCarry = true
 
-      this.salesLogForm.sales_category_id = 8
-      await this.getCalculation()
-      await this.getDiscounts()
-      await this.getOrderTypes()
-      await this.getBusinessTypes()
-      await this.getRepaymentDuration()
-      await this.getSalesCategory()
-      await this.getRepaymentCycles()
-      await this.getDownPaymentRates()
-
-      this.salesLogForm.payment_type_id = this.downPaymentRates.filter(
-        item => item.name === 'Hundred'
-      )[0]
-      this.salesLogForm.repayment_duration_id = this.repaymentDuration.filter(
-        item => item.name === 'six_months'
-      )[0]
-      this.salesLogForm.repayment_cycle_id = this.repaymentCyclesopt.filter(
-        item => item.name === 'monthly'
-      )[0]
-      this.salesLogForm.business_type_id = this.businessTypes.filter(
-        item => item.name === 'Cash n Carry'
-      )[0]
-      this.getUsers(8)
-    }
-  },
+  mounted(){
+    this.setSalesCategory()
+  }
 }
 </script>
 

@@ -434,6 +434,10 @@
                     >
                   </td>
                 </tr>
+                <tr class="table-separator" v-if="pPrice >0 && commission.status">
+                  <th>Commission</th>
+                  <td>{{ commission.amount }}</td>
+                </tr>
                 <tr class="table-separator">
                   <th>First Payment</th>
                   <td>
@@ -463,6 +467,7 @@
                 v-if="salesLogForm.discount !== '0_discount' && rPayment > 0"
                 :percent="selected_discount.percentage_discount"
               />
+              <p  v-if="pPrice >0 && commission.status" class="commission" >{{commission.percentage}} Commission</p>
             </div>
           </div>
         </div>
@@ -777,6 +782,13 @@ export default {
       financed_by: 'altara',
       flag: null,
       singleRepayment: null,
+      biz_type:null,
+      commission:{
+        status:null,
+        amount:null,
+        percentage:null
+      },
+
     }
   },
   async beforeMount() {
@@ -794,6 +806,7 @@ export default {
   watch: {
     'salesLogForm.sales_category_id': {
       handler(newData) {
+        this.watchSalesCategory(newData)
         this.watchBusinessType(newData)
         this.watchSalesLogForm(newData)
         this.watchCashPrice(newData)
@@ -894,6 +907,27 @@ export default {
         this.productOrder
           ? '5_discount'
           : '0_discount'
+    },
+    watchSalesCategory(){ 
+      if(this.isAltaraPay){
+        if(this.salesLogForm.sales_category_id == 9 ){
+        this.commission.status = true
+        //if sales-category is "NoBS"
+        this.businessTypes = this.biz_type.filter((business_type)=>{
+          //return only this business type, 
+          return business_type.name.includes('No BS')
+        })
+        this.salesLogForm.business_type_id.id == 16
+        
+      }else{
+        this.commission.status = false
+        this.businessTypes =this.biz_type.filter((business_type)=>{
+          //else return the rest
+          return !business_type.name.includes('No BS')
+        })
+      }
+      } 
+      
     },
     watchBusinessType() {
       this.productOrder =
@@ -1106,7 +1140,6 @@ export default {
             status_id: 1,
           },
         }
-
         const caly = this.calculation
         const data = caly.filter(
           x =>
@@ -1114,7 +1147,7 @@ export default {
             x.down_payment_rate_id === data0.payment_type_id.id &&
             x.repayment_duration_id === data0.repayment_duration_id.id
         )[0]
-
+        // console.log('beginning' , data, this.salesLogForm.sales_category_id, this.isAltaraPay, this.salesLogForm.business_type_id.id )
         this.selected_discount = this.discounts.find(item => {
           return item.slug == this.salesLogForm.discount
         })
@@ -1135,7 +1168,7 @@ export default {
                 data,
                 this.selected_discount?.percentage_discount
               )
-
+        
         this.repaymentCircle = data0.repayment_cycle_id.value
         this.rDuration = data0.repayment_duration_id.value
         this.fPayment = actualDownpayment
@@ -1143,9 +1176,26 @@ export default {
         this.pPrice = total
         this.test1 = false
         const months = this.rDuration / 30
-
         const cycle = Math.ceil(28 / this.repaymentCircle)
         const additionalRepayment = this.rPayment / (months * cycle)
+        
+        if(this.isAltaraPay && this.salesLogForm.sales_category_id == 9){
+          //check if on altara pay and New BS sales category
+          console.log('hello 1');
+          
+           if(this.salesLogForm.business_type_id.id == 16 || this.salesLogForm.business_type_id.id ==  15){
+          //if biz-type is BS-new customer
+          this.commission.percentage = "6%"
+          this.commission.amount =  this.pPrice * (6/100)
+          
+          //add a 6% commision on the downpayment
+        }else if(this.salesLogForm.business_type_id.id == 17 || this.salesLogForm.business_type_id.id ==  18){
+          //BS-renewal
+          this.commission.percentage = "3%"
+          this.commission.amount =  this.pPrice * (3/100)
+          console.log(this.commission.amount, 'renewal customer');
+        }
+        }
 
         if (
           (this.selectedProduct.price > 80000 &&
@@ -1209,6 +1259,12 @@ export default {
 
         const unwrapped = fetchGetCalclations.data.data
         this.calculation = unwrapped
+        
+        
+        const filter = this.calculation.filter((obj)=>{
+          return obj.business_type_id >=15
+        })
+        console.log(filter);
         const unwrapped0 = JSON.stringify(unwrapped)
       } catch (err) {
         this.$displayErrorMessage(err)
@@ -1265,6 +1321,8 @@ export default {
       try {
         const fetchSalesCategory = await get(this.apiUrls.salesCategoryUrl)
         this.salesCategories = fetchSalesCategory.data.data.data
+        
+        
       } catch (err) {
         this.$displayErrorMessage(err)
       }
@@ -1290,6 +1348,7 @@ export default {
       try {
         this.$LIPS(true)
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes)
+        this.biz_type= fetchBusinessTypes.data.data.data
         this.businessTypes = fetchBusinessTypes.data.data.data
         this.businessTypes = this.businessTypes.filter(item => {
           if (this.isAltaraCredit) {
@@ -1596,5 +1655,12 @@ export default {
   display: block;
   float: right;
   text-decoration: underline;
+}
+.commission{
+  font-weight:700;
+  font-size:15px;
+  text-align:center;
+  color:#074A74;
+  width:100%
 }
 </style>

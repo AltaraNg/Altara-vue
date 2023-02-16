@@ -330,7 +330,7 @@ export default {
     },
 
     branch() {
-      return `${this.customer.branch.description} ${this.customer.branch.name}`
+      return `${this.customer.branch?.description} ${this.customer.branch?.name}`
     },
 
     approved() {

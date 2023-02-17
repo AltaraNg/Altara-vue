@@ -1371,6 +1371,10 @@ export default {
       this.getCalc()
     },
     checkVerified(){
+      if(this.verificationList.length === 0){
+        this.allowBSSale = false;
+        return
+      }
       let checkList = JSON.parse(this.verificationList[0].input_data);
       if(checkList.homeVisited === 'yes' && checkList.guarantorHomeVisited === 'yes'){
         this.allowBSSale = true;

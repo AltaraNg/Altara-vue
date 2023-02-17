@@ -5,7 +5,8 @@
         <div class="card">
           <form class="card-body" @submit.prevent="previewAmortization">
             <div class="text-center">
-              <h2>{{ compHeader }}</h2>
+              <h2 class="mb-1">{{ compHeader }}</h2>
+              <small class="text-danger">{{ noBSVerbiage }}</small>
             </div>
             <div class="row">
               <div
@@ -664,7 +665,7 @@ import ToggleButton from './ToggleButton.vue'
 import CurrencyInput from './CurrencyInput.vue'
 
 export default {
-  props: { customerId: null, customer: null },
+  props: { customerId: null, customer: null, verificationList: null },
   components: {
     AutoComplete,
     discount,
@@ -675,6 +676,8 @@ export default {
   },
   data() {
     return {
+      noBSVerbiage: '',
+      allowBSSale: false,
       inputOptions: {
         currency: 'NGN',
         currencyDisplay: 'symbol',
@@ -917,7 +920,7 @@ export default {
           //return only this business type, 
           return business_type.name.includes('No BS')
         })
-        this.salesLogForm.business_type_id.id == 16
+        // this.salesLogForm.business_type_id.id == 16
         
       }else{
         this.commission.status = false
@@ -1181,7 +1184,6 @@ export default {
         
         if(this.isAltaraPay && this.salesLogForm.sales_category_id == 9){
           //check if on altara pay and New BS sales category
-          console.log('hello 1');
           
            if(this.salesLogForm.business_type_id.id == 16 || this.salesLogForm.business_type_id.id ==  15){
           //if biz-type is BS-new customer
@@ -1193,7 +1195,6 @@ export default {
           //BS-renewal
           this.commission.percentage = "3%"
           this.commission.amount =  this.pPrice * (3/100)
-          console.log(this.commission.amount, 'renewal customer');
         }
         }
 
@@ -1221,7 +1222,15 @@ export default {
         //     icon: "error",
         //     title: "Plan is not available"
         // });
+        if(this.salesLogForm.sales_category_id){
+          let salesCatName = this.salesCategories.find(item => item.id === this.salesLogForm.sales_category_id).name
+        if(salesCatName === 'No BS'){
+          this.test1 = this.allowBSSale
+        }
+        }
+        
         this.test1 = true
+
         this.repaymentCircle = '0'
         this.rDuration = '0'
         this.fPayment = '0'
@@ -1264,7 +1273,6 @@ export default {
         const filter = this.calculation.filter((obj)=>{
           return obj.business_type_id >=15
         })
-        console.log(filter);
         const unwrapped0 = JSON.stringify(unwrapped)
       } catch (err) {
         this.$displayErrorMessage(err)
@@ -1333,9 +1341,22 @@ export default {
       await get(`/api/sales-category/${salesCat}/roles`).then(res => {
         this.users = this.mergeArrays(res.data.data)
       })
+      let salesCatName = this.salesCategories.find(item => item.id === salesCat).name;
+      if(salesCatName === 'No BS'){
+        this.checkVerified();
+      }
 
       this.$LIPS(false)
       this.getCalc()
+    },
+    checkVerified(){
+      let checkList = JSON.parse(this.verificationList[0].input_data);
+      if(checkList.homeVisited === 'yes' && checkList.guarantorHomeVisited === 'yes'){
+        this.allowBSSale = true;
+      }else{
+        this.allowBSSale = false;
+        this.noBSVerbiage = "Customer's home address and guarantor's home address has not been verified!!!"
+      }
     },
     mergeArrays(parent) {
       let result = []

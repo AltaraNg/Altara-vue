@@ -361,6 +361,7 @@
               </div>
             </div>
             <PaymentLog
+              :verificationList="verificationList"
               :customerId="customer.id"
               @done="this.done"
               v-if="logger === 'payment'"
@@ -526,10 +527,7 @@
               </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
-              <div
-                class="tab-pane active "
-                v-if="verificationList.length > 0"
-              >
+              <div class="tab-pane active " v-if="verificationList.length > 0">
                 <div
                   class="mb-3 row attendance-item text-center"
                   v-for="(verification, index) in verificationList"
@@ -557,7 +555,7 @@
                   >
                     {{ formatDate(verification.created_at) }}
                   </div>
-                  
+
                   <div
                     class="
                     col-12 col-xs-3 col-md col-lg
@@ -566,10 +564,8 @@
 
                   "
                   >
-                   {{ JSON.parse(verification.input_data).verifiedBy }}
+                    {{ JSON.parse(verification.input_data).verifiedBy }}
                   </div>
-                 
-                 
 
                   <div
                     class="
@@ -582,7 +578,6 @@
                     <button
                       @click="displayActiveVerification(verification)"
                       class="btn status approved"
-                      
                     >
                       View
                     </button>
@@ -824,7 +819,7 @@
                             {{
                               Order.convertToName(
                                 repaymentMethod,
-                                'paymentMethods'
+                                "paymentMethods"
                               )
                             }}
                           </td>
@@ -837,7 +832,7 @@
                             key) in activeOrder.paymentBanks"
                             :key="key"
                           >
-                            {{ Order.convertToName(repaymentBank, 'banks') }}
+                            {{ Order.convertToName(repaymentBank, "banks") }}
                           </td>
                         </tr>
                       </tbody>
@@ -854,7 +849,7 @@
                         <th>
                           {{
                             $formatCurrency(
-                              $roundDownAmt(activeOrder.order['product_price'])
+                              $roundDownAmt(activeOrder.order["product_price"])
                             )
                           }}
                         </th>
@@ -874,7 +869,7 @@
                         <th>
                           {{
                             $formatCurrency(
-                              $roundDownAmt(activeOrder.order['down_payment'])
+                              $roundDownAmt(activeOrder.order["down_payment"])
                             )
                           }}
                         </th>
@@ -1440,35 +1435,35 @@
   </transition>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-import Vue from 'vue'
-import { log } from '../../../utilities/log'
-import Auth from '../../../utilities/auth'
-import Flash from '../../../utilities/flash'
-import { get, post, put } from '../../../utilities/api'
-import CustomHeader from '../../../components/customHeader'
-import AutoComplete from '../../../components/AutoComplete'
-import NewOrderAmortization from '../../../components/NewOrderAmortization'
-import CustomerProfile from '../../../components/CustomerProfile'
-import { Order, OrderWithPromiseCall } from '../../../utilities/Amortization'
-import CustomSMSButton from '../../../components/CustomSMSButton/CustomSMSButton'
-import AutocompleteSearch from '../../../components/AutocompleteSearch/AutocompleteSearch'
+import { mapGetters } from "vuex"
+import Vue from "vue"
+import { log } from "../../../utilities/log"
+import Auth from "../../../utilities/auth"
+import Flash from "../../../utilities/flash"
+import { get, post, put } from "../../../utilities/api"
+import CustomHeader from "../../../components/customHeader"
+import AutoComplete from "../../../components/AutoComplete"
+import NewOrderAmortization from "../../../components/NewOrderAmortization"
+import CustomerProfile from "../../../components/CustomerProfile"
+import { Order, OrderWithPromiseCall } from "../../../utilities/Amortization"
+import CustomSMSButton from "../../../components/CustomSMSButton/CustomSMSButton"
+import AutocompleteSearch from "../../../components/AutocompleteSearch/AutocompleteSearch"
 import {
   getOrderStatus,
   getOrderStatusClass,
-} from '../../../components/order/orderStatusCssClass'
-import ViewVerificationCheckList from '../../../components/modals/ViewVerificationCheckList.vue'
-import LogForm from '../../../components/LogForm'
-import PaymentLog from '../../../components/PaymentLog'
-import DatePicker from 'vue2-datepicker'
-import 'vue2-datepicker/index.css'
-import Discount from '../../../components/discount.vue'
-import paystack from 'vue-paystack'
-import PaystackModal from '../../../components/Paystack/PaystackModal'
-import CustomDirectDebitModalButton from '../../../components/Paystack/CustomDirectDebitModalButton.vue'
-import { EventBus } from '../../../utilities/event-bus'
-import Roles from '../../../utilities/roles'
-import { selectType } from '../../../utilities/log.js'
+} from "../../../components/order/orderStatusCssClass"
+import ViewVerificationCheckList from "../../../components/modals/ViewVerificationCheckList.vue"
+import LogForm from "../../../components/LogForm"
+import PaymentLog from "../../../components/PaymentLog"
+import DatePicker from "vue2-datepicker"
+import "vue2-datepicker/index.css"
+import Discount from "../../../components/discount.vue"
+import paystack from "vue-paystack"
+import PaystackModal from "../../../components/Paystack/PaystackModal"
+import CustomDirectDebitModalButton from "../../../components/Paystack/CustomDirectDebitModalButton.vue"
+import { EventBus } from "../../../utilities/event-bus"
+import Roles from "../../../utilities/roles"
+import { selectType } from "../../../utilities/log.js"
 export default {
   components: {
     CustomHeader,
@@ -1496,14 +1491,14 @@ export default {
       states: {
         order: true,
         recommendation: false,
-        verification: false
+        verification: false,
       },
       editOrder: {},
       Order: Order,
       newOrder: false,
       customer: null,
       order: {},
-      customer_id: '',
+      customer_id: "",
       user: {
         name: Auth.state.user_name,
         id: Auth.state.user_id,
@@ -1517,30 +1512,26 @@ export default {
       activeOrder: null,
       authorization_code: null,
       headers: [
-        'Date',
-        'Order No.',
-        'Product Name',
-        'Total Product Price',
-        'Type',
-        'Customer Type',
-        'Repayment Plans',
+        "Date",
+        "Order No.",
+        "Product Name",
+        "Total Product Price",
+        "Type",
+        "Customer Type",
+        "Repayment Plans",
       ],
       recommendationHeaders: [
-        'Date',
-        'Type',
-        'Product Price',
-        'Duration',
-        'Recommended Plans',
-        'Input Data',
+        "Date",
+        "Type",
+        "Product Price",
+        "Duration",
+        "Recommended Plans",
+        "Input Data",
       ],
-      verificationHeaders: [
-        'Date',
-        'Verified By',
-        'More Information',
-      ],
+      verificationHeaders: ["Date", "Verified By", "More Information"],
       products: [],
       paymentForm: { payments: [] },
-      paymentFormType: 'add',
+      paymentFormType: "add",
       showOrdermodal: false,
       currentOrder: {},
       apiURL: {
@@ -1553,10 +1544,10 @@ export default {
       showPaystack: false,
       ShowCustomDirectDebitModal: false,
       verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
-      paystack_auth_code_url: '/api/pay_stack_auth_code',
-      paystackkey: process.env.VUE_APP_PAYSTACK_KEY || '',
-      paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || '',
-      role: '',
+      paystack_auth_code_url: "/api/pay_stack_auth_code",
+      paystackkey: process.env.VUE_APP_PAYSTACK_KEY || "",
+      paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || "",
+      role: "",
 
       paystackReference: null,
     }
@@ -1584,8 +1575,8 @@ export default {
           this.$LIPS(false)
 
           this.$swal({
-            icon: 'success',
-            title: 'Order Successfully Updated',
+            icon: "success",
+            title: "Order Successfully Updated",
           })
 
           let x = this.customer.new_orders.findIndex(elem => {
@@ -1593,18 +1584,18 @@ export default {
           })
           Vue.set(this.customer.new_orders, x, res.data.data)
           this.currentOrder = {}
-          return $(`#updateOrderModal`).modal('toggle')
+          return $(`#updateOrderModal`).modal("toggle")
         })
         .catch(() => {
           this.$LIPS(false)
-          Flash.setError('Error submitting form')
+          Flash.setError("Error submitting form")
         })
     },
     updateOrder(order) {
       if (this.canEditPayment) {
         this.showOrdermodal = true
         this.currentOrder = order
-        return $(`#updateOrderModal`).modal('toggle')
+        return $(`#updateOrderModal`).modal("toggle")
       }
     },
     async updateView(data) {
@@ -1612,7 +1603,7 @@ export default {
       if (!!customer.length) {
         customer = customer[0]
         !customer.document &&
-          (customer.document = { id_card_url: '', passport_url: '' })
+          (customer.document = { id_card_url: "", passport_url: "" })
         this.user.branch = user.branch_id
         this.customer = customer
         this.customer.orders = customer.orders
@@ -1626,7 +1617,7 @@ export default {
             })
           : []
         this.show = true
-      } else Flash.setError('Customer not found.', 5000)
+      } else Flash.setError("Customer not found.", 5000)
       this.$LIPS(false)
     },
     async getLateFee(order) {
@@ -1643,7 +1634,6 @@ export default {
     getRecommendationList(id) {
       get(`/api/customer-recommendation/${id}`)
         .then(res => {
-          
           this.recommendationList = res.data.data
           this.verificationList = this.recommendationList.filter(item => {
             return item.type === "verification"
@@ -1652,11 +1642,11 @@ export default {
           this.recommendationList = this.recommendationList.filter(item => {
             return item.type == "formal" || item.type == "informal"
           })
-          this.recommendationList.reverse() 
+          this.recommendationList.reverse()
         })
         .catch(e => {
           this.$LIPS(false)
-          Flash.setError('Error Fetching customer detail')
+          Flash.setError("Error Fetching customer detail")
         })
     },
     async processForm(id) {
@@ -1671,9 +1661,9 @@ export default {
         })
         .catch(e => {
           this.$LIPS(false)
-          Flash.setError('Error Fetching customer detail')
+          Flash.setError("Error Fetching customer detail")
         })
-      this.$LIPS(false);
+      this.$LIPS(false)
     },
 
     calcDebt(amortization) {
@@ -1688,7 +1678,7 @@ export default {
     displayActiveRecommendation(recommendation) {
       this.activeRecommendation = recommendation
       this.displayMore = true
-      return $(`#recommendation`).modal('toggle')
+      return $(`#recommendation`).modal("toggle")
     },
 
     displayActiveVerification(verification) {
@@ -1696,13 +1686,13 @@ export default {
         ViewVerificationCheckList,
         { verification: JSON.parse(verification.input_data) },
         {
-          name: 'verificationView',
-          classes: ['w-50', 'overflow-auto'],
+          name: "verificationView",
+          classes: ["w-50", "overflow-auto"],
           adaptive: true,
           resizable: true,
           draggable: true,
-          height: 'auto',
-          width: '50%',
+          height: "auto",
+          width: "50%",
           clickToClose: true,
         }
       )
@@ -1715,7 +1705,7 @@ export default {
         this.newOrder = true
         this.order = order
         if (order.amortization.length === 0) {
-          alert('No amortization to view')
+          alert("No amortization to view")
           return
         }
       } else {
@@ -1725,7 +1715,7 @@ export default {
       }
 
       this.showModalContent = true
-      return $(`#amortization`).modal('toggle')
+      return $(`#amortization`).modal("toggle")
     },
 
     addPaymentForm(type) {
@@ -1747,7 +1737,7 @@ export default {
         if (type !== this.paymentFormType) this.paymentForm.payments = []
 
         if (
-          type === 'edit' &&
+          type === "edit" &&
           (initLevel < 1 || this.paymentForm.payments.length >= initLevel)
         )
           return
@@ -1758,19 +1748,19 @@ export default {
         let newPaymentData = {
           _pay: this.order.amortization[initLevel].expected_amount,
           _date: this.$getDate(),
-          _col: '',
-          column: '',
+          _col: "",
+          column: "",
         }
 
-        if (type === 'add') {
-          newPaymentData._payment_bank = ''
-          newPaymentData._payment_method = ''
+        if (type === "add") {
+          newPaymentData._payment_bank = ""
+          newPaymentData._payment_method = ""
         }
 
         this.paymentForm.payments.push(newPaymentData)
       } else {
         this.paymentMeths = this.getPaymentMethods.filter(item => {
-          return item.name !== 'direct-debit'
+          return item.name !== "direct-debit"
         })
 
         const level = this.activeOrder.repaymentLevel
@@ -1780,7 +1770,7 @@ export default {
 
         if (type !== this.paymentFormType) this.paymentForm.payments = []
         if (
-          type === 'edit' &&
+          type === "edit" &&
           (level < 1 || this.paymentForm.payments.length >= level)
         )
           return
@@ -1792,13 +1782,13 @@ export default {
         let newPaymentData = {
           _pay: this.activeOrder.amountsToBePaid[0],
           _date: this.$getDate(),
-          _col: '',
-          column: '',
+          _col: "",
+          column: "",
         }
 
-        if (type === 'add') {
-          newPaymentData._payment_bank = ''
-          newPaymentData._payment_method = ''
+        if (type === "add") {
+          newPaymentData._payment_bank = ""
+          newPaymentData._payment_method = ""
         }
 
         this.paymentForm.payments.push(newPaymentData)
@@ -1830,7 +1820,7 @@ export default {
         let next = this.activeOrder.repaymentLevel + index + 1
         this.paymentForm.payments[index]._col = next
         this.paymentForm.payments[index].column =
-          this.$getColumn(next) + ' Repayment'
+          this.$getColumn(next) + " Repayment"
       })
     },
 
@@ -1842,7 +1832,7 @@ export default {
           col = this.$getColumn(payment._col)
         obj[`${col}_pay`] = payment._pay
         obj[`${col}_date`] = payment._date
-        if (this.paymentFormType === 'add') {
+        if (this.paymentFormType === "add") {
           obj[`${col}_payment_bank`] = payment._payment_bank
           obj[`${col}_payment_method`] = payment._payment_method
         }
@@ -1851,12 +1841,12 @@ export default {
       this.activeOrder.payments = payments
       !$.isEmptyObject(payments)
         ? this.savePayments(index)
-        : Flash.setError('You have not added any payment.')
+        : Flash.setError("You have not added any payment.")
     },
     updateAmmo(armo) {
       this.showModal = true
       this.ammo_item = armo
-      return $(`#viewEdit`).modal('toggle')
+      return $(`#viewEdit`).modal("toggle")
     },
     save() {
       this.$LIPS(true)
@@ -1867,17 +1857,17 @@ export default {
       put(`/api/amortization/${this.ammo_item.id}`, data)
         .then(res => {
           this.$swal({
-            icon: 'success',
-            title: 'Payment Updated Successfully',
+            icon: "success",
+            title: "Payment Updated Successfully",
           })
 
           this.$LIPS(false)
         })
         .catch(err => {
-          Flash.setError('Unable to update payment')
+          Flash.setError("Unable to update payment")
         })
         .finally(() => {
-          return $(`#viewEdit`).modal('toggle')
+          return $(`#viewEdit`).modal("toggle")
         })
     },
 
@@ -1885,8 +1875,8 @@ export default {
       if (!this.canAddPayment) return
       this.$LIPS(true)
       let type, data, order, orderIndex
-      if (this.activeOrder.count === 6) type = 'formal'
-      if (this.activeOrder.count === 12) type = 'informal'
+      if (this.activeOrder.count === 6) type = "formal"
+      if (this.activeOrder.count === 12) type = "informal"
       data = {
         payments: this.activeOrder.payments,
         type,
@@ -1916,7 +1906,7 @@ export default {
           }
         })
         .catch(() =>
-          Flash.setError('Error adding payment! Please try again later.')
+          Flash.setError("Error adding payment! Please try again later.")
         )
     },
 
@@ -1931,8 +1921,8 @@ export default {
 
     logAddedPayment(data) {
       let paymentsMade = this.paymentForm.payments
-          .map(pmt => pmt.column.replace(/ /g, '_'))
-          .join(' '),
+          .map(pmt => pmt.column.replace(/ /g, "_"))
+          .join(" "),
         desc = `${paymentsMade}. Order: ID: ${data.repayment_id}. Customer ID: ${this.customer_id}`
       return log(`Payment(s) added`, desc)
     },
@@ -1946,7 +1936,7 @@ export default {
     showDiscount(order) {
       if (
         order.order_discount &&
-        order?.order_discount?.slug !== '0_discount'
+        order?.order_discount?.slug !== "0_discount"
       ) {
         return true
       } else {
@@ -1965,10 +1955,10 @@ export default {
       Vue.set(this.$data.customer.new_orders, index, element)
     },
     computeDownpayment(result) {
-      return typeof JSON.parse(result.result).ans == 'object' &&
+      return typeof JSON.parse(result.result).ans == "object" &&
         JSON.parse(result.result).ans[1] == 0
         ? `${JSON.parse(result.result).ans[0]}% downpayment`
-        : typeof JSON.parse(result.result).ans == 'string'
+        : typeof JSON.parse(result.result).ans == "string"
         ? JSON.parse(result.result).ans
         : `${JSON.parse(result.result).ans[0]}% downpayment and ${
             JSON.parse(result.result).ans[1]
@@ -1978,10 +1968,10 @@ export default {
 
   computed: {
     ...mapGetters([
-      'getBanks',
-      'getPaymentMethods',
-      'auth',
-      'getAuthUserDetails',
+      "getBanks",
+      "getPaymentMethods",
+      "auth",
+      "getAuthUserDetails",
     ]),
 
     check() {
@@ -1993,31 +1983,31 @@ export default {
     },
 
     canAddPayment() {
-      if (this.auth('FSLLead')) return true
+      if (this.auth("FSLLead")) return true
       return (
-        this.auth('supervisor') &&
+        this.auth("supervisor") &&
         this.user.branch === this.activeOrder.branch.id
       )
     },
 
     canEditPayment() {
-      if (this.auth('EditPayment')) return true
+      if (this.auth("EditPayment")) return true
     },
-    canLogDD(){
-      if(this.auth('LogDirectDebit')) return true
-    }
+    canLogDD() {
+      if (this.auth("LogDirectDebit")) return true
+    },
   },
 
   created() {
-    EventBus.$on('reloadUser', this.updateCustomerData)
-    EventBus.$on('updateUser', this.processForm)
+    EventBus.$on("reloadUser", this.updateCustomerData)
+    EventBus.$on("updateUser", this.processForm)
   },
 
   async mounted() {
     this.$prepareBanks()
     this.$prepareBranches()
     this.$preparePaymentMethods()
-    this.role = parseInt(localStorage.getItem('role'))
+    this.role = parseInt(localStorage.getItem("role"))
   },
 }
 </script>

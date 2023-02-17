@@ -996,11 +996,11 @@ export default {
           this.singleRepayment && this.addDownpayment
             ? this.singleRepayment
             : 0,
-        commission_percentage:
+        commitment_percentage:
           this.pPrice > 0 && this.commitment.status
             ? this.commitment.percentage
             : 0,
-        commission_amount:
+        commitment_amount:
           this.pPrice > 0 && this.commitment.status
             ? this.commitment.amount
             : 0,
@@ -1091,11 +1091,11 @@ export default {
           this.singleRepayment && this.addDownpayment
             ? this.singleRepayment
             : 0,
-        commission_percentage:
+        commitment_percentage:
           this.pPrice > 0 && this.commitment.status
             ? this.commitment.percentage
             : 0,
-        commission_amount:
+        commitment_amount:
           this.pPrice > 0 && this.commitment.status
             ? this.commitment.amount
             : 0,

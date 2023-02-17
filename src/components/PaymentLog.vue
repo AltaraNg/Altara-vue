@@ -192,7 +192,7 @@
                   v-validate="'required'"
                 />
               </div>
-              <div class="col form-group" v-if="!isCashNCarry">
+              <div class="col form-group" v-if="!isCashNCarry" :class="commitment.status ? 'disable' :''">
                 <label for="amount" class="form-control-label"
                   >Repayment Duration</label
                 >
@@ -216,7 +216,7 @@
                 </select>
               </div>
 
-              <div class="col form-group" v-if="!isCashNCarry">
+              <div class="col form-group" v-if="!isCashNCarry" :class="commitment.status ? 'disable' :''">
                 <label for="amount" class="form-control-label"
                   >Downpayment Rates</label
                 >
@@ -435,10 +435,10 @@
                 </tr>
                 <tr
                   class="table-separator"
-                  v-if="pPrice > 0 && commission.status"
+                  v-if="pPrice > 0 && commitment.status"
                 >
-                  <th>Commission</th>
-                  <td>{{ $formatCurrency(commission.amount) }}</td>
+                  <th>Commitment</th>
+                  <td>{{ $formatCurrency(commitment.amount) }}</td>
                 </tr>
                 <tr class="table-separator">
                   <th>First Payment</th>
@@ -469,8 +469,8 @@
                 v-if="salesLogForm.discount !== '0_discount' && rPayment > 0"
                 :percent="selected_discount.percentage_discount"
               />
-              <p v-if="pPrice > 0 && commission.status" class="commission">
-                {{ commission.percentage }}% Commission
+              <p v-if="pPrice > 0 && commitment.status" class="commitment">
+                {{ commitment.percentage }}% Commitment
               </p>
             </div>
           </div>
@@ -506,7 +506,7 @@
                     <td>First Payment</td>
                     <td>Repayment</td>
                     <td>Financed By</td>
-                    <td v-if="pPrice > 0 && commission.status">Commission</td>
+                    <td v-if="pPrice > 0 && commitment.status">commitment</td>
                     <!-- <th>Branch</th> -->
                   </tr>
                   <tr>
@@ -552,8 +552,8 @@
                       </div>
                     </td>
                     <td>{{ financed_by }}</td>
-                    <td v-if="pPrice > 0 && commission.status">
-                      {{ $formatCurrency(commission.amount) }}
+                    <td v-if="pPrice > 0 && commitment.status">
+                      {{ $formatCurrency(commitment.amount) }}
                     </td>
                     <!-- <td class="font-weight-bold">Ikoyi</td> -->
                   </tr>
@@ -614,7 +614,7 @@
               :amount="
                 computedPayment(
                   (fPayment + singleRepayment) * 100,
-                  (fPayment + commission.amount) * 100
+                  (fPayment + commitment.amount) * 100
                 )
               "
               :email="customer_email"
@@ -793,7 +793,7 @@ export default {
       flag: null,
       singleRepayment: null,
       biz_type: null,
-      commission: {
+      commitment: {
         status: null,
         amount: 0,
         percentage: null,
@@ -926,7 +926,14 @@ export default {
     watchSalesCategory() {
       if (this.isAltaraPay) {
         if (this.salesLogForm.sales_category_id == 9) {
-          this.commission.status = true
+          this.salesLogForm.business_type_id = null
+          this.commitment.status = true
+          this.salesLogForm.repayment_duration_id = this.repaymentDuration.find((duration)=>{
+            return duration.name == "six_months"
+          });
+           this.salesLogForm.payment_type_id = this.downPaymentRatesFiltered.find((rate)=>{
+            return rate.name == "twenty"
+          });
           //if sales-category is "NoBS"
           this.businessTypes = this.biz_type.filter(business_type => {
             //return only this business type,
@@ -934,7 +941,8 @@ export default {
           })
           this.salesLogForm?.business_type_id?.slug == "ap_no_bs_renewal_verve"
         } else {
-          this.commission.status = false
+          this.salesLogForm.business_type_id = null
+          this.commitment.status = false
           this.businessTypes = this.biz_type.filter(business_type => {
             //else return the rest
             return !business_type.name.includes("No BS")
@@ -989,12 +997,12 @@ export default {
             ? this.singleRepayment
             : 0,
         commission_percentage:
-          this.pPrice > 0 && this.commission.status
-            ? this.commission.percentage
+          this.pPrice > 0 && this.commitment.status
+            ? this.commitment.percentage
             : 0,
         commission_amount:
-          this.pPrice > 0 && this.commission.status
-            ? this.commission.amount
+          this.pPrice > 0 && this.commitment.status
+            ? this.commitment.amount
             : 0,
         order_type_id: orderType.id,
         customer_id: this.customerId,
@@ -1084,12 +1092,12 @@ export default {
             ? this.singleRepayment
             : 0,
         commission_percentage:
-          this.pPrice > 0 && this.commission.status
-            ? this.commission.percentage
+          this.pPrice > 0 && this.commitment.status
+            ? this.commitment.percentage
             : 0,
         commission_amount:
-          this.pPrice > 0 && this.commission.status
-            ? this.commission.amount
+          this.pPrice > 0 && this.commitment.status
+            ? this.commitment.amount
             : 0,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
@@ -1222,7 +1230,6 @@ export default {
         const months = this.rDuration / 30
         const cycle = Math.ceil(28 / this.repaymentCircle)
         const additionalRepayment = this.rPayment / (months * cycle)
-
         if (this.isAltaraPay && this.salesLogForm.sales_category_id == 9) {
           //check if on altara pay and New BS sales category
 
@@ -1231,8 +1238,8 @@ export default {
             this.salesLogForm.business_type_id.id == 15
           ) {
             //if biz-type is BS-new customer
-            this.commission.percentage = 6
-            this.commission.amount = this.pPrice * (6 / 100)
+            this.commitment.percentage = 6
+            this.commitment.amount = this.selectedProduct.price * (6 / 100)
 
             //add a 6% commision on the downpayment
           } else if (
@@ -1240,8 +1247,8 @@ export default {
             this.salesLogForm.business_type_id.id == 18
           ) {
             //BS-renewal
-            this.commission.percentage = 3
-            this.commission.amount = this.pPrice * (3 / 100)
+            this.commitment.percentage = 3
+            this.commitment.amount = this.selectedProduct.price * (3 / 100)
           }
         }
 
@@ -1404,6 +1411,7 @@ export default {
     checkVerified() {
       if (this.verificationList.length === 0) {
         this.allowBSSale = false
+        
         this.noBSVerbiage =
           "Customer's home address and guarantor's home address has not been verified!!!"
 
@@ -1711,11 +1719,14 @@ export default {
   float: right;
   text-decoration: underline;
 }
-.commission {
+.commitment {
   font-weight: 700;
   font-size: 15px;
   text-align: center;
   color: #074a74;
   width: 100%;
+}
+.disable{
+  pointer-events:none;
 }
 </style>

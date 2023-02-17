@@ -380,6 +380,7 @@ export default {
                 title: `verification saved successfully`,
               })
               this.verificationData = {}
+              this.$modal.hide('verificationForm')
             }
           } catch (err) {
             this.$swal({

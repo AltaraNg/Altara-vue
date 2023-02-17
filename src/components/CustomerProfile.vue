@@ -378,6 +378,11 @@ export default {
           height: 'auto',
           width: '50%',
           clickToClose: true,
+        },
+        {
+          closed: event => {
+            console.log(event)
+          }
         }
       )
     },

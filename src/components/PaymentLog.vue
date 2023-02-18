@@ -1227,6 +1227,17 @@ export default {
         this.rPayment = rePayment
         this.pPrice = total
         this.test1 = false
+
+        //gray out button if not verified for NoBS
+        if (this.salesLogForm.sales_category_id) {
+          let salesCatName = this.salesCategories.find(
+            item => item.id === this.salesLogForm.sales_category_id
+          ).name
+          if (salesCatName === "No BS" && !this.allowBSSale) {
+            throw new Error('Not Verified')
+          }
+        }
+
         const months = this.rDuration / 30
         const cycle = Math.ceil(28 / this.repaymentCircle)
         const additionalRepayment = this.rPayment / (months * cycle)
@@ -1276,16 +1287,7 @@ export default {
         //     icon: "error",
         //     title: "Plan is not available"
         // });
-        if (this.salesLogForm.sales_category_id) {
-          let salesCatName = this.salesCategories.find(
-            item => item.id === this.salesLogForm.sales_category_id
-          ).name
-          if (salesCatName === "No BS") {
-            this.test1 = this.allowBSSale
-          }
-        }
-
-        this.test1 = true
+       this.test1 = true
 
         this.repaymentCircle = "0"
         this.rDuration = "0"

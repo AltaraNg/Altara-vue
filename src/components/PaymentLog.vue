@@ -1187,6 +1187,7 @@ export default {
       }
     },
     getCalc() {
+      this.watchCashPrice()
       this.showDiscount = this.salesLogForm?.business_type_id?.slug=='ap_products'? true:false
       try {
         this.salesLogForm.customer_id = this.customerId

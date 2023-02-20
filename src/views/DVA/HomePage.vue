@@ -27,6 +27,12 @@ export default {
           desc: "For Verification of registered customers",
         },
         {
+          url: "verification-new",
+          title: "Customer Verification Revamped",
+          url_c: "Verify Registered Customer!",
+          desc: "For Verification of registered customers",
+        },
+        {
           url: "customer/update",
           title: "Customer Update",
           url_c: "Update customers details!",

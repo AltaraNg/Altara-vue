@@ -80,7 +80,7 @@
                 />
               </div>
 
-              <div class="col form-group" v-if="isAltaraPay">
+              <div class="col form-group" v-if="isAltaraPay" :class="commitment.status ? 'disable' :''">
                 <label for="amount" class="form-control-label"
                   >Collection Channel</label
                 >
@@ -758,8 +758,8 @@ export default {
       eligible: false,
       serial: false,
       renewalState: false,
-      isAltaraPay: true,
-      isAltaraCredit: false,
+      isAltaraPay: false,
+      isAltaraCredit: true,
       isCashNCarry: false,
       useCreditCard: false,
       transfer: false,
@@ -923,21 +923,24 @@ export default {
           ? "5_discount"
           : "0_discount"
     },
+    selectItem(itemArray, matchName){
+     return itemArray.find((object)=>{
+            return object.name == matchName
+          });
+    },
     watchSalesCategory() {
       if (this.isAltaraPay) {
         if (this.salesLogForm.sales_category_id == 9) {
           this.salesLogForm.business_type_id = null
           this.commitment.status = true
-          this.salesLogForm.repayment_duration_id = this.repaymentDuration.find((duration)=>{
-            return duration.name == "six_months"
-          });
-           this.salesLogForm.payment_type_id = this.downPaymentRatesFiltered.find((rate)=>{
-            return rate.name == "twenty"
-          });
+          this.salesLogForm.repayment_duration_id = this.selectItem(this.repaymentDuration, "six_months")
+           this.salesLogForm.payment_type_id = this.selectItem(this.downPaymentRatesFiltered,  "twenty")
+           this.salesLogForm.payment_gateway_id = this.selectItem(this.paymentGateways, "paystack").id
+           
           //if sales-category is "NoBS"
           this.businessTypes = this.biz_type.filter(business_type => {
             //return only this business type,
-            return business_type?.slug.includes("bs")
+                        return business_type?.slug.includes("bs")
           })
           this.salesLogForm?.business_type_id?.slug == "ap_no_bs_renewal_verve"
         } else {
@@ -1207,6 +1210,7 @@ export default {
           data0.business_type_id.slug.includes("cash_loan") ||
           data0.business_type_id.slug.includes("ap_rentals") ||
           data0.business_type_id.slug.includes("ap_super") ||
+          data0.business_type_id.slug.includes("bs") ||
           data0.business_type_id.slug.includes("ap_starter")
             ? cashLoan(
                 this.selectedProduct.price,
@@ -1385,6 +1389,9 @@ export default {
         const fetchSalesCategory = await get(this.apiUrls.salesCategoryUrl)
         this.salesCategories2 = fetchSalesCategory.data.data.data
         this.salesCategories = fetchSalesCategory.data.data.data
+            this.salesCategories = this.salesCategories2.filter(obj => {
+          return obj.id !== 9
+        })
       } catch (err) {
         this.$displayErrorMessage(err)
       }

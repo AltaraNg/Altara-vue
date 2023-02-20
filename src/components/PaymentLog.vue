@@ -383,7 +383,7 @@
                     class="btn bg-default"
                     :disabled="canPerformAction"
                     type="submit"
-                    v-on:click="getCalc()"
+                   
                   >
                     View Amortization
                   </button>

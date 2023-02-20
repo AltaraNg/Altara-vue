@@ -949,7 +949,7 @@ export default {
           this.commitment.status = false
           this.businessTypes = this.biz_type.filter(business_type => {
             //else return the rest
-            return !business_type.name.includes("No BS")
+            return !business_type.name.includes("No BS") &&  business_type.slug.includes("ap_")
           })
         }
       }

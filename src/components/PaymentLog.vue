@@ -1260,7 +1260,7 @@ export default {
             //add a 6% commision on the downpayment
           } else if (
             this.salesLogForm.business_type_id.slug == 'ap_no_bs_renewal_non_verve' ||
-            this.salesLogForm.business_type_id.id == 'ap_no_bs_renewal_verve'
+            this.salesLogForm.business_type_id.slug == 'ap_no_bs_renewal_verve'
           ) {
             //BS-renewal
             this.commitment.percentage = 3

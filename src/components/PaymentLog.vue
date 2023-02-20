@@ -1653,9 +1653,7 @@ export default {
     },
   },
 
-  mounted() {
-    this.setSalesCategory()
-  },
+ 
 }
 </script>
 

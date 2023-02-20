@@ -260,7 +260,7 @@
                   </option>
                 </select>
               </div>
-              <div class="col form-group" v-if="isAltaraPay && productOrder">
+              <div class="col form-group" v-if="isAltaraPay && showDiscount">
                 <label for="amount" class="form-control-label">Discounts</label>
                 <select
                   @change="getCalc()"
@@ -799,6 +799,7 @@ export default {
         percentage: null,
       },
       salesCategories: null,
+      showDiscount:null
     }
   },
   async beforeMount() {
@@ -1186,6 +1187,7 @@ export default {
       }
     },
     getCalc() {
+      this.showDiscount = this.salesLogForm?.business_type_id?.slug=='ap_products'? true:false
       try {
         this.salesLogForm.customer_id = this.customerId
         const data0 = {

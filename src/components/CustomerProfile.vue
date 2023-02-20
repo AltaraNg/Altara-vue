@@ -381,7 +381,6 @@ export default {
         },
         {
           closed: event => {
-            console.log(event)
           }
         }
       )

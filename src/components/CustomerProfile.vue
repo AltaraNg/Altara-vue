@@ -371,7 +371,7 @@ export default {
         { customer: this.customer },
         {
           name: 'verificationForm',
-          classes: ['w-50', 'overflow-auto'],
+          classes: ['w-50', 'overflow-hidden'],
           adaptive: true,
           resizable: true,
           draggable: true,

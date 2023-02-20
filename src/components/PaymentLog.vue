@@ -1233,14 +1233,14 @@ export default {
         this.test1 = false
 
         //gray out button if not verified for NoBS
-        if (this.salesLogForm.sales_category_id) {
-          let salesCatName = this.salesCategories.find(
-            item => item.id === this.salesLogForm.sales_category_id
-          ).name
-          if (salesCatName === "No BS" && !this.allowBSSale) {
-            throw new Error('Not Verified')
-          }
-        }
+        // if (this.salesLogForm.sales_category_id) {
+        //   let salesCatName = this.salesCategories.find(
+        //     item => item.id === this.salesLogForm.sales_category_id
+        //   ).name
+        //   if (salesCatName === "No BS" && !this.allowBSSale) {
+        //     throw new Error('Not Verified')
+        //   }
+        // }
 
         const months = this.rDuration / 30
         const cycle = Math.ceil(28 / this.repaymentCircle)
@@ -1407,7 +1407,7 @@ export default {
       let salesCatName = this.salesCategories.find(item => item.id === salesCat)
         .name
       if (salesCatName === "No BS") {
-        this.checkVerified()
+        // this.checkVerified()
       }
       else{
         this.noBSVerbiage =

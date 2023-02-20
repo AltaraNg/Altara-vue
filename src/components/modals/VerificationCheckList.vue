@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="modal-header">
-      <h3 class="modal-title" id="exampleModalLongTitle">
-        Verification Checklist
+      <h3 class=" my-1" id="exampleModalLongTitle">
+        Verification Checklists
       </h3>
       <div slot="top-right">
         <span
@@ -16,7 +16,7 @@
         </span>
       </div>
     </div>
-    <div class="modal-body">
+    <div class="modal-body mx-4">
       <form>
         <div class="form-group my-3">
           <label for="checklist1" class=""
@@ -42,11 +42,11 @@
         </div>
         <div class="form-group my-3">
           <label for="checklist">If other, Specify</label>
-          <input
-            type="text"
+          <textarea
+            cols="2"
             class="form-control "
             v-model="verificationData.otherOption"
-          />
+          ></textarea>  
         </div>
         <div class="form-group my-3">
           <label for="exampleFormControlSelect2"
@@ -331,16 +331,16 @@
         </div>
       </form>
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer mr-4">
       <button
         type="button"
-        class="btn btn-secondary"
+        class="btn px-5 rounded btn-danger mx-3"
         data-dismiss="modal"
         @click="$modal.hide('verificationForm')"
       >
         Close
       </button>
-      <button type="button" class="btn btn-primary" @click="save">
+      <button type="button" class="btn px-4 bg-default" @click="save">
         Save changes
       </button>
     </div>
@@ -381,6 +381,7 @@ export default {
               })
               this.verificationData = {}
               this.$modal.hide('verificationForm')
+              this.$emit('closed', res.data)
             }
           } catch (err) {
             this.$swal({

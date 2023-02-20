@@ -378,6 +378,7 @@ export default {
           height: 'auto',
           width: '50%',
           clickToClose: true,
+          maxHeight: 200
         },
         {
           closed: event => {

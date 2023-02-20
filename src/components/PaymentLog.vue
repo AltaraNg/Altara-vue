@@ -935,7 +935,7 @@ export default {
           this.commitment.status = true
           this.salesLogForm.repayment_duration_id = this.selectItem(this.repaymentDuration, "six_months")
            this.salesLogForm.payment_type_id = this.selectItem(this.downPaymentRatesFiltered,  "twenty")
-           this.salesLogForm.payment_gateway_id = this.selectItem(this.paymentGateways, "paystack").id
+           this.salesLogForm.payment_gateway_id = this.selectItem(this.paymentGateways, "paystack")?.id
            
           //if sales-category is "NoBS"
           this.businessTypes = this.biz_type.filter(business_type => {
@@ -956,7 +956,7 @@ export default {
     setSalesCategory() {
       if (this.isAltaraCredit) {
         this.salesCategories = this.salesCategories2.filter(obj => {
-          return obj.id !== 9
+          return obj.name !== 'No BS'
         })
       } else {
         this.salesCategories = this.salesCategories2
@@ -1245,12 +1245,13 @@ export default {
         const months = this.rDuration / 30
         const cycle = Math.ceil(28 / this.repaymentCircle)
         const additionalRepayment = this.rPayment / (months * cycle)
-        if (this.isAltaraPay && this.salesLogForm.sales_category_id == 9) {
+        let salesCatName = this.salesCategories.find(item => item.id === this.salesLogForm.sales_category_id);
+        if (this.isAltaraPay && salesCatName.name == 'No BS') {
           //check if on altara pay and New BS sales category
 
           if (
-            this.salesLogForm.business_type_id.id == 16 ||
-            this.salesLogForm.business_type_id.id == 15
+            this.salesLogForm.business_type_id.slug == 'ap_no_bs_new_verve' ||
+            this.salesLogForm.business_type_id.slug == 'ap_no_bs_new_non_verve'
           ) {
             //if biz-type is BS-new customer
             this.commitment.percentage = 6
@@ -1258,8 +1259,8 @@ export default {
 
             //add a 6% commision on the downpayment
           } else if (
-            this.salesLogForm.business_type_id.id == 17 ||
-            this.salesLogForm.business_type_id.id == 18
+            this.salesLogForm.business_type_id.slug == 'ap_no_bs_renewal_non_verve' ||
+            this.salesLogForm.business_type_id.id == 'ap_no_bs_renewal_verve'
           ) {
             //BS-renewal
             this.commitment.percentage = 3
@@ -1361,7 +1362,7 @@ export default {
     async getRepaymentCycles() {
       try {
         const fetchRepaymentCycles = await get(this.apiUrls.repaymentCycles)
-        this.repaymentCyclesopt = fetchRepaymentCycles.data.data.data
+        this.repaymentCyclesopt = fetchRepaymentCycles?.data?.data?.data
       } catch (err) {
         this.$displayErrorMessage(err)
       }
@@ -1370,7 +1371,7 @@ export default {
     async getOrderTypes() {
       try {
         const orderTypes = await get(this.apiUrls.orderType)
-        this.orderTypes = orderTypes.data.orderTypes
+        this.orderTypes = orderTypes?.data?.orderTypes
       } catch (err) {
         this.$displayErrorMessage(err)
       }
@@ -1378,7 +1379,7 @@ export default {
     async getDownPaymentRates() {
       try {
         const fetchDownPaymentRates = await get(this.apiUrls.downPaymentRates)
-        this.downPaymentRates = fetchDownPaymentRates.data.data.data
+        this.downPaymentRates = fetchDownPaymentRates?.data?.data?.data
         this.downPaymentRates = this.downPaymentRates.sort((a, b) => {
           return a.percent - b.percent
         })
@@ -1389,10 +1390,10 @@ export default {
     async getSalesCategory() {
       try {
         const fetchSalesCategory = await get(this.apiUrls.salesCategoryUrl)
-        this.salesCategories2 = fetchSalesCategory.data.data.data
-        this.salesCategories = fetchSalesCategory.data.data.data
+        this.salesCategories2 = fetchSalesCategory?.data?.data?.data
+        this.salesCategories = fetchSalesCategory?.data?.data?.data
             this.salesCategories = this.salesCategories2.filter(obj => {
-          return obj.id !== 9
+          return obj.name !== 'No BS'
         })
       } catch (err) {
         this.$displayErrorMessage(err)
@@ -1402,7 +1403,7 @@ export default {
     async getUsers(salesCat = 1) {
       this.$LIPS(true)
       await get(`/api/sales-category/${salesCat}/roles`).then(res => {
-        this.users = this.mergeArrays(res.data.data)
+        this.users = this.mergeArrays(res?.data?.data)
       })
       let salesCatName = this.salesCategories.find(item => item.id === salesCat)
         .name
@@ -1449,8 +1450,8 @@ export default {
       try {
         this.$LIPS(true)
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes)
-        this.biz_type = fetchBusinessTypes.data.data.data
-        this.businessTypes = fetchBusinessTypes.data.data.data
+        this.biz_type = fetchBusinessTypes?.data?.data?.data
+        this.businessTypes = fetchBusinessTypes?.data?.data?.data
         this.businessTypes = this.businessTypes.filter(item => {
           if (this.isAltaraCredit) {
             return item.slug.includes("ac_")

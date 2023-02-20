@@ -334,13 +334,13 @@
     <div class="modal-footer mr-4">
       <button
         type="button"
-        class="btn px-5 rounded btn-danger mx-3"
+        class="btn px-5 rounded bg-danger mx-3 my-5"
         data-dismiss="modal"
         @click="$modal.hide('verificationForm')"
       >
         Close
       </button>
-      <button type="button" class="btn px-4 bg-default" @click="save">
+      <button type="button" class="btn px-4 bg-default my-5" @click="save">
         Save changes
       </button>
     </div>
@@ -404,7 +404,7 @@ export default {
   overflow-y: initial !important;
 }
 .modal-body {
-  height: 80vh;
+  height: 75vh;
   overflow-y: auto;
 }
 </style>

@@ -381,7 +381,7 @@
                   <button
                     v-else
                     class="btn bg-default"
-                    :disabled="test1"
+                    :disabled="canPerformAction"
                     type="submit"
                     v-on:click="getCalc()"
                   >
@@ -715,7 +715,7 @@ export default {
       calculation: [],
       salesCategories: [],
       hideOrderSummary: true,
-      test1: true,
+      canPerformAction: true,
 
       apiUrls: {
         repaymentDuration: `/api/repayment_duration`,
@@ -1233,7 +1233,7 @@ export default {
         this.fPayment = actualDownpayment
         this.rPayment = rePayment
         this.pPrice = total
-        this.test1 = false
+        this.canPerformAction = false
 
         //gray out button if not verified for NoBS
         // if (this.salesLogForm.sales_category_id) {
@@ -1295,7 +1295,7 @@ export default {
         //     icon: "error",
         //     title: "Plan is not available"
         // });
-       this.test1 = true
+       this.canPerformAction = true
 
         this.repaymentCircle = "0"
         this.rDuration = "0"

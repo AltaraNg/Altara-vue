@@ -73,11 +73,11 @@
                   Verify Customer
                 </button>
               </div>
-              <div class="text-center my-2" v-if="canViewButton">
+              <!-- <div class="text-center my-2" v-if="canViewButton">
                 <button class="btn bg-default" @click="verifyModal">
                   Credit Report
                 </button>
-              </div>
+              </div> -->
             </div>
           </div>
           <div

@@ -19,6 +19,8 @@ const DVAHome = () => import('../views/DVA/HomePage.vue');
 const DVAMessage = () => import('../views/DVA/messaging/message.vue');
 const DVAVerification = () =>
 	import('../views/DVA/verification/verification.vue');
+const DVAVerificationNew = () =>
+	import('../views/DVA/verification/verificationNew.vue');
 const CAG = () => import('../views/CAG/index.vue');
 const CAGHome = () => import('../views/CAG/HomePage.vue');
 const OrderList = () => import('../views/DVA/AllOrderList.vue');
@@ -273,6 +275,11 @@ const router = new VueRouter({
           component: DVAVerification,
           name: "verification",
           meta: { mode: "verification" },
+        },
+        {
+          path: "verification-new",
+          component: DVAVerificationNew,
+          name: "verification-new",
         },
         {
           path: "sales",

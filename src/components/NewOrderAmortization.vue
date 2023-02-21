@@ -250,6 +250,13 @@
               <th>{{ $formatCurrency($roundDownAmt(order.product_price)) }}</th>
               <td>Default Fee</td>
               <th>{{ order.defaultFee || 'null' }}</th>
+              
+            </tr>
+            <tr>
+              <td class="text-left">Commitment Amount</td>
+              <th>{{ $formatCurrency(order.commitment_amount) }}</th>
+              <td>Commitment Percentage</td>
+              <th>{{ order.commitment_percentage }}%</th>
             </tr>
           </tbody>
         </table>

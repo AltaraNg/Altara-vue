@@ -69,15 +69,15 @@
                 </span>
               </div>
               <div class="text-center my-2" v-if="canViewButton">
-                <button class="btn bg-default" @click="verifyModal">
+                <button class="btn bg-default px-3" @click="verifyModal">
                   Verify Customer
                 </button>
               </div>
-              <!-- <div class="text-center my-2" v-if="canViewButton">
-                <button class="btn bg-default" @click="verifyModal">
+              <div class="text-center my-2" v-if="canViewButton">
+                <button class="btn bg-default px-4" @click="creditReportModal">
                   Credit Report
                 </button>
-              </div> -->
+              </div>
             </div>
           </div>
           <div
@@ -296,6 +296,8 @@ import CustomerMobileButton from '../components/customerMobileSms/customerMobile
 import paystack from 'vue-paystack'
 import CustomerGuarantorsModal from '../components/modals/CustomerGuarantorsModal.vue'
 import VerificationCheckList from '../components/modals/VerificationCheckList.vue'
+import CreditReportModal from '../components/modals/CreditReportModal.vue'
+
 import { post } from '../utilities/api'
 import { relative } from 'path'
 
@@ -303,6 +305,7 @@ export default {
   props: ['viewCustomer'],
 
   components: {
+    CreditReportModal,
     VerificationCheckList,
     ApprovalStatusButton,
     AppNavigation,
@@ -379,6 +382,26 @@ export default {
           width: '50%',
           clickToClose: true,
           maxHeight: 200
+        },
+        {
+          closed: event => {
+          }
+        }
+      )
+    },
+    creditReportModal(){
+      this.$modal.show(
+        CreditReportModal,
+        { customer: this.customer },
+        {
+          name: 'creditReportForm',
+          classes: ['w-50', 'overflow-hidden'],
+          adaptive: true,
+          resizable: true,
+          draggable: true,
+          height: 'auto',
+          width: '50%',
+          clickToClose: true,
         },
         {
           closed: event => {

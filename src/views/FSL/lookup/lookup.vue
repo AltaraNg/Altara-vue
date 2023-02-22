@@ -42,6 +42,17 @@
               "
               style="margin-left:-10px"
             />
+
+            <custom-header
+              :title="'Credit Report'"
+              @click.native="selectType('credit_report')"
+              :style="
+                !states.credit_report
+                  ? 'opacity: 0.2; cursor:pointer;'
+                  : 'cursor:pointer; '
+              "
+              style="margin-left:-10px"
+            />
           </div>
           <hr />
           <div v-if="states.order">
@@ -588,6 +599,125 @@
               <div
                 class="tab-pane active text-center"
                 v-if="verificationList.length == 0"
+              >
+                <div class="mb-3 row attendance-item">
+                  <div
+                    class="
+                    col
+                    d-flex
+                    light-heading
+                    align-items-center
+                    justify-content-center
+                  "
+                  >
+                    No records found!
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div v-if="states.credit_report" class="mb-5">
+            <div class="mt-5 mb-3 attendance-head">
+              <div class="row px-4 pt-3 pb-4 text-center">
+                <div class="col light-heading" style="max-width: 150px">
+                  S/No.
+                </div>
+                <div
+                  class="col light-heading"
+                  v-for="(header, index) in creditReportHeaders"
+                  :key="index"
+                  style="text-align: left; "
+                >
+                  {{ header }}
+                </div>
+              </div>
+            </div>
+            <div class="tab-content mt-1 attendance-body">
+              <div class="tab-pane active " v-if="creditReportList.length > 0">
+                <div
+                  class="mb-3 row attendance-item text-center"
+                  v-for="(creditReport, index) in creditReportList"
+                  :key="index"
+                >
+                  <div
+                    class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+
+                  "
+                    style="max-width: 150px; margin-left: -15px;"
+                  >
+                    <span class="user mx-auto text-white" :class="[JSON.parse(creditReport.input_data).status === 'declined' ? 'bg-danger' : 'bg-success']">{{ index + 1 }}</span>
+                  </div>
+                  <div
+                    class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    user-name
+                    align-items-center
+
+                  "
+                    style="padding-left:30px"
+                  >
+                    {{ formatDate(creditReport.created_at) }}
+                  </div>
+
+                  <div
+                    class="
+                    col-12 col-xs-3 col-md col-lg
+                    d-flex
+                    align-items-center
+
+                  "
+                  >
+                    {{ JSON.parse(creditReport.input_data).verifiedBy }}
+                  </div>
+
+                  <div
+                    class="
+                    col-12 col-xs-3 col-md col-lg
+                    d-flex
+                    align-items-center
+
+                  "
+                  >
+                    {{ JSON.parse(creditReport.input_data).customer_type }}
+                  </div>
+
+                  <div
+                    class="
+                    col-12 col-xs-3 col-md col-lg
+                    d-flex
+                    align-items-center
+
+                  "
+                  >
+                    {{ JSON.parse(creditReport.input_data).status || 'upper' }}
+                  </div>
+
+                  <div
+                    class="
+                    col-12 col-xs-2 col-md col-lg
+                    d-flex
+                    align-items-center
+
+                  "
+                  >
+                    <button
+                      @click="displayActiveCreditReport(creditReport)"
+                      class="btn status approved"
+                    >
+                      View
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="tab-pane active text-center"
+                v-if="creditReportList.length == 0"
               >
                 <div class="mb-3 row attendance-item">
                   <div
@@ -1453,6 +1583,7 @@ import {
   getOrderStatusClass,
 } from "../../../components/order/orderStatusCssClass"
 import ViewVerificationCheckList from "../../../components/modals/ViewVerificationCheckList.vue"
+import ViewCreditReportModal from "../../../components/modals/ViewCreditReportModal.vue"
 import LogForm from "../../../components/LogForm"
 import PaymentLog from "../../../components/PaymentLog"
 import DatePicker from "vue2-datepicker"
@@ -1488,10 +1619,12 @@ export default {
       activeRecommendation: null,
       recommendationList: null,
       verificationList: null,
+      creditReportList: null,
       states: {
         order: true,
         recommendation: false,
         verification: false,
+        credit_report: false
       },
       editOrder: {},
       Order: Order,
@@ -1529,6 +1662,7 @@ export default {
         "Input Data",
       ],
       verificationHeaders: ["Date", "Verified By", "More Information"],
+      creditReportHeaders: ["Date", "Compiled By", "Report Type", "Status", "More Information"],
       products: [],
       paymentForm: { payments: [] },
       paymentFormType: "add",
@@ -1639,6 +1773,11 @@ export default {
             return item.type === "verification"
           })
           this.verificationList.reverse()
+
+          this.creditReportList = this.recommendationList.filter(item => {
+            return item.type === "credit_report"
+          })
+          this.creditReportList.reverse()
           this.recommendationList = this.recommendationList.filter(item => {
             return item.type == "formal" || item.type == "informal"
           })
@@ -1687,6 +1826,22 @@ export default {
         { verification: JSON.parse(verification.input_data) },
         {
           name: "verificationView",
+          classes: ["w-50", "overflow-auto"],
+          adaptive: true,
+          resizable: true,
+          draggable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
+        }
+      )
+    },
+    displayActiveCreditReport(creditReport){
+      this.$modal.show(
+        ViewCreditReportModal,
+        { creditReport: JSON.parse(creditReport.input_data) },
+        {
+          name: "creditReportView",
           classes: ["w-50", "overflow-auto"],
           adaptive: true,
           resizable: true,
@@ -1998,9 +2153,11 @@ export default {
     },
   },
 
-  created() {
+  async created() {
+    this.$LIPS(true)
     EventBus.$on("reloadUser", this.updateCustomerData)
     EventBus.$on("updateUser", this.processForm)
+    this.$LIPS(false);
   },
 
   async mounted() {

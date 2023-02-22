@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="modal-header">
-      <h3 class="modal-title" id="exampleModalLongTitle">
-        Verification Checklist
+      <h3 class=" my-1" id="exampleModalLongTitle">
+        Verification Checklists
       </h3>
       <div slot="top-right">
         <span
@@ -141,10 +141,10 @@
         </li>
       </ol>
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer px-4">
       <button
         type="button"
-        class="btn btn-secondary"
+        class="btn btn-danger rounded"
         data-dismiss="modal"
         @click="$modal.hide('verificationView')"
       >
@@ -177,7 +177,7 @@ export default {
   overflow-y: initial !important;
 }
 .modal-body {
-  height: 80vh;
+  height: 75vh;
   overflow-y: auto;
 }
 .display-text{

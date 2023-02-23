@@ -24,7 +24,7 @@
             :switchName="'Guarantor'"
             :key="'Guarantor'"
             :defaultState="isGuarantor"
-            :label="'Use Guarantor'"
+            :label="'Guarantor'"
           />
         </div>
         <div class="form-group">
@@ -95,7 +95,7 @@
         </div>
       </form>
     </div>
-    <div class="modal-footer mr-4">
+    <div class="text-right mr-4">
       <button
         type="button"
         class="btn px-5 rounded bg-danger mx-3 my-5"

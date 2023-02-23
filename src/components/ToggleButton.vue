@@ -9,7 +9,7 @@
         />
         <span class="toggle__switch round"></span>
       </label>
-      <span>{{ label ? label : "" }}</span>
+      <span class="custom">{{ label ? label : "" }}</span>
     </div>
 </template>
 
@@ -58,6 +58,10 @@ export default {
 </script>
 
 <style scoped>
+
+.custom{
+  font-size: 1.5em;
+}
 .toggle_container{
   display: flex;
   align-items: center;

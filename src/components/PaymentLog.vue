@@ -6,7 +6,6 @@
           <form class="card-body" @submit.prevent="previewAmortization">
             <div class="text-center">
               <h2 class="mb-1">{{ compHeader }}</h2>
-              <small class="text-danger" v-if="!allowBSSale">{{ noBSVerbiage }}</small>
             </div>
             <div class="row">
               <div
@@ -80,7 +79,11 @@
                 />
               </div>
 
-              <div class="col form-group" v-if="isAltaraPay" :class="commitment.status ? 'disable' :''">
+              <div
+                class="col form-group"
+                v-if="isAltaraPay"
+                :class="commitment.status ? 'disable' : ''"
+              >
                 <label for="amount" class="form-control-label"
                   >Collection Channel</label
                 >
@@ -192,7 +195,11 @@
                   v-validate="'required'"
                 />
               </div>
-              <div class="col form-group" v-if="!isCashNCarry" :class="commitment.status ? 'disable' :''">
+              <div
+                class="col form-group"
+                v-if="!isCashNCarry"
+                :class="commitment.status ? 'disable' : ''"
+              >
                 <label for="amount" class="form-control-label"
                   >Repayment Duration</label
                 >
@@ -216,7 +223,11 @@
                 </select>
               </div>
 
-              <div class="col form-group" v-if="!isCashNCarry" :class="commitment.status ? 'disable' :''">
+              <div
+                class="col form-group"
+                v-if="!isCashNCarry"
+                :class="commitment.status ? 'disable' : ''"
+              >
                 <label for="amount" class="form-control-label"
                   >Downpayment Rates</label
                 >
@@ -383,22 +394,26 @@
                     class="btn bg-default"
                     :disabled="canPerformAction"
                     type="submit"
-                   
                   >
                     View Amortization
                   </button>
                   <br />
                 </div>
               </div>
-              <div class="text-right" v-if="isAltaraPay">
-                <button
-                  class="btn bg-default"
-                  type="button"
-                  @click="showCollectionModal"
-                >
-                  Collection Data
-                </button>
-                <br />
+              <div class="d-flex">
+                <small class="text-danger text-center mt-4 error-text" v-if="!allowBSSale">{{
+                  noBSVerbiage
+                }}</small>
+                <div class="text-right" v-if="isAltaraPay">
+                  <button
+                    class="btn bg-default"
+                    type="button"
+                    @click="showCollectionModal"
+                  >
+                    Collection Data
+                  </button>
+                  <br />
+                </div>
               </div>
             </div>
           </form>
@@ -799,7 +814,7 @@ export default {
         percentage: null,
       },
       salesCategories: null,
-      showDiscount:null
+      showDiscount: null,
     }
   },
   async beforeMount() {
@@ -924,24 +939,33 @@ export default {
           ? "5_discount"
           : "0_discount"
     },
-    selectItem(itemArray, matchName){
-     return itemArray.find((object)=>{
-            return object.name == matchName
-          });
+    selectItem(itemArray, matchName) {
+      return itemArray.find(object => {
+        return object.name == matchName
+      })
     },
     watchSalesCategory() {
       if (this.isAltaraPay) {
         if (this.salesLogForm.sales_category_id == 9) {
           this.salesLogForm.business_type_id = null
           this.commitment.status = true
-          this.salesLogForm.repayment_duration_id = this.selectItem(this.repaymentDuration, "six_months")
-           this.salesLogForm.payment_type_id = this.selectItem(this.downPaymentRatesFiltered,  "twenty")
-           this.salesLogForm.payment_gateway_id = this.selectItem(this.paymentGateways, "paystack")?.id
-           
+          this.salesLogForm.repayment_duration_id = this.selectItem(
+            this.repaymentDuration,
+            "six_months"
+          )
+          this.salesLogForm.payment_type_id = this.selectItem(
+            this.downPaymentRatesFiltered,
+            "twenty"
+          )
+          this.salesLogForm.payment_gateway_id = this.selectItem(
+            this.paymentGateways,
+            "paystack"
+          )?.id
+
           //if sales-category is "NoBS"
           this.businessTypes = this.biz_type.filter(business_type => {
             //return only this business type,
-                        return business_type?.slug.includes("bs")
+            return business_type?.slug.includes("bs")
           })
           this.salesLogForm?.business_type_id?.slug == "ap_no_bs_renewal_verve"
         } else {
@@ -949,7 +973,10 @@ export default {
           this.commitment.status = false
           this.businessTypes = this.biz_type.filter(business_type => {
             //else return the rest
-            return !business_type.name.includes("No BS") &&  business_type.slug.includes("ap_")
+            return (
+              !business_type.name.includes("No BS") &&
+              business_type.slug.includes("ap_")
+            )
           })
         }
       }
@@ -957,7 +984,7 @@ export default {
     setSalesCategory() {
       if (this.isAltaraCredit) {
         this.salesCategories = this.salesCategories2.filter(obj => {
-          return obj.name !== 'No BS'
+          return obj.name !== "No BS"
         })
       } else {
         this.salesCategories = this.salesCategories2
@@ -1188,7 +1215,10 @@ export default {
     },
     getCalc() {
       this.watchCashPrice()
-      this.showDiscount = this.salesLogForm?.business_type_id?.slug=='ap_products'? true:false
+      this.showDiscount =
+        this.salesLogForm?.business_type_id?.slug == "ap_products"
+          ? true
+          : false
       try {
         this.salesLogForm.customer_id = this.customerId
         const data0 = {
@@ -1236,25 +1266,27 @@ export default {
         this.canPerformAction = false
 
         //gray out button if not verified for NoBS
-        // if (this.salesLogForm.sales_category_id) {
-        //   let salesCatName = this.salesCategories.find(
-        //     item => item.id === this.salesLogForm.sales_category_id
-        //   ).name
-        //   if (salesCatName === "No BS" && !this.allowBSSale) {
-        //     throw new Error('Not Verified')
-        //   }
-        // }
+        if (this.salesLogForm.sales_category_id) {
+          let salesCatName = this.salesCategories.find(
+            item => item.id === this.salesLogForm.sales_category_id
+          ).name
+          if (salesCatName === "No BS" && !this.allowBSSale) {
+            throw new Error("Not Verified")
+          }
+        }
 
         const months = this.rDuration / 30
         const cycle = Math.ceil(28 / this.repaymentCircle)
         const additionalRepayment = this.rPayment / (months * cycle)
-        let salesCatName = this.salesCategories.find(item => item.id === this.salesLogForm.sales_category_id);
-        if (this.isAltaraPay && salesCatName.name == 'No BS') {
+        let salesCatName = this.salesCategories.find(
+          item => item.id === this.salesLogForm.sales_category_id
+        )
+        if (this.isAltaraPay && salesCatName.name == "No BS") {
           //check if on altara pay and New BS sales category
 
           if (
-            this.salesLogForm.business_type_id.slug == 'ap_no_bs_new_verve' ||
-            this.salesLogForm.business_type_id.slug == 'ap_no_bs_new_non_verve'
+            this.salesLogForm.business_type_id.slug == "ap_no_bs_new_verve" ||
+            this.salesLogForm.business_type_id.slug == "ap_no_bs_new_non_verve"
           ) {
             //if biz-type is BS-new customer
             this.commitment.percentage = 6
@@ -1262,8 +1294,9 @@ export default {
 
             //add a 6% commision on the downpayment
           } else if (
-            this.salesLogForm.business_type_id.slug == 'ap_no_bs_renewal_non_verve' ||
-            this.salesLogForm.business_type_id.slug == 'ap_no_bs_renewal_verve'
+            this.salesLogForm.business_type_id.slug ==
+              "ap_no_bs_renewal_non_verve" ||
+            this.salesLogForm.business_type_id.slug == "ap_no_bs_renewal_verve"
           ) {
             //BS-renewal
             this.commitment.percentage = 3
@@ -1295,7 +1328,7 @@ export default {
         //     icon: "error",
         //     title: "Plan is not available"
         // });
-       this.canPerformAction = true
+        this.canPerformAction = true
 
         this.repaymentCircle = "0"
         this.rDuration = "0"
@@ -1395,8 +1428,8 @@ export default {
         const fetchSalesCategory = await get(this.apiUrls.salesCategoryUrl)
         this.salesCategories2 = fetchSalesCategory?.data?.data?.data
         this.salesCategories = fetchSalesCategory?.data?.data?.data
-            this.salesCategories = this.salesCategories2.filter(obj => {
-          return obj.name !== 'No BS'
+        this.salesCategories = this.salesCategories2.filter(obj => {
+          return obj.name !== "No BS"
         })
       } catch (err) {
         this.$displayErrorMessage(err)
@@ -1411,11 +1444,9 @@ export default {
       let salesCatName = this.salesCategories.find(item => item.id === salesCat)
         .name
       if (salesCatName === "No BS") {
-        // this.checkVerified()
-      }
-      else{
-        this.noBSVerbiage =
-          ""
+        this.checkVerified()
+      } else {
+        this.noBSVerbiage = ""
       }
 
       this.$LIPS(false)
@@ -1424,7 +1455,7 @@ export default {
     checkVerified() {
       if (this.verificationList.length === 0) {
         this.allowBSSale = false
-        
+
         this.noBSVerbiage =
           "Customer's home address and guarantor's home address has not been verified!!!"
 
@@ -1655,8 +1686,6 @@ export default {
       this[`triggerToggleEvent${switchName}`](value)
     },
   },
-
- 
 }
 </script>
 
@@ -1737,7 +1766,11 @@ export default {
   color: #074a74;
   width: 100%;
 }
-.disable{
-  pointer-events:none;
+.disable {
+  pointer-events: none;
+}
+.error-text{
+  font-size: 1.2em;
+  font-weight: 600;
 }
 </style>

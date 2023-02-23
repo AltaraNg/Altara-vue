@@ -18,19 +18,50 @@
     </div>
     <div class="modal-body mx-4">
       <form>
+        <div class="">
+          <toggle-button
+            v-on:valueChangedEvent="triggerToggleEvent"
+            :switchName="'Guarantor'"
+            :key="'Guarantor'"
+            :defaultState="isGuarantor"
+            :label="'Use Guarantor'"
+          />
+        </div>
         <div class="form-group">
-          <label>Select customer or guarantor: </label>
-          <select class=" custom-select w-50 d-block" v-validate="'required'" v-model="full_name">
-            <option :value="`${customer.first_name} ${customer.last_name}`">Self {{ `(${customer.first_name} ${customer.last_name})` }}</option>
-            <option :value="item.guarantor_name" v-for="item in customer.guarantor_paystack">{{
-              item.guarantor_name
-            }}</option>
-          </select>
+          <label>{{ isGuarantor ? "Guarantor Name" : "Customer" }} </label>
+          <input
+            type="text"
+            class="w-50 d-block custom-select"
+            v-validate="'required'"
+            v-model="full_name"
+            v-if="isGuarantor"
+          />
+          <div v-else class="py-1 h5 ">
+            {{ `${customer.first_name} ${customer.last_name}` }}
+          </div>
         </div>
 
         <div class="form-group">
           <label>Credit Report (CR): </label>
-          <select class=" custom-select w-50 d-block" v-validate="'required'" v-model="credit_score">
+          <select
+            class="custom-select w-50 d-block"
+            v-validate="'required'"
+            v-model="credit_score"
+          >
+            <option value="none">N/A</option>
+            <option value="good">Good</option>
+            <option value="bad">Bad</option>
+            <option value="fair">Fair</option>
+          </select>
+        </div>
+
+        <div class="form-group" v-if="!isGuarantor">
+          <label>Credit Point (CP): </label>
+          <select
+            class=" custom-select w-50 d-block"
+            v-validate="'required'"
+            v-model="credit_point"
+          >
             <option value="none">N/A</option>
             <option value="good">Good</option>
             <option value="bad">Bad</option>
@@ -39,7 +70,11 @@
         </div>
         <div class="form-group">
           <label>Risk Factor: </label>
-          <select class=" custom-select w-50 d-block" v-validate="'required'" v-model="risk_factor">
+          <select
+            class=" custom-select w-50 d-block"
+            v-validate="'required'"
+            v-model="risk_factor"
+          >
             <option value="low">Low</option>
             <option value="fair">Fair</option>
             <option value="high">High</option>
@@ -49,7 +84,11 @@
 
         <div class="form-group">
           <label>Status: </label>
-          <select class=" custom-select w-50 d-block" v-validate="'required'" v-model="status">
+          <select
+            class=" custom-select w-50 d-block"
+            v-validate="'required'"
+            v-model="status"
+          >
             <option value="approved">Approved</option>
             <option value="declined">Declined</option>
           </select>
@@ -74,9 +113,14 @@
 
 <script>
 import { get, post } from "../../utilities/api"
-import { EventBus } from '../../utilities/event-bus'
+import { EventBus } from "../../utilities/event-bus"
+import ToggleButton from "../ToggleButton.vue"
 
 export default {
+  components: {
+    ToggleButton,
+  },
+
   props: {
     customer: {
       required: true,
@@ -88,8 +132,10 @@ export default {
       verificationData: {},
       full_name: null,
       credit_score: null,
+      credit_point: null,
       risk_factor: null,
-      status: null
+      status: null,
+      isGuarantor: false,
     }
   },
 
@@ -99,10 +145,12 @@ export default {
         if (result) {
           try {
             this.$LIPS(true)
-            if(this.full_name === `${this.customer.first_name} ${this.customer.last_name}`){
-                this.verificationData.customer_type = 'customer'
-            }else{
-                this.verificationData.customer_type = 'guarantor'
+            if (this.isGuarantor) {
+              this.verificationData.customer_type = "guarantor"
+            } else {
+              this.verificationData.customer_type = "customer"
+              this.full_name = `${this.customer.first_name} ${this.customer.last_name}`
+              this.verificationData.credit_point = this.credit_point
             }
             this.verificationData.customer_id = this.customer.id
             this.verificationData.type = "credit_report"
@@ -133,6 +181,13 @@ export default {
         }
       })
     },
+
+    triggerToggleEvent(value, switchName) {
+      this[`triggerToggleEvent${switchName}`](value)
+    },
+    triggerToggleEventGuarantor() {
+      this.isGuarantor = !this.isGuarantor
+    },
   },
 }
 </script>
@@ -144,5 +199,9 @@ export default {
 .modal-body {
   // height: 75vh;
   overflow-y: auto;
+}
+
+option *{
+    padding: 1em 0;
 }
 </style>

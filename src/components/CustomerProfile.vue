@@ -377,7 +377,6 @@ export default {
           classes: ['w-50', 'overflow-hidden'],
           adaptive: true,
           resizable: true,
-          draggable: true,
           height: 'auto',
           width: '50%',
           clickToClose: true,

@@ -38,6 +38,13 @@
           </p>
         </li>
 
+        <li class="list-group-item my-3" v-if="creditReport.credit_point">
+          <label for="checklist1" class="">Credit Point score</label>
+          <p class="display-text">
+            {{ creditReport.credit_point }}
+          </p>
+        </li>
+
         <li class="list-group-item my-3">
           <label for="checklist1" class="">Risk Factor</label>
           <p class="display-text">
@@ -94,7 +101,7 @@ export default {
   overflow-y: initial !important;
 }
 .modal-body {
-  height: 75vh;
+  height: 55vh;
   overflow-y: auto;
 }
 .display-text {

@@ -1845,8 +1845,7 @@ export default {
           classes: ["w-50", "overflow-auto"],
           adaptive: true,
           resizable: true,
-          draggable: true,
-          height: "auto",
+          height: "80%",
           width: "50%",
           clickToClose: true,
         }

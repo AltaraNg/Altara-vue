@@ -931,11 +931,11 @@ export default {
         //businesstype is (9 or7) and product amount is > 80000
        
         this.addDownpayment =
-          ((this.salesLogForm?.business_type_id?.id == 5 ||
-            this.salesLogForm?.business_type_id?.id == 10 ) &&
+          ((this.salesLogForm?.business_type_id?.slug == 'ap_cash_loan-product' ||
+            this.salesLogForm?.business_type_id?.slug == 'ap_cash_loan-no_collateral' ) &&
             this.selectedProduct.price > 110000) ||
-          ((this.salesLogForm?.business_type_id?.id == 9 ||
-            this.salesLogForm?.business_type_id?.id == 7) &&
+          ((this.salesLogForm?.business_type_id?.slug == 'ap_starter_cash_loan-no_collateral' ||
+            this.salesLogForm?.business_type_id?.slug == 'ap_starter_cash_loan') &&
             this.selectedProduct.price > 80000) || 
             (this.salesLogForm.business_type_id.slug == "ap_no_bs_product_verve" && this.salesLogForm?.product?.product?.category !== "cash loan")
             ? true

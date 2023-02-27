@@ -959,6 +959,10 @@ export default {
             this.downPaymentRatesFiltered,
             "twenty"
           )
+           this.salesLogForm.payment_gateway_id = this.selectItem(
+            this.paymentGateways,
+            "paystack"
+          )?.id
           }
 
 
@@ -977,18 +981,8 @@ export default {
             return business_type?.slug.includes("bs")
           })
           this.commitment.status = true
-          this.salesLogForm.repayment_duration_id = this.selectItem(
-            this.repaymentDuration,
-            "six_months"
-          )
-          this.salesLogForm.payment_type_id = this.selectItem(
-            this.downPaymentRatesFiltered,
-            "twenty"
-          )
-          this.salesLogForm.payment_gateway_id = this.selectItem(
-            this.paymentGateways,
-            "paystack"
-          )?.id
+          this.watchSalesLogForm()
+         
 
           //if sales-category is "NoBS"
           

@@ -1257,7 +1257,8 @@ export default {
           data0.business_type_id.slug.includes("cash_loan") ||
           data0.business_type_id.slug.includes("ap_rentals") ||
           data0.business_type_id.slug.includes("ap_super") ||
-          !data0.business_type_id.slug.includes("bs_product") ||
+          data0.business_type_id.slug.includes("ap_no_bs_renewal") ||
+          data0.business_type_id.slug.includes("ap_no_bs_new") ||
           data0.business_type_id.slug.includes("ap_starter")
             ? cashLoan(
                 this.selectedProduct.price,

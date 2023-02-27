@@ -1337,6 +1337,7 @@ export default {
         ) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment / 2 : additionalRepayment
+            this.singleRepayment = Math.round(this.singleRepayment/100) *100
         } else if (
           this.selectedProduct.price > 110000 &&
           (this.salesLogForm.business_type_id.id == 7 ||
@@ -1344,6 +1345,7 @@ export default {
         ) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment : additionalRepayment * 2
+            this.singleRepayment = Math.round(this.singleRepayment/100)*100
         }
       } catch (e) {
         // this.$swal({

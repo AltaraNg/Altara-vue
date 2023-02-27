@@ -607,7 +607,7 @@
                   : "Push Button To Pay With Credit Card"
               }}
             </p>
-            <div class="col d-flex justify-content-center">
+            <div class="col d-flex justify-content-center" :class="salesLogForm.sales_category_id == '9' ? 'disable' :''">
               <toggle-button
                 v-on:valueChangedEvent="triggerToggleEvent"
                 :key="'Transfer'"
@@ -815,6 +815,7 @@ export default {
       },
       salesCategories: null,
       showDiscount: null,
+      salesCatName:null
     }
   },
   async beforeMount() {
@@ -920,8 +921,9 @@ export default {
             this.salesLogForm.discount = '0_discount'
           }
       if (
-        this.salesLogForm?.product?.product?.category == "cash loan" &&
-        this.salesLogForm?.repayment_duration_id?.name == "six_months"
+        (this.salesLogForm?.product?.product?.category == "cash loan" &&
+        this.salesLogForm?.repayment_duration_id?.name == "six_months") || 
+        (this.salesLogForm.business_type_id.slug == "ap_no_bs_product_verve" && this.salesLogForm?.product?.product?.category !== "cash loan")
       ) {
         //check if it is cashloan and six months duration, return addDownpayment= true only if
         //businesstype is (5 or10) and product amount is >110000
@@ -935,7 +937,7 @@ export default {
           ((this.salesLogForm?.business_type_id?.id == 9 ||
             this.salesLogForm?.business_type_id?.id == 7) &&
             this.selectedProduct.price > 80000) || 
-            this.salesLogForm?.business_type_id?.slug == "ap_no_bs_product_verve"
+            (this.salesLogForm.business_type_id.slug == "ap_no_bs_product_verve" && this.salesLogForm?.product?.product?.category !== "cash loan")
             ? true
             : false
       } else this.addDownpayment = false
@@ -995,8 +997,7 @@ export default {
           this.businessTypes = this.biz_type.filter(business_type => {
             //else return the rest
             return (
-              !business_type.name.includes("No BS") &&
-              business_type.slug.includes("ap_")
+             !business_type?.slug.includes("bs")
             )
           })
         }
@@ -1793,5 +1794,8 @@ export default {
 .error-text{
   font-size: 1.2em;
   font-weight: 600;
+}
+.hidden{
+  display:hidden;
 }
 </style>

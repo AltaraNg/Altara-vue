@@ -198,7 +198,7 @@
               <div
                 class="col form-group"
                 v-if="!isCashNCarry"
-                :class="commitment.status ? 'disable' : ''"
+                :class="commitment.status && disable ? 'disable' : ''"
               >
                 <label for="amount" class="form-control-label"
                   >Repayment Duration</label
@@ -226,7 +226,7 @@
               <div
                 class="col form-group"
                 v-if="!isCashNCarry"
-                :class="commitment.status ? 'disable' : ''"
+                :class="commitment.status && disable ? 'disable' : ''"
               >
                 <label for="amount" class="form-control-label"
                   >Downpayment Rates</label
@@ -555,7 +555,7 @@
                               )
                         )
                       }}
-                      <div class="modal_cover">
+                      <div class="modal_cover" >
                         <discount
                           class="modal_discount"
                           v-if="
@@ -607,7 +607,7 @@
                   : "Push Button To Pay With Credit Card"
               }}
             </p>
-            <div class="col d-flex justify-content-center">
+            <div class="col d-flex justify-content-center" :class="salesLogForm.sales_category_id == '9' ? 'disable' :''">
               <toggle-button
                 v-on:valueChangedEvent="triggerToggleEvent"
                 :key="'Transfer'"
@@ -628,7 +628,7 @@
               :disabled="!validateEmail(customer_email)"
               :amount="
                 computedPayment(
-                  (fPayment + singleRepayment) * 100,
+                  (fPayment + singleRepayment + commitment.amount) * 100,
                   (fPayment + commitment.amount) * 100
                 )
               "
@@ -737,7 +737,7 @@ export default {
         orderType: `/api/order-types`,
         repaymentCycles: `/api/repayment_cycle`,
         downPaymentRates: `/api/down_payment_rate`,
-        businessTypes: `/api/business_type`,
+        businessTypes: `/api/business_type?limit=30`,
         previewAmortization: `/api/amortization/preview`,
         createOrder: `/api/new_order`,
         getCalculation: `/api/price_calculator`,
@@ -815,6 +815,7 @@ export default {
       },
       salesCategories: null,
       showDiscount: null,
+      salesCatName:null
     }
   },
   async beforeMount() {
@@ -832,17 +833,18 @@ export default {
   watch: {
     "salesLogForm.sales_category_id": {
       handler(newData) {
+        this.watchCashPrice(newData)
         this.watchSalesCategory(newData)
         this.watchBusinessType(newData)
         this.watchSalesLogForm(newData)
-        this.watchCashPrice(newData)
+        
       },
     },
     "salesLogForm.business_type_id": {
       handler(newData) {
-        this.watchCashPrice(newData)
-        this.watchBusinessType(newData)
         this.watchSalesLogForm(newData)
+        this.watchSalesCategory(newData)
+        this.watchBusinessType(newData)
         this.getCalc()
       },
     },
@@ -911,45 +913,53 @@ export default {
       } else return secondvalue
     },
     watchCashPrice() {
+      this.watchSalesCategory()
+      this.watchSalesLogForm()
+          this.showDiscount =
+        this.salesLogForm?.business_type_id?.slug == "ap_products" || this.salesLogForm?.business_type_id?.slug.includes("bs_product")
+          ? true
+          : false
+          if(!this.showDiscount && this.isAltaraPay){
+            this.salesLogForm.discount = '0_discount'
+          }
       if (
-        this.salesLogForm?.product?.product?.category == "cash loan" &&
-        this.salesLogForm?.repayment_duration_id?.name == "six_months"
+        (this.salesLogForm?.product?.product?.category == "cash loan" &&
+        this.salesLogForm?.repayment_duration_id?.name == "six_months") || 
+        (this.salesLogForm.business_type_id.slug == "ap_no_bs_product_verve" && this.salesLogForm?.product?.product?.category !== "cash loan")
       ) {
         //check if it is cashloan and six months duration, return addDownpayment= true only if
         //businesstype is (5 or10) and product amount is >110000
         //OR
         //businesstype is (9 or7) and product amount is > 80000
+       
         this.addDownpayment =
-          ((this.salesLogForm?.business_type_id?.id == 5 ||
-            this.salesLogForm?.business_type_id?.id == 10) &&
+          ((this.salesLogForm?.business_type_id?.slug == 'ap_cash_loan-product' ||
+            this.salesLogForm?.business_type_id?.slug == 'ap_cash_loan-no_collateral' ) &&
             this.selectedProduct.price > 110000) ||
-          ((this.salesLogForm?.business_type_id?.id == 9 ||
-            this.salesLogForm?.business_type_id?.id == 7) &&
-            this.selectedProduct.price > 80000)
+          ((this.salesLogForm?.business_type_id?.slug == 'ap_starter_cash_loan-no_collateral' ||
+            this.salesLogForm?.business_type_id?.slug == 'ap_starter_cash_loan') &&
+            this.selectedProduct.price > 80000) || 
+            (this.salesLogForm.business_type_id.slug == "ap_no_bs_product_verve" && this.salesLogForm?.product?.product?.category !== "cash loan")
             ? true
             : false
       } else this.addDownpayment = false
       this.stillShowToggle = this.addDownpayment
+
     },
     watchSalesLogForm() {
-      this.salesLogForm.discount =
-        this.salesLogForm?.sales_category_id == "2" &&
+        
+        if(this.salesLogForm?.sales_category_id == "2" &&
         !this.salesLogForm.product_name.includes("cash") &&
-        this.productOrder
-          ? "5_discount"
-          : "0_discount"
-    },
-    selectItem(itemArray, matchName) {
-      return itemArray.find(object => {
-        return object.name == matchName
-      })
-    },
-    watchSalesCategory() {
-      if (this.isAltaraPay) {
-        if (this.salesLogForm.sales_category_id == 9) {
-          this.salesLogForm.business_type_id = null
-          this.commitment.status = true
-          this.salesLogForm.repayment_duration_id = this.selectItem(
+        this.productOrder){
+          this.salesLogForm.discount ="5_discount"
+        }
+          this.disable = 
+          this.salesLogForm?.business_type_id?.slug.includes("ap_no_bs_renewal") ||
+          this.salesLogForm?.business_type_id?.slug.includes("ap_no_bs_new")
+          ? true
+          :false
+          if(this.disable){
+             this.salesLogForm.repayment_duration_id = this.selectItem(
             this.repaymentDuration,
             "six_months"
           )
@@ -957,24 +967,42 @@ export default {
             this.downPaymentRatesFiltered,
             "twenty"
           )
+           this.salesLogForm.payment_gateway_id = this.selectItem(
+            this.paymentGateways,
+            "paystack"
+          )?.id
+          }
+
+
+    },
+    selectItem(itemArray, matchName) {
+      return itemArray.find(object => {
+        return object.name == matchName
+      })
+    },
+
+    watchSalesCategory() {
+      if (this.isAltaraPay ) {
+        if (this.salesLogForm.sales_category_id == 9  ) {
+          this.businessTypes = this.biz_type.filter(business_type => {
+            //return only this business type,
+            return business_type?.slug.includes("bs")
+          })
+          this.commitment.status = true
+          this.watchSalesLogForm()
           this.salesLogForm.payment_gateway_id = this.selectItem(
             this.paymentGateways,
             "paystack"
           )?.id
 
           //if sales-category is "NoBS"
-          this.businessTypes = this.biz_type.filter(business_type => {
-            //return only this business type,
-            return business_type?.slug.includes("bs")
-          })
-          this.salesLogForm?.business_type_id?.slug == "ap_no_bs_renewal_verve"
+          
         } else {
-          this.salesLogForm.business_type_id = null
           this.commitment.status = false
           this.businessTypes = this.biz_type.filter(business_type => {
             //else return the rest
             return (
-              !business_type.name.includes("No BS") &&
+             !business_type?.slug.includes("bs") && 
               business_type.slug.includes("ap_")
             )
           })
@@ -1215,10 +1243,7 @@ export default {
     },
     getCalc() {
       this.watchCashPrice()
-      this.showDiscount =
-        this.salesLogForm?.business_type_id?.slug == "ap_products"
-          ? true
-          : false
+  
       try {
         this.salesLogForm.customer_id = this.customerId
         const data0 = {
@@ -1243,7 +1268,8 @@ export default {
           data0.business_type_id.slug.includes("cash_loan") ||
           data0.business_type_id.slug.includes("ap_rentals") ||
           data0.business_type_id.slug.includes("ap_super") ||
-          data0.business_type_id.slug.includes("bs") ||
+          data0.business_type_id.slug.includes("ap_no_bs_renewal") ||
+          data0.business_type_id.slug.includes("ap_no_bs_new") ||
           data0.business_type_id.slug.includes("ap_starter")
             ? cashLoan(
                 this.selectedProduct.price,
@@ -1258,7 +1284,7 @@ export default {
                 this.selected_discount?.percentage_discount
               )
 
-        this.repaymentCircle = data0.repayment_cycle_id.value
+        this.repaymentCircle = data0.repayment_cycle_id?.value
         this.rDuration = data0.repayment_duration_id.value
         this.fPayment = actualDownpayment
         this.rPayment = rePayment
@@ -1285,8 +1311,9 @@ export default {
           //check if on altara pay and New BS sales category
 
           if (
-            this.salesLogForm.business_type_id.slug == "ap_no_bs_new_verve" ||
-            this.salesLogForm.business_type_id.slug == "ap_no_bs_new_non_verve"
+            this.salesLogForm.business_type_id.slug.includes("ap_no_bs_new")||
+            this.salesLogForm.business_type_id.slug == "ap_no_bs_product_verve" ||
+            this.salesLogForm.business_type_id.slug == "ap_no_bs_product_non_verve"
           ) {
             //if biz-type is BS-new customer
             this.commitment.percentage = 6
@@ -1294,10 +1321,10 @@ export default {
 
             //add a 6% commision on the downpayment
           } else if (
-            this.salesLogForm.business_type_id.slug ==
-              "ap_no_bs_renewal_non_verve" ||
-            this.salesLogForm.business_type_id.slug == "ap_no_bs_renewal_verve"
+            this.salesLogForm.business_type_id.slug.includes("ap_no_bs_renewal") ||
+            this.salesLogForm.business_type_id.slug.includes("ap_no_bs_product_renewal")
           ) {
+            
             //BS-renewal
             this.commitment.percentage = 3
             this.commitment.amount = this.selectedProduct.price * (3 / 100)
@@ -1311,10 +1338,12 @@ export default {
               this.salesLogForm?.business_type_id?.id == 9)) ||
           ((this.salesLogForm?.business_type_id?.id == 5 ||
             this.salesLogForm?.business_type_id?.id == 10) &&
-            this.selectedProduct.price > 110000)
+            this.selectedProduct.price > 110000) ||
+            this.salesLogForm?.business_type_id?.slug == "ap_no_bs_product_verve"
         ) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment / 2 : additionalRepayment
+            this.singleRepayment = Math.round(this.singleRepayment/100) *100
         } else if (
           this.selectedProduct.price > 110000 &&
           (this.salesLogForm.business_type_id.id == 7 ||
@@ -1322,6 +1351,7 @@ export default {
         ) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment : additionalRepayment * 2
+            this.singleRepayment = Math.round(this.singleRepayment/100)*100
         }
       } catch (e) {
         // this.$swal({
@@ -1736,7 +1766,7 @@ export default {
   opacity: 0.7;
 }
 .discount {
-  left: 130px;
+  left:80px;
 }
 .cover {
   display: flex;
@@ -1748,8 +1778,9 @@ export default {
   position: absolute;
 }
 .modal_cover {
-  margin-left: 100px;
+  width:100%;
   top: -26px;
+  justify-content:flex-end;
   display: flex;
   position: relative;
 }
@@ -1772,5 +1803,8 @@ export default {
 .error-text{
   font-size: 1.2em;
   font-weight: 600;
+}
+.hidden{
+  display:hidden;
 }
 </style>

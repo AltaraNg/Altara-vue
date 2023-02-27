@@ -913,6 +913,7 @@ export default {
       } else return secondvalue
     },
     watchCashPrice() {
+      this.watchSalesCategory()
       this.watchSalesLogForm()
           this.showDiscount =
         this.salesLogForm?.business_type_id?.slug == "ap_products" || this.salesLogForm?.business_type_id?.slug.includes("bs_product")
@@ -989,7 +990,10 @@ export default {
           })
           this.commitment.status = true
           this.watchSalesLogForm()
-         
+          this.salesLogForm.payment_gateway_id = this.selectItem(
+            this.paymentGateways,
+            "paystack"
+          )?.id
 
           //if sales-category is "NoBS"
           

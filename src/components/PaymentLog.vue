@@ -947,12 +947,12 @@ export default {
 
     },
     watchSalesLogForm() {
-        this.salesLogForm.discount =
-        this.salesLogForm?.sales_category_id == "2" &&
+        
+        if(this.salesLogForm?.sales_category_id == "2" &&
         !this.salesLogForm.product_name.includes("cash") &&
-        this.productOrder
-          ? "5_discount"
-          : "0_discount"
+        this.productOrder){
+          this.salesLogForm.discount ="5_discount"
+        }
           this.disable = 
           this.salesLogForm?.business_type_id?.slug.includes("ap_no_bs_renewal") ||
           this.salesLogForm?.business_type_id?.slug.includes("ap_no_bs_new")

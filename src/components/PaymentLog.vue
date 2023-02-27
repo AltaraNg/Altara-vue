@@ -997,7 +997,8 @@ export default {
           this.businessTypes = this.biz_type.filter(business_type => {
             //else return the rest
             return (
-             !business_type?.slug.includes("bs")
+             !business_type?.slug.includes("bs") && 
+              business_type.slug.includes("ap_")
             )
           })
         }

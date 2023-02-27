@@ -833,17 +833,18 @@ export default {
   watch: {
     "salesLogForm.sales_category_id": {
       handler(newData) {
+        this.watchCashPrice(newData)
         this.watchSalesCategory(newData)
         this.watchBusinessType(newData)
         this.watchSalesLogForm(newData)
-        this.watchCashPrice(newData)
+        
       },
     },
     "salesLogForm.business_type_id": {
       handler(newData) {
+        this.watchSalesLogForm(newData)
         this.watchSalesCategory(newData)
         this.watchBusinessType(newData)
-        this.watchSalesLogForm(newData)
         this.getCalc()
       },
     },
@@ -917,7 +918,7 @@ export default {
         this.salesLogForm?.business_type_id?.slug == "ap_products" || this.salesLogForm?.business_type_id?.slug.includes("bs_product")
           ? true
           : false
-          if(!this.showDiscount){
+          if(!this.showDiscount && this.isAltaraPay){
             this.salesLogForm.discount = '0_discount'
           }
       if (
@@ -945,6 +946,12 @@ export default {
 
     },
     watchSalesLogForm() {
+        this.salesLogForm.discount =
+        this.salesLogForm?.sales_category_id == "2" &&
+        !this.salesLogForm.product_name.includes("cash") &&
+        this.productOrder
+          ? "5_discount"
+          : "0_discount"
           this.disable = 
           this.salesLogForm?.business_type_id?.slug.includes("ap_no_bs_renewal") ||
           this.salesLogForm?.business_type_id?.slug.includes("ap_no_bs_new")

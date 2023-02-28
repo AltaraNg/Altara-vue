@@ -925,7 +925,7 @@ export default {
       if (
         (this.salesLogForm?.product?.product?.category == "cash loan" &&
         this.salesLogForm?.repayment_duration_id?.name == "six_months") || 
-        (this.salesLogForm.business_type_id.slug == "ap_no_bs_product_verve" && this.salesLogForm?.product?.product?.category !== "cash loan")
+        (this.salesLogForm.business_type_id?.slug == "ap_no_bs_product_verve" && this.salesLogForm?.product?.product?.category !== "cash loan")
       ) {
         //check if it is cashloan and six months duration, return addDownpayment= true only if
         //businesstype is (5 or10) and product amount is >110000
@@ -947,12 +947,14 @@ export default {
 
     },
     watchSalesLogForm() {
-        
-        if(this.salesLogForm?.sales_category_id == "2" &&
+        if(this.isAltaraCredit){
+           if(this.salesLogForm?.sales_category_id == "2" &&
         !this.salesLogForm.product_name.includes("cash") &&
         this.productOrder){
           this.salesLogForm.discount ="5_discount"
+        }else this.salesLogForm.discount ="0_discount"
         }
+       
           this.disable = 
           this.salesLogForm?.business_type_id?.slug.includes("ap_no_bs_renewal") ||
           this.salesLogForm?.business_type_id?.slug.includes("ap_no_bs_new")
@@ -1261,8 +1263,8 @@ export default {
             x.down_payment_rate_id === data0.payment_type_id.id &&
             x.repayment_duration_id === data0.repayment_duration_id.id
         )[0]
-        this.selected_discount = this.discounts.find(item => {
-          return item.slug == this.salesLogForm.discount
+        this.selected_discount = this.discounts?.find(item => {
+          return item.slug == this.salesLogForm?.discount
         })
         const { total, actualDownpayment, rePayment } =
           data0.business_type_id.slug.includes("cash_loan") ||

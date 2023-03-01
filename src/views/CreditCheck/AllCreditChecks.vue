@@ -9,19 +9,6 @@
               <h4 class="col">Filters</h4>
             </div>
             <div class="d-flex">
-              <!-- <date-picker
-                class="mx-2"
-                v-model="searchQuery.fromDate"
-                valueType="format"
-                placeholder="Date From"
-              ></date-picker>
-
-              <date-picker
-                class="mx-2"
-                v-model="searchQuery.toDate"
-                valueType="format"
-                placeholder="Date To"
-              ></date-picker> -->
 
               <div class="col-md-2">
                 <select
@@ -56,14 +43,7 @@
               </div>
 
               <div class="d-flex">
-                <!-- <div class="mx-2">
-                  <button
-                    class="my-auto p-3 btn rounded bg-default w-100"
-                    @click="filterCreditCheck"
-                  >
-                    Search
-                  </button>
-                </div> -->
+                
 
                 <div class="mx-2">
                   <button
@@ -259,7 +239,6 @@
 import { get, patch } from "../../utilities/api"
 import { debounce } from "../../utilities/globalFunctions"
 import flash from "../../utilities/flash"
-import { mapGetters, mapActions } from "vuex"
 import DatePicker from "vue2-datepicker"
 import CustomHeader from "../../components/customHeader"
 import "vue2-datepicker/index.css"
@@ -296,7 +275,6 @@ export default {
           ...this.searchQuery,
         }),
       })
-      // this.searchQuery.status = newVal;
       this.fetchData({ ...this.searchQuery })
     },
     "searchQuery.searchTerm": function (newVal) {
@@ -312,7 +290,6 @@ export default {
     fetchData(params = {}) {
       this.$scrollToTop()
       this.$LIPS(true)
-      //   let {page, page_size, date_from, date_to, branch_id} = this.$data;
       const url = "api/all/credit/checker"
 
       get(url, params)

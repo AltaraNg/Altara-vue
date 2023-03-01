@@ -15,7 +15,7 @@
 							>Total Product Price
 						</label>
 						<currency-input v-model="form1[0]" class="form-control w-100"
-						:options="{currency : 'NGN', hideGroupingSeparatorOnFocus: false}" />
+						:options="inputOptions" />
 					</div>
 
 					<div class="col form-group">
@@ -23,7 +23,7 @@
 							>Monthly Salary
 						</label>
 						<currency-input v-model="form1[1]" class="form-control w-100"
-						:options="{currency : 'NGN', hideGroupingSeparatorOnFocus: false}" />
+						:options="inputOptions" />
 					</div>
 				</div>
 			</tab-content>
@@ -127,6 +127,16 @@
 				next1: false,
 				next2: false,
 				next3: false,
+				inputOptions: {
+					currency: 'NGN',
+        			currencyDisplay: 'symbol',
+        			hideCurrencySymbolOnFocus: false,
+       				hideGroupingSeparatorOnFocus: false,
+       				hideNegligibleDecimalDigitsOnFocus: true,
+        			autoDecimalDigits: false,
+        			useGrouping: true,
+        			accountingSign: false,
+				},
 				apiUrls: {
 					recommend: `/api/recommendation`,
 					repaymentDuration: `/api/repayment_duration`,

@@ -96,6 +96,9 @@ const ReportingTool = () => import('../views/Admin/ReportingTool.vue');
 const ReminderReportingTool = () => import('../views/Admin/ReminderCollectionData.vue');
 const OrderRequest = () => import('../views/FSL/order_request/orderRequest.vue');
 
+const CreditCheck = () => import('../views/CreditCheck/index.vue');
+const CreditCheckHome = () => import('../views/CreditCheck/HomePage.vue');
+const AllCreditChecks = () => import('../views/CreditCheck/AllCreditChecks.vue');
 
 
 
@@ -134,6 +137,16 @@ const router = new VueRouter({
       children: [
         { path: "profile", component: ProfileHome },
         { path: "profile/edit", component: ProfileEdit },
+      ],
+    },
+    {
+      path: "/credit-check",
+      component: CreditCheck,
+      meta: { requiresAuth: true, CreditCheck: true },
+      children: [
+        { path: "/", redirect: { name: "CreditCheckHome" } },
+        { path: "home", component: CreditCheckHome, name: "CreditCheckHome" },
+        { path: "all", component: AllCreditChecks, name: "AllCreditChecks" },
       ],
     },
     {

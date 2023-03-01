@@ -1,7 +1,7 @@
 <template>
     <div class="col-md-12 px-md-3 p-0">
         <div v-for="{name,url,icon} in cards" v-if="auth(name+'Access')"
-             class="col-md-4 col-sm-6 float-left product py-md-2 py-0 px-md-4 px-3">
+             class="col-md-4 col-sm-6 float-left product py-md-2 py-0 px-md-4 px-3" :key="name">
             <router-link class="card" :to="url">
                 <ul class="nav nav-tabs bg-default justify-content-center"><h6>{{name}} Portal</h6></ul>
                 <div class="card-body float-left w-100">
@@ -46,6 +46,7 @@
                     {name: 'ALTARAPAY', url: 'altarapay/home', icon: 'fa-money-bill-alt'},
                     {name: "Admin", url: 'admin/home', icon: 'fa-user-shield'},
                     {name: "General", url: 'gen-utils/home', icon: 'fa-user-shield'},
+                    {name: "CreditCheck", url: 'credit-check/home', icon: 'fa-user-shield'},
                 ]
             }
         },

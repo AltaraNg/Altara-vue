@@ -339,8 +339,7 @@ export default {
 
   created() {
     this.searchQuery.status = this.$route?.query?.status
-    this.searchQuery.fromDate = this.$route?.query?.fromDate
-    this.searchQuery.toDate = this.$route?.query?.toDate
+    this.searchQuery.searchTerm = this.$route?.query?.searchTerm
     this.fetchData({ ...this.searchQuery })
   },
   mounted() {},

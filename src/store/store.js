@@ -49,6 +49,7 @@ export const store = new Vuex.Store({
     HRMAccess: [...admin, 6, 7, 32],
     peoplesOps: [...admin, 6, 7],
     FSLLead: [...admin, 11, 32, 14],
+    CreditChecker: [...admin, 34],
     supervisor: [...admin, 11, 14],
     FSLAccess: [...admin, 11, 14, 19, 32],
     LOGLead: [...admin, 11, 32],

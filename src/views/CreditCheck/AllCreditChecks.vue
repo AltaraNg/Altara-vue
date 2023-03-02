@@ -298,8 +298,7 @@ export default {
             response.data?.data?.creditCheckerVerifications?.data
         })
         .catch((err) => {
-          console.log(err)
-          Flash.setError("Error occurred fetching credit checks")
+          flash.setError("Error occurred fetching credit checks")
         })
       this.$LIPS(false)
     },

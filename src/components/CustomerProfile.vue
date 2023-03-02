@@ -68,20 +68,15 @@
                   </div>
                 </span>
               </div>
-              <div class="d-flex mx-auto w-75">
-                <div class="text-center my-2" v-if="forDVA">
-                  <button class="btn bg-default px-3" @click="verifyModal">
-                    Verify Customer
-                  </button>
-                </div>
-                <div class="text-center my-2" v-if="forCreditChecker">
-                  <button
-                    class="btn bg-default px-4"
-                    @click="creditReportModal"
-                  >
-                    Credit Report
-                  </button>
-                </div>
+              <div class="text-center my-2" v-if="forDVA">
+                <button class="btn bg-default px-3" @click="verifyModal">
+                  Verify Customer
+                </button>
+              </div>
+              <div class="text-center my-2" v-if="forCreditChecker">
+                <button class="btn bg-default px-4" @click="creditReportModal">
+                  Credit Report
+                </button>
               </div>
             </div>
           </div>
@@ -290,21 +285,21 @@
   </transition>
 </template>
 <script>
-import Vue from "vue"
-import Auth from "../utilities/auth"
-import { mapActions, mapGetters } from "vuex"
-import { EventBus } from "../utilities/event-bus"
-import AppNavigation from "../components/AppNavigation"
-import ApprovalStatusButton from "../components/ApprovalStatusButton"
-import CustomSMSButton from "../components/CustomSMSButton/CustomSMSButton"
-import CustomerMobileButton from "../components/customerMobileSms/customerMobileButton.vue"
-import paystack from "vue-paystack"
-import CustomerGuarantorsModal from "../components/modals/CustomerGuarantorsModal.vue"
-import VerificationCheckList from "../components/modals/VerificationCheckList.vue"
-import CreditReportModal from "../components/modals/CreditReportModal.vue"
+import Vue from 'vue'
+import Auth from '../utilities/auth'
+import { mapActions, mapGetters } from 'vuex'
+import { EventBus } from '../utilities/event-bus'
+import AppNavigation from '../components/AppNavigation'
+import ApprovalStatusButton from '../components/ApprovalStatusButton'
+import CustomSMSButton from '../components/CustomSMSButton/CustomSMSButton'
+import CustomerMobileButton from '../components/customerMobileSms/customerMobileButton.vue'
+import paystack from 'vue-paystack'
+import CustomerGuarantorsModal from '../components/modals/CustomerGuarantorsModal.vue'
+import VerificationCheckList from '../components/modals/VerificationCheckList.vue'
+import CreditReportModal from '../components/modals/CreditReportModal.vue'
 
-import { post } from "../utilities/api"
-import { relative } from "path"
+import { post } from '../utilities/api'
+import { relative } from 'path'
 
 export default {
   props: ["viewCustomer"],
@@ -404,13 +399,32 @@ export default {
           classes: ["w-50", "overflow-hidden"],
           adaptive: true,
           resizable: true,
-          draggable: true,
-          height: "auto",
-          width: "50%",
+          height: 'auto',
+          width: '50%',
           clickToClose: true,
         },
         {
           closed: event => {},
+        }
+      )
+    },
+    creditReportModal(){
+      this.$modal.show(
+        CreditReportModal,
+        { customer: this.customer },
+        {
+          name: 'creditReportForm',
+          classes: ['w-50', 'overflow-hidden'],
+          adaptive: true,
+          resizable: true,
+          draggable: true,
+          height: 'auto',
+          width: '50%',
+          clickToClose: true,
+        },
+        {
+          closed: event => {
+          }
         }
       )
     },

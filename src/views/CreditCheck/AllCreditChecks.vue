@@ -296,7 +296,6 @@ export default {
         .then((response) => {
           this.creditChecks =
             response.data?.data?.creditCheckerVerifications?.data
-          console.log(this.creditChecks)
         })
         .catch((err) => {
           console.log(err)
@@ -330,7 +329,7 @@ export default {
           this.searchQuery.status = this.selectedStatus
         })
         .catch((err) => {
-          console.log(err)
+          flash.setError('An error ocurred while updating the credit check status')
         })
 
       $("#creditCheckModal").modal("toggle")

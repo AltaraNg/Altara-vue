@@ -109,7 +109,7 @@
               v-for="item in customer.new_documents"
               v-if="states.order && customer.new_documents.length > 0"
             >
-              <div :class="DivClass(item.name)" class="card card-stats">
+              <div :class="'success'" class="card card-stats">
                 <div class="card-body ">
                   <div class="statistics statistics-horizontal">
                     <div class="info info-horizontal">
@@ -118,7 +118,7 @@
                           <div
                             class="icon icon-warning icon-circle position-relative"
                           >
-                            <i :class="IconClass(item.name)" class="fas"></i>
+                            <i :class="'fa-check'" class="fas"></i>
                           </div>
                         </div>
                         <div class="col-8 text-right">
@@ -126,14 +126,14 @@
                             {{ item.name | capitalize }}
                           </h4>
                           <h6 class="stats-title">
-                            {{ key(item.name) ? "Verified" : "Not Verified" }}
+                            {{ "Verified" }}
                           </h6>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="card-footer pointer">
+                <div class="card-footer pointer" @click="viewDocument(item)">
                   <span class="float-right" style="font-size: 10px">
                     by - {{ customer["document"].staff_name | capitalize }}
                   </span>
@@ -1020,6 +1020,7 @@ import CustomHeader from "../../../components/customHeader"
 import ViewVerificationCheckList from "../../../components/modals/ViewVerificationCheckList.vue"
 import ViewCreditReportModal from "../../../components/modals/ViewCreditReportModal.vue"
 import AddDocumentModal from "../../../components/modals/AddDocumentModal.vue"
+import ShowDocumentModal from "../../../components/modals/ShowDocumentModal.vue"
 
 const init = ({ id }) => `/api/customer/${id}`
 
@@ -1196,6 +1197,8 @@ export default {
           //eg this.work_guarantor = if(data.customer.work_guarantor){ return data.customer.work_guarantor }
           // else {return data.empty_work_guarantor}
           //the empty_work_guarantor is returned from backend when no work guarantor has been added.
+
+          this.getRecommendationList(this.customer.id)
         })
       } else Flash.setError(data.message, 5000)
     },
@@ -1266,6 +1269,27 @@ export default {
         { customer: this.customer },
         {
           name: "addDocumentModal",
+          classes: ["w-50", "overflow-auto"],
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
+        },
+        {
+          closed: () => {
+            this.$router.go()
+          },
+        }
+      )
+    },
+
+    viewDocument(document) {
+      this.$modal.show(
+        ShowDocumentModal,
+        { document },
+        {
+          name: "viewDocumentModal",
           classes: ["w-50", "overflow-auto"],
           adaptive: true,
           resizable: true,

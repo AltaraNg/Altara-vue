@@ -37,7 +37,7 @@
             type="button"
             class="btn px-5 rounded bg-danger mx-3 my-5"
             data-dismiss="modal"
-            @click="$modal.hide('verificationForm')"
+            @click="$modal.hide('addDocumentModal')"
           >
             Close
           </button>

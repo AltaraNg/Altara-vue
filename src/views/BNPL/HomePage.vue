@@ -7,7 +7,6 @@
           :title="portal.title"
           :url_c="portal.url_c"
           :desc="portal.desc"
-          :aces="portal.aces"
         />
       </div>
     </div>
@@ -15,24 +14,30 @@
 </template>
 <script>
 import PortalCard from '../../components/portalCard'
+
 export default {
   components: { PortalCard },
   data() {
     return {
       portals: [
         {
-          url: 'reporting',
-          title: 'Daily Invoice Report',
-          url_c: 'View daily report',
-          desc: 'View daily report',
+          url: 'bnpl-vendors',
+          title: 'BNPL Vendors',
+          url_c: 'Manage BNPL Vendors',
+          desc: 'Manage BNPL Vendors',
         },
-
         {
-          url: 'reminder-reporting',
-          title: 'Reminder and Collection Charts',
-          url_c: 'View reminder report',
-          desc: 'View reminder report',
+          url: 'bnpl-orders',
+          title: 'BNPL Orders',
+          url_c: 'Manage BNPL Orders',
+          desc: 'Manage BNPL Orders',
         },
+        // {
+        //   url: 'bnpl-dashboard',
+        //   title: 'BNPL Dashboard',
+        //   url_c: 'View BNPL Dashboard',
+        //   desc: 'View BNPL Dashboard',
+        // },
       ],
     }
   },

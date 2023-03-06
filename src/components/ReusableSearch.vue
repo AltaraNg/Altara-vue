@@ -113,7 +113,7 @@ export default {
         value: "",
       });
     },
-    searchEvent() {
+    async searchEvent() {
       if (this.url === '/api/new_order?renewalList=true'){
         this.searchQuery.renewalList = 'true';
         this.url = this.url.slice(0, 14);
@@ -138,7 +138,7 @@ export default {
           
         }
         else{
-          this.$emit("childToParent", {data : response.data.data,
+          this.$emit("childToParent", {data : response,
           queryParams: this.searchQuery
           });        
         }

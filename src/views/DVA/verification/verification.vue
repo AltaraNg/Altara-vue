@@ -143,7 +143,7 @@
               </div>
             </div>
 
-            <div v-if="states.verification" class="">
+            <div v-if="states.verification" class="mb-5">
               <div class="mt-5 mb-3 attendance-head">
                 <div class="row px-4 pt-3 pb-4 text-center">
                   <div class="col light-heading" style="max-width: 150px">

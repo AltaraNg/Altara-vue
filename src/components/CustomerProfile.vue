@@ -68,12 +68,12 @@
                   </div>
                 </span>
               </div>
-              <div class="text-center my-2" v-if="canViewButton">
+              <div class="text-center my-2" v-if="forDVA">
                 <button class="btn bg-default px-3" @click="verifyModal">
                   Verify Customer
                 </button>
               </div>
-              <div class="text-center my-2" v-if="canViewButton">
+              <div class="text-center my-2" v-if="forCreditChecker">
                 <button class="btn bg-default px-4" @click="creditReportModal">
                   Credit Report
                 </button>
@@ -213,16 +213,16 @@
                     <th class="text-muted">
                       <i class="mr-3 fas fa-briefcase"></i
                       >{{
-                        customer.employment_status === 'formal' ||
-                        customer.employment_status === 'salaried'
-                          ? 'Occupation'
-                          : 'Kind of business'
+                        customer.employment_status === "formal" ||
+                        customer.employment_status === "salaried"
+                          ? "Occupation"
+                          : "Kind of business"
                       }}
                     </th>
                     <td>
                       {{
                         !customer.occupation
-                          ? 'Not Available'
+                          ? "Not Available"
                           : customer.occupation
                       }}
                     </td>
@@ -232,7 +232,7 @@
                       <i class="mr-3 fas fa-envelope"></i>Email
                     </th>
                     <td>
-                      {{ !customer.email ? 'Not Available' : customer.email }}
+                      {{ !customer.email ? "Not Available" : customer.email }}
                     </td>
                   </tr>
                   <tr>
@@ -251,7 +251,7 @@
                       {{
                         customer.user
                           ? customer.user.full_name
-                          : 'user not in record' | capitalize
+                          : "user not in record" | capitalize
                       }}
                     </td>
                   </tr>
@@ -302,7 +302,7 @@ import { post } from '../utilities/api'
 import { relative } from 'path'
 
 export default {
-  props: ['viewCustomer'],
+  props: ["viewCustomer"],
 
   components: {
     CreditReportModal,
@@ -317,15 +317,15 @@ export default {
 
   data() {
     return {
-      customer: '',
+      customer: "",
       showCustomer: false,
     }
   },
 
   computed: {
-    ...mapGetters(['auth']),
+    ...mapGetters(["auth"]),
     full() {
-      return this.$route.meta.mode === 'full'
+      return this.$route.meta.mode === "full"
     },
 
     passport() {
@@ -339,26 +339,29 @@ export default {
     approved() {
       return this.$getCustomerApprovalStatus(this.customer.verification)
     },
-    canViewButton() {
-      return this.auth('DVAAccess')
+    forDVA() {
+      return this.auth("DVAAccess")
+    },
+    forCreditChecker() {
+      return this.auth("CreditChecker")
     },
   },
 
   created() {
-    $('.tooltip').remove()
+    $(".tooltip").remove()
     if (this.viewCustomer) this.setCustomer(this.viewCustomer)
-    EventBus.$on('customer', customer => this.setCustomer(customer))
+    EventBus.$on("customer", customer => this.setCustomer(customer))
     this.addCustomerOptionsModalsToDom()
   },
 
   methods: {
     setCustomer(customer) {
-      Vue.set(this.$data, 'customer', customer)
+      Vue.set(this.$data, "customer", customer)
       this.showCustomer = true
     },
 
     showModal() {
-      this.show('customer-guarantor')
+      this.show("customer-guarantor")
     },
 
     show(modal) {
@@ -373,18 +376,35 @@ export default {
         VerificationCheckList,
         { customer: this.customer },
         {
-          name: 'verificationForm',
-          classes: ['w-50', 'overflow-hidden'],
+          name: "verificationForm",
+          classes: ["w-50", "overflow-hidden"],
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
+          maxHeight: 200,
+        },
+        {
+          closed: event => {},
+        }
+      )
+    },
+    creditReportModal() {
+      this.$modal.show(
+        CreditReportModal,
+        { customer: this.customer },
+        {
+          name: "creditReportForm",
+          classes: ["w-50", "overflow-hidden"],
           adaptive: true,
           resizable: true,
           height: 'auto',
           width: '50%',
           clickToClose: true,
-          maxHeight: 200
         },
         {
-          closed: event => {
-          }
+          closed: event => {},
         }
       )
     },
@@ -409,9 +429,9 @@ export default {
       )
     },
 
-    ...mapActions('ModalAccess', [
-      'addCustomerOptionsModalsToDom',
-      'removeCustomerOptionsModalsFromDom',
+    ...mapActions("ModalAccess", [
+      "addCustomerOptionsModalsToDom",
+      "removeCustomerOptionsModalsFromDom",
     ]),
   },
 

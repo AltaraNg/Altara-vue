@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="pt-md-3 pt-2 verification" id="employeeRegister">
+    <div class="pt-md-3 pt-2 verification overflow-hidden" id="employeeRegister">
       <AutocompleteSearch
         title="customer verification"
         @customer-selected="processForm"
@@ -46,6 +46,7 @@
             <div
               class="mt-5 attendance-head ml-auto pointer"
               @click="addDocument"
+              v-if="states.order"
             >
               <div class="title">
                 <i class="fas fa-plus-circle" style="font-size: 16px;"></i>
@@ -57,7 +58,6 @@
           <div
             v-if="action !== 'update'"
             class="w-100"
-            style="float: left; margin-left: 4rem; margin-right: 4rem;"
           >
             <div
               class="float-left col-lg-3 col-sm-6 px-0 px-sm-3"
@@ -104,44 +104,46 @@
               </div>
             </div>
 
-            <div
-              class="float-left col-lg-3 col-sm-6 px-0 px-sm-3"
-              v-for="item in customer.new_documents"
-              v-if="states.order && customer.new_documents.length > 0"
-            >
-              <div :class="'success'" class="card card-stats">
-                <div class="card-body ">
-                  <div class="statistics statistics-horizontal">
-                    <div class="info info-horizontal">
-                      <div class="row">
-                        <div class="col-4">
-                          <div
-                            class="icon icon-warning icon-circle position-relative"
-                          >
-                            <i :class="'fa-check'" class="fas"></i>
+           <div class="w-100">
+              <div
+                class=" col-lg-3 col-sm-6 px-0"
+                v-for="item in customer.new_documents"
+                v-if="states.order && customer.new_documents.length > 0"
+              >
+                <div :class="'success'" class="card card-stats">
+                  <div class="card-body ">
+                    <div class="statistics statistics-horizontal">
+                      <div class="info info-horizontal">
+                        <div class="row">
+                          <div class="col-4">
+                            <div
+                              class="icon icon-warning icon-circle position-relative"
+                            >
+                              <i :class="'fa-check'" class="fas"></i>
+                            </div>
                           </div>
-                        </div>
-                        <div class="col-8 text-right">
-                          <h4 class="info-title font-weight-bold mb-0">
-                            {{ item.name | capitalize }}
-                          </h4>
-                          <h6 class="stats-title">
-                            {{ "Verified" }}
-                          </h6>
+                          <div class="col-8 text-right">
+                            <h4 class="info-title font-weight-bold mb-0">
+                              {{ item.name | capitalize }}
+                            </h4>
+                            <h6 class="stats-title">
+                              {{ "Verified" }}
+                            </h6>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="card-footer pointer" @click="viewDocument(item)">
-                  <span class="float-right" style="font-size: 10px">
-                    by - {{ customer["document"].staff_name | capitalize }}
-                  </span>
+                  <div class="card-footer pointer" @click="viewDocument(item)">
+                    <span class="float-right" style="font-size: 10px">
+                      by - {{ customer["document"].staff_name | capitalize }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div v-if="states.verification" class="mb-5">
+            <div v-if="states.verification" class="">
               <div class="mt-5 mb-3 attendance-head">
                 <div class="row px-4 pt-3 pb-4 text-center">
                   <div class="col light-heading" style="max-width: 150px">

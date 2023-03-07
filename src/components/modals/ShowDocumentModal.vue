@@ -24,7 +24,7 @@
           </div>
           <div class="upload-image p-2">
             <div class="upload-box">
-                <img :src="imageUrl(document.document_url)" />
+                <img :src="imageUrl(document.document_url)" width="200" height="200"/>
             </div>
           </div>
         </div>
@@ -71,7 +71,6 @@ export default {
   overflow-y: initial !important;
 }
 .modal-body {
-  height: 55vh;
   overflow-y: auto;
 }
 .display-text {

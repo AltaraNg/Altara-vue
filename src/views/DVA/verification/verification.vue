@@ -104,9 +104,9 @@
               </div>
             </div>
 
-           <div class="w-100">
+           <div class="w-100 d-flex flex-wrap">
               <div
-                class=" col-lg-3 col-sm-6 px-0"
+                class=" col-lg-3 col-sm-6 px-3"
                 v-for="item in customer.new_documents"
                 v-if="states.order && customer.new_documents.length > 0"
               >

@@ -2,7 +2,7 @@ import axios from 'axios'
 import Auth from './auth'
 
 axios.defaults.baseURL = process.env.VUE_APP_URL;
-export const get = url => axios({ method: 'GET', url, headers: { 'Authorization': `Bearer ${Auth.state.api_token}`, 'BNLP-ADMIN-ACCESS': process.env.VUE_APP_BNPL_ACCESS_KEY } });
+export const get = (url, params = {}) => axios({ method: 'GET', url, params: params ,headers: { 'Authorization': `Bearer ${Auth.state.api_token}`, 'BNLP-ADMIN-ACCESS': process.env.VUE_APP_BNPL_ACCESS_KEY  } });
 export const post = (url, data) => axios({
     method: 'POST',
     url,

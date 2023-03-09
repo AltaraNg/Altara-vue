@@ -152,6 +152,12 @@ const router = new VueRouter({
         { path: "/", redirect: { name: "CreditCheckHome" } },
         { path: "home", component: CreditCheckHome, name: "CreditCheckHome" },
         { path: "all", component: AllCreditChecks, name: "AllCreditChecks" },
+        {
+          path: "lookup",
+          component: CustomerLookup,
+          name: "customer-lookup-dva",
+          meta: { customSMS: true },
+        },
       ],
     },
     {

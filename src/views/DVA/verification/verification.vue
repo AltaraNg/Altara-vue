@@ -10,7 +10,7 @@
       <transition name="fade">
         <div v-if="customer">
           <customer-profile :view-customer="customer" />
-          <div style="display: flex; ">
+          <div style="display: flex; " v-if="action !== 'update'">
             <custom-header
               :title="'All Document(s)'"
               @click.native="selectType('order')"
@@ -136,7 +136,7 @@
                   </div>
                   <div class="card-footer pointer" @click="viewDocument(item)">
                     <span class="float-right" style="font-size: 10px">
-                      by - {{ customer["document"].staff_name | capitalize }}
+                      by - {{ item.user | capitalize }}
                     </span>
                   </div>
                 </div>

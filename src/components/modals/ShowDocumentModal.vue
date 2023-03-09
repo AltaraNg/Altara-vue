@@ -24,7 +24,7 @@
           </div>
           <div class="upload-image p-2">
             <div class="upload-box">
-                <img :src="imageUrl(document.document_url)" width="200" height="200"/>
+                <img :src="imageUrl(document.document_url)" width="200" height="200" :alt="document.name"/>
             </div>
           </div>
         </div>

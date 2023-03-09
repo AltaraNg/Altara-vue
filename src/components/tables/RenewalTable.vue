@@ -297,7 +297,6 @@
 						classes: ['w-80', 'overflow-auto'],
 						adaptive: true,
 						resizable: true,
-						draggable: true,
 						height: 'auto',
 						width: '80%',
 						clickToClose: false,

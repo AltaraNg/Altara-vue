@@ -73,7 +73,7 @@
                   Verify Customer
                 </button>
               </div>
-              <div class="text-center my-2" v-if="forDVA">
+              <div class="text-center my-2" v-if="forDVA || forCreditChecker">
                 <button class="btn bg-default px-4" @click="creditReportModal">
                   Credit Report
                 </button>

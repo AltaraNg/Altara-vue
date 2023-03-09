@@ -35,13 +35,13 @@
         <div class="float-right">
           <button
             type="button"
-            class="btn px-5 rounded bg-danger mx-3 my-5"
+            class="btn px-5 rounded bg-danger mx-3 my-5 font-weight-bolder"
             data-dismiss="modal"
             @click="$modal.hide('addDocumentModal')"
           >
             Close
           </button>
-          <button type="button" class="btn px-4 bg-default my-5" @click="save">
+          <button type="button" class="btn px-4 bg-default my-5 font-weight-bolder" @click="save">
             Upload Image
           </button>
         </div>

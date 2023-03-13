@@ -1,6 +1,9 @@
 <template>
   <transition name="fade">
-    <div class="pt-md-3 pt-2 verification overflow-hidden" id="employeeRegister">
+    <div
+      class="pt-md-3 pt-2 verification overflow-hidden"
+      id="employeeRegister"
+    >
       <AutocompleteSearch
         title="customer verification"
         @customer-selected="processForm"
@@ -23,6 +26,7 @@
 
             <custom-header
               :title="'Verifications'"
+              v-if="forDVA"
               @click.native="selectType('verification')"
               :style="
                 !states.verification
@@ -34,6 +38,7 @@
 
             <custom-header
               :title="'Credit Report'"
+              v-if="forCreditChecker"
               @click.native="selectType('credit_report')"
               :style="
                 !states.credit_report
@@ -55,10 +60,7 @@
               </div>
             </div>
           </div>
-          <div
-            v-if="action !== 'update'"
-            class="w-100"
-          >
+          <div v-if="action !== 'update'" class="w-100">
             <div
               class="float-left col-lg-3 col-sm-6 px-0 px-sm-3"
               v-for="type in cardView"
@@ -104,7 +106,7 @@
               </div>
             </div>
 
-           <div class="w-100 d-flex flex-wrap">
+            <div class="w-100 d-flex flex-wrap">
               <div
                 class=" col-lg-3 col-sm-6 px-3"
                 v-for="item in customer.new_documents"
@@ -1023,6 +1025,7 @@ import ViewVerificationCheckList from "../../../components/modals/ViewVerificati
 import ViewCreditReportModal from "../../../components/modals/ViewCreditReportModal.vue"
 import AddDocumentModal from "../../../components/modals/AddDocumentModal.vue"
 import ShowDocumentModal from "../../../components/modals/ShowDocumentModal.vue"
+import { mapActions, mapGetters } from "vuex"
 
 const init = ({ id }) => `/api/customer/${id}`
 
@@ -1397,8 +1400,16 @@ export default {
   },
 
   computed: {
+    ...mapGetters(["auth"]),
+
     check() {
       return !(!this.$isProcessing && !!this.customer_id)
+    },
+    forDVA() {
+      return this.auth("DVAAccess")
+    },
+    forCreditChecker() {
+      return this.auth("CreditChecker")
     },
   },
 

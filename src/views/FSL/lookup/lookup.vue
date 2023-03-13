@@ -34,6 +34,7 @@
             />
             <custom-header
               :title="'Verifications'"
+              v-if="forDVA"
               @click.native="selectType('verification')"
               :style="
                 !states.verification
@@ -45,6 +46,7 @@
 
             <custom-header
               :title="'Credit Report'"
+              v-if="forCreditChecker"
               @click.native="selectType('credit_report')"
               :style="
                 !states.credit_report
@@ -2148,6 +2150,12 @@ export default {
     },
     canLogDD() {
       if (this.auth("LogDirectDebit")) return true
+    },
+    forDVA() {
+      return this.auth("DVAAccess")
+    },
+    forCreditChecker() {
+      return this.auth("CreditChecker")
     },
   },
 

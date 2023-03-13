@@ -15,14 +15,14 @@
         data() {
             return {
                 portals: [
-                    {
-                        id: 1,
-                        url: "all",
-                        title: "View All Credit Checks",
-                        url_c: "Credit Check Verification",
-                        desc: "View all Credit Checks",
-                        aces: this.$store.getters.auth('CreditCheckAccess'),
-                    },
+                    // {
+                    //     id: 1,
+                    //     url: "all",
+                    //     title: "View All Credit Checks",
+                    //     url_c: "Credit Check Verification",
+                    //     desc: "View all Credit Checks",
+                    //     aces: this.$store.getters.auth('CreditCheckAccess'),
+                    // },
                     {
                         id: 2,
 						url: 'lookup',

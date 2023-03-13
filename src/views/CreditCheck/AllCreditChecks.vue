@@ -9,7 +9,6 @@
               <h4 class="col">Filters</h4>
             </div>
             <div class="d-flex">
-
               <div class="col-md-2">
                 <select
                   v-model="searchQuery.status"
@@ -43,8 +42,6 @@
               </div>
 
               <div class="d-flex">
-                
-
                 <div class="mx-2">
                   <button
                     class="my-auto p-3 btn rounded mx-2 bg-default w-100"
@@ -173,6 +170,10 @@
         </div>
       </div>
       <div v-else class="h4 text-center">No Data</div>
+      <div v-if="pageParams">
+        <base-pagination :page-param="pageParams" @fetchData="fetchData">
+        </base-pagination>
+      </div>
       <div class="modal" tabindex="-1" role="dialog" id="creditCheckModal">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -212,20 +213,20 @@
                   </select>
                 </div>
               </div>
-              <div class="modal-footer">
+              <div class="d-flex justify-content-end align-items-center p-4">
+                <button
+                  type="button"
+                  class="btn btn-secondary mr-3"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
                 <button
                   type="button"
                   class="btn btn-primary bg-info"
                   @click="changeVerificationStatus"
                 >
                   Save changes
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-dismiss="modal"
-                >
-                  Close
                 </button>
               </div>
             </form>
@@ -241,11 +242,12 @@ import { debounce } from "../../utilities/globalFunctions"
 import flash from "../../utilities/flash"
 import DatePicker from "vue2-datepicker"
 import CustomHeader from "../../components/customHeader"
+import BasePagination from "../../components/Pagination/BasePagination.vue"
 import "vue2-datepicker/index.css"
 export default {
   props: {},
 
-  components: { CustomHeader, DatePicker },
+  components: { CustomHeader, DatePicker, BasePagination },
 
   data() {
     return {
@@ -264,6 +266,10 @@ export default {
         "Action",
       ],
       statuses: ["pending", "passed", "failed"],
+      pageParams: {
+        page: 1,
+        limit: 15,
+      },
     }
   },
 
@@ -291,16 +297,48 @@ export default {
       this.$scrollToTop()
       this.$LIPS(true)
       const url = "api/all/credit/checker"
-
+       params.page = this.pageParams.page ?? 1;
+       params.per_page = this.pageParams.limit ?? 15;
       get(url, params)
         .then((response) => {
           this.creditChecks =
             response.data?.data?.creditCheckerVerifications?.data
+          this.setPagination(response)
         })
         .catch((err) => {
           flash.setError("Error occurred fetching credit checks")
         })
       this.$LIPS(false)
+    },
+    setPagination(response) {
+      const {
+        current_page,
+        first_page_url,
+        from,
+        last_page,
+        last_page_url,
+        data,
+        per_page,
+        next_page_url,
+        to,
+        total,
+        prev_page_url,
+      } = response?.data?.data?.creditCheckerVerifications
+      this.pageParams = Object.assign({}, this.pageParams, {
+        current_page,
+        first_page_url,
+        from,
+        last_page,
+        last_page_url,
+        per_page,
+        next_page_url,
+        to,
+        total,
+        prev_page_url,
+      })
+      if (response.queryParams !== undefined) {
+        this.searchQuery = response.queryParams
+      }
     },
     setSelectedCreditCheck(item) {
       this.selectedStatus = item.status
@@ -316,6 +354,7 @@ export default {
     },
 
     changeVerificationStatus() {
+      this.$LIPS(true)
       patch(`api/update/credit/checker/status/${this.selectedCreditCheck.id}`, {
         status: this.selectedStatus,
       })
@@ -328,9 +367,11 @@ export default {
           this.searchQuery.status = this.selectedStatus
         })
         .catch((err) => {
-          flash.setError('An error ocurred while updating the credit check status')
+          flash.setError(
+            "An error ocurred while updating the credit check status"
+          )
         })
-
+      this.$LIPS(false)
       $("#creditCheckModal").modal("toggle")
     },
   },

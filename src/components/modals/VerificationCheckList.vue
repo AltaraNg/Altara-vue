@@ -46,7 +46,7 @@
             cols="2"
             class="form-control "
             v-model="verificationData.otherOption"
-          ></textarea>  
+          ></textarea>
         </div>
         <div class="form-group my-3">
           <label for="exampleFormControlSelect2"
@@ -348,7 +348,9 @@
 </template>
 
 <script>
-import { get, post } from '../../utilities/api'
+import { get, post } from "../../utilities/api"
+import { EventBus } from '../../utilities/event-bus'
+
 export default {
   props: {
     customer: {
@@ -358,7 +360,7 @@ export default {
   },
   data() {
     return {
-      verifiedOptions: ['Home', 'Business', 'Office', 'Other'],
+      verifiedOptions: ["Home", "Business", "Office", "Other"],
       vAgents: null,
       verificationData: {},
     }
@@ -371,21 +373,22 @@ export default {
           try {
             this.$LIPS(true)
             this.verificationData.customer_id = this.customer.id
-            this.verificationData.type = 'verification'
+            this.verificationData.type = "verification"
 
-            let res = await post('/api/recommendation', this.verificationData)
+            let res = await post("/api/recommendation", this.verificationData)
             if (res.status === 200) {
               this.$swal({
-                icon: 'success',
+                icon: "success",
                 title: `verification saved successfully`,
               })
               this.verificationData = {}
-              this.$modal.hide('verificationForm')
-              this.$emit('closed', res.data)
+              EventBus.$emit("updateUser", this.customer.id)
+
+              this.$modal.hide("verificationForm")
             }
           } catch (err) {
             this.$swal({
-              icon: 'error',
+              icon: "error",
               title: `Unable to complete`,
             })
           } finally {
@@ -395,7 +398,6 @@ export default {
       })
     },
   },
-  
 }
 </script>
 

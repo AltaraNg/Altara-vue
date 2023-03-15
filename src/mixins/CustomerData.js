@@ -17,7 +17,7 @@ export default {
           civil_status: "",
           year_together: "",
           gender: "",
-          registration_channel: "Website",
+          registration_channel: "",
           level_of_education: "",
           add_street: "",
           add_houseno: "",
@@ -139,7 +139,7 @@ export default {
           },
         },
       ],
-      channels: ["Facebook", "Sales App", "Billboard", "Radio", "None"],
+      channels: ["Facebook", "Sales App", "Billboard", "Radio", "Website", "None"],
       occupations: [
         {
           id: 1,

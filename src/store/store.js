@@ -40,12 +40,12 @@ export const store = new Vuex.Store({
 
     /*object for access controls*/
     DSALead: [...admin, 15],
-    DSACaptain: [...admin, 15, 17, 29, 46, 32, 46],
+    DSACaptain: [...admin, 15, 17, 29, 46, 46],
     AdminAccess: [...admin],
     GeneralAccess: [...admin, 14, 15, 17, 18, 19, 21, 22, 29, 44, 45, 32, 46, 47],
     DSAAccess: [...admin, 14, 15, 17, 18, 19, 21, 22, 29, 44, 45, 32, 46, 47],
-    DVALead: [...admin, 13, 16, 22, 32],
-    DVAAccess: [...admin, 13, 16, 21, 22, 23, 32, 26],
+    DVALead: [...admin, 13, 16, 22],
+    DVAAccess: [...admin, 13, 16, 21, 22, 23, 26],
     HRMAccess: [...admin, 6, 7, 32],
     peoplesOps: [...admin, 6, 7],
     FSLLead: [...admin, 11, 32, 14],
@@ -62,6 +62,7 @@ export const store = new Vuex.Store({
     CASHLOANAccess: [...admin, 42],
     BNPLAccess: [...admin],
     CreditCheckAccess: [...admin, 34],
+    CoordinatorAccess: [...admin, 32],
     months: [
       { id: "01", name: "January" },
       { id: "02", name: "February" },

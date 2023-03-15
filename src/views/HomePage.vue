@@ -50,7 +50,6 @@ export default {
         { name: "ACC", url: "acc/home", icon: "fa-coins" },
         { name: "CASHLOAN", url: "cashloan/home", icon: "fa-id-card" },
         { name: "ALTARAPAY", url: "altarapay/home", icon: "fa-money-bill-alt" },
-        { name: "BNPL", url: "bnpl/home", icon: "fa-money-bill-alt" },
         { name: "Admin", url: "admin/home", icon: "fa-user-shield" },
         { name: "General", url: "gen-utils/home", icon: "fa-user-shield" },
         {
@@ -64,6 +63,16 @@ export default {
 
   computed: {
     ...mapGetters(["auth"]),
+  },
+  mounted() {
+    let flag = localStorage.getItem("flag")
+    flag === "demo"
+      ? this.cards.splice(8, 0, {
+          name: "BNPL",
+          url: "bnpl/home",
+          icon: "fa-money-bill-alt",
+        })
+      : ""
   },
 
   beforeCreate() {

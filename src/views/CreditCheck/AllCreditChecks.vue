@@ -364,7 +364,6 @@ export default {
           this.creditChecks = this.creditChecks.filter((item) => {
             return item.status == this.selectedStatus
           })
-          this.searchQuery.status = this.selectedStatus
         })
         .catch((err) => {
           flash.setError(

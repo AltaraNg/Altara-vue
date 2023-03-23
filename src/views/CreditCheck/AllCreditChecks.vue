@@ -56,7 +56,7 @@
         </div>
         <div class="mt-2 attendance-head">
           <div class="row px-4 pt-3 pb-4 text-left">
-            <div class="col light-heading" style="max-width: 120px">S/N</div>
+            
             <div
               class="col light-heading"
               v-for="(header, index) in headings"
@@ -78,12 +78,7 @@
           v-for="(creditCheck, index) in creditChecks"
         >
           <!-- {{ creditCheck }} -->
-          <div
-            class="col d-flex-inline align-items-center justify-items-start"
-            style="max-width: 120px"
-          >
-            <span class="user mx-auto">{{ ++index }}</span>
-          </div>
+         
           <div
             class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left"
           >
@@ -289,6 +284,10 @@ export default {
           ...this.searchQuery,
         }),
       })
+      this.pageParams.page = 1
+      this.$router.push({
+        query: { page: 1 },
+      })
       debounce(this.fetchData({ ...this.searchQuery }), 500)
     },
   },
@@ -297,8 +296,8 @@ export default {
       this.$scrollToTop()
       this.$LIPS(true)
       const url = "api/all/credit/checker"
-       params.page = this.pageParams.page ?? 1;
-       params.per_page = this.pageParams.limit ?? 15;
+      params.page = this.pageParams.page ?? 1
+      params.per_page = this.pageParams.limit ?? 15
       get(url, params)
         .then((response) => {
           this.creditChecks =

@@ -85,7 +85,8 @@
             {{ creditCheck.customer_id }}
           </div>
           <div
-            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start"
+            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start pointer"
+            @click="displayCustomerInfo(creditCheck.customer)"
           >
             <p class="mr-2">
               {{ creditCheck.customer.first_name }}
@@ -95,7 +96,9 @@
             <p class="h6">{{ creditCheck.customer.telephone }}</p>
           </div>
           <div
-            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start justify-content-left"
+            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start justify-content-left pointer"
+            @click="displayVendorInfo(creditCheck.vendor)"
+
           >
             <p class="mr-2">
               {{ creditCheck.vendor.full_name }}
@@ -103,7 +106,9 @@
             <p class="h6">{{ creditCheck.vendor.phone_number }}</p>
           </div>
           <div
-            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start"
+            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start pointer"
+            @click="displayProductInfo(creditCheck.bnpl_product)"
+
           >
             <p class="mr-2">
               {{ creditCheck.bnpl_product.name }}
@@ -238,7 +243,11 @@ import flash from "../../utilities/flash"
 import DatePicker from "vue2-datepicker"
 import CustomHeader from "../../components/customHeader"
 import BasePagination from "../../components/Pagination/BasePagination.vue"
+import CustomerInfoModal from "../../components/modals/CustomerInfoModal.vue"
 import "vue2-datepicker/index.css"
+import VendorInfoModal from "../../components/modals/VendorInfoModal.vue"
+import ProductInfoModal from "../../components/modals/ProductInfoModal.vue"
+
 export default {
   props: {},
 
@@ -372,7 +381,55 @@ export default {
       this.$LIPS(false)
       $("#creditCheckModal").modal("toggle")
     },
+    displayCustomerInfo(data){
+      this.$modal.show(
+        CustomerInfoModal,
+        { modalItem: data },
+        {
+          name: "customerInfo",
+          classes: ["w-50", "overflow-auto"],
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
+        }
+      )
+    },
+
+    displayVendorInfo(data){
+      this.$modal.show(
+        VendorInfoModal,
+        { modalItem: data },
+        {
+          name: "vendorInfo",
+          classes: ["w-50", "overflow-auto"],
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
+        }
+      )
+    },
+
+    displayProductInfo(data){
+      this.$modal.show(
+        ProductInfoModal,
+        { modalItem: data },
+        {
+          name: "vendorInfo",
+          classes: ["w-50", "overflow-auto"],
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
+        }
+      )
+    }
   },
+  
 
   created() {
     this.searchQuery.status = this.$route?.query?.status

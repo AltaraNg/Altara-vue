@@ -85,7 +85,8 @@
             {{ creditCheck.customer_id }}
           </div>
           <div
-            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start"
+            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start pointer"
+            @click="displayCustomerInfo(creditCheck.customer)"
           >
             <p class="mr-2">
               {{ creditCheck.customer.first_name }}
@@ -96,6 +97,8 @@
           </div>
           <div
             class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start justify-content-left"
+            @click="displayCustomerInfo(creditCheck.vendor)"
+
           >
             <p class="mr-2">
               {{ creditCheck.vendor.full_name }}
@@ -238,6 +241,7 @@ import flash from "../../utilities/flash"
 import DatePicker from "vue2-datepicker"
 import CustomHeader from "../../components/customHeader"
 import BasePagination from "../../components/Pagination/BasePagination.vue"
+import CustomerInfoModal from "../../components/modals/CustomerInfoModal.vue"
 import "vue2-datepicker/index.css"
 export default {
   props: {},
@@ -372,6 +376,21 @@ export default {
       this.$LIPS(false)
       $("#creditCheckModal").modal("toggle")
     },
+    displayCustomerInfo(data){
+      this.$modal.show(
+        CustomerInfoModal,
+        { modalItem: data },
+        {
+          name: "verificationView",
+          classes: ["w-50", "overflow-auto"],
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
+        }
+      )
+    }
   },
 
   created() {

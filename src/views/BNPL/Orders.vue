@@ -29,7 +29,6 @@
         <div class="col float-right mt-5">
           <button
             class="btn btn-primary bg-default mt-0 myBtn float-right my-2"
-            @click="createOrder"
           >
             <i class="fa fa-plus" aria-hidden="true"></i>
           </button>
@@ -66,16 +65,19 @@
             class="col d-flex align-items-center justify-content-center hover"
             @click="viewVendor(vendor)"
           >
-            {{ vendor.full_name }}
+            {{ vendor.order_number }}
           </div>
           <div class="col d-flex align-items-center justify-content-center">
-            {{ vendor.staff_id }}
+            {{ vendor.bnpl_vendor_product.vendor.full_name }}
           </div>
           <div class="col d-flex align-items-center justify-content-center">
-            {{ vendor.email }}
+            {{ vendor.bnpl_vendor_product.name }}
           </div>
           <div class="col d-flex align-items-center justify-content-center">
-            {{ $humanizeDate(vendor.created_at) }}
+            {{ vendor.status }}
+          </div>
+          <div class="col d-flex align-items-center justify-content-center">
+            {{ $humanizeDate(vendor.order_date) }}
           </div>
         </div>
       </div>
@@ -89,59 +91,7 @@
           </template>
         </zero-state>
       </div>
-      <div class="modal fade repayment" id="viewBrand">
-        <div class="modal-dialog " role="document">
-          <div class="modal-content" v-if="showModalContent">
-            <div class="modal-header py-2">
-              <h4>
-                {{ vendorItem.full_name }}
-              </h4>
-              <a aria-label="Close" class="close py-1" data-dismiss="modal">
-                <span aria-hidden="true" class="modal-close text-danger">
-                  <i class="fas fa-times"></i>
-                </span>
-              </a>
-            </div>
-            <div class="modal-body px-5">
-              <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                  <tbody>
-                    <tr>
-                      <th>Vendor ID</th>
-                      <td>{{ vendorItem.staff_id || 'Not Available' }}</td>
-                    </tr>
-                    <tr>
-                      <th>Address</th>
-                      <td>{{ vendorItem.address || 'Not Available' }}</td>
-                    </tr>
-                    <tr>
-                      <th>Email</th>
-                      <td>{{ vendorItem.email || 'Not Available' }}</td>
-                    </tr>
-                    <tr>
-                      <th>Gender</th>
-                      <td>{{ vendorItem.gender || 'Not Available' }}</td>
-                    </tr>
-                    <tr>
-                      <th>Phone Number</th>
-                      <td>{{ vendorItem.phone_number || 'Not Available' }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div class="modal-footer justify-content-center">
-              <button
-                @click="edit(vendorItem)"
-                class="text-center btn bg-default"
-                v-if="!viewCategory"
-              >
-                Edit
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      
 
       <div v-if="pageParams.next_page_url || pageParams.prev_page_url">
         <base-pagination :page-param="pageParams" @fetchData="fetchData">
@@ -170,7 +120,7 @@ export default {
   props: {
     //TODO::verify if its necessary to make this a prop
     withBranchFilter: { default: true },
-    urlToFetchOrders: { default: '/api/brand' },
+    urlToFetchOrders: { default: '/api/new_order?bnplOrders=true' },
   },
 
   components: { CustomHeader, BasePagination, ResueableSearch, ZeroState },
@@ -179,7 +129,7 @@ export default {
 
   data() {
     return {
-      apiUrl: `${process.env.VUE_APP_BNPL_URL}/api/all/vendors`,
+      apiUrl: '/api/new_order?bnplOrders=true',
       branch_id: '',
       showCat: false,
       OId: null,
@@ -199,7 +149,7 @@ export default {
       vendorItem: null,
       response: {},
       show: false,
-      headings: ['Name', 'Vendor ID', 'Email', 'Date Joined'],
+      headings: ['Order ID', 'Vendor Name', 'Product', 'Order Status', 'Date Created'],
       searchColumns: [{ title: 'Name', column: 'name' }],
     }
   },
@@ -211,7 +161,7 @@ export default {
       let { page, page_size } = this.$data
       get(
         `${this.apiUrl}${
-          !!this.pageParams.page ? `?page=${this.pageParams.page}` : ''
+          !!this.pageParams.page ? `&page=${this.pageParams.page}` : ''
         }` +
           `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ''}`
       )
@@ -220,6 +170,7 @@ export default {
     },
 
     prepareList(response) {
+      console.log(response)
       let {
         current_page,
         first_page_url,
@@ -232,7 +183,7 @@ export default {
         to,
         total,
         prev_page_url,
-      } = response.result.vendors
+      } = response.data
       this.pageParams = Object.assign({}, this.pageParams, {
         current_page,
         first_page_url,
@@ -333,7 +284,7 @@ export default {
       this.filters.unshift({ name: 'branch', model: 'branch_id' })
     this.addCustomerOptionsModalsToDom()
     this.$prepareBranches()
-    // this.fetchData()
+    this.fetchData()
   },
 
   destroyed() {

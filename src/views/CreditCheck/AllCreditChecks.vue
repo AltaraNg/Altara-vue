@@ -107,7 +107,7 @@
           </div>
           <div
             class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start pointer"
-            @click="displayProductInfo(creditCheck.bnpl_product)"
+            @click="displayProductInfo(creditCheck)"
 
           >
             <p class="mr-2">
@@ -261,6 +261,14 @@ export default {
       selectedStatus: "",
       searchQuery: { status: "pending", searchTerm: "" },
       show: false,
+      repaymentDuration: null,
+      downPaymentRates: null,
+      repaymentCyclesopt: null,
+      apiUrls: {
+        repaymentDuration: `/api/repayment_duration`,
+        repaymentCycles: `/api/repayment_cycle`,
+        downPaymentRates: `/api/down_payment_rate`,        
+      },
       headings: [
         "Customer ID",
         "Customer Info Summary",
@@ -301,13 +309,13 @@ export default {
     },
   },
   methods: {
-    fetchData(params = {}) {
+    async fetchData(params = {}) {
       this.$scrollToTop()
       this.$LIPS(true)
       const url = "api/all/credit/checker"
       params.page = this.pageParams.page ?? 1
       params.per_page = this.pageParams.limit ?? 15
-      get(url, params)
+       await get(url, params)
         .then((response) => {
           this.creditChecks =
             response.data?.data?.creditCheckerVerifications?.data
@@ -416,7 +424,7 @@ export default {
     displayProductInfo(data){
       this.$modal.show(
         ProductInfoModal,
-        { modalItem: data },
+        { modalItem: data, repaymentCyclesopt: this.repaymentCyclesopt, repaymentDuration: this.repaymentDuration, downPaymentRates: this.downPaymentRates },
         {
           name: "vendorInfo",
           classes: ["w-50", "overflow-auto"],
@@ -427,11 +435,42 @@ export default {
           clickToClose: true,
         }
       )
-    }
+    },
+    async getRepaymentDuration() {
+      try {
+        const fetchRepaymentDuration = await get(this.apiUrls.repaymentDuration)
+        this.repaymentDuration = fetchRepaymentDuration.data.data.data
+      } catch (err) {
+        this.$displayErrorMessage(err)
+      }
+    },
+    async getDownPaymentRates() {
+      try {
+        const fetchDownPaymentRates = await get(this.apiUrls.downPaymentRates)
+        this.downPaymentRates = fetchDownPaymentRates?.data?.data?.data
+        this.downPaymentRates = this.downPaymentRates.sort((a, b) => {
+          return a.percent - b.percent
+        })
+      } catch (err) {
+        this.$displayErrorMessage(err)
+      }
+    },
+
+    async getRepaymentCycles() {
+      try {
+        const fetchRepaymentCycles = await get(this.apiUrls.repaymentCycles)
+        this.repaymentCyclesopt = fetchRepaymentCycles?.data?.data?.data
+      } catch (err) {
+        this.$displayErrorMessage(err)
+      }
+    },
   },
   
 
   created() {
+    this.getDownPaymentRates();
+    this.getRepaymentCycles();
+    this.getRepaymentDuration();
     this.searchQuery.status = this.$route?.query?.status
     this.searchQuery.searchTerm = this.$route?.query?.searchTerm
     this.fetchData({ ...this.searchQuery })

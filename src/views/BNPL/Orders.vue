@@ -26,13 +26,7 @@
           </resueable-search>
         </div>
 
-        <div class="col float-right mt-5">
-          <button
-            class="btn btn-primary bg-default mt-0 myBtn float-right my-2"
-          >
-            <i class="fa fa-plus" aria-hidden="true"></i>
-          </button>
-        </div>
+        
       </div>
 
       <div class="mt-5 mb-3 attendance-head" v-if="vendors.length > 0">
@@ -63,15 +57,19 @@
           </div>
           <div
             class="col d-flex align-items-center justify-content-center hover"
-            @click="viewVendor(vendor)"
+            @click="viewOrder(vendor)"
           >
             {{ vendor.order_number }}
           </div>
-          <div class="col d-flex align-items-center justify-content-center">
+          <div class="col d-flex align-items-center justify-content-center"  @click="displayVendor(vendor.bnpl_vendor_product.vendor)">
             {{ vendor.bnpl_vendor_product.vendor.full_name }}
           </div>
           <div class="col d-flex align-items-center justify-content-center">
             {{ vendor.bnpl_vendor_product.name }}
+          </div>
+          <div class="col d-flex align-items-center justify-content-center"
+          @click="displayCustomer(vendor.customer)">
+            {{ `${vendor.customer.first_name} ${vendor.customer.last_name}` }}
           </div>
           <div class="col d-flex align-items-center justify-content-center">
             {{ vendor.status }}
@@ -113,8 +111,10 @@ import ZeroState from '../../components/ZeroState.vue'
 
 import BasePagination from '../../components/Pagination/BasePagination'
 import ResueableSearch from '../../components/ReusableSearch.vue'
-import AddVendorsModal from '../../components/modals/AddVendorsModal.vue'
 import EditVendorsModal from '../../components/modals/EditVendorsModal.vue'
+import BNPLOrderModal from '../../components/modals/BNPLOrderModal.vue'
+import VendorInfoModal from '../../components/modals/VendorInfoModal.vue'
+import CustomerInfoModal from '../../components/modals/CustomerInfoModal.vue'
 
 export default {
   props: {
@@ -149,7 +149,7 @@ export default {
       vendorItem: null,
       response: {},
       show: false,
-      headings: ['Order ID', 'Vendor Name', 'Product', 'Order Status', 'Date Created'],
+      headings: ['Order ID', 'Vendor Name', 'Product', 'Customer Name', 'Order Status', 'Date Created'],
       searchColumns: [{ title: 'Name', column: 'name' }],
     }
   },
@@ -215,43 +215,55 @@ export default {
       }
     },
 
-    showCategory(item) {
-      this.showModalContent = true
-      this.brandItem = item
-      this.viewCategory = true
-      return $(`#viewBrand`).modal('toggle')
-    },
-    addCat(brand, category) {
-      if (brand.categories.some(cat => cat.id === category.id)) {
-        alert(`${category.name} category already exists`)
-      } else {
-        brand.categories.push(category)
-        this.categories = this.categories.filter(function(item, index, arr) {
-          return category.id !== item.id
-        })
-      }
-    },
+    
 
-    toggleCat() {
-      Vue.set(this.$data, 'showCat', !this.showCat)
-    },
+    
 
-    createVendor() {
+    viewOrder(order) {
       this.$modal.show(
-        AddVendorsModal,
-        {},
+        BNPLOrderModal,
+        { modalItem: order, },
         {
-          draggable: false,
-          height: 'auto',
-          clickToClose: false,
+          name: "orderInfo",
+          classes: ["w-50", "overflow-auto"],
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
         }
       )
     },
 
-    viewVendor(vendor) {
-      this.showModalContent = true
-      this.vendorItem = vendor
-      return $(`#viewBrand`).modal('toggle')
+    displayVendor(vendor) {
+      this.$modal.show(
+        VendorInfoModal,
+        { modalItem: vendor, },
+        {
+          name: "orderInfo",
+          classes: ["w-50", "overflow-auto"],
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
+        }
+      )
+    },
+    displayCustomer(customer) {
+      this.$modal.show(
+        CustomerInfoModal,
+        { modalItem: customer, },
+        {
+          name: "orderInfo",
+          classes: ["w-50", "overflow-auto"],
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
+        }
+      )
     },
     edit(item) {
       this.showModalContent = false

@@ -79,7 +79,7 @@
           </div>
         </div>
       </div>
-      <div v-else>
+      <div v-else-if="vendors.length === 0 && !$isProcessing">
         <zero-state
           :title="'No Orders to view'"
           :message="'There are currently no Orders'"
@@ -112,7 +112,7 @@ import ZeroState from '../../components/ZeroState.vue'
 import BasePagination from '../../components/Pagination/BasePagination'
 import ResueableSearch from '../../components/ReusableSearch.vue'
 import EditVendorsModal from '../../components/modals/EditVendorsModal.vue'
-import BNPLOrderModal from '../../components/modals/BNPLOrderModal.vue'
+import NewOrderAmortization from '../../components/NewOrderAmortization.vue'
 import VendorInfoModal from '../../components/modals/VendorInfoModal.vue'
 import CustomerInfoModal from '../../components/modals/CustomerInfoModal.vue'
 
@@ -220,15 +220,14 @@ export default {
 
     viewOrder(order) {
       this.$modal.show(
-        BNPLOrderModal,
-        { modalItem: order, },
+        NewOrderAmortization,
+        { order: order, customer: order.customer, standAlone: true, lateFEES: [], paymentForm: {} },
         {
           name: "orderInfo",
-          classes: ["w-50", "overflow-auto"],
           adaptive: true,
           resizable: true,
           height: "auto",
-          width: "50%",
+          width: "75%",          
           clickToClose: true,
         }
       )

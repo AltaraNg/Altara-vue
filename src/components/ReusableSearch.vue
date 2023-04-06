@@ -118,6 +118,10 @@ export default {
         this.searchQuery.renewalList = 'true';
         this.url = this.url.slice(0, 14);
       }
+      if (this.url === '/api/new_order?bnplOrders=true'){
+        this.searchQuery.bnplOrders = 'true';
+        this.url = this.url.slice(0, 14);
+      }
       this.$LIPS(true);
       if(this.searchQuery.branch === 'all'){
         this.searchQuery.branch = '';
@@ -141,8 +145,7 @@ export default {
           this.$emit("childToParent", {data : response,
           queryParams: this.searchQuery
           });        
-        }
-        
+        }    
         
         }).catch(err => {
           Flash.setError('Unable to fetch');

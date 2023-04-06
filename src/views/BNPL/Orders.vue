@@ -1,81 +1,104 @@
 <template>
-  <transition name="fade">
+  <transition name="fade" v-if="!loading">
     <div id="reminder" class="attendance">
       <custom-header :title="'Orders List'" />
 
-      <div class="mt-2 mt-lg-3 row attendance-head ">
-        <div class="col row" v-if="vendors.length > 0">
+      <div class="my-2 my-lg-3 row attendance-head ">
+        <div class="col row">
           <resueable-search
-            @childToParent="prepareList"
+            @childToParent="prepareSearch"
             :url="urlToFetchOrders"
             :showBranch="false"
-            :showDate="false"
+            :showDate="true"
           >
             <template #default="{ searchQuery }">
               <div class="col-md">
                 <div>
-                  <label class="form-control-label">Name: </label>
+                  <label class="form-control-label">Merchant: </label>
                 </div>
                 <input
                   type="text"
-                  v-model="searchQuery.name"
+                  v-model="searchQuery.vendor"
                   class="form-control"
                 />
+              </div>
+              <div class="col-md">
+                <div>
+                  <label class="form-control-label">Status: </label>
+                </div>
+                <select
+                  name="status"
+                  id="status"
+                  class="custom-select w-100"
+                  v-model="searchQuery.orderStatus"
+                >
+                  <option :value="type" v-for="type in orderStatus">
+                    {{ type }}
+                  </option>
+                </select>
               </div>
             </template>
           </resueable-search>
         </div>
-
-        <div class="col float-right mt-5">
-          <button
-            class="btn btn-primary bg-default mt-0 myBtn float-right my-2"
-            @click="createOrder"
-          >
-            <i class="fa fa-plus" aria-hidden="true"></i>
-          </button>
-        </div>
       </div>
-
-      <div class="mt-5 mb-3 attendance-head" v-if="vendors.length > 0">
-        <div class="w-100 my-5 mx-0 hr"></div>
-        <div class="row px-4 pt-3 pb-4 text-center">
-          <div
-            class="col dark-heading font-weight-bolder"
-            style="max-width: 120px"
-          >
-            S/N
-          </div>
-          <div
-            class="col dark-heading font-weight-bolder"
-            v-for="header in headings"
-          >
-            {{ header }}
+      <div v-if="vendors.length > 0">
+        <div class="mt-5 mb-3 attendance-head">
+          <div class="w-100 my-5 mx-0 hr"></div>
+          <div class="row px-4 pt-3 pb-4 text-center">
+            <div
+              class="col dark-heading font-weight-bolder"
+              style="max-width: 120px"
+            >
+              S/N
+            </div>
+            <div
+              class="col dark-heading font-weight-bolder"
+              v-for="header in headings"
+            >
+              {{ header }}
+            </div>
           </div>
         </div>
-      </div>
-      <div class="tab-content mt-1 attendance-body" v-if="vendors.length > 0">
-        <div
-          class="mb-3 row attendance-item"
-          :key="index"
-          v-for="(vendor, index) in vendors"
-        >
-          <div class="col d-flex align-items-center" style="max-width: 120px">
-            <span class="user mx-auto">{{ index + OId }}</span>
-          </div>
+        <div class="tab-content mt-1 attendance-body">
           <div
-            class="col d-flex align-items-center justify-content-center hover"
-            @click="viewVendor(vendor)"
+            class="mb-3 row attendance-item"
+            :key="index"
+            v-for="(vendor, index) in vendors"
           >
-            {{ vendor.full_name }}
+            <div class="col d-flex align-items-center" style="max-width: 120px">
+              <span class="user mx-auto">{{ index + OId }}</span>
+            </div>
+            <div
+              class="col d-flex align-items-center justify-content-center hover"
+              @click="viewOrder(vendor)"
+            >
+              {{ vendor.order_number }}
+            </div>
+            <div
+              class="col d-flex align-items-center justify-content-center"
+              @click="displayVendor(vendor.bnpl_vendor_product.vendor)"
+            >
+              {{ vendor.bnpl_vendor_product.vendor.full_name }}
+            </div>
+            <div class="col d-flex align-items-center justify-content-center">
+              {{ vendor.bnpl_vendor_product.name }}
+            </div>
+            <div
+              class="col d-flex align-items-center justify-content-center"
+              @click="displayCustomer(vendor.customer)"
+            >
+              {{ `${vendor.customer.first_name} ${vendor.customer.last_name}` }}
+            </div>
+            <div class="col d-flex align-items-center justify-content-center">
+              {{ vendor.status }}
+            </div>
+            <div class="col d-flex align-items-center justify-content-center">
+              {{ $humanizeDate(vendor.order_date) }}
+            </div>
           </div>
-          <div class="col d-flex align-items-center justify-content-center">
-            {{ vendor.staff_id }}
-          </div>
-          <div class="col d-flex align-items-center justify-content-center">
-            {{ vendor.email }}
-          </div>
-          <div class="col d-flex align-items-center justify-content-center">
-            {{ $humanizeDate(vendor.created_at) }}
+          <div v-if="pageParams.next_page_url || pageParams.prev_page_url">
+            <base-pagination :page-param="pageParams" @fetchData="fetchData">
+            </base-pagination>
           </div>
         </div>
       </div>
@@ -89,98 +112,43 @@
           </template>
         </zero-state>
       </div>
-      <div class="modal fade repayment" id="viewBrand">
-        <div class="modal-dialog " role="document">
-          <div class="modal-content" v-if="showModalContent">
-            <div class="modal-header py-2">
-              <h4>
-                {{ vendorItem.full_name }}
-              </h4>
-              <a aria-label="Close" class="close py-1" data-dismiss="modal">
-                <span aria-hidden="true" class="modal-close text-danger">
-                  <i class="fas fa-times"></i>
-                </span>
-              </a>
-            </div>
-            <div class="modal-body px-5">
-              <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                  <tbody>
-                    <tr>
-                      <th>Vendor ID</th>
-                      <td>{{ vendorItem.staff_id || 'Not Available' }}</td>
-                    </tr>
-                    <tr>
-                      <th>Address</th>
-                      <td>{{ vendorItem.address || 'Not Available' }}</td>
-                    </tr>
-                    <tr>
-                      <th>Email</th>
-                      <td>{{ vendorItem.email || 'Not Available' }}</td>
-                    </tr>
-                    <tr>
-                      <th>Gender</th>
-                      <td>{{ vendorItem.gender || 'Not Available' }}</td>
-                    </tr>
-                    <tr>
-                      <th>Phone Number</th>
-                      <td>{{ vendorItem.phone_number || 'Not Available' }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div class="modal-footer justify-content-center">
-              <button
-                @click="edit(vendorItem)"
-                class="text-center btn bg-default"
-                v-if="!viewCategory"
-              >
-                Edit
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div v-if="pageParams.next_page_url || pageParams.prev_page_url">
-        <base-pagination :page-param="pageParams" @fetchData="fetchData">
-        </base-pagination>
-      </div>
     </div>
   </transition>
 </template>
 
 <script>
-import { get, patch } from '../../utilities/api'
-import Vue from 'vue'
+import { get, patch } from "../../utilities/api"
+import Vue from "vue"
 
-import Flash from '../../utilities/flash'
+import Flash from "../../utilities/flash"
 
-import { mapGetters, mapActions } from 'vuex'
-import CustomHeader from '../../components/customHeader'
-import ZeroState from '../../components/ZeroState.vue'
+import { mapGetters, mapActions } from "vuex"
+import CustomHeader from "../../components/customHeader"
+import ZeroState from "../../components/ZeroState.vue"
 
-import BasePagination from '../../components/Pagination/BasePagination'
-import ResueableSearch from '../../components/ReusableSearch.vue'
-import AddVendorsModal from '../../components/modals/AddVendorsModal.vue'
-import EditVendorsModal from '../../components/modals/EditVendorsModal.vue'
+import BasePagination from "../../components/Pagination/BasePagination"
+import ResueableSearch from "../../components/ReusableSearch.vue"
+import EditVendorsModal from "../../components/modals/EditVendorsModal.vue"
+import NewOrderAmortization from "../../components/NewOrderAmortization.vue"
+import VendorInfoModal from "../../components/modals/VendorInfoModal.vue"
+import CustomerInfoModal from "../../components/modals/CustomerInfoModal.vue"
 
 export default {
   props: {
     //TODO::verify if its necessary to make this a prop
     withBranchFilter: { default: true },
-    urlToFetchOrders: { default: '/api/brand' },
+    urlToFetchOrders: { default: "/api/new_order?bnplOrders=true" },
   },
 
   components: { CustomHeader, BasePagination, ResueableSearch, ZeroState },
 
-  computed: { ...mapGetters(['getBranches']) },
+  computed: { ...mapGetters(["getBranches"]) },
 
   data() {
     return {
-      apiUrl: `${process.env.VUE_APP_BNPL_URL}/api/all/vendors`,
-      branch_id: '',
+      apiUrl: "/api/new_order?bnplOrders=true",
+      loading: true,
+      branch_id: "",
       showCat: false,
       OId: null,
       viewCategory: false,
@@ -191,16 +159,26 @@ export default {
       date_to: null,
       page: 1,
       filters: [
-        { name: 'date from', model: 'date_from' },
-        { name: 'date to', model: 'date_to' },
+        { name: "date from", model: "date_from" },
+        { name: "date to", model: "date_to" },
       ],
       vendors: [],
+      orderStatus: [
+        "Active", "Pending", "Completed"
+      ],
 
       vendorItem: null,
       response: {},
       show: false,
-      headings: ['Name', 'Vendor ID', 'Email', 'Date Joined'],
-      searchColumns: [{ title: 'Name', column: 'name' }],
+      headings: [
+        "Order ID",
+        "Merchant",
+        "Product",
+        "Customer Name",
+        "Order Status",
+        "Date Created",
+      ],
+      searchColumns: [{ title: "Name", column: "name" }],
     }
   },
 
@@ -208,18 +186,20 @@ export default {
     fetchData() {
       this.$scrollToTop()
       this.$LIPS(true)
+      this.loading = true
       let { page, page_size } = this.$data
       get(
         `${this.apiUrl}${
-          !!this.pageParams.page ? `?page=${this.pageParams.page}` : ''
+          !!this.pageParams.page ? `&page=${this.pageParams.page}` : ""
         }` +
-          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ''}`
+          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
       )
         .then(({ data }) => this.prepareList(data))
-        .catch(() => Flash.setError('Error Preparing form'))
+        .catch(() => Flash.setError("Error Preparing form"))
     },
 
     prepareList(response) {
+      console.log(response)
       let {
         current_page,
         first_page_url,
@@ -232,7 +212,7 @@ export default {
         to,
         total,
         prev_page_url,
-      } = response.result.vendors
+      } = response.data
       this.pageParams = Object.assign({}, this.pageParams, {
         current_page,
         first_page_url,
@@ -248,6 +228,10 @@ export default {
       this.vendors = data
       this.OId = from
       this.$LIPS(false)
+      this.loading = false
+    },
+    prepareSearch(item) {
+      this.prepareList(item.data.data)
     },
 
     next(firstPage = null) {
@@ -264,53 +248,66 @@ export default {
       }
     },
 
-    showCategory(item) {
-      this.showModalContent = true
-      this.brandItem = item
-      this.viewCategory = true
-      return $(`#viewBrand`).modal('toggle')
-    },
-    addCat(brand, category) {
-      if (brand.categories.some(cat => cat.id === category.id)) {
-        alert(`${category.name} category already exists`)
-      } else {
-        brand.categories.push(category)
-        this.categories = this.categories.filter(function(item, index, arr) {
-          return category.id !== item.id
-        })
-      }
-    },
-
-    toggleCat() {
-      Vue.set(this.$data, 'showCat', !this.showCat)
-    },
-
-    createVendor() {
+    viewOrder(order) {
       this.$modal.show(
-        AddVendorsModal,
-        {},
+        NewOrderAmortization,
         {
-          draggable: false,
-          height: 'auto',
-          clickToClose: false,
+          order: order,
+          customer: order.customer,
+          standAlone: true,
+          lateFEES: [],
+          paymentForm: {},
+        },
+        {
+          name: "orderInfo",
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "75%",
+          clickToClose: true,
         }
       )
     },
 
-    viewVendor(vendor) {
-      this.showModalContent = true
-      this.vendorItem = vendor
-      return $(`#viewBrand`).modal('toggle')
+    displayVendor(vendor) {
+      this.$modal.show(
+        VendorInfoModal,
+        { modalItem: vendor },
+        {
+          name: "orderInfo",
+          classes: ["w-50", "overflow-auto"],
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
+        }
+      )
+    },
+    displayCustomer(customer) {
+      this.$modal.show(
+        CustomerInfoModal,
+        { modalItem: customer },
+        {
+          name: "orderInfo",
+          classes: ["w-50", "overflow-auto"],
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
+        }
+      )
     },
     edit(item) {
       this.showModalContent = false
-      $(`#viewBrand`).modal('toggle')
+      $(`#viewBrand`).modal("toggle")
       this.$modal.show(
         EditVendorsModal,
         { vendor: this.vendorItem },
         {
           draggable: false,
-          height: 'auto',
+          height: "auto",
           clickToClose: false,
         }
       )
@@ -319,21 +316,21 @@ export default {
     searchEvent(data) {
       get(this.urlToFetchOrders + data)
         .then(({ data }) => this.prepareList(data))
-        .catch(() => Flash.setError('Error Preparing form'))
+        .catch(() => Flash.setError("Error Preparing form"))
     },
 
-    ...mapActions('ModalAccess', [
-      'addCustomerOptionsModalsToDom',
-      'removeCustomerOptionsModalsFromDom',
+    ...mapActions("ModalAccess", [
+      "addCustomerOptionsModalsToDom",
+      "removeCustomerOptionsModalsFromDom",
     ]),
   },
 
   created() {
     this.$props.withBranchFilter &&
-      this.filters.unshift({ name: 'branch', model: 'branch_id' })
+      this.filters.unshift({ name: "branch", model: "branch_id" })
     this.addCustomerOptionsModalsToDom()
     this.$prepareBranches()
-    // this.fetchData()
+    this.fetchData()
   },
 
   destroyed() {
@@ -341,7 +338,7 @@ export default {
   },
   filters: {
     status: function(value) {
-      return value === 1 ? 'Active' : 'Inactive'
+      return value === 1 ? "Active" : "Inactive"
     },
   },
 }

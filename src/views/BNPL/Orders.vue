@@ -18,7 +18,7 @@
                 </div>
                 <input
                   type="text"
-                  v-model="searchQuery.vendorName"
+                  v-model="searchQuery.vendor"
                   class="form-control"
                 />
               </div>

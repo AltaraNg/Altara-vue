@@ -30,7 +30,7 @@
                   name="status"
                   id="status"
                   class="custom-select w-100"
-                  v-model="searchQuery.status"
+                  v-model="searchQuery.orderStatus"
                 >
                   <option :value="type" v-for="type in orderStatus">
                     {{ type }}

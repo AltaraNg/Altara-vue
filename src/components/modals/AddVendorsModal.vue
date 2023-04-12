@@ -36,7 +36,7 @@
               class="form-control w-100  border-dark"
             />
             <small v-if="errors.first('first_name')">{{
-              errors.first('first_name')
+              errors.first("first_name")
             }}</small>
           </div>
           <div class="w-100 mx-4">
@@ -52,7 +52,7 @@
               class="form-control w-100  border-dark"
             />
             <small v-if="errors.first('last_name')">{{
-              errors.first('last_name')
+              errors.first("last_name")
             }}</small>
           </div>
         </div>
@@ -69,7 +69,7 @@
               class="form-control w-100  border-dark"
             />
             <small v-if="errors.first('email')">{{
-              errors.first('email')
+              errors.first("email")
             }}</small>
           </div>
           <div class="w-100 mx-4">
@@ -85,7 +85,7 @@
               class="form-control w-100  border-dark"
             />
             <small v-if="errors.first('phone')">{{
-              errors.first('phone')
+              errors.first("phone")
             }}</small>
           </div>
         </div>
@@ -103,7 +103,7 @@
               class="form-control w-100  border-dark"
             />
             <small v-if="errors.first('address')">{{
-              errors.first('address')
+              errors.first("address")
             }}</small>
           </div>
         </div>
@@ -112,15 +112,23 @@
             <label class="label">
               Date Of Birth:
             </label>
-            <input
+            <!-- <input
               v-model="dateOfBirth"
               name="dob"
               placeholder="Date of Birth"
               type="date"
               class="form-control border-dark w-100"
               v-validate="'required'"
-            />
-            <small v-if="errors.first('dob')">{{ errors.first('dob') }}</small>
+            /> -->
+            <date-picker
+              class="w-100 border-dark"
+              v-model="dateOfBirth"
+              valueType="format"
+              placeholder="Date Of Birth"
+              :disabled-date="disabledRange"
+              input-class="form-control border-dark"
+            ></date-picker>
+            <small v-if="errors.first('dob')">{{ errors.first("dob") }}</small>
           </div>
         </div>
         <div class="form-group d-flex mx-4 my-3 px-2">
@@ -149,7 +157,7 @@
               Female
             </label>
             <small v-if="errors.first('gender')">{{
-              errors.first('gender')
+              errors.first("gender")
             }}</small>
           </div>
         </div>
@@ -176,9 +184,9 @@
 </template>
 
 <script>
-import { get, post } from '../../utilities/api'
-import DatePicker from 'vue2-datepicker'
-import 'vue2-datepicker/index.css'
+import { get, post } from "../../utilities/api"
+import DatePicker from "vue2-datepicker"
+import "vue2-datepicker/index.css"
 
 export default {
   components: {
@@ -189,21 +197,24 @@ export default {
     return {
       showError: false,
       apiUrl: `${process.env.VUE_APP_BNPL_URL}/api/create/vendor`,
-
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      address: '',
-      dateOfBirth: '',
-      gender: '',
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      address: "",
+      dateOfBirth: "",
+      gender: "",
       err: [],
     }
   },
 
   methods: {
     closeModal() {
-      this.$emit('close')
+      this.$emit("close")
+    },
+    disabledRange: function(date) {
+      let now = new Date();
+      return date > new Date(now.setFullYear(now.getFullYear() - 18))
     },
 
     createVendor() {
@@ -223,10 +234,10 @@ export default {
             const response = await post(this.apiUrl, data)
 
             this.$swal({
-              icon: 'success',
-              title: 'Vendor added Successfully',
+              icon: "success",
+              title: "Vendor added Successfully",
             })
-            this.$root.$emit('fetchVendors')
+            this.$root.$emit("fetchVendors")
 
             this.closeModal()
           } catch (e) {
@@ -245,7 +256,7 @@ export default {
 input::placeholder {
   color: darkslategrey;
 }
-.close-button{
+.close-button {
   font-size: 24px;
 }
 </style>

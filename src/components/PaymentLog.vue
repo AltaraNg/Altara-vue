@@ -889,20 +889,14 @@ export default {
       return text
     },
 
-    repaymentCycleFiltered: {
-      get(){
+    repaymentCycleFiltered() {     
         let newArray = []
-      this.isAltaraPay
+        this.isAltaraPay
         ? (newArray = this.repaymentCyclesopt.filter(item => {
             return item.name !== "monthly"
           }))
         : (newArray = this.repaymentCyclesopt)
-      return newArray
-      },
-      set(array){
-
-      }
-      
+        return newArray      
     },
 
     compHeader() {

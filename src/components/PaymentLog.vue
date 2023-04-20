@@ -170,7 +170,7 @@
                   v-model="salesLogForm.repayment_cycle_id"
                   v-validate="'required'"
                   @change="customDate($event)"
-                  :disabled="isCashNCarry"
+                  :disabled="isCashNCarry || lockRepaymentCycle"
                 >
                   <option disabled selected="selected">Repayment Cycle</option>
                   <option
@@ -698,6 +698,7 @@ export default {
   },
   data() {
     return {
+      lockRepaymentCycle: false,
       noBSVerbiage: "",
       allowBSSale: false,
       inputOptions: {
@@ -888,14 +889,20 @@ export default {
       return text
     },
 
-    repaymentCycleFiltered() {
-      let newArray = []
+    repaymentCycleFiltered: {
+      get(){
+        let newArray = []
       this.isAltaraPay
         ? (newArray = this.repaymentCyclesopt.filter(item => {
             return item.name !== "monthly"
           }))
         : (newArray = this.repaymentCyclesopt)
       return newArray
+      },
+      set(array){
+
+      }
+      
     },
 
     compHeader() {
@@ -1302,7 +1309,8 @@ export default {
             throw new Error("Not Verified")
           }
         }
-
+        //remove custome from repayment cycle option
+        
         const months = this.rDuration / 30
         const cycle = Math.ceil(28 / this.repaymentCircle)
         const additionalRepayment = this.rPayment / (months * cycle)
@@ -1477,8 +1485,13 @@ export default {
         .name
       if (salesCatName === "No BS") {
         this.checkVerified()
+        this.salesLogForm.repayment_cycle_id = this.repaymentCyclesopt.find(item => {
+          return item.name === "bi_monthly"
+        });
+        this.lockRepaymentCycle = true;
       } else {
         this.noBSVerbiage = ""
+        this.lockRepaymentCycle = false;
       }
 
       this.$LIPS(false)

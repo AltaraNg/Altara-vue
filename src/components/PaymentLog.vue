@@ -564,7 +564,7 @@
                             salesLogForm.discount !== '0_discount' &&
                               rPayment > 0
                           "
-                          :percent="selected_discount.percentage_discount"
+                          :percent="discounts.find(item => item.slug === salesLogForm.discount).percentage_discount"
                         />
                       </div>
                     </td>
@@ -1107,7 +1107,7 @@ export default {
             : this.getPaymentMethods.find(el => (el.name = "direct-debit")).id
           : this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
-        discount_id: this.selected_discount?.id,
+        discount_id: this.discounts.find(item => item.slug === this.salesLogForm.discount).id,
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,

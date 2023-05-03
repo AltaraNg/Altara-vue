@@ -56,7 +56,7 @@
             <th>Name</th>
             <th>Phone</th>
           </tr>
-          <tr v-for="(guarantor, index) in modalItem.guarantors" :key="index">
+          <tr v-for="(guarantor, index) in guarantors" :key="index" v-if="index < 2">
             <td>{{ index+1 }}</td>
             <td>
               {{ `${guarantor.first_name} ${guarantor.last_name}` }}
@@ -133,6 +133,14 @@ export default {
         docUrl.click()
       })
     },
+  },
+  computed: {
+    guarantors(){
+      return this.modalItem.guarantors.sort((a, b) => {
+        let da = new Date(a.created_at), db = new Date(b.created_at);
+        return db-da
+      })
+    }
   },
 }
 </script>

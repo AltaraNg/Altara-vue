@@ -13,7 +13,7 @@
         </span>
       </a>
     </div>
-    <div class="modal-body px-5">
+    <div class="modal-body px-5 scrol-modal">
       <div class="table-responsive">
         <table class="table table-bordered table-striped">
           <tbody>
@@ -44,36 +44,31 @@
               <th>Address</th>
               <td>{{ `${modalItem.add_street}, ${modalItem.city}` }}</td>
             </tr>
-            <tr v-if="modalItem.guarantors && modalItem.guarantors.length > 0">
-              <th>Guarantor_1 Name</th>
-              <td>
-                {{
-                  `${modalItem.guarantors[0].first_name} ${modalItem.guarantors[0].last_name}`
-                }}
-              </td>
-            </tr>
-            <tr v-if="modalItem.guarantors && modalItem.guarantors.length > 0">
-              <th>Guarantor_1 Phone</th>
-              <td>{{ `${modalItem.guarantors[0].phone_number}` }}</td>
-            </tr>
-
-            <tr v-if="modalItem.guarantors && modalItem.guarantors[1]">
-              <th>Guarantor_2 Name</th>
-              <td>
-                {{
-                  `${modalItem.guarantors[1].first_name} ${modalItem.guarantors[1].last_name}`
-                }}
-              </td>
-            </tr>
-            <tr v-if="modalItem.guarantors && modalItem.guarantors[1]">
-              <th>Guarantor_2 Phone</th>
-              <td>{{ `${modalItem.guarantors[1].phone_number}` }}</td>
-            </tr>
           </tbody>
         </table>
+        <h5 class="pt-3">Guarantor List</h5>
+        <table
+          v-if="modalItem.guarantors && modalItem.guarantors.length > 0"
+          class="table table-bordered table-striped"
+        >
+          <tr>
+            <th>S/N</th>
+            <th>Name</th>
+            <th>Phone</th>
+          </tr>
+          <tr v-for="(guarantor, index) in modalItem.guarantors" :key="index">
+            <td>{{ index+1 }}</td>
+            <td>
+              {{ `${guarantor.first_name} ${guarantor.last_name}` }}
+            </td>
+            <td>{{ `${guarantor.phone_number}` }}</td>
+          </tr>
+         
+        </table>
+
         <div v-if="documents.length > 0" class="mt-2">
           <h5>Documents</h5>
-          <div class="d-flex">
+          <div class="d-flex justify-content-evenly">
             <div v-for="document in documents" class="mx-2 my-2 overflow-auto">
               <h6>{{ document.name }}</h6>
               <div v-if="isImage(imageUrl(document.document_url))">
@@ -81,8 +76,8 @@
                   <img
                     :src="imageUrl(document.document_url)"
                     :alt="document.name"
-                    width="100"
-                    height="120"
+                    width="180"
+                    height="150"
                   />
                 </a>
               </div>
@@ -91,13 +86,13 @@
                   <img
                     src="../../assets/file-icon.svg"
                     :alt="document.name"
-                    width="100"
-                    height="120"
+                    width="180"
+                    height="150"
                   />
                 </a>
               </div>
 
-              <h6 @click="downloadFile(imageUrl(document.document_url))" class="pointer">Download</h6>
+              <!-- <h6 @click="downloadFile(imageUrl(document.document_url))" class="pointer">Download</h6> -->
             </div>
           </div>
         </div>
@@ -142,4 +137,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.scrol-modal{
+  height: 70vh;
+  overflow-y: auto;
+}</style>

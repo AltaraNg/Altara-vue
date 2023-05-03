@@ -395,10 +395,10 @@ export default {
         { modalItem: data, documents: documents },
         {
           name: "customerInfo",
-          classes: ["w-50", "overflow-auto"],
+          classes: [],
           adaptive: true,
           resizable: true,
-          height: "auto",
+          height: "80%",
           width: "50%",
           clickToClose: true,
         }

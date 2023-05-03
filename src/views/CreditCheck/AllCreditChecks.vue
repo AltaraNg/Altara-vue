@@ -86,7 +86,7 @@
           </div>
           <div
             class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start pointer"
-            @click="displayCustomerInfo(creditCheck.customer)"
+            @click="displayCustomerInfo(creditCheck)"
           >
             <p class="mr-2">
               {{ creditCheck.customer.first_name }}
@@ -392,7 +392,7 @@ export default {
     displayCustomerInfo(data){
       this.$modal.show(
         CustomerInfoModal,
-        { modalItem: data },
+        { modalItem: data.customer, documents: data.documents },
         {
           name: "customerInfo",
           classes: [],

@@ -66,7 +66,7 @@
          
         </table>
 
-        <div v-if="documents.length > 0" class="mt-2">
+        <div v-if="documents.length > 0" class="pb-4">
           <h5>Documents</h5>
           <div class="d-flex justify-content-evenly">
             <div v-for="document in documents" class="mx-2 my-2 overflow-auto">

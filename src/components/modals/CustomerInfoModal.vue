@@ -31,10 +31,22 @@
               <td>{{ modalItem.telephone }}</td>
             </tr>
 
-            <tr>
-              <th>Date Registered</th>
-              <td>{{ modalItem.date_of_registration }}</td>
-            </tr>
+						<tr>
+							<th>Occupation</th>
+							<td>{{ modalItem.occupation || 'N/A' }}</td>
+						</tr>
+						<tr>
+							<th>Address</th>
+							<td>{{ `${modalItem.add_street}, ${modalItem.city}` }}</td>
+						</tr>
+						<tr v-if="modalItem.guarantors && modalItem.guarantors.length > 0">
+							<th>Guarantor_1 Name</th>
+							<td>{{ `${modalItem.guarantors[0].first_name} ${modalItem.guarantors[0].last_name}` }}</td>
+						</tr>
+						<tr v-if="modalItem.guarantors && modalItem.guarantors.length > 0">
+							<th>Guarantor_1 Phone </th>
+							<td>{{ `${modalItem.guarantors[0].phone_number}` }}</td>
+						</tr>
 
             <tr>
               <th>Occupation</th>
@@ -103,7 +115,6 @@
 </template>
 
 <script>
-import { get } from "../../utilities/api"
 
 export default {
   props: {

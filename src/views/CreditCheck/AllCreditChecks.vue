@@ -86,7 +86,7 @@
           </div>
           <div
             class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start pointer"
-            @click="displayCustomerInfo(creditCheck.customer, creditCheck.documents)"
+            @click="displayCustomerInfo(creditCheck.customer)"
           >
             <p class="mr-2">
               {{ creditCheck.customer.first_name }}
@@ -389,10 +389,10 @@ export default {
       this.$LIPS(false)
       $("#creditCheckModal").modal("toggle")
     },
-    displayCustomerInfo(data, documents){
+    displayCustomerInfo(data){
       this.$modal.show(
         CustomerInfoModal,
-        { modalItem: data, documents: documents },
+        { modalItem: data },
         {
           name: "customerInfo",
           classes: [],

@@ -38,19 +38,10 @@
 						<tr>
 							<th>Address</th>
 							<td>{{ `${modalItem.add_street}, ${modalItem.city}` }}</td>
-						</tr>			
-
-            <tr>
-              <th>Occupation</th>
-              <td>{{ modalItem.occupation || "N/A" }}</td>
-            </tr>
-            <tr>
-              <th>Address</th>
-              <td>{{ `${modalItem.add_street}, ${modalItem.city}` }}</td>
-            </tr>
+						</tr>          
           </tbody>
         </table>
-        <h5 class="pt-3">Guarantor List</h5>
+        <h5 class="pt-3"  v-if="modalItem.guarantors && modalItem.guarantors.length > 0">Guarantor List</h5>
         <table
           v-if="modalItem.guarantors && modalItem.guarantors.length > 0"
           class="table table-bordered table-striped"
@@ -70,7 +61,7 @@
          
         </table>
 
-        <div v-if="documents.length > 0" class="pb-4">
+        <div v-if="documents && documents.length > 0" class="pb-4">
           <h5>Documents</h5>
           <div class="d-flex justify-content-evenly">
             <div v-for="document in documents" class="mx-2 my-2 overflow-auto">

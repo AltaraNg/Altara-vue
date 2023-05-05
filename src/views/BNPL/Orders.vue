@@ -24,6 +24,16 @@
               </div>
               <div class="col-md">
                 <div>
+                  <label class="form-control-label">Customer Phone: </label>
+                </div>
+                <input
+                  type="text"
+                  v-model="searchQuery.customerPhone"
+                  class="form-control"
+                />
+              </div>
+              <div class="col-md">
+                <div>
                   <label class="form-control-label">Status: </label>
                 </div>
                 <select
@@ -255,6 +265,7 @@ export default {
           order: order,
           customer: order.customer,
           standAlone: true,
+          isBNPL: true,
           lateFEES: [],
           paymentForm: {},
         },

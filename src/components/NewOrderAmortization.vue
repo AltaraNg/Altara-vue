@@ -38,12 +38,12 @@
                 {{ `${customer.first_name} ${customer.last_name}` }}
               </td>
               <th>{{ order.order_number }}</th>
-              <th>{{ order.product.name }}</th>
+              <th>{{ isBNPL ? order.bnpl_vendor_product.name : order.product.name }}</th>
               <th>{{ order.owner }}</th>
               <th>{{ order.serial_number }}</th>
               <th>{{ order.business_type }}</th>
               <th class="text-capitalize">
-                {{ order.down_payment_rate }} percent
+                {{ ((order.down_payment / order.product_price) * 100).toFixed(0) }} percent
               </th>
               <th>{{ order.payment_gateway }}</th>
               <td class="font-weight-bold">{{ order.branch }}</td>
@@ -457,6 +457,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isBNPL:{
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {

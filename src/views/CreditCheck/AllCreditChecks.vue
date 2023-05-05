@@ -56,7 +56,7 @@
         </div>
         <div class="mt-2 attendance-head">
           <div class="row px-4 pt-3 pb-4 text-left">
-            <div class="col light-heading" style="max-width: 120px">S/N</div>
+            
             <div
               class="col light-heading"
               v-for="(header, index) in headings"
@@ -78,19 +78,15 @@
           v-for="(creditCheck, index) in creditChecks"
         >
           <!-- {{ creditCheck }} -->
-          <div
-            class="col d-flex-inline align-items-center justify-items-start"
-            style="max-width: 120px"
-          >
-            <span class="user mx-auto">{{ ++index }}</span>
-          </div>
+         
           <div
             class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left"
           >
             {{ creditCheck.customer_id }}
           </div>
           <div
-            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start"
+            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start pointer"
+            @click="displayCustomerInfo(creditCheck)"
           >
             <p class="mr-2">
               {{ creditCheck.customer.first_name }}
@@ -100,7 +96,9 @@
             <p class="h6">{{ creditCheck.customer.telephone }}</p>
           </div>
           <div
-            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start justify-content-left"
+            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start justify-content-left pointer"
+            @click="displayVendorInfo(creditCheck.vendor)"
+
           >
             <p class="mr-2">
               {{ creditCheck.vendor.full_name }}
@@ -108,7 +106,9 @@
             <p class="h6">{{ creditCheck.vendor.phone_number }}</p>
           </div>
           <div
-            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start"
+            class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start pointer"
+            @click="displayProductInfo(creditCheck)"
+
           >
             <p class="mr-2">
               {{ creditCheck.bnpl_product.name }}
@@ -243,7 +243,11 @@ import flash from "../../utilities/flash"
 import DatePicker from "vue2-datepicker"
 import CustomHeader from "../../components/customHeader"
 import BasePagination from "../../components/Pagination/BasePagination.vue"
+import CustomerInfoModal from "../../components/modals/CustomerInfoModal.vue"
 import "vue2-datepicker/index.css"
+import VendorInfoModal from "../../components/modals/VendorInfoModal.vue"
+import ProductInfoModal from "../../components/modals/ProductInfoModal.vue"
+
 export default {
   props: {},
 
@@ -257,6 +261,14 @@ export default {
       selectedStatus: "",
       searchQuery: { status: "pending", searchTerm: "" },
       show: false,
+      repaymentDuration: null,
+      downPaymentRates: null,
+      repaymentCyclesopt: null,
+      apiUrls: {
+        repaymentDuration: `/api/repayment_duration`,
+        repaymentCycles: `/api/repayment_cycle`,
+        downPaymentRates: `/api/down_payment_rate`,        
+      },
       headings: [
         "Customer ID",
         "Customer Info Summary",
@@ -289,17 +301,21 @@ export default {
           ...this.searchQuery,
         }),
       })
+      this.pageParams.page = 1
+      this.$router.push({
+        query: { page: 1 },
+      })
       debounce(this.fetchData({ ...this.searchQuery }), 500)
     },
   },
   methods: {
-    fetchData(params = {}) {
+    async fetchData(params = {}) {
       this.$scrollToTop()
       this.$LIPS(true)
       const url = "api/all/credit/checker"
-       params.page = this.pageParams.page ?? 1;
-       params.per_page = this.pageParams.limit ?? 15;
-      get(url, params)
+      params.page = this.pageParams.page ?? 1
+      params.per_page = this.pageParams.limit ?? 15
+       await get(url, params)
         .then((response) => {
           this.creditChecks =
             response.data?.data?.creditCheckerVerifications?.data
@@ -364,7 +380,6 @@ export default {
           this.creditChecks = this.creditChecks.filter((item) => {
             return item.status == this.selectedStatus
           })
-          this.searchQuery.status = this.selectedStatus
         })
         .catch((err) => {
           flash.setError(
@@ -374,9 +389,88 @@ export default {
       this.$LIPS(false)
       $("#creditCheckModal").modal("toggle")
     },
+    displayCustomerInfo(data){
+      this.$modal.show(
+        CustomerInfoModal,
+        { modalItem: data.customer, documents: data.documents },
+        {
+          name: "customerInfo",
+          classes: [],
+          adaptive: true,
+          resizable: true,
+          height: "80%",
+          width: "50%",
+          clickToClose: true,
+        }
+      )
+    },
+
+    displayVendorInfo(data){
+      this.$modal.show(
+        VendorInfoModal,
+        { modalItem: data },
+        {
+          name: "vendorInfo",
+          classes: ["w-50", "overflow-auto"],
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
+        }
+      )
+    },
+
+    displayProductInfo(data){
+      this.$modal.show(
+        ProductInfoModal,
+        { modalItem: data, repaymentCyclesopt: this.repaymentCyclesopt, repaymentDuration: this.repaymentDuration, downPaymentRates: this.downPaymentRates },
+        {
+          name: "vendorInfo",
+          classes: ["w-50", "overflow-auto"],
+          adaptive: true,
+          resizable: true,
+          height: "auto",
+          width: "50%",
+          clickToClose: true,
+        }
+      )
+    },
+    async getRepaymentDuration() {
+      try {
+        const fetchRepaymentDuration = await get(this.apiUrls.repaymentDuration)
+        this.repaymentDuration = fetchRepaymentDuration.data.data.data
+      } catch (err) {
+        this.$displayErrorMessage(err)
+      }
+    },
+    async getDownPaymentRates() {
+      try {
+        const fetchDownPaymentRates = await get(this.apiUrls.downPaymentRates)
+        this.downPaymentRates = fetchDownPaymentRates?.data?.data?.data
+        this.downPaymentRates = this.downPaymentRates.sort((a, b) => {
+          return a.percent - b.percent
+        })
+      } catch (err) {
+        this.$displayErrorMessage(err)
+      }
+    },
+
+    async getRepaymentCycles() {
+      try {
+        const fetchRepaymentCycles = await get(this.apiUrls.repaymentCycles)
+        this.repaymentCyclesopt = fetchRepaymentCycles?.data?.data?.data
+      } catch (err) {
+        this.$displayErrorMessage(err)
+      }
+    },
   },
+  
 
   created() {
+    this.getDownPaymentRates();
+    this.getRepaymentCycles();
+    this.getRepaymentDuration();
     this.searchQuery.status = this.$route?.query?.status
     this.searchQuery.searchTerm = this.$route?.query?.searchTerm
     this.fetchData({ ...this.searchQuery })

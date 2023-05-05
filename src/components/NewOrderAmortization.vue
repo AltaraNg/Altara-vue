@@ -43,7 +43,7 @@
               <th>{{ order.serial_number }}</th>
               <th>{{ order.business_type }}</th>
               <th class="text-capitalize">
-                {{ ((order.down_payment / order.product_price) * 100).toFixed(0) }} percent
+                {{ order.financed_by === 'altara-bnpl' ? ((order.down_payment / order.product_price) * 100).toFixed(0) : order.down_payment_rate }} percent
               </th>
               <th>{{ order.payment_gateway }}</th>
               <td class="font-weight-bold">{{ order.branch }}</td>

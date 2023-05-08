@@ -17,8 +17,8 @@
       </div>
     </div>
     <div class="modal-body mx-4">
-      <form>
-        <div class="">
+      <form class="d-flex flex-fill flex-wrap">
+        <div class="w-100">
           <toggle-button
             v-on:valueChangedEvent="triggerToggleEvent"
             :switchName="'Guarantor'"
@@ -27,7 +27,7 @@
             :label="'Guarantor'"
           />
         </div>
-        <div class="form-group">
+        <div class="form-group w-50 px-2">
           <label>{{ isGuarantor ? "Guarantor Name" : "Customer" }} </label>
           <input
             type="text"
@@ -41,10 +41,10 @@
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group w-50 px-2">
           <label>Credit Report (CR): </label>
           <select
-            class="custom-select w-50 d-block"
+            class="custom-select w-100 d-block"
             v-validate="'required'"
             v-model="credit_score"
           >
@@ -55,10 +55,10 @@
           </select>
         </div>
 
-        <div class="form-group" v-if="!isGuarantor">
+        <div class="form-group w-50 px-2" v-if="!isGuarantor">
           <label>Credit Point (CP): </label>
           <select
-            class=" custom-select w-50 d-block"
+            class=" custom-select w-100 d-block"
             v-validate="'required'"
             v-model="credit_point"
           >
@@ -68,10 +68,10 @@
             <option value="fair">Fair</option>
           </select>
         </div>
-        <div class="form-group">
+        <div class="form-group w-50 px-2">
           <label>Risk Factor: </label>
           <select
-            class=" custom-select w-50 d-block"
+            class=" custom-select w-100 d-block"
             v-validate="'required'"
             v-model="risk_factor"
           >
@@ -82,10 +82,10 @@
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group w-50 px-2">
           <label>Status: </label>
           <select
-            class=" custom-select w-50 d-block"
+            class=" custom-select w-100 d-block"
             v-validate="'required'"
             v-model="status"
           >
@@ -93,23 +93,37 @@
             <option value="declined">Declined</option>
           </select>
         </div>
-        <div class="form-group">
+        <div class="form-group w-50 px-2">
           <label for="accountNo">Enter Account Number on bank statement</label>
           <input
             v-model="accountNo"
-            class="custom-select w-50 d-block"
+            class="custom-select w-100 d-block"
             id="accountNo"
             v-validate="'required'"
           />
         </div>
-        <div class="form-group">
+        <div class="form-group w-50 px-2">
           <label for="bankName">Bank Name</label>
           <input
             v-model="bankName"
-            class="custom-select w-50 d-block"
+            class="custom-select w-100 d-block"
             id="bankName"
             v-validate="'required'"
+            @input="onDropdown"
           />
+          <div class="w-100 px-3 py-2 drop-down" v-if="showDropdown">
+            <div
+              class="pointer py-1"
+              v-for="bank in filteredList()"
+              :key="bank.code"
+              @click="selectBank(bank)"
+            >
+              <p>{{ bank.name }}</p>
+            </div>
+            <div class="item error" v-if="bankName && !filteredList().length">
+              <p>No results found!</p>
+            </div>
+          </div>
         </div>
       </form>
     </div>
@@ -130,6 +144,7 @@
 </template>
 
 <script>
+import Axios from "axios"
 import { get, post } from "../../utilities/api"
 import { EventBus } from "../../utilities/event-bus"
 import ToggleButton from "../ToggleButton.vue"
@@ -155,7 +170,9 @@ export default {
       status: null,
       isGuarantor: false,
       accountNo: null,
-      bankName: null
+      bankName: null,
+      bankList: [],
+      showDropdown: false,
     }
   },
 
@@ -210,6 +227,30 @@ export default {
     triggerToggleEventGuarantor() {
       this.isGuarantor = !this.isGuarantor
     },
+    fetchBankList() {
+      Axios.get("https://api.paystack.co/bank")
+        .then(res => {
+          this.bankList = res?.data?.data
+        })
+        .catch(err => {})
+    },
+
+    filteredList() {
+      return this.bankList.filter(bank => {
+        return bank.name?.toLowerCase().includes(this.bankName?.toLowerCase())
+      })
+    },
+
+    selectBank(bank) {
+      this.bankName = bank.name
+      this.showDropdown = false
+    },
+    onDropdown() {
+      this.showDropdown = true
+    },
+  },
+  created() {
+    this.fetchBankList()
   },
 }
 </script>
@@ -225,5 +266,10 @@ export default {
 
 option * {
   padding: 1em 0;
+}
+.drop-down {
+  background-color: gainsboro;
+  height: 70px;
+  overflow-y: auto;
 }
 </style>

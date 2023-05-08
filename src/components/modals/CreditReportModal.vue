@@ -93,6 +93,24 @@
             <option value="declined">Declined</option>
           </select>
         </div>
+        <div class="form-group">
+          <label for="accountNo">Enter Account Number on bank statement</label>
+          <input
+            v-model="accountNo"
+            class="custom-select w-50 d-block"
+            id="accountNo"
+            v-validate="'required'"
+          />
+        </div>
+        <div class="form-group">
+          <label for="bankName">Bank Name</label>
+          <input
+            v-model="bankName"
+            class="custom-select w-50 d-block"
+            id="bankName"
+            v-validate="'required'"
+          />
+        </div>
       </form>
     </div>
     <div class="text-right mr-4">
@@ -136,6 +154,8 @@ export default {
       risk_factor: null,
       status: null,
       isGuarantor: false,
+      accountNo: null,
+      bankName: null
     }
   },
 
@@ -158,6 +178,8 @@ export default {
             this.verificationData.credit_score = this.credit_score
             this.verificationData.risk_factor = this.risk_factor
             this.verificationData.status = this.status
+            this.verificationData.accountNo = this.accountNo
+            this.verificationData.bankName = this.bankName
 
             let res = await post("/api/recommendation", this.verificationData)
             if (res.status === 200) {
@@ -201,7 +223,7 @@ export default {
   overflow-y: auto;
 }
 
-option *{
-    padding: 1em 0;
+option * {
+  padding: 1em 0;
 }
 </style>

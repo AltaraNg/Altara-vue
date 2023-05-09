@@ -401,9 +401,11 @@
                 </div>
               </div>
               <div class="d-flex">
-                <small class="text-danger text-center mt-4 error-text" v-if="!allowBSSale">{{
-                  noBSVerbiage
-                }}</small>
+                <small
+                  class="text-danger text-center mt-4 error-text"
+                  v-if="!allowBSSale"
+                  >{{ noBSVerbiage }}</small
+                >
                 <div class="text-right" v-if="isAltaraPay">
                   <button
                     class="btn bg-default"
@@ -482,7 +484,7 @@
               <discount
                 class="discount"
                 v-if="salesLogForm.discount !== '0_discount' && rPayment > 0"
-                :percent="selected_discount.percentage_discount"
+                :percent="discounts.find(item => item.slug === salesLogForm.discount).percentage_discount"
               />
               <p v-if="pPrice > 0 && commitment.status" class="commitment">
                 {{ commitment.percentage }}% Commitment
@@ -555,14 +557,14 @@
                               )
                         )
                       }}
-                      <div class="modal_cover" >
+                      <div class="modal_cover">
                         <discount
                           class="modal_discount"
                           v-if="
                             salesLogForm.discount !== '0_discount' &&
                               rPayment > 0
                           "
-                          :percent="selected_discount.percentage_discount"
+                          :percent="discounts.find(item => item.slug === salesLogForm.discount).percentage_discount"
                         />
                       </div>
                     </td>
@@ -607,7 +609,10 @@
                   : "Push Button To Pay With Credit Card"
               }}
             </p>
-            <div class="col d-flex justify-content-center" :class="salesLogForm.sales_category_id == '9' ? 'disable' :''">
+            <div
+              class="col d-flex justify-content-center"
+              :class="salesLogForm.sales_category_id == '9' ? 'disable' : ''"
+            >
               <toggle-button
                 v-on:valueChangedEvent="triggerToggleEvent"
                 :key="'Transfer'"
@@ -698,6 +703,16 @@ export default {
   },
   data() {
     return {
+      dummyDiscount: {
+        created_at: "2021-11-02 07:48:42",
+        description: "7% discount on renewals",
+        id: 1,
+        name: "7% Discount",
+        percentage_discount: 7,
+        slug: "7_discount",
+        status: 1,
+        updated_at: "2021-11-02 07:48:42",
+      },
       noBSVerbiage: "",
       allowBSSale: false,
       inputOptions: {
@@ -815,7 +830,7 @@ export default {
       },
       salesCategories: null,
       showDiscount: null,
-      salesCatName:null
+      salesCatName: null,
     }
   },
   async beforeMount() {
@@ -837,7 +852,6 @@ export default {
         this.watchSalesCategory(newData)
         this.watchBusinessType(newData)
         this.watchSalesLogForm(newData)
-        
       },
     },
     "salesLogForm.business_type_id": {
@@ -915,67 +929,75 @@ export default {
     watchCashPrice() {
       this.watchSalesCategory()
       this.watchSalesLogForm()
-          this.showDiscount =
-        this.salesLogForm?.business_type_id?.slug == "ap_products" || this.salesLogForm?.business_type_id?.slug.includes("bs_product")
+      this.showDiscount =
+        this.salesLogForm?.business_type_id?.slug == "ap_products" ||
+        this.salesLogForm?.business_type_id?.slug.includes("bs_product")
           ? true
           : false
-          if(!this.showDiscount && this.isAltaraPay){
-            this.salesLogForm.discount = '0_discount'
-          }
+      if (!this.showDiscount && this.isAltaraPay) {
+        this.salesLogForm.discount = "0_discount"
+      }
       if (
         (this.salesLogForm?.product?.product?.category == "cash loan" &&
-        this.salesLogForm?.repayment_duration_id?.name == "six_months") || 
-        (this.salesLogForm.business_type_id?.slug == "ap_no_bs_product_verve" && this.salesLogForm?.product?.product?.category !== "cash loan")
+          this.salesLogForm?.repayment_duration_id?.name == "six_months") ||
+        (this.salesLogForm.business_type_id?.slug == "ap_no_bs_product_verve" &&
+          this.salesLogForm?.product?.product?.category !== "cash loan")
       ) {
         //check if it is cashloan and six months duration, return addDownpayment= true only if
         //businesstype is (5 or10) and product amount is >110000
         //OR
         //businesstype is (9 or7) and product amount is > 80000
-       
+
         this.addDownpayment =
-          ((this.salesLogForm?.business_type_id?.slug == 'ap_cash_loan-product' ||
-            this.salesLogForm?.business_type_id?.slug == 'ap_cash_loan-no_collateral' ) &&
+          ((this.salesLogForm?.business_type_id?.slug ==
+            "ap_cash_loan-product" ||
+            this.salesLogForm?.business_type_id?.slug ==
+              "ap_cash_loan-no_collateral") &&
             this.selectedProduct.price > 110000) ||
-          ((this.salesLogForm?.business_type_id?.slug == 'ap_starter_cash_loan-no_collateral' ||
-            this.salesLogForm?.business_type_id?.slug == 'ap_starter_cash_loan') &&
-            this.selectedProduct.price > 80000) || 
-            (this.salesLogForm.business_type_id.slug == "ap_no_bs_product_verve" && this.salesLogForm?.product?.product?.category !== "cash loan")
+          ((this.salesLogForm?.business_type_id?.slug ==
+            "ap_starter_cash_loan-no_collateral" ||
+            this.salesLogForm?.business_type_id?.slug ==
+              "ap_starter_cash_loan") &&
+            this.selectedProduct.price > 80000) ||
+          (this.salesLogForm.business_type_id.slug ==
+            "ap_no_bs_product_verve" &&
+            this.salesLogForm?.product?.product?.category !== "cash loan")
             ? true
             : false
       } else this.addDownpayment = false
       this.stillShowToggle = this.addDownpayment
-
     },
     watchSalesLogForm() {
-        if(this.isAltaraCredit){
-           if(this.salesLogForm?.sales_category_id == "2" &&
-        !this.salesLogForm.product_name.includes("cash") &&
-        this.productOrder){
-          this.salesLogForm.discount ="5_discount"
-        }else this.salesLogForm.discount ="0_discount"
-        }
-       
-          this.disable = 
-          this.salesLogForm?.business_type_id?.slug.includes("ap_no_bs_renewal") ||
-          this.salesLogForm?.business_type_id?.slug.includes("ap_no_bs_new")
+      if (this.isAltaraCredit) {
+        if (
+          this.salesLogForm?.sales_category_id == "2" &&
+          !this.salesLogForm.product_name.includes("cash") &&
+          this.productOrder
+        ) {
+          this.salesLogForm.discount = "5_discount"
+        } else this.salesLogForm.discount = "0_discount"
+      }
+
+      this.disable =
+        this.salesLogForm?.business_type_id?.slug.includes(
+          "ap_no_bs_renewal"
+        ) || this.salesLogForm?.business_type_id?.slug.includes("ap_no_bs_new")
           ? true
-          :false
-          if(this.disable){
-             this.salesLogForm.repayment_duration_id = this.selectItem(
-            this.repaymentDuration,
-            "six_months"
-          )
-          this.salesLogForm.payment_type_id = this.selectItem(
-            this.downPaymentRatesFiltered,
-            "twenty"
-          )
-           this.salesLogForm.payment_gateway_id = this.selectItem(
-            this.paymentGateways,
-            "paystack"
-          )?.id
-          }
-
-
+          : false
+      if (this.disable) {
+        this.salesLogForm.repayment_duration_id = this.selectItem(
+          this.repaymentDuration,
+          "six_months"
+        )
+        this.salesLogForm.payment_type_id = this.selectItem(
+          this.downPaymentRatesFiltered,
+          "twenty"
+        )
+        this.salesLogForm.payment_gateway_id = this.selectItem(
+          this.paymentGateways,
+          "paystack"
+        )?.id
+      }
     },
     selectItem(itemArray, matchName) {
       return itemArray.find(object => {
@@ -984,8 +1006,8 @@ export default {
     },
 
     watchSalesCategory() {
-      if (this.isAltaraPay ) {
-        if (this.salesLogForm.sales_category_id == 9  ) {
+      if (this.isAltaraPay) {
+        if (this.salesLogForm.sales_category_id == 9) {
           this.businessTypes = this.biz_type.filter(business_type => {
             //return only this business type,
             return business_type?.slug.includes("bs")
@@ -998,13 +1020,12 @@ export default {
           )?.id
 
           //if sales-category is "NoBS"
-          
         } else {
           this.commitment.status = false
           this.businessTypes = this.biz_type.filter(business_type => {
             //else return the rest
             return (
-             !business_type?.slug.includes("bs") && 
+              !business_type?.slug.includes("bs") &&
               business_type.slug.includes("ap_")
             )
           })
@@ -1086,7 +1107,7 @@ export default {
             : this.getPaymentMethods.find(el => (el.name = "direct-debit")).id
           : this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
-        discount_id: this.selected_discount?.id,
+        discount_id: this.discounts.find(item => item.slug === this.salesLogForm.discount)?.id,
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
@@ -1245,7 +1266,7 @@ export default {
     },
     getCalc() {
       this.watchCashPrice()
-  
+
       try {
         this.salesLogForm.customer_id = this.customerId
         const data0 = {
@@ -1263,9 +1284,22 @@ export default {
             x.down_payment_rate_id === data0.payment_type_id.id &&
             x.repayment_duration_id === data0.repayment_duration_id.id
         )[0]
-        this.selected_discount = this.discounts?.find(item => {
-          return item.slug == this.salesLogForm?.discount
-        })
+
+        //use dummy discount for altara pay 12%, 6months, 40%
+        if (
+          ["three_months", "six_months"].includes(
+            this.salesLogForm?.repayment_duration_id?.name
+          ) &&
+          this.salesLogForm.payment_type_id.name === "forty" &&
+          this.salesLogForm.discount === "12_discount"
+        ) {
+          this.selected_discount = this.dummyDiscount
+        } else {
+          this.selected_discount = this.discounts?.find(item => {
+            return item.slug == this.salesLogForm?.discount
+          })
+        }
+
         const { total, actualDownpayment, rePayment } =
           data0.business_type_id.slug.includes("cash_loan") ||
           data0.business_type_id.slug.includes("ap_rentals") ||
@@ -1313,9 +1347,11 @@ export default {
           //check if on altara pay and New BS sales category
 
           if (
-            this.salesLogForm.business_type_id.slug.includes("ap_no_bs_new")||
-            this.salesLogForm.business_type_id.slug == "ap_no_bs_product_verve" ||
-            this.salesLogForm.business_type_id.slug == "ap_no_bs_product_non_verve"
+            this.salesLogForm.business_type_id.slug.includes("ap_no_bs_new") ||
+            this.salesLogForm.business_type_id.slug ==
+              "ap_no_bs_product_verve" ||
+            this.salesLogForm.business_type_id.slug ==
+              "ap_no_bs_product_non_verve"
           ) {
             //if biz-type is BS-new customer
             this.commitment.percentage = 6
@@ -1323,10 +1359,13 @@ export default {
 
             //add a 6% commision on the downpayment
           } else if (
-            this.salesLogForm.business_type_id.slug.includes("ap_no_bs_renewal") ||
-            this.salesLogForm.business_type_id.slug.includes("ap_no_bs_product_renewal")
+            this.salesLogForm.business_type_id.slug.includes(
+              "ap_no_bs_renewal"
+            ) ||
+            this.salesLogForm.business_type_id.slug.includes(
+              "ap_no_bs_product_renewal"
+            )
           ) {
-            
             //BS-renewal
             this.commitment.percentage = 3
             this.commitment.amount = this.selectedProduct.price * (3 / 100)
@@ -1341,11 +1380,11 @@ export default {
           ((this.salesLogForm?.business_type_id?.id == 5 ||
             this.salesLogForm?.business_type_id?.id == 10) &&
             this.selectedProduct.price > 110000) ||
-            this.salesLogForm?.business_type_id?.slug == "ap_no_bs_product_verve"
+          this.salesLogForm?.business_type_id?.slug == "ap_no_bs_product_verve"
         ) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment / 2 : additionalRepayment
-            this.singleRepayment = Math.round(this.singleRepayment/100) *100
+          this.singleRepayment = Math.round(this.singleRepayment / 100) * 100
         } else if (
           this.selectedProduct.price > 110000 &&
           (this.salesLogForm.business_type_id.id == 7 ||
@@ -1353,7 +1392,7 @@ export default {
         ) {
           this.singleRepayment =
             cycle == 1 ? additionalRepayment : additionalRepayment * 2
-            this.singleRepayment = Math.round(this.singleRepayment/100)*100
+          this.singleRepayment = Math.round(this.singleRepayment / 100) * 100
         }
       } catch (e) {
         // this.$swal({
@@ -1768,7 +1807,7 @@ export default {
   opacity: 0.7;
 }
 .discount {
-  left:80px;
+  left: 80px;
 }
 .cover {
   display: flex;
@@ -1780,9 +1819,9 @@ export default {
   position: absolute;
 }
 .modal_cover {
-  width:100%;
+  width: 100%;
   top: -26px;
-  justify-content:flex-end;
+  justify-content: flex-end;
   display: flex;
   position: relative;
 }
@@ -1802,11 +1841,11 @@ export default {
 .disable {
   pointer-events: none;
 }
-.error-text{
+.error-text {
   font-size: 1.2em;
   font-weight: 600;
 }
-.hidden{
-  display:hidden;
+.hidden {
+  display: hidden;
 }
 </style>

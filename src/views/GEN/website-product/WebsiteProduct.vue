@@ -6,7 +6,7 @@
       <div class="mt-2 mt-lg-3 row attendance-head ">
         <div class="col-md-10">
           <resueable-search
-            @childToParent="prepareList"
+            @childToParent="prepareSearch"
             :url="urlToFetchOrders"
             :showBranch="false"
             :showDate="false"
@@ -306,6 +306,9 @@ export default {
       get(this.urlToFetchOrders + data)
         .then(({ data }) => this.prepareList(data))
         .catch(() => Flash.setError('Error Preparing form'))
+    },
+    prepareSearch(item) {
+      this.prepareList(item.data.data)
     },
 
     ...mapActions('ModalAccess', [

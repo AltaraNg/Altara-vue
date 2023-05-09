@@ -4,8 +4,8 @@
 		<div class="clearfix w-100 mt-4 d-flex bd-highlight">
 			<div class="col d-flex justify-content-start align-items-center pl-0">
 				<strong class="light-heading float-left">
-					Displaying: {{ pageParam.from }} - {{ pageParam.to }} of
-					{{ pageParam.total }}
+					Displaying: {{ pageParam.from }} - {{ pageParam.to }} <span v-if="pageParam.total">of
+					{{ pageParam.total }}</span>
 				</strong>
 			</div>
 

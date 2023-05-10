@@ -111,9 +111,9 @@
             v-validate="'required'"
             @input="onDropdown"
           />
-          <div class="w-100 px-3 py-2 drop-down" v-if="showDropdown">
+          <div class="w-100  py-2 drop-down" v-if="showDropdown">
             <div
-              class="pointer py-1"
+              class="pointer py-1 bItem mx-2 px-2"
               v-for="bank in filteredList()"
               :key="bank.code"
               @click="selectBank(bank)"
@@ -269,7 +269,12 @@ option * {
 }
 .drop-down {
   background-color: gainsboro;
+  color: black;
   height: 70px;
   overflow-y: auto;
+}
+
+.bItem:hover{
+  background: #eee;
 }
 </style>

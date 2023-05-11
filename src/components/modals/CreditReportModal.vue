@@ -94,7 +94,7 @@
           </select>
         </div>
         <div class="form-group w-50 px-2">
-          <label for="accountNo">Enter Account Number on bank statement</label>
+          <label for="accountNo">Account Number on bank statement</label>
           <input
             v-model="accountNo"
             class="custom-select w-100 d-block"
@@ -124,6 +124,16 @@
               <p>No results found!</p>
             </div>
           </div>
+
+        </div>
+        <div class="form-group w-50 px-2">
+          <label for="accountNo">Account Name on bank statement</label>
+          <input
+            v-model="accountName"
+            class="custom-select w-100 d-block"
+            id="accountNo"
+            v-validate="'required'"
+          />
         </div>
       </form>
     </div>
@@ -173,6 +183,7 @@ export default {
       bankName: null,
       bankList: [],
       showDropdown: false,
+      accountName: null
     }
   },
 
@@ -197,6 +208,7 @@ export default {
             this.verificationData.status = this.status
             this.verificationData.accountNo = this.accountNo
             this.verificationData.bankName = this.bankName
+            this.verificationData.accountName = this.accountName
 
             let res = await post("/api/recommendation", this.verificationData)
             if (res.status === 200) {

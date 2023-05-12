@@ -1239,8 +1239,11 @@ export default {
               $(`#amortizationPreview`).modal("toggle")
             })
             .catch(err => {
-              this.$LIPS(false)
-              Flash.setError("Error: " + err.response?.data?.data?.errors?.serial_number);
+              this.$LIPS(false);
+              let errors = err.response?.data?.data?.errors;
+              for( const key in errors){
+                Flash.setError(`${key} Error:`  + `${errors[key]}`);
+              }
               this.$scrollToTop();
             })
         } else this.$networkErr("form")

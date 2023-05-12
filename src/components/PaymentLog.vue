@@ -1240,7 +1240,8 @@ export default {
             })
             .catch(err => {
               this.$LIPS(false)
-              Flash.setError("Error: " + err.message)
+              Flash.setError("Error: " + err.response?.data?.data?.errors?.serial_number);
+              this.$scrollToTop();
             })
         } else this.$networkErr("form")
       })
@@ -1267,7 +1268,8 @@ export default {
     },
     getCalc() {
       this.watchCashPrice()
-      if(this.salesLogForm.business_type_id.slug.includes('product') || this.salesLogForm.business_type_id.slug === 'ap_cash_n_carry' || this.salesLogForm.business_type_id.slug.includes('products')){ 
+      
+      if(this.salesLogForm.business_type_id?.slug.includes('product') || this.salesLogForm.business_type_id?.slug === 'ap_cash_n_carry' || this.salesLogForm.business_type_id?.slug.includes('products')){ 
           this.serial = true
         }else{
           this.serial = false

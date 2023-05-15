@@ -70,12 +70,13 @@
 
               <div class="col form-group" v-if="serial">
                 <label for="amount" class="form-control-label w-100"
-                  >Serial number (Optional)</label
+                  >Serial number </label
                 >
                 <input
                   v-model="salesLogForm.serial_number"
                   name="serial number"
                   class="custom-select w-100"
+                  v-validate="'required'"
                 />
               </div>
 
@@ -1238,8 +1239,12 @@ export default {
               $(`#amortizationPreview`).modal("toggle")
             })
             .catch(err => {
-              this.$LIPS(false)
-              Flash.setError("Error: " + err.message)
+              this.$LIPS(false);
+              let errors = err.response?.data?.data?.errors;
+              for( const key in errors){
+                Flash.setError(`${key} Error:`  + `${errors[key]}`);
+              }
+              this.$scrollToTop();
             })
         } else this.$networkErr("form")
       })
@@ -1266,6 +1271,12 @@ export default {
     },
     getCalc() {
       this.watchCashPrice()
+      
+      if(this.salesLogForm.business_type_id?.slug.includes('product') || this.salesLogForm.business_type_id?.slug === 'ap_cash_n_carry' || this.salesLogForm.business_type_id?.slug.includes('products')){ 
+          this.serial = true
+        }else{
+          this.serial = false
+        }
 
       try {
         this.salesLogForm.customer_id = this.customerId
@@ -1283,7 +1294,7 @@ export default {
             x.business_type_id === data0.business_type_id?.id &&
             x.down_payment_rate_id === data0.payment_type_id.id &&
             x.repayment_duration_id === data0.repayment_duration_id.id
-        )[0]
+        )[0]      
 
         //use dummy discount for altara pay 12%, 6months, 40%
         if (
@@ -1343,6 +1354,7 @@ export default {
         let salesCatName = this.salesCategories.find(
           item => item.id === this.salesLogForm.sales_category_id
         )
+        
         if (this.isAltaraPay && salesCatName.name == "No BS") {
           //check if on altara pay and New BS sales category
 

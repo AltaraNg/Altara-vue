@@ -354,6 +354,19 @@
             <br />
             <div>
               <div
+                class="col d-flex justify-content-left"
+                style="font-size:9px"
+                v-if="showRepaymentToggle"
+              >
+                <toggle-button
+                  v-on:valueChangedEvent="triggerToggleEvent"
+                  :key="'FixedRepayment'"
+                  :switchName="'FixedRepayment'"
+                  :defaultState="FixedRepayment"
+                  label="Fixed Repayment"
+                />
+              </div>
+              <div
                 :style="
                   (addDownpayment && isAltaraPay) || stillShowToggle
                     ? 'display:flex; '
@@ -730,6 +743,7 @@ export default {
       currentValue: "",
       stillShowToggle: null,
       addDownpayment: null,
+      FixedRepayment: false,
       productOrder: false,
       card_expiry: null,
       error: {},
@@ -901,6 +915,17 @@ export default {
       for (let i = 0; i < 10; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length))
       return text
+    },
+    showRepaymentToggle() {
+      //if altarapay, display only slug has loan or when noBS (!altarapay product)
+      return this.isAltaraPay &&
+        (this.salesLogForm?.business_type_id?.slug.includes("loan") ||
+          this.salesLogForm?.business_type_id?.slug.includes(
+            "ap_no_bs_renewal"
+          ) ||
+          this.salesLogForm?.business_type_id?.slug.includes("ap_no_bs_new"))
+        ? true
+        : false
     },
 
     repaymentCycleFiltered() {
@@ -1170,6 +1195,7 @@ export default {
       this.cardError = false
       this.salesLogForm.customer_id = this.customerId
       const data = {
+        fixed_repayment: this.FixedRepayment,
         amortization_downpayment:
           this.singleRepayment && this.addDownpayment
             ? this.singleRepayment
@@ -1354,7 +1380,7 @@ export default {
         let salesCatName = this.salesCategories.find(
           item => item.id === this.salesLogForm.sales_category_id
         )
-        
+
         if (this.isAltaraPay && salesCatName.name == "No BS") {
           //check if on altara pay and New BS sales category
 
@@ -1764,6 +1790,9 @@ export default {
       this.addDownpayment = !this.addDownpayment
       this.addDownpayment = value
       this.stillShowToggle = true
+    },
+    triggerToggleEventFixedRepayment() {
+      this.FixedRepayment = !this.FixedRepayment
     },
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value)

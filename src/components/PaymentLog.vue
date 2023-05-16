@@ -1131,6 +1131,7 @@ export default {
           this.pPrice > 0 && this.commitment.status
             ? this.commitment.amount
             : 0,
+        fixed_repayment: this.FixedRepayment,
         order_type_id: orderType.id,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,

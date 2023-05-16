@@ -353,7 +353,11 @@
             </div>
             <br />
             <div>
-              <div class="d-flex justify-content-left" style=" width:350px">
+              <div class="d-flex justify-content-left" :style="
+                  (addDownpayment && isAltaraPay) || stillShowToggle
+                    ? 'display:flex; '
+                    : ''
+                " style=" width:350px">
                 <div
                 class="col d-flex justify-content-left"
                 style="font-size:8px; "
@@ -368,11 +372,7 @@
                 />
               </div>
               <div
-                :style="
-                  (addDownpayment && isAltaraPay) || stillShowToggle
-                    ? 'display:flex; '
-                    : ''
-                "
+                
               >
                 <div
                   class="col d-flex align-items-center"
@@ -388,7 +388,10 @@
                     label="Add Repayment"
                   />
                 </div>
-                <div
+                
+              </div>
+              </div>
+              <div
                   class="text-center "
                   :style="
                     (addDownpayment && isAltaraPay) || stillShowToggle
@@ -415,9 +418,6 @@
                   </button>
                   <br />
                 </div>
-              </div>
-              </div>
-              
               <div class="d-flex">
                 <small
                   class="text-danger text-center mt-4 error-text"

@@ -70,8 +70,8 @@
 
               <div class="col form-group" v-if="serial">
                 <label for="amount" class="form-control-label w-100"
-                  >Serial number </label
-                >
+                  >Serial number
+                </label>
                 <input
                   v-model="salesLogForm.serial_number"
                   name="serial number"
@@ -355,7 +355,7 @@
             <div>
               <div
                 class="col d-flex justify-content-left"
-                style="font-size:9px"
+                style="font-size:8px; margin-bottom: 4px;"
                 v-if="showRepaymentToggle"
               >
                 <toggle-button
@@ -375,6 +375,7 @@
               >
                 <div
                   class="col d-flex align-items-center"
+                  style="font-size:8px"
                   :class="this.customer.guarantor_paystack.length > 0 ? '' : ''"
                   v-if="(addDownpayment && isAltaraPay) || stillShowToggle"
                 >
@@ -498,7 +499,10 @@
               <discount
                 class="discount"
                 v-if="salesLogForm.discount !== '0_discount' && rPayment > 0"
-                :percent="discounts.find(item => item.slug === salesLogForm.discount).percentage_discount"
+                :percent="
+                  discounts.find(item => item.slug === salesLogForm.discount)
+                    .percentage_discount
+                "
               />
               <p v-if="pPrice > 0 && commitment.status" class="commitment">
                 {{ commitment.percentage }}% Commitment
@@ -578,7 +582,11 @@
                             salesLogForm.discount !== '0_discount' &&
                               rPayment > 0
                           "
-                          :percent="discounts.find(item => item.slug === salesLogForm.discount).percentage_discount"
+                          :percent="
+                            discounts.find(
+                              item => item.slug === salesLogForm.discount
+                            ).percentage_discount
+                          "
                         />
                       </div>
                     </td>
@@ -829,6 +837,19 @@ export default {
         "Bank App History Screenshot",
       ],
       guarantor_signed: ["2 - Yes", "1 - Yes", "No"],
+      showRepaymentToggleList: [
+        "ap_no_bs_renewal_verve",
+        "ap_no_bs_renewal_non_verve",
+        "ap_no_bs_new_verve",
+        "ap_no_bs_new_non_verve",
+        "ap_cash_loan-collateral",
+        "ap_cash_loan-no_collateral",
+        "ap_cash_loan",
+        "ac_cash_loan",
+        "ap_employee_cash_loan",
+        "ap_starter_cash_loan",
+        "ap_starter_cash_loan-no_collateral",
+      ],
       address_visited: ["Yes", "No"],
       credit_report_status: ["Bad", "Fair", "No", "Good"],
       credit_point_status: ["Bad", "Average", "Good"],
@@ -919,11 +940,9 @@ export default {
     showRepaymentToggle() {
       //if altarapay, display only slug has loan or when noBS (!altarapay product)
       return this.isAltaraPay &&
-        (this.salesLogForm?.business_type_id?.slug.includes("loan") ||
-          this.salesLogForm?.business_type_id?.slug.includes(
-            "ap_no_bs_renewal"
-          ) ||
-          this.salesLogForm?.business_type_id?.slug.includes("ap_no_bs_new"))
+        this.showRepaymentToggleList.includes(
+          this.salesLogForm?.business_type_id?.slug
+        )
         ? true
         : false
     },
@@ -1133,7 +1152,9 @@ export default {
             : this.getPaymentMethods.find(el => (el.name = "direct-debit")).id
           : this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
-        discount_id: this.discounts.find(item => item.slug === this.salesLogForm.discount)?.id,
+        discount_id: this.discounts.find(
+          item => item.slug === this.salesLogForm.discount
+        )?.id,
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
@@ -1265,12 +1286,12 @@ export default {
               $(`#amortizationPreview`).modal("toggle")
             })
             .catch(err => {
-              this.$LIPS(false);
-              let errors = err.response?.data?.data?.errors;
-              for( const key in errors){
-                Flash.setError(`${key} Error:`  + `${errors[key]}`);
+              this.$LIPS(false)
+              let errors = err.response?.data?.data?.errors
+              for (const key in errors) {
+                Flash.setError(`${key} Error:` + `${errors[key]}`)
               }
-              this.$scrollToTop();
+              this.$scrollToTop()
             })
         } else this.$networkErr("form")
       })
@@ -1297,12 +1318,16 @@ export default {
     },
     getCalc() {
       this.watchCashPrice()
-      
-      if(this.salesLogForm.business_type_id?.slug.includes('product') || this.salesLogForm.business_type_id?.slug === 'ap_cash_n_carry' || this.salesLogForm.business_type_id?.slug.includes('products')){ 
-          this.serial = true
-        }else{
-          this.serial = false
-        }
+
+      if (
+        this.salesLogForm.business_type_id?.slug.includes("product") ||
+        this.salesLogForm.business_type_id?.slug === "ap_cash_n_carry" ||
+        this.salesLogForm.business_type_id?.slug.includes("products")
+      ) {
+        this.serial = true
+      } else {
+        this.serial = false
+      }
 
       try {
         this.salesLogForm.customer_id = this.customerId
@@ -1320,7 +1345,7 @@ export default {
             x.business_type_id === data0.business_type_id?.id &&
             x.down_payment_rate_id === data0.payment_type_id.id &&
             x.repayment_duration_id === data0.repayment_duration_id.id
-        )[0]      
+        )[0]
 
         //use dummy discount for altara pay 12%, 6months, 40%
         if (

@@ -998,7 +998,8 @@ export default {
 
         this.addDownpayment =
           ((this.salesLogForm?.business_type_id?.slug ==
-            "ap_cash_loan-product" ||
+            "ap_cash_loan-product" || this.salesLogForm?.business_type_id?.slug ==
+            "ap_cash_loan-collateral" ||
             this.salesLogForm?.business_type_id?.slug ==
               "ap_cash_loan-no_collateral") &&
             this.selectedProduct.price > 110000) ||

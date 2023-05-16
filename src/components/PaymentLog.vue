@@ -353,9 +353,10 @@
             </div>
             <br />
             <div>
-              <div
+              <div class="d-flex justify-content-left" style=" width:350px">
+                <div
                 class="col d-flex justify-content-left"
-                style="font-size:8px; margin-bottom: 4px;"
+                style="font-size:8px; "
                 v-if="showRepaymentToggle"
               >
                 <toggle-button
@@ -415,6 +416,8 @@
                   <br />
                 </div>
               </div>
+              </div>
+              
               <div class="d-flex">
                 <small
                   class="text-danger text-center mt-4 error-text"

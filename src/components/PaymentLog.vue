@@ -1131,7 +1131,7 @@ export default {
           this.pPrice > 0 && this.commitment.status
             ? this.commitment.amount
             : 0,
-        fixed_repayment: this.FixedRepayment,
+        fixed_repayment:!this.showRepaymentToggle ? true : this.FixedRepayment,
         order_type_id: orderType.id,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
@@ -1217,7 +1217,7 @@ export default {
       this.cardError = false
       this.salesLogForm.customer_id = this.customerId
       const data = {
-        fixed_repayment: this.FixedRepayment,
+        fixed_repayment:!this.showRepaymentToggle ? true : this.FixedRepayment,
         amortization_downpayment:
           this.singleRepayment && this.addDownpayment
             ? this.singleRepayment

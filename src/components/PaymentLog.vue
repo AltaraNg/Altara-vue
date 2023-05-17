@@ -939,7 +939,6 @@ export default {
       return text
     },
     showRepaymentToggle() {
-      //if altarapay, display only slug has loan or when noBS (!altarapay product)
       return (
         this.isAltaraPay &&
         this.showRepaymentToggleList.includes(

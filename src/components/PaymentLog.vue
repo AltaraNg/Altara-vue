@@ -353,8 +353,8 @@
             </div>
             <br />
             <div>
-              <div class="d-flex justify-content-left" :style="
-                  (addDownpayment && isAltaraPay) || stillShowToggle
+              <div class="d-flex justify-content-left" 
+              :style="(addDownpayment && isAltaraPay) || stillShowToggle
                     ? 'display:flex; '
                     : ''
                 " style=" width:350px">
@@ -371,9 +371,7 @@
                   label="Fixed Repayment"
                 />
               </div>
-              <div
-                
-              >
+              <div>
                 <div
                   class="col d-flex align-items-center"
                   style="font-size:8px"
@@ -388,7 +386,7 @@
                     label="Add Repayment"
                   />
                 </div>
-                
+
               </div>
               </div>
               <div
@@ -942,12 +940,12 @@ export default {
     },
     showRepaymentToggle() {
       //if altarapay, display only slug has loan or when noBS (!altarapay product)
-      return this.isAltaraPay &&
+      return (
+        this.isAltaraPay &&
         this.showRepaymentToggleList.includes(
           this.salesLogForm?.business_type_id?.slug
         )
-        ? true
-        : false
+      )
     },
 
     repaymentCycleFiltered() {
@@ -997,11 +995,11 @@ export default {
         //businesstype is (9 or7) and product amount is > 80000
 
         this.addDownpayment =
-          ((this.salesLogForm?.business_type_id?.slug ==
-            "ap_cash_loan-product" || this.salesLogForm?.business_type_id?.slug ==
-            "ap_cash_loan-collateral" ||
-            this.salesLogForm?.business_type_id?.slug ==
-              "ap_cash_loan-no_collateral") &&
+          ([
+            "ap_cash_loan-product",
+            "ap_cash_loan-collateral",
+            "ap_cash_loan-no_collateral",
+          ].includes(this.salesLogForm.business_type_id?.slug) &&
             this.selectedProduct.price > 110000) ||
           ((this.salesLogForm?.business_type_id?.slug ==
             "ap_starter_cash_loan-no_collateral" ||
@@ -1324,15 +1322,9 @@ export default {
     getCalc() {
       this.watchCashPrice()
 
-      if (
-        this.salesLogForm.business_type_id?.slug.includes("product") ||
-        this.salesLogForm.business_type_id?.slug === "ap_cash_n_carry" ||
-        this.salesLogForm.business_type_id?.slug.includes("products")
-      ) {
-        this.serial = true
-      } else {
-        this.serial = false
-      }
+      this.serial = ["product", "ap_cash_n_carry", "products"].includes(
+        this.salesLogForm.business_type_id?.slug
+      )
 
       try {
         this.salesLogForm.customer_id = this.customerId

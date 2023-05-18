@@ -1664,9 +1664,15 @@ export default {
         ).id
         await this.verifyPaystackPayment()
           .then(data => {
+            console.log(data)
             if (data.status && data.message == "Verification successful") {
               this.salesLogForm.authorization_code =
                 data.data.authorization.authorization_code
+              this.salesLogForm.account_number = data?.data?.authorization?.last4
+              this.salesLogForm.account_name = data?.data?.authorization?.account_name
+              this.salesLogForm.bank_name = data?.data?.authorization?.bank
+
+
             }
           })
           .catch(error => {

@@ -76,13 +76,13 @@
                                 <div class="col pr-3 pr-sm-1 pr-lg-4">
                                     <input :disabled="form[index].is_present === '0'" :name="`arrival_time_${index}`"
                                            class="form-control"
-                                           type="time" v-model="form[index].arrival_time" v-validate="'required'">
+                                           type="time" v-model="form[index].arrival_time" v-validate="form[index].is_present == 1?'required':''">
                                 </div>
                                 <div class="col pl-3 pl-sm-1 pl-lg-4">
                                     <input :disabled="form[index].is_present === '0' || form[index].no_signout"
                                            :name="`departure_time_${index}`"
                                            class="form-control"
-                                           type="time" v-model="form[index].departure_time" v-validate="'required'">
+                                           type="time" v-model="form[index].departure_time" v-validate="form[index].is_present === '1' && !form[index].no_signout?'required':''">
                                 </div>
                                 <div class="mr-5">
                                     <div class="form-check">
@@ -225,8 +225,8 @@
                                 .then(({data, employee_id: id}) => {
                                     if (data.saved || data.updated) {
                                         log(`Attendance ${this.mode}d`, `${id}`);
-                                        Flash.setSuccess(`Attendance Submitted successfully!`, 3000);
-                                        this.$router.push('/');
+                                        Flash.setSuccess(`Attendance Submitted successfully!`, 5000);
+                                        this.$router.push('/hrm/attendance/');
                                     }
                                 })
                                 .catch(e => {

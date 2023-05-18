@@ -70,8 +70,8 @@
 
               <div class="col form-group" v-if="serial">
                 <label for="amount" class="form-control-label w-100"
-                  >Serial number </label
-                >
+                  >Serial number
+                </label>
                 <input
                   v-model="salesLogForm.serial_number"
                   name="serial number"
@@ -485,7 +485,10 @@
               <discount
                 class="discount"
                 v-if="salesLogForm.discount !== '0_discount' && rPayment > 0"
-                :percent="discounts.find(item => item.slug === salesLogForm.discount).percentage_discount"
+                :percent="
+                  discounts.find(item => item.slug === salesLogForm.discount)
+                    .percentage_discount
+                "
               />
               <p v-if="pPrice > 0 && commitment.status" class="commitment">
                 {{ commitment.percentage }}% Commitment
@@ -565,7 +568,11 @@
                             salesLogForm.discount !== '0_discount' &&
                               rPayment > 0
                           "
-                          :percent="discounts.find(item => item.slug === salesLogForm.discount).percentage_discount"
+                          :percent="
+                            discounts.find(
+                              item => item.slug === salesLogForm.discount
+                            ).percentage_discount
+                          "
                         />
                       </div>
                     </td>
@@ -1087,6 +1094,10 @@ export default {
           this.pPrice > 0 && this.commitment.status
             ? this.commitment.amount
             : 0,
+        bank_name: this.salesLogForm.bank_name,
+        account_number: this.salesLogForm.account_number,
+        account_name: this.salesLogForm.account_name,
+        fixed_repayment: this.salesLogForm.fixed_repayment,
         order_type_id: orderType.id,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
@@ -1108,7 +1119,9 @@ export default {
             : this.getPaymentMethods.find(el => (el.name = "direct-debit")).id
           : this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
-        discount_id: this.discounts.find(item => item.slug === this.salesLogForm.discount)?.id,
+        discount_id: this.discounts.find(
+          item => item.slug === this.salesLogForm.discount
+        )?.id,
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
@@ -1239,12 +1252,12 @@ export default {
               $(`#amortizationPreview`).modal("toggle")
             })
             .catch(err => {
-              this.$LIPS(false);
-              let errors = err.response?.data?.data?.errors;
-              for( const key in errors){
-                Flash.setError(`${key} Error:`  + `${errors[key]}`);
+              this.$LIPS(false)
+              let errors = err.response?.data?.data?.errors
+              for (const key in errors) {
+                Flash.setError(`${key} Error:` + `${errors[key]}`)
               }
-              this.$scrollToTop();
+              this.$scrollToTop()
             })
         } else this.$networkErr("form")
       })
@@ -1271,12 +1284,16 @@ export default {
     },
     getCalc() {
       this.watchCashPrice()
-      
-      if(this.salesLogForm.business_type_id?.slug.includes('product') || this.salesLogForm.business_type_id?.slug === 'ap_cash_n_carry' || this.salesLogForm.business_type_id?.slug.includes('products')){ 
-          this.serial = true
-        }else{
-          this.serial = false
-        }
+
+      if (
+        this.salesLogForm.business_type_id?.slug.includes("product") ||
+        this.salesLogForm.business_type_id?.slug === "ap_cash_n_carry" ||
+        this.salesLogForm.business_type_id?.slug.includes("products")
+      ) {
+        this.serial = true
+      } else {
+        this.serial = false
+      }
 
       try {
         this.salesLogForm.customer_id = this.customerId
@@ -1294,7 +1311,7 @@ export default {
             x.business_type_id === data0.business_type_id?.id &&
             x.down_payment_rate_id === data0.payment_type_id.id &&
             x.repayment_duration_id === data0.repayment_duration_id.id
-        )[0]      
+        )[0]
 
         //use dummy discount for altara pay 12%, 6months, 40%
         if (
@@ -1354,7 +1371,7 @@ export default {
         let salesCatName = this.salesCategories.find(
           item => item.id === this.salesLogForm.sales_category_id
         )
-        
+
         if (this.isAltaraPay && salesCatName.name == "No BS") {
           //check if on altara pay and New BS sales category
 
@@ -1673,11 +1690,11 @@ export default {
             if (data.status && data.message == "Verification successful") {
               this.salesLogForm.authorization_code =
                 data.data.authorization.authorization_code
-              this.salesLogForm.account_number = data?.data?.authorization?.last4
-              this.salesLogForm.account_name = data?.data?.authorization?.account_name
+              this.salesLogForm.account_number =
+                data?.data?.authorization?.last4
+              this.salesLogForm.account_name = data?.data?.authorization?.account_name === null ? 'test_acount' : data?.data?.authorization?.account_name === null
               this.salesLogForm.bank_name = data?.data?.authorization?.bank
-
-
+              this.salesLogForm.fixed_repayment = false
             }
           })
           .catch(error => {

@@ -1097,7 +1097,6 @@ export default {
         bank_name: this.salesLogForm.bank_name,
         account_number: this.salesLogForm.account_number,
         account_name: this.salesLogForm.account_name,
-        fixed_repayment: this.salesLogForm.fixed_repayment,
         order_type_id: orderType.id,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
@@ -1694,7 +1693,6 @@ export default {
                 data?.data?.authorization?.last4
               this.salesLogForm.account_name = data?.data?.authorization?.account_name === null ? 'test_acount' : data?.data?.authorization?.account_name === null
               this.salesLogForm.bank_name = data?.data?.authorization?.bank
-              this.salesLogForm.fixed_repayment = false
             }
           })
           .catch(error => {

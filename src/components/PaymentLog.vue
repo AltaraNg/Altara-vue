@@ -353,15 +353,28 @@
             </div>
             <br />
             <div>
-              <div
-                :style="
-                  (addDownpayment && isAltaraPay) || stillShowToggle
+              <div class="d-flex justify-content-left" 
+              :style="(addDownpayment && isAltaraPay) || stillShowToggle
                     ? 'display:flex; '
                     : ''
-                "
+                " style=" width:350px">
+                <div
+                class="col d-flex justify-content-left"
+                style="font-size:8px; "
+                v-if="showRepaymentToggle"
               >
+                <toggle-button
+                  v-on:valueChangedEvent="triggerToggleEvent"
+                  :key="'FixedRepayment'"
+                  :switchName="'FixedRepayment'"
+                  :defaultState="FixedRepayment"
+                  label="Fixed Repayment"
+                />
+              </div>
+              <div>
                 <div
                   class="col d-flex align-items-center"
+                  style="font-size:8px"
                   :class="this.customer.guarantor_paystack.length > 0 ? '' : ''"
                   v-if="(addDownpayment && isAltaraPay) || stillShowToggle"
                 >
@@ -373,7 +386,10 @@
                     label="Add Repayment"
                   />
                 </div>
-                <div
+
+              </div>
+              </div>
+              <div
                   class="text-center "
                   :style="
                     (addDownpayment && isAltaraPay) || stillShowToggle
@@ -400,7 +416,6 @@
                   </button>
                   <br />
                 </div>
-              </div>
               <div class="d-flex">
                 <small
                   class="text-danger text-center mt-4 error-text"
@@ -737,6 +752,7 @@ export default {
       currentValue: "",
       stillShowToggle: null,
       addDownpayment: null,
+      FixedRepayment: false,
       productOrder: false,
       card_expiry: null,
       error: {},
@@ -822,6 +838,19 @@ export default {
         "Bank App History Screenshot",
       ],
       guarantor_signed: ["2 - Yes", "1 - Yes", "No"],
+      showRepaymentToggleList: [
+        "ap_no_bs_renewal_verve",
+        "ap_no_bs_renewal_non_verve",
+        "ap_no_bs_new_verve",
+        "ap_no_bs_new_non_verve",
+        "ap_cash_loan-collateral",
+        "ap_cash_loan-no_collateral",
+        "ap_cash_loan",
+        "ac_cash_loan",
+        "ap_employee_cash_loan",
+        "ap_starter_cash_loan",
+        "ap_starter_cash_loan-no_collateral",
+      ],
       address_visited: ["Yes", "No"],
       credit_report_status: ["Bad", "Fair", "No", "Good"],
       credit_point_status: ["Bad", "Average", "Good"],
@@ -909,6 +938,14 @@ export default {
         text += possible.charAt(Math.floor(Math.random() * possible.length))
       return text
     },
+    showRepaymentToggle() {
+      return (
+        this.isAltaraPay &&
+        this.showRepaymentToggleList.includes(
+          this.salesLogForm?.business_type_id?.slug
+        )
+      )
+    },
 
     repaymentCycleFiltered() {
       let newArray = []
@@ -957,10 +994,11 @@ export default {
         //businesstype is (9 or7) and product amount is > 80000
 
         this.addDownpayment =
-          ((this.salesLogForm?.business_type_id?.slug ==
-            "ap_cash_loan-product" ||
-            this.salesLogForm?.business_type_id?.slug ==
-              "ap_cash_loan-no_collateral") &&
+          ([
+            "ap_cash_loan-product",
+            "ap_cash_loan-collateral",
+            "ap_cash_loan-no_collateral",
+          ].includes(this.salesLogForm.business_type_id?.slug) &&
             this.selectedProduct.price > 110000) ||
           ((this.salesLogForm?.business_type_id?.slug ==
             "ap_starter_cash_loan-no_collateral" ||
@@ -1097,6 +1135,7 @@ export default {
         bank_name: this.salesLogForm.bank_name,
         account_number: this.salesLogForm.account_number,
         account_name: this.salesLogForm.account_name,
+        fixed_repayment:!this.showRepaymentToggle ? true : this.FixedRepayment,
         order_type_id: orderType.id,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
@@ -1182,6 +1221,7 @@ export default {
       this.cardError = false
       this.salesLogForm.customer_id = this.customerId
       const data = {
+        fixed_repayment:!this.showRepaymentToggle ? true : this.FixedRepayment,
         amortization_downpayment:
           this.singleRepayment && this.addDownpayment
             ? this.singleRepayment
@@ -1284,15 +1324,9 @@ export default {
     getCalc() {
       this.watchCashPrice()
 
-      if (
-        this.salesLogForm.business_type_id?.slug.includes("product") ||
-        this.salesLogForm.business_type_id?.slug === "ap_cash_n_carry" ||
-        this.salesLogForm.business_type_id?.slug.includes("products")
-      ) {
-        this.serial = true
-      } else {
-        this.serial = false
-      }
+      this.serial = ["product", "ap_cash_n_carry", "products"].includes(
+        this.salesLogForm.business_type_id?.slug
+      )
 
       try {
         this.salesLogForm.customer_id = this.customerId
@@ -1785,6 +1819,9 @@ export default {
       this.addDownpayment = !this.addDownpayment
       this.addDownpayment = value
       this.stillShowToggle = true
+    },
+    triggerToggleEventFixedRepayment() {
+      this.FixedRepayment = !this.FixedRepayment
     },
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value)

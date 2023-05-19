@@ -353,69 +353,74 @@
             </div>
             <br />
             <div>
-              <div class="d-flex justify-content-left" 
-              :style="(addDownpayment && isAltaraPay) || stillShowToggle
+              <div
+                class="d-flex justify-content-left"
+                :style="
+                  (addDownpayment && isAltaraPay) || stillShowToggle
                     ? 'display:flex; '
                     : ''
-                " style=" width:350px">
-                <div
-                class="col d-flex justify-content-left"
-                style="font-size:8px; "
-                v-if="showRepaymentToggle"
+                "
+                style=" width:350px"
               >
-                <toggle-button
-                  v-on:valueChangedEvent="triggerToggleEvent"
-                  :key="'FixedRepayment'"
-                  :switchName="'FixedRepayment'"
-                  :defaultState="FixedRepayment"
-                  label="Fixed Repayment"
-                />
-              </div>
-              <div>
                 <div
-                  class="col d-flex align-items-center"
-                  style="font-size:8px"
-                  :class="this.customer.guarantor_paystack.length > 0 ? '' : ''"
-                  v-if="(addDownpayment && isAltaraPay) || stillShowToggle"
+                  class="col d-flex justify-content-left"
+                  style="font-size:8px; "
+                  v-if="showRepaymentToggle"
                 >
                   <toggle-button
                     v-on:valueChangedEvent="triggerToggleEvent"
-                    switchName="addDownpayment"
-                    key="addDownpayment"
-                    :defaultState="addDownpayment"
-                    label="Add Repayment"
+                    :key="'FixedRepayment'"
+                    :switchName="'FixedRepayment'"
+                    :defaultState="FixedRepayment"
+                    label="Fixed Repayment"
                   />
                 </div>
-
-              </div>
+                <div>
+                  <div
+                    class="col d-flex align-items-center"
+                    style="font-size:8px"
+                    :class="
+                      this.customer.guarantor_paystack.length > 0 ? '' : ''
+                    "
+                    v-if="(addDownpayment && isAltaraPay) || stillShowToggle"
+                  >
+                    <toggle-button
+                      v-on:valueChangedEvent="triggerToggleEvent"
+                      switchName="addDownpayment"
+                      key="addDownpayment"
+                      :defaultState="addDownpayment"
+                      label="Add Repayment"
+                    />
+                  </div>
+                </div>
               </div>
               <div
-                  class="text-center "
-                  :style="
-                    (addDownpayment && isAltaraPay) || stillShowToggle
-                      ? 'position:absolute; left:50%; '
-                      : ''
-                  "
+                class="text-center "
+                :style="
+                  (addDownpayment && isAltaraPay) || stillShowToggle
+                    ? 'position:absolute; left:50%; '
+                    : ''
+                "
+              >
+                <button
+                  v-if="isCashNCarry"
+                  class="btn bg-default"
+                  :disabled="productPrice <= 0 || !selectedProduct.id"
+                  type="submit"
+                  v-on:click="getCalc()"
                 >
-                  <button
-                    v-if="isCashNCarry"
-                    class="btn bg-default"
-                    :disabled="productPrice <= 0 || !selectedProduct.id"
-                    type="submit"
-                    v-on:click="getCalc()"
-                  >
-                    View Summary
-                  </button>
-                  <button
-                    v-else
-                    class="btn bg-default"
-                    :disabled="canPerformAction"
-                    type="submit"
-                  >
-                    View Amortization
-                  </button>
-                  <br />
-                </div>
+                  View Summary
+                </button>
+                <button
+                  v-else
+                  class="btn bg-default"
+                  :disabled="canPerformAction"
+                  type="submit"
+                >
+                  View Amortization
+                </button>
+                <br />
+              </div>
               <div class="d-flex">
                 <small
                   class="text-danger text-center mt-4 error-text"
@@ -748,6 +753,17 @@ export default {
         useGrouping: true,
         accountingSign: false,
       },
+      productPlans: [
+        "ac_products",
+        "ap_products",
+        "ap_cash_loan-product",
+        "ap_rentals",
+        "ap_no_bs_product_verve",
+        "ap_no_bs_product_non_verve",
+        "ap_no_bs_product_renewal_non_verve",
+        "ap_no_bs_product_renewal_verve",
+        "ap_cash_n_carry",
+      ],
       productPrice: 0,
       currentValue: "",
       stillShowToggle: null,
@@ -1132,7 +1148,7 @@ export default {
           this.pPrice > 0 && this.commitment.status
             ? this.commitment.amount
             : 0,
-        fixed_repayment:!this.showRepaymentToggle ? true : this.FixedRepayment,
+        fixed_repayment: !this.showRepaymentToggle ? true : this.FixedRepayment,
         order_type_id: orderType.id,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
@@ -1218,7 +1234,7 @@ export default {
       this.cardError = false
       this.salesLogForm.customer_id = this.customerId
       const data = {
-        fixed_repayment:!this.showRepaymentToggle ? true : this.FixedRepayment,
+        fixed_repayment: !this.showRepaymentToggle ? true : this.FixedRepayment,
         amortization_downpayment:
           this.singleRepayment && this.addDownpayment
             ? this.singleRepayment
@@ -1319,12 +1335,10 @@ export default {
       }
     },
     getCalc() {
-      this.watchCashPrice()
-
-      this.serial = ["product", "ap_cash_n_carry", "products"].includes(
+      this.watchCashPrice()      
+      this.serial = this.productPlans.includes(
         this.salesLogForm.business_type_id?.slug
       )
-
       try {
         this.salesLogForm.customer_id = this.customerId
         const data0 = {

@@ -1321,9 +1321,12 @@ export default {
     getCalc() {
       this.watchCashPrice()
 
-      this.serial = ["product", "ap_cash_n_carry", "products"].includes(
-        this.salesLogForm.business_type_id?.slug
-      )
+      if(this.salesLogForm.business_type_id.slug.includes('product') || this.salesLogForm.business_type_id.slug === 'ap_cash_n_carry' || this.salesLogForm.business_type_id.slug.includes('products')){ 
+          this.serial = true
+        }else{
+          this.serial = false
+        }
+
 
       try {
         this.salesLogForm.customer_id = this.customerId

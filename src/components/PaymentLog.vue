@@ -753,6 +753,17 @@ export default {
         useGrouping: true,
         accountingSign: false,
       },
+      productPlans: [
+        "ac_products",
+        "ap_products",
+        "ap_cash_loan-product",
+        "ap_rentals",
+        "ap_no_bs_product_verve",
+        "ap_no_bs_product_non_verve",
+        "ap_no_bs_product_renewal_non_verve",
+        "ap_no_bs_product_renewal_verve",
+        "ap_cash_n_carry",
+      ],
       productPrice: 0,
       currentValue: "",
       stillShowToggle: null,
@@ -1324,19 +1335,10 @@ export default {
       }
     },
     getCalc() {
-      this.watchCashPrice()
-      if (this.salesLogForm.business_type_id) {
-        if (
-          this.salesLogForm.business_type_id.slug.includes("product") ||
-          this.salesLogForm.business_type_id.slug === "ap_cash_n_carry" ||
-          this.salesLogForm.business_type_id.slug.includes("products")
-        ) {
-          this.serial = true
-        } else {
-          this.serial = false
-        }
-      }
-
+      this.watchCashPrice()      
+      this.serial = this.productPlans.includes(
+        this.salesLogForm.business_type_id?.slug
+      )
       try {
         this.salesLogForm.customer_id = this.customerId
         const data0 = {

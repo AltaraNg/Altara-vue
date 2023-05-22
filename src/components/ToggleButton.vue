@@ -1,6 +1,6 @@
 <template>
     <div class="toggle_container">
-      <label :for="'toggle_button' + switchName" class="toggle__button mr-3">
+      <label :for="'toggle_button' + switchName" class="toggle__button mr-2">
         <input
           type="checkbox"
           :id="'toggle_button' + switchName"

@@ -756,7 +756,6 @@ export default {
       productPlans: [
         "ac_products",
         "ap_products",
-        "ap_cash_loan-product",
         "ap_no_bs_product_verve",
         "ap_no_bs_product_non_verve",
         "ap_no_bs_product_renewal_non_verve",

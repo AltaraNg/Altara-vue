@@ -1725,7 +1725,7 @@ export default {
                 data.data.authorization.authorization_code
               this.salesLogForm.account_number =
                 data?.data?.authorization?.last4
-              this.salesLogForm.account_name = data?.data?.authorization?.account_name === null ? 'test_acount' : data?.data?.authorization?.account_name === null
+              this.salesLogForm.account_name = data?.data?.authorization?.account_name === null ? 'test_acount' : data?.data?.authorization?.account_name
               this.salesLogForm.bank_name = data?.data?.authorization?.bank
             }
           })

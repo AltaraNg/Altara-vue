@@ -1005,7 +1005,7 @@ export default {
             this.salesLogForm?.business_type_id?.slug ==
               "ap_starter_cash_loan") &&
             this.selectedProduct.price > 80000) ||
-          (this.salesLogForm.business_type_id.slug ==
+          (this.salesLogForm.business_type_id?.slug ==
             "ap_no_bs_product_verve" &&
             this.salesLogForm?.product?.product?.category !== "cash loan")
             ? true
@@ -1325,7 +1325,7 @@ export default {
       this.watchCashPrice()
 
       this.serial = ["product", "ap_cash_n_carry", "products"].includes(
-        this.salesLogForm.business_type_id?.slug
+        this.salesLogForm?.business_type_id?.slug
       )
 
       try {

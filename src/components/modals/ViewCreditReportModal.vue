@@ -57,6 +57,18 @@
             {{ creditReport.status }}
           </p>
         </li>
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlSelect2">Account Number</label>
+          <p class="display-text">
+            {{ creditReport.accountNo }}
+          </p>
+        </li>
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlSelect2">Bank</label>
+          <p class="display-text">
+            {{ creditReport.bankName }}
+          </p>
+        </li>
 
         <li class="list-group-item my-3">
           <label for="checklist">Verification was done by?</label>

@@ -196,7 +196,7 @@
                     {name: 'date from', model: 'date_from'},
                     {name: 'date to', model: 'date_to'}
                 ],
-                products: {},
+                products: [],
                 productItem: null,
                 response: {},
                 show: false,
@@ -251,7 +251,7 @@
                     prev_page_url
                 } = response.data;
                 this.pageParams = Object.assign({}, this.pageParams, {current_page, first_page_url, from, last_page, last_page_url, per_page, next_page_url, to, total, prev_page_url});
-                this.products = data;
+                this.products = data[0]?.name ? data : data?.data?.data;
                 this.OId = from;
                 this.$LIPS(false);
 

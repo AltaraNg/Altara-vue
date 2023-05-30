@@ -146,12 +146,16 @@ export default {
             if (data.status && data.message == 'Verification successful') {
               this.$LIPS(true)
               this.authorization_code =
-                data.data.authorization.authorization_code
+                data?.data?.authorization.authorization_code;
+                let data = {
+                  order_id: this.order.order_number,
+                  auth_code: this.authorization_code,
+                  account_number:  data?.data?.authorization?.last4,
+                  account_name: data?.data?.authorization?.account_name === null ? 'test_acount' : data?.data?.authorization?.account_name,
+                  bank_name: data?.data?.authorization?.bank
+                };
 
-              post(this.paystack_auth_code_url, {
-                order_id: this.order.order_number,
-                auth_code: this.authorization_code,
-              })
+              post(this.paystack_auth_code_url, data)
                 .then(res => {
                   this.done('AuthCode set successfully!')
                 })

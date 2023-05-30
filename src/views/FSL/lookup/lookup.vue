@@ -287,6 +287,9 @@
                     justify-content-center
                   "
                   >
+                  <span v-if="order.missMatchedPayments.length > 0" data-toggle="tooltip" data-placement="top" title="This has miss-matched payment info">
+                    <i class="fa fa-exclamation-circle text-danger mx-2" aria-hidden="true"></i>      
+                  </span>
                     {{ order.product.name | truncate(50) }}
                   </div>
                   <div

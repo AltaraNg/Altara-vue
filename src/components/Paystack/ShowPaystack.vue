@@ -163,7 +163,6 @@ export default {
                     : data?.data?.authorization?.account_name,
                 bank_name: data?.data?.authorization?.bank,
               }
-              console.log(data, "data")
 
               post(this.paystack_auth_code_url, dataForm)
                 .then(res => {

@@ -48,6 +48,10 @@
             </div>
 
             <div class="mt-1 attendance-body">
+                <div class="row attendance-item p-5 mb-5" v-if="sentAttendance">
+                    <span class="no-attendance">You have successfully sent the attendance!</span>
+                </div>
+                <div v-else>
                 <form @submit.prevent="onSave" v-if="show">
                     <div class="mb-3 px-4 row align-items-center attendance-item" v-for="(user, index) in form">
 
@@ -133,6 +137,7 @@
                 <div class="row attendance-item p-5 mb-5" v-else>
                     <span class="no-attendance">You have already submitted attendance for today!</span>
                 </div>
+                </div>
             </div>
 
 
@@ -176,6 +181,7 @@
                 form: {},
                 mode: null,
                 show: false,
+                sentAttendance:false,
                 today: '',
                 newDate: '',
                 submittedToday: '',
@@ -226,7 +232,8 @@
                                     if (data.saved || data.updated) {
                                         log(`Attendance ${this.mode}d`, `${id}`);
                                         Flash.setSuccess(`Attendance Submitted successfully!`, 5000);
-                                        this.$router.push('/home');
+                                        this.sentAttendance = true;
+                                        this.clearArrayValues(this.form)
                                     }
                                 })
                                 .catch(e => {
@@ -241,6 +248,16 @@
                     } else this.$networkErr('form');
                 });
             },
+            clearArrayValues(arr) {
+                for (let i = 0; i < arr.length; i++) {
+                    const obj = arr[i];
+                    for (let key in obj) {
+                    if (obj.hasOwnProperty(key)  && key !==( 'user' || 'user_id')) {
+                        obj[key] = '';
+                    }
+                    }
+                }
+                },
 
             clearTime(index) {
                 [this.form[index].arrival_time, this.form[index].departure_time] = ['', ''];
@@ -261,6 +278,7 @@
                         this.submittedToday = false;
                         this.show = true;
                         this.today = [...newDate].join(' ');
+                         this.sentAttendance = false;
                         Flash.setSuccess('You can now proceed and add attendance for ' + this.today);
                     } else Flash.setError(`Sorry you cannot create attendance for a feature date!`, 2000);
                 } else Flash.setError(`Select date to continue!`, 2000);

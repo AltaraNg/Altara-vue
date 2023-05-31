@@ -46,10 +46,15 @@
             </div>
           </div>
         </div>
-		<div v-if="customer && !validateEmail(customer.email)" class="text-right text-danger mr-5 pr-2">customer email is invalid</div>
+        <div
+          v-if="customer && !validateEmail(customer.email)"
+          class="text-right text-danger mr-5 pr-2"
+        >
+          customer email is invalid
+        </div>
         <div class="modal-footer d-flex justify-content-end">
           <paystack
-			:disabled="customer && !validateEmail(customer.email)"
+            :disabled="customer && !validateEmail(customer.email)"
             :amount="10000"
             :email="customer ? customer.email : ''"
             :paystackkey="paystackkey"
@@ -74,13 +79,13 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import { mapGetters } from 'vuex'
-import { post } from '../../utilities/api'
-import Flash from '../../utilities/flash'
-import { Message } from '../../utilities/sms'
-import { EventBus } from '../../utilities/event-bus'
-import paystack from 'vue-paystack'
+import Vue from "vue"
+import { mapGetters } from "vuex"
+import { post } from "../../utilities/api"
+import Flash from "../../utilities/flash"
+import { Message } from "../../utilities/sms"
+import { EventBus } from "../../utilities/event-bus"
+import paystack from "vue-paystack"
 
 export default {
   components: {
@@ -95,12 +100,12 @@ export default {
       DSAName: null,
       message: null,
       customer: null,
-      messageType: 'custom',
+      messageType: "custom",
       showChangeCustomerManagerModal: true,
       verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
-      paystack_auth_code_url: '/api/pay_stack_auth_code',
-      paystackkey: process.env.VUE_APP_PAYSTACK_KEY || '',
-      paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || '',
+      paystack_auth_code_url: "/api/pay_stack_auth_code",
+      paystackkey: process.env.VUE_APP_PAYSTACK_KEY || "",
+      paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || "",
       authorization_code: null,
       paystackReference: null,
     }
@@ -108,9 +113,9 @@ export default {
 
   computed: {
     reference() {
-      let text = ''
+      let text = ""
       let possible =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' +
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" +
         this.order?.order_number
       for (let i = 0; i < 10; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length))
@@ -134,33 +139,37 @@ export default {
       return this.$getCustomerFullName(customer)
     },
 
-    ...mapGetters(['getAuthUserDetails']),
+    ...mapGetters(["getAuthUserDetails"]),
   },
 
   methods: {
     async processPaymentPayStackPayment(resp) {
       this.paystackReference = resp.reference
-      if (resp.status == 'success' && resp.message == 'Approved') {
+      if (resp.status == "success" && resp.message == "Approved") {
         await this.verifyPaystackPayment()
           .then(data => {
-            if (data.status && data.message == 'Verification successful') {
+            if (data.status && data.message == "Verification successful") {
+
               this.$LIPS(true)
               this.authorization_code =
-                data?.data?.authorization.authorization_code;
-                let data = {
-                  order_id: this.order.order_number,
-                  auth_code: this.authorization_code,
-                  account_number:  data?.data?.authorization?.last4,
-                  account_name: data?.data?.authorization?.account_name === null ? 'test_acount' : data?.data?.authorization?.account_name,
-                  bank_name: data?.data?.authorization?.bank
-                };
+                data?.data?.authorization.authorization_code
+              let dataForm = {
+                order_id: this.order.order_number,
+                auth_code: this.authorization_code,
+                account_number: data?.data?.authorization?.last4,
+                account_name:
+                  data?.data?.authorization?.account_name === null
+                    ? "test_acount"
+                    : data?.data?.authorization?.account_name,
+                bank_name: data?.data?.authorization?.bank,
+              }
 
-              post(this.paystack_auth_code_url, data)
+              post(this.paystack_auth_code_url, dataForm)
                 .then(res => {
-                  this.done('AuthCode set successfully!')
+                  this.done("AuthCode set successfully!")
                 })
                 .catch(err => {
-                  Flash.setError(err.message)
+                  Flash.setError(err.response.message)
                 })
                 .finally(() => {
                   this.$LIPS(false)
@@ -177,7 +186,7 @@ export default {
     async verifyPaystackPayment() {
       const url = `${this.verifyPaymentUrl}${this.paystackReference}`
       const response = await fetch(url, {
-        method: 'GET',
+        method: "GET",
         headers: {
           Authorization: `Bearer ${process.env.VUE_APP_PAYSTACK_SECRET_KEY}`,
         },
@@ -185,22 +194,18 @@ export default {
       return response.json()
     },
     async handleModalToggle({ customer, order }) {
-      await Vue.set(this.$data, 'order', order)
-      await Vue.set(this.$data, 'customer', customer)
+      await Vue.set(this.$data, "order", order)
+      await Vue.set(this.$data, "customer", customer)
       this.toggleModal()
     },
 
     toggleModal() {
-      $('#PaystackModal').modal('toggle')
+      $("#PaystackModal").modal("toggle")
     },
 
     validateEmail(mail) {
       {
-        if (
-          /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
-            mail
-          )
-        ) {
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
           return true
         }
 
@@ -209,7 +214,7 @@ export default {
     },
 
     done(message) {
-      EventBus.$emit('reloadUser', {
+      EventBus.$emit("reloadUser", {
         order: this.order.id,
         auth_code: this.authorization_code,
       })
@@ -228,7 +233,7 @@ export default {
   },
 
   created() {
-    EventBus.$on('ShowPaystack', this.handleModalToggle)
+    EventBus.$on("ShowPaystack", this.handleModalToggle)
   },
 }
 </script>

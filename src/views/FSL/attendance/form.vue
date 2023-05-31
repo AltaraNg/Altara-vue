@@ -226,7 +226,7 @@
                                     if (data.saved || data.updated) {
                                         log(`Attendance ${this.mode}d`, `${id}`);
                                         Flash.setSuccess(`Attendance Submitted successfully!`, 5000);
-                                        this.$router.push('/hrm/attendance/');
+                                        this.$router.push('/home');
                                     }
                                 })
                                 .catch(e => {

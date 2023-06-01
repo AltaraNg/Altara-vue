@@ -289,7 +289,7 @@
                   >
                   
                     {{ order.product.name | truncate(50) }}
-                    <span v-if="order.missMatchedPayments.length > 0" data-toggle="tooltip" data-placement="top" title="The account name doesn't match with credit check" class="badge badge-secondary pointer">
+                    <span v-if="order.missMatchedPayments.length > 0" data-toggle="tooltip" data-placement="top" title="The debit account does not correspond to the account recorded on the bank statement." class="badge badge-secondary pointer">
                     <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>      
                   </span>
                   </div>

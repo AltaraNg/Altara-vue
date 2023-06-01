@@ -287,10 +287,11 @@
                     justify-content-center
                   "
                   >
-                  <span v-if="order.missMatchedPayments.length > 0" data-toggle="tooltip" data-placement="top" title="This has miss-matched payment info">
-                    <i class="fa fa-exclamation-circle text-danger mx-2" aria-hidden="true"></i>      
-                  </span>
+                  
                     {{ order.product.name | truncate(50) }}
+                    <span v-if="order.missMatchedPayments.length > 0" data-toggle="tooltip" data-placement="top" title="The debit account does not correspond to the account recorded on the bank statement." class="badge badge-secondary pointer">
+                    <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>      
+                  </span>
                   </div>
                   <div
                     class="
@@ -317,17 +318,7 @@
                       :percent="percentage(order)"
                     />
                   </div>
-                  <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
-                  >
-                    {{ order.customer.employment_status }}
-                  </div>
-
+                
                   <div
                     class="
                     col-12 col-xs-2 col-md col-lg
@@ -1655,7 +1646,6 @@ export default {
         "Product Name",
         "Total Product Price",
         "Type",
-        "Customer Type",
         "Repayment Plans",
       ],
       recommendationHeaders: [

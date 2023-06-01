@@ -252,7 +252,7 @@
                 for (let i = 0; i < arr.length; i++) {
                     const obj = arr[i];
                     for (let key in obj) {
-                    if (obj.hasOwnProperty(key)  && key !==( 'user' || 'user_id')) {
+                    if (obj.hasOwnProperty(key) &&  key !== 'user' && key !== 'user_id') {
                         obj[key] = '';
                     }
                     }

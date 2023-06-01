@@ -16,6 +16,10 @@
       </a>
     </div>
     <div class="modal-body">
+      <div v-if="order.missMatchedPayments.length > 0" class="text-danger">
+        <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>
+        The account name doesn't match with that on credit report   
+      </div>
       <div class="table-responsive">
         <h5 class="mt-3 mb-0">Order Information</h5>
         <table class="table table-bordered">

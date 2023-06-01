@@ -498,9 +498,8 @@
 
 			getSalesPerBranch() {
 				const branches = Object.values(this.reports.meta.groupedDataByBranch);
-				return branches.map((item) => {
-					return item.number_of_sales;
-				});
+				return branches.sort((a, b) => a.branch_name.localeCompare(b.branch_name)) 
+  				.map(obj => obj.number_of_sales); 
 			},
 
 			async exportReportCsv() {

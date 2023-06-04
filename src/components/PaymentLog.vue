@@ -1019,7 +1019,7 @@ export default {
             this.salesLogForm?.business_type_id?.slug ==
               "ap_starter_cash_loan") &&
             this.selectedProduct.price > 80000) ||
-          (this.salesLogForm.business_type_id.slug ==
+          (this.salesLogForm.business_type_id?.slug ==
             "ap_no_bs_product_verve" &&
             this.salesLogForm?.product?.product?.category !== "cash loan")
             ? true
@@ -1146,7 +1146,10 @@ export default {
           this.pPrice > 0 && this.commitment.status
             ? this.commitment.amount
             : 0,
-        fixed_repayment: !this.showRepaymentToggle ? true : this.FixedRepayment,
+        bank_name: this.salesLogForm.bank_name,
+        account_number: this.salesLogForm.account_number,
+        account_name: this.salesLogForm.account_name,
+        fixed_repayment:!this.showRepaymentToggle ? true : this.FixedRepayment,
         order_type_id: orderType.id,
         customer_id: this.customerId,
         inventory_id: this.selectedProduct.id,
@@ -1731,6 +1734,10 @@ export default {
             if (data.status && data.message == "Verification successful") {
               this.salesLogForm.authorization_code =
                 data.data.authorization.authorization_code
+              this.salesLogForm.account_number =
+                data?.data?.authorization?.last4
+              this.salesLogForm.account_name = data?.data?.authorization?.account_name === null ? 'test_acount' : data?.data?.authorization?.account_name
+              this.salesLogForm.bank_name = data?.data?.authorization?.bank
             }
           })
           .catch(error => {

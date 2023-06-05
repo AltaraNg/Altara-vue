@@ -358,38 +358,38 @@
 							label: 'Number of sales',
 							data: this.getSalesPerBranch(),							
 							backgroundColor: [
-								'#e76f51',
-								'#457b9d',
-								'#cb997e',
-								'#4361ee',
-								'#00f5d4',
-								'#333d29',
-								'#9b5de5',
-								'#22223b',
-								'#55a630',
-								'#973aa8',
-								'#cb997e',
-								'#ff0a54',
-								'#b392ac',
-								'#355070',
-								'#be0aff',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
 							],
 							borderColor: [
-								'#e76f51',
-								'#457b9d',
-								'#cb997e',
-								'#4361ee',
-								'#00f5d4',
-								'#333d29',
-								'#9b5de5',
-								'#22223b',
-								'#55a630',
-								'#973aa8',
-								'#cb997e',
-								'#ff0a54',
-								'#b392ac',
-								'#355070',
-								'#be0aff',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
 							],
 							borderWidth: 1,
 						},
@@ -484,9 +484,8 @@
 
 			getBranchLabel() {
 				const branches = Object.values(this.reports.meta.groupedDataByBranch);
-				return branches.map((item) => {
-					return item.branch_name;
-				});
+				return branches.map(obj => obj.branch_name) 
+				.sort((a, b) => a.localeCompare(b))
 			},
 
 			getPieData() {
@@ -499,9 +498,8 @@
 
 			getSalesPerBranch() {
 				const branches = Object.values(this.reports.meta.groupedDataByBranch);
-				return branches.map((item) => {
-					return item.number_of_sales;
-				});
+				return branches.sort((a, b) => a.branch_name.localeCompare(b.branch_name)) 
+  				.map(obj => obj.number_of_sales); 
 			},
 
 			async exportReportCsv() {

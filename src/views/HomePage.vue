@@ -61,23 +61,13 @@ export default {
           name: "BNPL",
           url: "bnpl/home",
           icon: "fa-money-bill-alt",
-        }
+        },
       ],
     }
   },
 
   computed: {
     ...mapGetters(["auth"]),
-  },
-  mounted() {
-    // let flag = localStorage.getItem("flag")
-    // flag === "demo"
-    //   ? this.cards.splice(8, 0, {
-    //       name: "BNPL",
-    //       url: "bnpl/home",
-    //       icon: "fa-money-bill-alt",
-    //     })
-    //   : ""
   },
 
   beforeCreate() {

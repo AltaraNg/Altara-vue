@@ -57,22 +57,17 @@ export default {
           url: "credit-check/home",
           icon: "fa-user-shield",
         },
+        {
+          name: "BNPL",
+          url: "bnpl/home",
+          icon: "fa-money-bill-alt",
+        },
       ],
     }
   },
 
   computed: {
     ...mapGetters(["auth"]),
-  },
-  mounted() {
-    let flag = localStorage.getItem("flag")
-    flag === "demo"
-      ? this.cards.splice(8, 0, {
-          name: "BNPL",
-          url: "bnpl/home",
-          icon: "fa-money-bill-alt",
-        })
-      : ""
   },
 
   beforeCreate() {

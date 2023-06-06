@@ -118,8 +118,10 @@
 				</div>
 				<div v-for="item in items" :key="item.id">
 				<div class="progress-bar d-flex justify-content-between align-items-center">
-					<p class="progress-text">{{ item.name }}</p>
-					<div class="progress" :style="{ width: item.progress + '%' }"></div>
+
+					<div class="progress d-flex justify-content-between align-items-center" :style="{ width: item.progress + '%' }">
+					<p class="progress-text">{{ item.name }}</p></div>
+					<div  class="progress-text w-100" style="right:10px ">{{ item.progress }}%</div>
 					<p class="text">{{ item.number }}</p>
 				</div>
 				</div>
@@ -131,8 +133,10 @@
 				</div>
 				<div v-for="item in items" :key="item.id">
 				<div class="progress-bar d-flex justify-content-between align-items-center">
-					<p class="progress-text">{{ item.name }}</p>
-					<div class="progress" :style="{ width: item.progress + '%' }"></div>
+
+					<div class="progress d-flex justify-content-between align-items-center" :style="{ width: item.progress + '%' }">
+					<p class="progress-text">{{ item.name }}</p></div>
+					<div  class="progress-text w-100 tooltip" style="right:10px ">{{ item.progress }}%</div>
 					<p class="text">{{ item.number }}</p>
 				</div>
 				</div>
@@ -266,9 +270,9 @@
 		data() {
 			return {
 				 items: [
-						{ id: 1, name: 'Item 1', progress: 20, number:2 },
-						{ id: 2, name: 'Item 2', progress: 50, number:5 },
-						{ id: 3, name: 'Item 3', progress: 80, number:8 },
+						{ id: 1, name: 'Item 1',  number:2 },
+						{ id: 2, name: 'Item 2',  number:5 },
+						{ id: 3, name: 'Item 3', number:8 },
 						// Add more items as needed
 							],
 				reports: null,
@@ -365,6 +369,7 @@
 			};
 		},
 		async mounted() {
+			this.addPercentageToItems(this.items, 'number')
 			var date = new Date(),
 				y = date.getFullYear(),
 				m = date.getMonth();
@@ -382,6 +387,13 @@
 		},
 
 		methods: {
+			 addPercentageToItems(items, property) {
+				const total = items.reduce((sum, item) => sum + item[property], 0);		
+				this.items = items.map(item => {
+					const percentage = (item[property] / total) * 100;
+					return { ...item, progress: parseFloat(percentage.toFixed(2)) };
+				});
+				},
 			getBarChartData() {
 				this.barData = {
 					labels: this.getBranchLabel(),
@@ -725,7 +737,6 @@
   margin-bottom: 13px;
 }
 .progress-text{
-	position: absolute;
 	padding-left: 10px;
 	top:8px;
 	font-size: 14px;

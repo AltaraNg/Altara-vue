@@ -1,5 +1,5 @@
 <template>
-	<div class="my-3 py-4" v-if="reports !== null">
+	<div class="my-3 py-4 " v-if="reports !== null">
 		<div class="space-between mb-5 px-4">
 			<h3 class="text-capitalize mb-0">dashboard</h3>
 			<button class="bg-default rounded py-2 px-4 h5" @click="exportReportCsv">
@@ -108,6 +108,35 @@
 					class=""
 				></pie-chart>
 			</div>
+		</div>
+
+		<div style="display: flex; align-items: center; justify-content: space-between; ">
+			<div class="border">
+					<div class="d-flex justify-content-between text">
+					<p>Sales Type</p>
+					<p>No of Sales</p>
+				</div>
+				<div v-for="item in items" :key="item.id">
+				<div class="progress-bar d-flex justify-content-between align-items-center">
+					<p class="progress-text">{{ item.name }}</p>
+					<div class="progress" :style="{ width: item.progress + '%' }"></div>
+					<p class="text">{{ item.number }}</p>
+				</div>
+				</div>
+ 			 </div>
+			 <div class="border">
+				<div class="d-flex justify-content-between text">
+					<p>Sales Plan</p>
+					<p>No of Sales</p>
+				</div>
+				<div v-for="item in items" :key="item.id">
+				<div class="progress-bar d-flex justify-content-between align-items-center">
+					<p class="progress-text">{{ item.name }}</p>
+					<div class="progress" :style="{ width: item.progress + '%' }"></div>
+					<p class="text">{{ item.number }}</p>
+				</div>
+				</div>
+ 			 </div>
 		</div>
 		<div class="my-4 mx-3 w-100 pt-3">
 			<!-- table -->
@@ -236,6 +265,12 @@
 		},
 		data() {
 			return {
+				 items: [
+						{ id: 1, name: 'Item 1', progress: 20, number:2 },
+						{ id: 2, name: 'Item 2', progress: 50, number:5 },
+						{ id: 3, name: 'Item 3', progress: 80, number:8 },
+						// Add more items as needed
+							],
 				reports: null,
 				fromDate: '',
 				toDate: '',
@@ -675,4 +710,42 @@
 		align-items: center;
 		justify-content: center;
 	}
+	.text{
+		font-size: 17px;
+		font-weight: 800;
+		margin-bottom: 3px;
+		color: rgb(60, 60, 60);
+	}
+	.progress-bar {
+  background-color: white;
+  height: 40px;
+  border-radius: 3px;
+  width: 100%;
+  position: relative;
+  margin-bottom: 13px;
+}
+.progress-text{
+	position: absolute;
+	padding-left: 10px;
+	top:8px;
+	font-size: 14px;
+	font-weight: 600;
+	color: rgb(60, 60, 60);
+	
+}
+.border{
+	width: 48%;
+	height: auto;
+	border-radius: 10px;
+	border: 1px gray;
+	border-top: 4px yellow;
+	padding: 30px 20px;
+	background-color: white;
+}
+
+.progress {
+  background-color: #c3e4f997;
+  height: 100%;
+  border-radius: 5px;
+}
 </style>

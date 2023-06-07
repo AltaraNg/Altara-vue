@@ -116,14 +116,23 @@
 					<p>Sales Type</p>
 					<p>No of Sales</p>
 				</div>
-				<div v-for="item in items" :key="item.id">
+				<div v-for="(item, index) in TotalSalesBySalesCategory" :key="index">
+					<p @mouseover="showToolTip = true"  @mouseleave=" showToolTip = false" class="progress-text  pt-3 text-capitalize">{{ item.sales_category_name }}</p>
 				<div class="progress-bar d-flex justify-content-between align-items-center">
 
 					<div class="progress d-flex justify-content-between align-items-center" :style="{ width: item.progress + '%' }">
-					<p class="progress-text">{{ item.name }}</p></div>
-					<div  class="progress-text w-100" style="right:10px ">{{ item.progress }}%</div>
-					<p class="text">{{ item.number }}</p>
+						
+					</div>
+					
+						
+					<div v-if="showToolTip"  class=" Tooltip" style="right:10px; position: relative; ">{{ item.progress }}%</div>
+					
+					<p class="text">{{ item.total_sales }}</p>
 				</div>
+				</div>
+				<div class="d-flex justify-content-between text">
+					<p>Total</p>
+					<p>{{ SalesBySalesCategoryTotal }}</p>
 				</div>
  			 </div>
 			 <div class="border">
@@ -136,7 +145,7 @@
 
 					<div class="progress d-flex justify-content-between align-items-center" :style="{ width: item.progress + '%' }">
 					<p class="progress-text">{{ item.name }}</p></div>
-					<div  class="progress-text w-100 tooltip" style="right:10px ">{{ item.progress }}%</div>
+					<div  class="progress-text w-100 " style="right:10px ">{{ item.progress }}%</div>
 					<p class="text">{{ item.number }}</p>
 				</div>
 				</div>
@@ -269,12 +278,14 @@
 		},
 		data() {
 			return {
+				showToolTip:false,
 				 items: [
 						{ id: 1, name: 'Item 1',  number:2 },
 						{ id: 2, name: 'Item 2',  number:5 },
 						{ id: 3, name: 'Item 3', number:8 },
 						// Add more items as needed
 							],
+				TotalSalesBySalesCategory:[],
 				reports: null,
 				fromDate: '',
 				toDate: '',
@@ -366,10 +377,10 @@
 				loaded: false,
 				sums: {},
 				businessTypes: {},
+				SalesBySalesCategoryTotal:null,
 			};
 		},
 		async mounted() {
-			this.addPercentageToItems(this.items, 'number')
 			var date = new Date(),
 				y = date.getFullYear(),
 				m = date.getMonth();
@@ -379,6 +390,8 @@
 			this.getPieChartData();
 			this.drawProductPieChart();
 			this.getBarChartData();
+			this.TotalSalesBySalesCategory = this.addPercentageToItems(this.TotalSalesBySalesCategory, 'total_sales')
+			this.SalesBySalesCategoryTotal = this.TotalSalesBySalesCategory.reduce((sum, item) => sum + item['total_sales'], 0);
 			this.getOrderBarChartData();
 			this.getBusinessTypes();
 			this.getOrderTypes();
@@ -387,9 +400,9 @@
 		},
 
 		methods: {
-			 addPercentageToItems(items, property) {
-				const total = items.reduce((sum, item) => sum + item[property], 0);		
-				this.items = items.map(item => {
+			 addPercentageToItems(oldArray,  property) {
+				 const total = oldArray.reduce((sum, item) => sum + item[property], 0);		
+				return oldArray.map(item => {
 					const percentage = (item[property] / total) * 100;
 					return { ...item, progress: parseFloat(percentage.toFixed(2)) };
 				});
@@ -485,7 +498,7 @@
 						return 0;
 					});
 					this.noOfSalesMadeOnEachProduct = this.reports.meta.noOfSalesMadeOnEachProduct;
-
+					this.TotalSalesBySalesCategory = this.reports.meta.TotalSalesBySalesCategory;
 					this.getSums(this.reports.meta.groupedDataByBranch);
 				} catch (err) {
 					if (err.response) {
@@ -575,6 +588,8 @@
 				this.loaded = false;
 				await this.getReport();
 				this.getPieChartData();
+				this.TotalSalesBySalesCategory = this.addPercentageToItems(this.TotalSalesBySalesCategory, 'total_sales')
+				this.SalesBySalesCategoryTotal = this.TotalSalesBySalesCategory.reduce((sum, item) => sum + item['total_sales'], 0);
 				this.getBarChartData();
 				this.getOrderBarChartData();
 				this.drawProductPieChart();
@@ -737,8 +752,10 @@
   margin-bottom: 13px;
 }
 .progress-text{
+	position: absolute;
 	padding-left: 10px;
-	top:8px;
+	// top:1px;
+	z-index: 10;
 	font-size: 14px;
 	font-weight: 600;
 	color: rgb(60, 60, 60);
@@ -758,5 +775,18 @@
   background-color: #c3e4f997;
   height: 100%;
   border-radius: 5px;
+}
+.Tooltip{
+	position: absolute;
+	padding: 10px;
+	transform: translateX(50px);
+	transition: transform 0.3s ease;
+	
+	border-radius: 4px;
+	z-index: 10;
+	font-size: 14px;
+	font-weight: 600;
+	color: rgb(61, 60, 60);
+	background-color: #c3e4f9;
 }
 </style>

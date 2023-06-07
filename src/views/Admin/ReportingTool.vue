@@ -136,18 +136,25 @@
 				</div>
  			 </div>
 			 <div class="border">
-				<div class="d-flex justify-content-between text">
-					<p>Sales Plan</p>
+					<div class="d-flex justify-content-between text">
+					<p>Sales Type</p>
 					<p>No of Sales</p>
 				</div>
-				<div v-for="item in items" :key="item.id">
+				<div v-for="(item, index) in totalSalesByDownPaymentsAndRepaymentDuration" :key="index">
+					<p @mouseover="showToolTip2 = true"  @mouseleave=" showToolTip2 = false" class="progress-text  pt-3 text-capitalize">{{ item.name }}</p>
 				<div class="progress-bar d-flex justify-content-between align-items-center">
 
 					<div class="progress d-flex justify-content-between align-items-center" :style="{ width: item.progress + '%' }">
-					<p class="progress-text">{{ item.name }}</p></div>
-					<div  class="progress-text w-100 " style="right:10px ">{{ item.progress }}%</div>
-					<p class="text">{{ item.number }}</p>
+						
+					</div>
+					<div v-if="showToolTip2"  class=" Tooltip" style="right:10px; position: relative; ">{{ item.progress }}%</div>
+					
+					<p class="text">{{ item.total_sales }}</p>
 				</div>
+				</div>
+				<div class="d-flex justify-content-between text">
+					<p>Total</p>
+					<p>{{ TotalByDP_RDTotal }}</p>
 				</div>
  			 </div>
 		</div>
@@ -278,13 +285,8 @@
 		},
 		data() {
 			return {
+				showToolTip2:false,
 				showToolTip:false,
-				 items: [
-						{ id: 1, name: 'Item 1',  number:2 },
-						{ id: 2, name: 'Item 2',  number:5 },
-						{ id: 3, name: 'Item 3', number:8 },
-						// Add more items as needed
-							],
 				TotalSalesBySalesCategory:[],
 				reports: null,
 				fromDate: '',
@@ -378,6 +380,8 @@
 				sums: {},
 				businessTypes: {},
 				SalesBySalesCategoryTotal:null,
+				totalSalesByDownPaymentsAndRepaymentDuration:[],
+				TotalByDP_RDTotal:'',
 			};
 		},
 		async mounted() {
@@ -390,8 +394,8 @@
 			this.getPieChartData();
 			this.drawProductPieChart();
 			this.getBarChartData();
-			this.TotalSalesBySalesCategory = this.addPercentageToItems(this.TotalSalesBySalesCategory, 'total_sales')
-			this.SalesBySalesCategoryTotal = this.TotalSalesBySalesCategory.reduce((sum, item) => sum + item['total_sales'], 0);
+			this.addPercentageToSalesCategory();
+			this.addPercentageToDownpaymentDuration();
 			this.getOrderBarChartData();
 			this.getBusinessTypes();
 			this.getOrderTypes();
@@ -400,13 +404,20 @@
 		},
 
 		methods: {
-			 addPercentageToItems(oldArray,  property) {
-				 const total = oldArray.reduce((sum, item) => sum + item[property], 0);		
-				return oldArray.map(item => {
-					const percentage = (item[property] / total) * 100;
-					return { ...item, progress: parseFloat(percentage.toFixed(2)) };
-				});
-				},
+			addPercentageToSalesCategory() {
+				this.SalesBySalesCategoryTotal = this.TotalSalesBySalesCategory.reduce((sum, item) => sum + item['total_sales'], 0);		
+			this.TotalSalesBySalesCategory = this.TotalSalesBySalesCategory.map(item => {
+				const percentage = (item['total_sales'] / this.SalesBySalesCategoryTotal) * 100;
+				return { ...item, progress: parseFloat(percentage.toFixed(2)) };
+			});
+			},
+			addPercentageToDownpaymentDuration(){
+				this.TotalByDP_RDTotal = this.totalSalesByDownPaymentsAndRepaymentDuration.reduce((sum, item) => sum + item['total_sales'], 0);		
+			this.totalSalesByDownPaymentsAndRepaymentDuration = this.totalSalesByDownPaymentsAndRepaymentDuration.map(item => {
+				const percentage = (item['total_sales'] / this.SalesBySalesCategoryTotal) * 100;
+				return { ...item, progress: parseFloat(percentage.toFixed(2)) };
+			});
+			},
 			getBarChartData() {
 				this.barData = {
 					labels: this.getBranchLabel(),
@@ -499,6 +510,7 @@
 					});
 					this.noOfSalesMadeOnEachProduct = this.reports.meta.noOfSalesMadeOnEachProduct;
 					this.TotalSalesBySalesCategory = this.reports.meta.TotalSalesBySalesCategory;
+					this.totalSalesByDownPaymentsAndRepaymentDuration = this.reports.meta.totalSalesByDownPaymentsAndRepaymentDuration;
 					this.getSums(this.reports.meta.groupedDataByBranch);
 				} catch (err) {
 					if (err.response) {
@@ -588,8 +600,8 @@
 				this.loaded = false;
 				await this.getReport();
 				this.getPieChartData();
-				this.TotalSalesBySalesCategory = this.addPercentageToItems(this.TotalSalesBySalesCategory, 'total_sales')
-				this.SalesBySalesCategoryTotal = this.TotalSalesBySalesCategory.reduce((sum, item) => sum + item['total_sales'], 0);
+				this.addPercentageToSalesCategory();
+				this.addPercentageToDownpaymentDuration();
 				this.getBarChartData();
 				this.getOrderBarChartData();
 				this.drawProductPieChart();

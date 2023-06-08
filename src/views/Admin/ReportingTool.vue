@@ -312,10 +312,23 @@
 					'Average Down Payment',
 				],
 				barData: null,
-				pieData: null,
-				option: {
+				pieData:null,
+				ZeroPieData: {
+					labels: ['Altara Cash', 'Altara Pay'],
+					datasets: [
+					{
+						barPercentage: 1,
+						barThickness: 12,
+						maxBarThickness: 16,
+						data: [50,50],
+						backgroundColor: ['#aaa', '#aaa'], // Customize the color as needed
+					},
+					],
+				},
+							option: {
 					responsive: true,
 					maintainAspectRatio: false,
+					
 				},
 				barOption: {
 					responsive: true,
@@ -463,7 +476,8 @@
 				};
 			},
 			getPieChartData() {
-				this.pieData = {
+				const valid = JSON.stringify(this.getPieData()) ==  JSON.stringify([0,0])
+				this.pieData = valid ? this.ZeroPieData : {
 					labels: ['Altara Cash', 'Altara Pay'],
 					datasets: [
 						{
@@ -475,6 +489,7 @@
 						},
 					],
 				};
+				// console.log(this.pieData);
 			},
 			async getReport() {
 				this.$LIPS(true);
@@ -639,6 +654,8 @@
 			},
 			drawProductPieChart() {
 				this.getProductPieData();
+				const valid = this.productPieData.dataSet.length>0
+				console.log(valid)
 				this.productPieData.datasets = [
 					{
 						barPercentage: 1,

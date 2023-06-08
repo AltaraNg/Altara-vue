@@ -110,51 +110,46 @@
 			</div>
 		</div>
 
-		<div style="display: flex; align-items: center; justify-content: space-between; ">
-			<div class="border">
+		<div style="display: flex;" class="my-3  px-4 w-100">
+			<div class="border mr-3">
 					<div class="d-flex justify-content-between text">
 					<p>Sales Type</p>
 					<p>No of Sales</p>
 				</div>
 				<div v-for="(item, index) in TotalSalesBySalesCategory" :key="index">
-					<p @mouseover="showToolTip = true"  @mouseleave=" showToolTip = false" class="progress-text  pt-3 text-capitalize">{{ item.sales_category_name }}</p>
+					<p  class="progress-text  pt-3 text-capitalize">{{ item.sales_category_name }}</p>
 				<div class="progress-bar d-flex justify-content-between align-items-center">
 
 					<div class="progress d-flex justify-content-between align-items-center" :style="{ width: item.progress + '%' }">
 						
 					</div>
-					
-						
-					<div v-if="showToolTip"  class=" Tooltip" style="right:10px; position: relative; ">{{ item.progress }}%</div>
-					
-					<p class="text">{{ item.total_sales }}</p>
+					<p class="text text-center pl-3">{{ item.total_sales }} ({{ item.progress }}%)</p>
 				</div>
 				</div>
 				<div class="d-flex justify-content-between text">
 					<p>Total</p>
-					<p>{{ SalesBySalesCategoryTotal }}</p>
+					<p class="text-center pr-5">{{ SalesBySalesCategoryTotal }}</p>
 				</div>
  			 </div>
-			 <div class="border">
+			 <div class="border ml-3">
 					<div class="d-flex justify-content-between text">
-					<p>Sales Type</p>
+					<p>Sales Plan</p>
 					<p>No of Sales</p>
 				</div>
 				<div v-for="(item, index) in totalSalesByDownPaymentsAndRepaymentDuration" :key="index">
-					<p @mouseover="showToolTip2 = true"  @mouseleave=" showToolTip2 = false" class="progress-text  pt-3 text-capitalize">{{ item.name }}</p>
+					<p  class="progress-text  pt-3 text-capitalize">{{ item.name }}</p>
 				<div class="progress-bar d-flex justify-content-between align-items-center">
 
 					<div class="progress d-flex justify-content-between align-items-center" :style="{ width: item.progress + '%' }">
 						
 					</div>
-					<div v-if="showToolTip2"  class=" Tooltip" style="right:10px; position: relative; ">{{ item.progress }}%</div>
 					
-					<p class="text">{{ item.total_sales }}</p>
+					<p class="text text-center pl-3">{{ item.total_sales }} ({{ item.progress }}%)</p>
 				</div>
 				</div>
 				<div class="d-flex justify-content-between text">
 					<p>Total</p>
-					<p>{{ TotalByDP_RDTotal }}</p>
+					<p class="text-center pr-5">{{ TotalByDP_RDTotal }}</p>
 				</div>
  			 </div>
 		</div>
@@ -774,11 +769,10 @@
 	
 }
 .border{
-	width: 48%;
-	height: auto;
-	border-radius: 10px;
+	width: 50%;
+	border-radius: 5px;
 	border: 1px gray;
-	border-top: 4px yellow;
+	box-shadow: 3px ;
 	padding: 30px 20px;
 	background-color: white;
 }
@@ -788,17 +782,5 @@
   height: 100%;
   border-radius: 5px;
 }
-.Tooltip{
-	position: absolute;
-	padding: 10px;
-	transform: translateX(50px);
-	transition: transform 0.3s ease;
-	
-	border-radius: 4px;
-	z-index: 10;
-	font-size: 14px;
-	font-weight: 600;
-	color: rgb(61, 60, 60);
-	background-color: #c3e4f9;
-}
+
 </style>

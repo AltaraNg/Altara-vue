@@ -110,8 +110,8 @@
 			</div>
 		</div>
 
-		<div style="display: flex;" class="my-3  px-4 w-100">
-			<div class="border mr-3">
+		<div style="display: flex;" class="my-3  px-4 ">
+			<div class="border">
 					<div class="d-flex justify-content-between text">
 					<p>Sales Type</p>
 					<p>No of Sales</p>
@@ -131,7 +131,10 @@
 					<p class="text-center pr-5">{{ SalesBySalesCategoryTotal }}</p>
 				</div>
  			 </div>
-			 <div class="border ml-3">
+			 
+		</div>
+		<div style="display: flex;" class="my-3  px-4 ">
+			<div class="border ">
 					<div class="d-flex justify-content-between text">
 					<p>Sales Plan</p>
 					<p>No of Sales</p>
@@ -489,7 +492,6 @@
 						},
 					],
 				};
-				// console.log(this.pieData);
 			},
 			async getReport() {
 				this.$LIPS(true);
@@ -654,8 +656,6 @@
 			},
 			drawProductPieChart() {
 				this.getProductPieData();
-				const valid = this.productPieData.dataSet.length>0
-				console.log(valid)
 				this.productPieData.datasets = [
 					{
 						barPercentage: 1,
@@ -768,7 +768,7 @@
 		color: rgb(60, 60, 60);
 	}
 	.progress-bar {
-  background-color: white;
+  background-color: #f8f7f7a5;
   height: 40px;
   border-radius: 3px;
   width: 100%;
@@ -786,10 +786,10 @@
 	
 }
 .border{
-	width: 50%;
+	width: 100%;
 	border-radius: 5px;
 	border: 1px gray;
-	box-shadow: 3px ;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 	padding: 30px 20px;
 	background-color: white;
 }

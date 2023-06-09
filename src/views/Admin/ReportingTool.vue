@@ -283,8 +283,6 @@
 		},
 		data() {
 			return {
-				showToolTip2:false,
-				showToolTip:false,
 				TotalSalesBySalesCategory:[],
 				reports: null,
 				fromDate: '',

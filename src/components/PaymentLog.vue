@@ -852,7 +852,7 @@ export default {
         "Bank App History Screenshot",
       ],
       guarantor_signed: ["2 - Yes", "1 - Yes", "No"],
-      showRepaymentToggleList: [        
+      showRepaymentToggleList: [       
         "ap_cash_loan-collateral",
         "ap_cash_loan-no_collateral",
         "ap_cash_loan",
@@ -1174,6 +1174,9 @@ export default {
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
       }
+
+      data.fixed_repayment = this.salesLogForm.business_type_id?.slug.includes("bs") ? false : data.fixed_repayment;
+
       if (this.isBank54) {
         this.financed_by = "bank54"
         data.bvn = this.salesLogForm.bvn
@@ -1267,6 +1270,8 @@ export default {
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
       }
+
+      data.fixed_repayment = this.salesLogForm.business_type_id?.slug.includes("bs") ? false : data.fixed_repayment;
 
       if (this.isBank54) {
         this.financed_by = "bank54"

@@ -113,7 +113,7 @@
 		<div style="display: flex;" class="my-3  px-4 ">
 			<div class="border">
 					<div class="d-flex justify-content-between text">
-					<p>Sales Type</p>
+					<p>Sales Categories</p>
 					<p>No of Sales</p>
 				</div>
 				<div v-for="(item, index) in TotalSalesBySalesCategory" :key="index">

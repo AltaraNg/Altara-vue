@@ -33,7 +33,8 @@
                        
 
                     </div>
-                    <div v-if="mode === 'register' || $store.getters.auth('DVAAccess')">
+                    <div >
+                        <div v-if="mode === 'register' || $store.getters.auth('DVAAccess')">
                         <h5>User Details</h5>
 
                         <div class="form-group col-md-4 px-md-3 px-1 float-left">
@@ -82,7 +83,8 @@
                             >{{errors.first('date_of_registration')}}
                             </small>
                         </div>
-
+                    </div>
+                        <div v-if="mode === 'register' || $store.getters.auth('DVAAccess')  || $store.getters.auth('DSAAccess')">
                         <div class="spaceAfter"></div>
                         <h5>Customer Personal Details</h5>
 
@@ -172,6 +174,7 @@
                         </div>
                         
                         <div class="spaceAfter"></div>
+                    </div>
                     <!-- </div> -->
                     <!--form section for register stops here-->
 

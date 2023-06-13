@@ -861,6 +861,7 @@ export default {
         "ap_cash_loan-no_collateral",
         "ap_cash_loan",
         "ac_cash_loan",
+        "ap_products",
         "ap_employee_cash_loan",
         "ap_starter_cash_loan",
         "ap_starter_cash_loan-no_collateral",

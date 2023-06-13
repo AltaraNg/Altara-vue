@@ -102,7 +102,8 @@
               v-model="bankName.name"
               class="custom-select w-100 d-block"
               id="bankName"
-              v-validate="'required'"
+              v-validate="!isGuarantor ? 'required' : ''"
+
               @input="onDropdown"
             />
             <div class="w-100  py-2 drop-down" v-if="showDropdown">
@@ -126,7 +127,8 @@
                 v-model="accountNo"
                 class="custom-select w-100 d-block mx-2"
                 id="accountNo"
-                v-validate="'required'"
+                v-validate="!isGuarantor ? 'required' : ''"
+
               />
               <span
                 ><button
@@ -146,7 +148,7 @@
               v-model="accountName"
               class="custom-select w-100 d-block"
               id="accountNo"
-              v-validate="'required'"
+              v-validate="!isGuarantor ? 'required' : ''"
               :disabled="!verified"
             />
           </div>

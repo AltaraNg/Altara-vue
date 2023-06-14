@@ -1,5 +1,5 @@
 <template>
-	<div class="my-3 py-4" v-if="reports !== null">
+	<div class="my-3 py-4 " v-if="reports !== null">
 		<div class="space-between mb-5 px-4">
 			<h3 class="text-capitalize mb-0">dashboard</h3>
 			<button class="bg-default rounded py-2 px-4 h5" @click="exportReportCsv">
@@ -108,6 +108,53 @@
 					class=""
 				></pie-chart>
 			</div>
+		</div>
+
+		<div style="display: flex;" class="my-3  px-4 ">
+			<div class="border">
+					<div class="d-flex justify-content-between text">
+					<p>Sales Categories</p>
+					<p>No of Sales</p>
+				</div>
+				<div v-for="(item, index) in TotalSalesBySalesCategory" :key="index">
+					<p  class="progress-text  pt-3 text-capitalize">{{ item.sales_category_name }}</p>
+				<div class="progress-bar d-flex justify-content-between align-items-center">
+
+					<div class="progress d-flex justify-content-between align-items-center" :style="{ width: item.progress + '%' }">
+						
+					</div>
+					<p class="text text-center pl-3">{{ item.total_sales }} ({{ item.progress }}%)</p>
+				</div>
+				</div>
+				<div class="d-flex justify-content-between text">
+					<p>Total</p>
+					<p class="text-center pr-5">{{ SalesBySalesCategoryTotal }}</p>
+				</div>
+ 			 </div>
+			 
+		</div>
+		<div style="display: flex;" class="my-3  px-4 ">
+			<div class="border ">
+					<div class="d-flex justify-content-between text">
+					<p>Sales Plan</p>
+					<p>No of Sales</p>
+				</div>
+				<div v-for="(item, index) in totalSalesByDownPaymentsAndRepaymentDuration" :key="index">
+					<p  class="progress-text  pt-3 text-capitalize">{{ item.name }}</p>
+				<div class="progress-bar d-flex justify-content-between align-items-center">
+
+					<div class="progress d-flex justify-content-between align-items-center" :style="{ width: item.progress + '%' }">
+						
+					</div>
+					
+					<p class="text text-center pl-3">{{ item.total_sales }} ({{ item.progress }}%)</p>
+				</div>
+				</div>
+				<div class="d-flex justify-content-between text">
+					<p>Total</p>
+					<p class="text-center pr-5">{{ TotalByDP_RDTotal }}</p>
+				</div>
+ 			 </div>
 		</div>
 		<div class="my-4 mx-3 w-100 pt-3">
 			<!-- table -->
@@ -236,6 +283,7 @@
 		},
 		data() {
 			return {
+				TotalSalesBySalesCategory:[],
 				reports: null,
 				fromDate: '',
 				toDate: '',
@@ -265,10 +313,23 @@
 					'Average Down Payment',
 				],
 				barData: null,
-				pieData: null,
-				option: {
+				pieData:null,
+				ZeroPieData: {
+					labels: ['Altara Cash', 'Altara Pay'],
+					datasets: [
+					{
+						barPercentage: 1,
+						barThickness: 12,
+						maxBarThickness: 16,
+						data: [50,50],
+						backgroundColor: ['#aaa', '#aaa'], // Customize the color as needed
+					},
+					],
+				},
+							option: {
 					responsive: true,
 					maintainAspectRatio: false,
+					
 				},
 				barOption: {
 					responsive: true,
@@ -327,6 +388,9 @@
 				loaded: false,
 				sums: {},
 				businessTypes: {},
+				SalesBySalesCategoryTotal:null,
+				totalSalesByDownPaymentsAndRepaymentDuration:[],
+				TotalByDP_RDTotal:'',
 			};
 		},
 		async mounted() {
@@ -339,6 +403,8 @@
 			this.getPieChartData();
 			this.drawProductPieChart();
 			this.getBarChartData();
+			this.addPercentageToSalesCategory();
+			this.addPercentageToDownpaymentDuration();
 			this.getOrderBarChartData();
 			this.getBusinessTypes();
 			this.getOrderTypes();
@@ -347,6 +413,20 @@
 		},
 
 		methods: {
+			addPercentageToSalesCategory() {
+				this.SalesBySalesCategoryTotal = this.TotalSalesBySalesCategory.reduce((sum, item) => sum + item['total_sales'], 0);		
+			this.TotalSalesBySalesCategory = this.TotalSalesBySalesCategory.map(item => {
+				const percentage = (item['total_sales'] / this.SalesBySalesCategoryTotal) * 100;
+				return { ...item, progress: parseFloat(percentage.toFixed(2)) };
+			});
+			},
+			addPercentageToDownpaymentDuration(){
+				this.TotalByDP_RDTotal = this.totalSalesByDownPaymentsAndRepaymentDuration.reduce((sum, item) => sum + item['total_sales'], 0);		
+			this.totalSalesByDownPaymentsAndRepaymentDuration = this.totalSalesByDownPaymentsAndRepaymentDuration.map(item => {
+				const percentage = (item['total_sales'] / this.SalesBySalesCategoryTotal) * 100;
+				return { ...item, progress: parseFloat(percentage.toFixed(2)) };
+			});
+			},
 			getBarChartData() {
 				this.barData = {
 					labels: this.getBranchLabel(),
@@ -397,7 +477,8 @@
 				};
 			},
 			getPieChartData() {
-				this.pieData = {
+				const valid = JSON.stringify(this.getPieData()) ==  JSON.stringify([0,0])
+				this.pieData = valid ? this.ZeroPieData : {
 					labels: ['Altara Cash', 'Altara Pay'],
 					datasets: [
 						{
@@ -438,7 +519,8 @@
 						return 0;
 					});
 					this.noOfSalesMadeOnEachProduct = this.reports.meta.noOfSalesMadeOnEachProduct;
-
+					this.TotalSalesBySalesCategory = this.reports.meta.TotalSalesBySalesCategory;
+					this.totalSalesByDownPaymentsAndRepaymentDuration = this.reports.meta.totalSalesByDownPaymentsAndRepaymentDuration;
 					this.getSums(this.reports.meta.groupedDataByBranch);
 				} catch (err) {
 					if (err.response) {
@@ -528,6 +610,8 @@
 				this.loaded = false;
 				await this.getReport();
 				this.getPieChartData();
+				this.addPercentageToSalesCategory();
+				this.addPercentageToDownpaymentDuration();
 				this.getBarChartData();
 				this.getOrderBarChartData();
 				this.drawProductPieChart();
@@ -675,4 +759,43 @@
 		align-items: center;
 		justify-content: center;
 	}
+	.text{
+		font-size: 17px;
+		font-weight: 800;
+		margin-bottom: 3px;
+		color: rgb(60, 60, 60);
+	}
+	.progress-bar {
+  background-color: #f8f7f7a5;
+  height: 40px;
+  border-radius: 3px;
+  width: 100%;
+  position: relative;
+  margin-bottom: 13px;
+}
+.progress-text{
+	position: absolute;
+	padding-left: 10px;
+	// top:1px;
+	z-index: 10;
+	font-size: 14px;
+	font-weight: 600;
+	color: rgb(60, 60, 60);
+	
+}
+.border{
+	width: 100%;
+	border-radius: 5px;
+	border: 1px gray;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	padding: 30px 20px;
+	background-color: white;
+}
+
+.progress {
+  background-color: #c3e4f997;
+  height: 100%;
+  border-radius: 5px;
+}
+
 </style>

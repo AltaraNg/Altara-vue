@@ -1091,8 +1091,8 @@ export default {
         "work_guarantor",
         "personal_guarantor",
         "processing_fee",
-        // "guarantor_id",
-        // "proof_of_income",
+        "guarantor_id",
+        "proof_of_income",
       ],
       verification: {},
       form: {

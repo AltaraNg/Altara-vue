@@ -787,7 +787,7 @@
 		justify-content: center;
 	}
 	.text{
-		font-size: 14px;
+		font-size: 13px;
 		font-weight: 800;
 		margin-bottom: 3px;
 		color: rgb(60, 60, 60);
@@ -805,7 +805,7 @@
 	padding-left: 10px;
 	// top:1px;
 	z-index: 10;
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: 600;
 	color: rgb(60, 60, 60);
 	

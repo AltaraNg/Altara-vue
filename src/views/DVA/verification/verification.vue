@@ -48,7 +48,7 @@
               style="margin-left:-10px"
             />
 
-            <div
+            <!-- <div
               class="mt-5 attendance-head ml-auto pointer"
               @click="addDocument"
               v-if="states.order"
@@ -58,7 +58,7 @@
 
                 Add More
               </div>
-            </div>
+            </div> -->
           </div>
           <div v-if="action !== 'update'" class="w-100">
             <div
@@ -1085,8 +1085,8 @@ export default {
         "processing_fee",
       ],
       cardView: [
-        "passport",
-        "id_card",
+        // "passport",
+        // "id_card",
         "address",
         "work_guarantor",
         "personal_guarantor",

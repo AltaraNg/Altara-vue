@@ -175,8 +175,8 @@
               <table class="table">
                 <tbody>
                   <tr>
-                    <th class="text-muted">
-                      <i class="mr-3 fas fa-mobile-alt"></i>Phone Number
+                    <th class="text-muted " style="width: 120px;">
+                      <i class="pr-3 fas fa-mobile-alt"></i>Phone Number
                     </th>
                     <td>{{ customer.telephone }}</td>
                   </tr>

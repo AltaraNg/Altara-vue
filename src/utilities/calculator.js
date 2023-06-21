@@ -1,4 +1,5 @@
 const calculate = (productPrice, data, params, percentage_discount) => {
+  console.log({productPrice}, {data}, {params}, percentage_discount)
   const count = repaymentCount(
     data.repayment_duration_id.value,
     14
@@ -61,5 +62,47 @@ const cashLoan = (productPrice, data, params, percentage_discount) => {
   return { total, actualDownpayment, rePayment };
 };
 
+
+
+const decliningLoanCalculator = (productPrice, data, params, percentage_discount) => {
+  const factors = [2, 1.5, 0.5, 0];
+  const count = repaymentCount(data.repayment_duration_value, 14);
+  const actualDownpayment = (data.payment_type_percent / 100) * productPrice;
+  const residual = productPrice - actualDownpayment;
+  const normalInstallment = residual / count;
+  const relativePercentage = normalInstallment / residual;
+  const percentages = factors.map(factor => computePercentage(factor, relativePercentage));
+  const interestOnNormalSingleInstallment = (params.interest / 100) * residual;
+  const repayments = populateDecliningRepaymentAmounts(percentages, residual, interestOnNormalSingleInstallment, count);
+  
+  const sumOfRepayments = repayments.reduce((partialSum, nextNumber) => partialSum + nextNumber, 0);
+  const total = sumOfRepayments + actualDownpayment;
+  
+  return { total:  total.toFixed(2), actualDownpayment: actualDownpayment.toFixed(2), rePayment: sumOfRepayments.toFixed(2)}
+};
+
+const computePercentage = (factor, relativePercentage) => {
+  return factor * relativePercentage * 100;
+}
+
+const computeDecliningRepaymentAmount = (percentage, residual, interestOnNormalSingleInstallment) => {
+  return ((percentage / 100) * residual) + interestOnNormalSingleInstallment;
+}
+
+const populateDecliningRepaymentAmounts = (percentages, residual, interestOnNormalSingleInstallment, count) => {
+ const repayments = [];
+ percentages.forEach(function(percentage, index, arr){
+      const amount = computeDecliningRepaymentAmount(percentage, residual, interestOnNormalSingleInstallment);
+      const roundedAmount = (Math.round((amount + Number.EPSILON) * 100) / 100); //round amount to 2 decimal place and conver
+      // const repeatedAmount = Array(percentages.length - 1).fill(roundedAmount);
+     const repeatedAmount = Array(percentages.length - 1).fill(amount);
+      repayments.push(...repeatedAmount);    
+  });
+  // if(repayments.length <= count) {
+  //   const repeatedAmount = Array(percentages.length).fill(interestOnNormalSingleInstallment);
+  //   repayments.push(...repeatedAmount);
+  // }
+  return repayments;
+}
 
 export {calculate, cashLoan};

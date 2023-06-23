@@ -90,11 +90,17 @@ const decliningRepaymentCalculator = (
     (partialSum, nextNumber) => partialSum + nextNumber,
     0
   )
+  const sumOfDiscountedRepayments = discountTedRepayment.reduce(
+    (partialSum, nextNumber) => partialSum + nextNumber,
+    0
+  )
   const total = sumOfRepayments + actualDownpayment
+  const discountedTotal = sumOfDiscountedRepayments + actualDownpayment;
   return {
-    total: total.toFixed(2),
     actualDownpayment: actualDownpayment.toFixed(2),
+    total: total.toFixed(2),
     rePayment: sumOfRepayments.toFixed(2),
+    discountedTotal: discountedTotal.toFixed(2),
     discountedRepayment: sumOfDiscountedRepayments.toFixed(2),
   }
 }

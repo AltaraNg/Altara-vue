@@ -142,4 +142,4 @@ const populateDecliningRepaymentAmounts = (
   })
   return repayments
 }
-export { calculate, cashLoan }
+export { calculate, cashLoan, decliningRepaymentCalculator }

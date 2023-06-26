@@ -709,7 +709,7 @@
 import { get, post } from "../utilities/api"
 import { mapGetters } from "vuex"
 import AutoComplete from "./AutoComplete.vue"
-import { calculate, cashLoan } from "../utilities/calculator"
+import { calculate, cashLoan, decliningRepaymentCalculator } from "../utilities/calculator"
 import VerificationCollectionData from "./modals/VerificationCollectionData"
 import Flash from "../utilities/flash"
 import discount from "./discount.vue"
@@ -1388,12 +1388,13 @@ export default {
                 data,
                 this.selected_discount?.percentage_discount
               )
-            : calculate(
+            : decliningRepaymentCalculator(
                 this.selectedProduct.price,
                 data0,
                 data,
                 this.selected_discount?.percentage_discount
               )
+
 
         this.repaymentCircle = data0.repayment_cycle_id?.value
         this.rDuration = data0.repayment_duration_id.value

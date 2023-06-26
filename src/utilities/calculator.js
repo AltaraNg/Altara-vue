@@ -1,3 +1,5 @@
+import { param } from "jquery"
+
 const calculate = (productPrice, data, params, percentage_discount) => {
   console.log({ productPrice }, { data }, { params }, percentage_discount)
   const count = repaymentCount(data.repayment_duration_id.value, 14)
@@ -71,6 +73,8 @@ const decliningRepaymentCalculator = (
   const factors = [2, 1.5, 0.5, 0]
   const count = repaymentCount(data.repayment_duration_value, 14)
   const actualDownpayment = (data.payment_type_percent / 100) * productPrice
+  console.log('downpaayment', actualDownpayment);
+
   const residual = productPrice - actualDownpayment
   const normalInstallment = residual / count
   const relativePercentage = normalInstallment / residual
@@ -84,18 +88,20 @@ const decliningRepaymentCalculator = (
     interestOnNormalSingleInstallment,
     count
   )
-  const discountTedRepayment = applyDiscount(repayments, percentage_discount);
+  const discountTedRepayment = applyDiscount(repayments, percentage_discount)
 
   const sumOfRepayments = repayments.reduce(
     (partialSum, nextNumber) => partialSum + nextNumber,
     0
   )
+  console.log('sumOfRepayment', sumOfRepayments);
+
   const sumOfDiscountedRepayments = discountTedRepayment.reduce(
     (partialSum, nextNumber) => partialSum + nextNumber,
     0
   )
   const total = sumOfRepayments + actualDownpayment
-  const discountedTotal = sumOfDiscountedRepayments + actualDownpayment;
+  const discountedTotal = sumOfDiscountedRepayments + actualDownpayment
   return {
     actualDownpayment: actualDownpayment.toFixed(2),
     total: total.toFixed(2),
@@ -117,11 +123,11 @@ const computeDecliningRepaymentAmount = (
   return (percentage / 100) * residual + interestOnNormalSingleInstallment
 }
 
-const applyDiscount = (repayments, discount){
+const applyDiscount = (repayments, discount) => {
   if (discount <= 0) {
-    return repayments;
+    return repayments
   }
-  return repayments.map(repayment =>  repayment - (repayment * (discount / 100)));
+  return repayments.map(repayment => repayment - repayment * (discount / 100))
 }
 
 const populateDecliningRepaymentAmounts = (

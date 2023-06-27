@@ -1,7 +1,6 @@
 import { param } from "jquery"
 
 const calculate = (productPrice, data, params, percentage_discount) => {
-  console.log({ productPrice }, { data }, { params }, percentage_discount)
   const count = repaymentCount(data.repayment_duration_id.value, 14)
   const marketPrice = Math.floor(productPrice * (1 + params.margin))
   const upFront = Math.floor((data.payment_type_id.percent / 100) * marketPrice)
@@ -71,9 +70,8 @@ const decliningRepaymentCalculator = (
   percentage_discount
 ) => {
   const factors = [2, 1.5, 0.5, 0]
-  const count = repaymentCount(data.repayment_duration_value, 14)
-  const actualDownpayment = (data.payment_type_percent / 100) * productPrice
-  console.log('downpaayment', actualDownpayment);
+  const count = repaymentCount(data.repayment_duration_id.value, 14)
+  const actualDownpayment = (data.payment_type_id.percent / 100) * productPrice
 
   const residual = productPrice - actualDownpayment
   const normalInstallment = residual / count
@@ -94,7 +92,6 @@ const decliningRepaymentCalculator = (
     (partialSum, nextNumber) => partialSum + nextNumber,
     0
   )
-  console.log('sumOfRepayment', sumOfRepayments);
 
   const sumOfDiscountedRepayments = discountTedRepayment.reduce(
     (partialSum, nextNumber) => partialSum + nextNumber,

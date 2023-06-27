@@ -1382,13 +1382,13 @@ export default {
           data0.business_type_id.slug.includes("ap_no_bs_renewal") ||
           data0.business_type_id.slug.includes("ap_no_bs_new") ||
           data0.business_type_id.slug.includes("ap_starter")
-            ? cashLoan(
+            ? decliningRepaymentCalculator(
                 this.selectedProduct.price,
                 data0,
                 data,
                 this.selected_discount?.percentage_discount
               )
-            : decliningRepaymentCalculator(
+            : calculate(
                 this.selectedProduct.price,
                 data0,
                 data,

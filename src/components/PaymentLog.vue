@@ -1025,7 +1025,7 @@ export default {
       } else this.addDownpayment = false
       this.stillShowToggle = this.addDownpayment
 
-      if(this.selectedProduct.price < 100000 && this.productPlans.include(this.salesLogForm?.business_type_id?.slug)){
+      if(this.selectedProduct.price < 100000 && this.productPlans.includes(this.salesLogForm?.business_type_id?.slug)){
         this.salesLogForm.repayment_duration_id = this.repaymentDuration.find(item => {
           return item.name == "three_months"
         });

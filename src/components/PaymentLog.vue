@@ -1376,7 +1376,7 @@ export default {
         }
 
         const { total, actualDownpayment, rePayment } =
-          this.salesLogForm.repayment_duration_id.name === "six_months"
+          this.salesLogForm.repayment_duration_id.name === "six_months" && !this.FixedRepayment
             ? decliningRepaymentCalculator(
                 this.selectedProduct.price,
                 data0,
@@ -1831,6 +1831,7 @@ export default {
     },
     triggerToggleEventFixedRepayment() {
       this.FixedRepayment = !this.FixedRepayment
+      this.getCalc();
     },
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value)

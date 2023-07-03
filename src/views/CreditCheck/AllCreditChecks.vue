@@ -149,6 +149,7 @@
                 data-toggle="dropdown"
                 :id="'dropdownMenuButton' + creditCheck.id"
                 @click="setSelectedCreditCheck(creditCheck)"
+                :disabled="creditCheck.processed_by !== null"
               >
                 Action
               </button>

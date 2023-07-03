@@ -1181,6 +1181,7 @@
                 @deletePayment="deletePayment"
                 @preparePayments="preparePayments"
                 v-on:childToParent="newOrderItem"
+                :isBNPL="order.financed_by === 'altara-bnpl'"
               ></new-order-amortization>
             </div>
           </div>

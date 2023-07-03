@@ -268,7 +268,7 @@
                         order.payment_gateway === 'Paystack' &&
                           order.paystack_auth_code != null &&
                           order.status !== 'Completed' &&
-                          canLogDD
+                          canLogDD && manualDD
                       "
                     >
                       <CustomDirectDebitModalButton
@@ -2143,6 +2143,10 @@ export default {
     },
     canLogDD() {
       if (this.auth("LogDirectDebit")) return true
+    },
+
+    manualDD(){
+      return process.env.VUE_APP_MANUAL_DD === 'true';
     },
     forDVA() {
       return this.auth("DVAAccess")

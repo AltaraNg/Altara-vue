@@ -1387,7 +1387,7 @@ export default {
         }
 
         const { total, actualDownpayment, rePayment } =
-          this.salesLogForm.repayment_duration_id.name === "six_months" && !this.FixedRepayment && this.isAltaraPay
+          this.salesLogForm?.repayment_duration_id?.name === "six_months" && !this.FixedRepayment && this.salesLogForm?.business_type_id?.slug.includes('ap')
             ? decliningRepaymentCalculator(
                 this.selectedProduct.price,
                 data0,

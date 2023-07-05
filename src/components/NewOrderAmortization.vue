@@ -45,7 +45,7 @@
               <th>{{ isBNPL ? order.bnpl_vendor_product.name : order.product.name }}</th>
               <th>{{ order.owner }}</th>
               <th>{{ order.serial_number }}</th>
-              <th>{{ order.business_type }}</th>
+              <th>{{ isBNPL ? "BNPL" : order.business_type }}</th>
               <th class="text-capitalize">
                 {{ order.financed_by === 'altara-bnpl' ? ((order.down_payment / order.product_price) * 100).toFixed(0) : order.down_payment_rate }} percent
               </th>

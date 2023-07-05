@@ -47,6 +47,14 @@
               <td>{{ downPay }}%</td>
             </tr>
             <tr>
+              <th>Verification Status</th>
+              <td :class="[modalItem.status === 'passed' ? 'text-success' : modalItem.status === 'pending' ? 'text-warning' : 'text-danger' ]">{{ modalItem.status }}</td>
+            </tr>
+            <tr>
+              <th>Reason</th>
+              <td>{{ modalItem.reason || 'N/A' }}</td>
+            </tr>
+            <tr>
               <th>Date Created</th>
               <td>{{ modalItem.bnpl_product.created_at }}</td>
             </tr>

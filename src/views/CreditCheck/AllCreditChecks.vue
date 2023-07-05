@@ -213,6 +213,10 @@
                     </option>
                   </select>
                 </div>
+                <div class="form-group">
+                  <label for="reason">Reason</label>
+                  <input class="form-control" type="text" name="reason" v-model="reason" />
+                </div>
               </div>
               <div class="d-flex justify-content-end align-items-center p-4">
                 <button
@@ -256,6 +260,7 @@ export default {
 
   data() {
     return {
+      reason: null,
       branch_id: "",
       creditChecks: [],
       selectedCreditCheck: {},
@@ -374,6 +379,7 @@ export default {
       this.$LIPS(true)
       patch(`api/update/credit/checker/status/${this.selectedCreditCheck.id}`, {
         status: this.selectedStatus,
+        reason: this.reason
       })
         .then(({ data }) => {
           flash.setSuccess(data?.message)

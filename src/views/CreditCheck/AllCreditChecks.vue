@@ -149,7 +149,7 @@
                 data-toggle="dropdown"
                 :id="'dropdownMenuButton' + creditCheck.id"
                 @click="setSelectedCreditCheck(creditCheck)"
-                :disabled="creditCheck.processed_by !== null"
+                :disabled="creditCheck.processed_by == null"
               >
                 Action
               </button>
@@ -377,10 +377,13 @@ export default {
 
     changeVerificationStatus() {
       this.$LIPS(true)
-      patch(`api/update/credit/checker/status/${this.selectedCreditCheck.id}`, {
-        status: this.selectedStatus,
-        reason: this.reason
-      })
+      let data = {
+        status: this.selectedStatus,        
+      }
+      if(this.reason !== null){
+        data.reason = this.reason
+      }
+      patch(`api/update/credit/checker/status/${this.selectedCreditCheck.id}`,data)
         .then(({ data }) => {
           flash.setSuccess(data?.message)
           this.selectedCreditCheck.status = this.selectedStatus

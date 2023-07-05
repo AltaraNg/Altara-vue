@@ -209,7 +209,7 @@
                   class="custom-select w-100"
                   v-model="salesLogForm.repayment_duration_id"
                   v-validate="'required'"
-                  :disabled="isCashNCarry"
+                  :disabled="isCashNCarry || lockRepaymentDuration"
                 >
                   <option disabled selected="selected">
                     Repayment Duration
@@ -823,6 +823,7 @@ export default {
       cardError: false,
       customDateToggle: false,
       discounts: null,
+      lockRepaymentDuration: false,
       eligible: false,
       serial: false,
       renewalState: false,
@@ -1023,6 +1024,16 @@ export default {
             : false
       } else this.addDownpayment = false
       this.stillShowToggle = this.addDownpayment
+
+      if(this.selectedProduct.price < 100000 && this.productPlans.includes(this.salesLogForm?.business_type_id?.slug) && process.env.VUE_APP_SANDBOX === 'true'){
+        this.salesLogForm.repayment_duration_id = this.repaymentDuration.find(item => {
+          return item.name == "three_months"
+        });
+        this.lockRepaymentDuration = true;
+      }else{
+        this.lockRepaymentDuration = false;
+
+      }
     },
     watchSalesLogForm() {
       if (this.isAltaraCredit) {

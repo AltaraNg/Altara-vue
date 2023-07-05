@@ -421,11 +421,32 @@
 			});
 			},
 			addPercentageToDownpaymentDuration(){
-				this.TotalByDP_RDTotal = this.totalSalesByDownPaymentsAndRepaymentDuration.reduce((sum, item) => sum + item['total_sales'], 0);		
+			this.totalSalesByDownPaymentsAndRepaymentDuration = this.totalSalesByDownPaymentsAndRepaymentDuration.sort((a, b) => {
+			const partsA = this.extractParts(a.name);
+			const partsB = this.extractParts(b.name);
+
+			// Sort by lowest month first
+			const monthOrder = { three_months: 0, six_months: 1, nine_months:2, twelve_months:3  };
+			const monthComparison = monthOrder[partsA.months] - monthOrder[partsB.months];
+			if (monthComparison !== 0) {
+				return monthComparison;
+			}
+
+			// Sort by number if months are the same
+			return partsA.number - partsB.number;
+			});
+							this.TotalByDP_RDTotal = this.totalSalesByDownPaymentsAndRepaymentDuration.reduce((sum, item) => sum + item['total_sales'], 0);		
 			this.totalSalesByDownPaymentsAndRepaymentDuration = this.totalSalesByDownPaymentsAndRepaymentDuration.map(item => {
 				const percentage = (item['total_sales'] / this.SalesBySalesCategoryTotal) * 100;
 				return { ...item, progress: parseFloat(percentage.toFixed(2)) };
 			});
+			},
+			extractParts(duration){
+			const [months, number] = duration.split('-');
+			return {
+			months,
+			number: parseInt(number)
+			};
 			},
 			getBarChartData() {
 				this.barData = {
@@ -453,8 +474,14 @@
 								'#074A74',
 								'#074A74',
 								'#074A74',
+								'#074A74',
+								'#074A74',
+								'#074A74',
 							],
 							borderColor: [
+								'#074A74',
+								'#074A74',
+								'#074A74',
 								'#074A74',
 								'#074A74',
 								'#074A74',
@@ -760,7 +787,7 @@
 		justify-content: center;
 	}
 	.text{
-		font-size: 17px;
+		font-size: 13px;
 		font-weight: 800;
 		margin-bottom: 3px;
 		color: rgb(60, 60, 60);
@@ -778,7 +805,7 @@
 	padding-left: 10px;
 	// top:1px;
 	z-index: 10;
-	font-size: 14px;
+	font-size: 11px;
 	font-weight: 600;
 	color: rgb(60, 60, 60);
 	

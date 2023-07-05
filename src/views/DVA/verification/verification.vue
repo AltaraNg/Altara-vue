@@ -48,7 +48,7 @@
               style="margin-left:-10px"
             />
 
-            <div
+            <!-- <div
               class="mt-5 attendance-head ml-auto pointer"
               @click="addDocument"
               v-if="states.order"
@@ -58,7 +58,7 @@
 
                 Add More
               </div>
-            </div>
+            </div> -->
           </div>
           <div v-if="action !== 'update'" class="w-100">
             <div
@@ -66,7 +66,7 @@
               v-for="type in cardView"
               v-if="states.order"
             >
-              <div :class="DivClass(type)" class="card card-stats">
+              <div :class="DivClass(type) " class="card card-stats" >
                 <div class="card-body ">
                   <div class="statistics statistics-horizontal">
                     <div class="info info-horizontal">
@@ -382,7 +382,7 @@
 
       <div v-if="action !== 'update'">
         <div :id="type + '_modal'" class="modal fade" v-for="type in picsView">
-          <div class="modal-dialog">
+          <div class="modal-dialog"  :style="{ pointerEvents:( type == 'passport' || type == 'id_card') ? 'none' : 'auto' }">
             <div class="modal-content">
               <div class="modal-header py-2">
                 <h6 class="modal-title py-1">
@@ -1155,7 +1155,7 @@ export default {
        * card param is set to 1 else the 'fa-times'
        * css class ie false */
     },
-
+  
     DivClass(key) {
       return {
         success: this.key(key),

@@ -568,13 +568,7 @@
 				];
 			},
 			generateColorPalette() {
-			const colorPalette = []; 
-			for (let i = 0; i < this.lengthOfBranches; i++) {
-				const color = '#074A74'; 
-				colorPalette.push(color);
-			}
-
-			return colorPalette;
+			return Array(this.lengthOfBranches).fill('#074A74');
 		},
 
 			getSalesPerBranch() {

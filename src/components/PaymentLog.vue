@@ -980,8 +980,12 @@ export default {
   methods: {
     computedPayment(firstvalue, secondvalue) {
       if (this.singleRepayment && this.addDownpayment) {
+        console.log('got here', firstvalue)
         return firstvalue
-      } else return secondvalue
+      } else {
+        console.log('got here 2', secondvalue)
+
+        return secondvalue}
     },
     watchCashPrice() {
       this.watchSalesCategory()
@@ -1404,7 +1408,7 @@ export default {
 
         this.repaymentCircle = data0.repayment_cycle_id?.value
         this.rDuration = data0.repayment_duration_id.value
-        this.fPayment = actualDownpayment
+        this.fPayment = Math.trunc(actualDownpayment)
         this.rPayment = rePayment
         this.pPrice = total
         this.canPerformAction = false

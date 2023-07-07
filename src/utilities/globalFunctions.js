@@ -115,7 +115,7 @@ const formatter = (new Intl.NumberFormat('en-NG',
     {style: 'currency', currency: 'NGN', minimumFractionDigits: 2}));
 Vue.prototype.$formatCurrency = price => !!price ? formatter.format(price) : price;
 
-Vue.prototype.$formatMoney = money => parseFloat(money.toFixed(2));
+Vue.prototype.$formatMoney = money => parseFloat(Number(money).toFixed(2));
 
 
 /**throws custom error messages**/

@@ -982,6 +982,7 @@ export default {
       if (this.singleRepayment && this.addDownpayment) {
         return firstvalue
       } else {
+
         return secondvalue}
     },
     watchCashPrice() {

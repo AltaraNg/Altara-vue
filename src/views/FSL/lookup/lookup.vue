@@ -288,7 +288,7 @@
                   "
                   >
                   
-                    {{ order.product.name | truncate(50) }}
+                    {{ order.financed_by === 'altara-bnpl'? order.bnpl_vendor_product.name : order.product.name | truncate(50) }}
                     <span v-if="order.missMatchedPayments.length > 0" data-toggle="tooltip" data-placement="top" title="The debit account does not correspond to the account recorded on the bank statement." class="badge badge-secondary pointer">
                     <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>      
                   </span>
@@ -1181,6 +1181,7 @@
                 @deletePayment="deletePayment"
                 @preparePayments="preparePayments"
                 v-on:childToParent="newOrderItem"
+                :isBNPL="order.financed_by === 'altara-bnpl'"
               ></new-order-amortization>
             </div>
           </div>

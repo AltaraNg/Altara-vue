@@ -1396,12 +1396,8 @@ export default {
               data,
               this.selected_discount?.percentage_discount
             )
-            : data0.business_type_id.slug.includes("cash_loan") ||
-              data0.business_type_id.slug.includes("ap_rentals") ||
-              data0.business_type_id.slug.includes("ap_super") ||
-              data0.business_type_id.slug.includes("ap_no_bs_renewal") ||
-              data0.business_type_id.slug.includes("ap_no_bs_new") ||
-              data0.business_type_id.slug.includes("ap_starter")
+            :
+             !(this.productPlans.includes(data0.business_type_id.slug))
                ?
 
               cashLoan(

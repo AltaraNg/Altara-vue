@@ -61,7 +61,7 @@ export const store = new Vuex.Store({
     ALTARAPAYAccess: [...admin, 33],
     CASHLOANAccess: [...admin, 42],
     BNPLAccess: [...admin],
-    CreditCheckAccess: [...admin, 34],
+    CreditCheckAccess: [...admin, 34, 16, 21, 22],
     CoordinatorAccess: [...admin, 32],
     months: [
       { id: "01", name: "January" },

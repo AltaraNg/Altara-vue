@@ -283,6 +283,7 @@
 		},
 		data() {
 			return {
+				lengthOfBranches:'',
 				TotalSalesBySalesCategory:[],
 				reports: null,
 				fromDate: '',
@@ -458,46 +459,8 @@
 							maxBarThickness: 16,
 							label: 'Number of sales',
 							data: this.getSalesPerBranch(),							
-							backgroundColor: [
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-							],
-							borderColor: [
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-								'#074A74',
-							],
+							backgroundColor: this.generateColorPalette(),
+							borderColor: this.generateColorPalette(),
 							borderWidth: 1,
 						},
 					],
@@ -604,9 +567,13 @@
 					businessType.no_of_sales_altara_pay,
 				];
 			},
+			generateColorPalette() {
+			return Array(this.lengthOfBranches).fill('#074A74');
+		},
 
 			getSalesPerBranch() {
 				const branches = Object.values(this.reports.meta.groupedDataByBranch);
+				this.lengthOfBranches = branches.length
 				return branches.sort((a, b) => a.branch_name.localeCompare(b.branch_name)) 
   				.map(obj => obj.number_of_sales); 
 			},

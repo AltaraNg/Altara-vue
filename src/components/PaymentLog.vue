@@ -1027,7 +1027,7 @@ export default {
       } else this.addDownpayment = false
       this.stillShowToggle = this.addDownpayment
 
-      if(this.selectedProduct.price < 100000 && this.productPlans.includes(this.salesLogForm?.business_type_id?.slug)){
+      if(this.selectedProduct.price < 100000 && this.productPlans.includes(this.salesLogForm?.business_type_id?.slug) && process.env.VUE_APP_SANDBOX === 'true'){
         this.salesLogForm.repayment_duration_id = this.repaymentDuration.find(item => {
           return item.name == "three_months"
         });
@@ -1655,7 +1655,13 @@ export default {
         this.$LIPS(true)
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes)
         this.biz_type = fetchBusinessTypes?.data?.data?.data
+        this.biz_type = this.biz_type.filter(item => {
+          return item.slug !== 'ap_bnpl'
+        })
         this.businessTypes = fetchBusinessTypes?.data?.data?.data
+        this.businessTypes = this.businessTypes.filter(item => {
+          return item.slug !== 'ap_bnpl'
+        })
         this.businessTypes = this.businessTypes.filter(item => {
           if (this.isAltaraCredit) {
             return item.slug.includes("ac_")

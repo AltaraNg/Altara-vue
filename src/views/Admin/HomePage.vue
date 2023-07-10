@@ -26,6 +26,12 @@ export default {
           url_c: 'View daily report',
           desc: 'View daily report',
         },
+         {
+          url: 'repayment-schedule',
+          title: 'Repayment Schedule',
+          url_c: 'View repayment schedule',
+          desc: 'View repayment schedule',
+        },
 
         {
           url: 'reminder-reporting',

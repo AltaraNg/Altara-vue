@@ -93,6 +93,7 @@ const AltaraLoanHome = () => import('../views/AltaraLoan/HomePage.vue');
 const Admin = () => import('../views/Admin/Index.vue');
 const AdminHome = () => import('../views/Admin/HomePage.vue');
 const ReportingTool = () => import('../views/Admin/ReportingTool.vue');
+const RepaymentSchedule = () => import('../views/Admin/RepaymentSchedule.vue');
 const ReminderReportingTool = () => import('../views/Admin/ReminderCollectionData.vue');
 const BNPL_Vendors = () => import('../views/BNPL/Vendors.vue');
 const BNPL_Dashboard = () => import('../views/BNPL/BNPL_Dashboard.vue');
@@ -200,14 +201,18 @@ const router = new VueRouter({
 
         { path: "reporting", component: ReportingTool, name: "ReportingTool" },
         {
+          path: "repayment-schedule",
+          component: RepaymentSchedule,
+          name: "RepaymentSchedule",
+        },
+        {
           path: "reminder-reporting",
           component: ReminderReportingTool,
           name: "ReminderReporting",
         },
-        
       ],
     },
-     {
+    {
       path: "/gen-utils",
       component: GenUtils,
       meta: { requiresAuth: true },
@@ -217,7 +222,7 @@ const router = new VueRouter({
           path: "home",
           component: GenUtilsHome,
           name: "GenUtilsHome",
-        }, 
+        },
         {
           path: "website-product",
           component: WebsiteProduct,
@@ -234,7 +239,7 @@ const router = new VueRouter({
           component: WebsiteProductForm,
           name: "websiteProductCreate",
           meta: { mode: "create" },
-        },           
+        },
       ],
     },
     {
@@ -295,19 +300,19 @@ const router = new VueRouter({
         {
           path: "bnpl-vendors",
           component: BNPL_Vendors,
-          name: "BNLPVendors"
+          name: "BNLPVendors",
         },
-        
+
         {
           path: "bnpl-orders",
           component: BNPL_Orders,
-          name: "BNLPOrders"
+          name: "BNLPOrders",
         },
         {
           path: "bnpl-dashboard",
           component: BNPL_Dashboard,
-          name: "BNLPDashboard"
-        }
+          name: "BNLPDashboard",
+        },
       ],
     },
     {
@@ -608,7 +613,7 @@ const router = new VueRouter({
           component: CashLogger,
           name: "payment-logger",
           meta: { mode: "create" },
-          props: (route) => ({ query: route.query }),
+          props: route => ({ query: route.query }),
         },
         {
           path: "sales-logger",
@@ -780,7 +785,7 @@ const router = new VueRouter({
     },
     { path: "*", component: NotFound, meta: { requiresAuth: true } },
   ],
-});
+})
 
 router.mode = 'html5';
 router.afterEach(writeHistory);

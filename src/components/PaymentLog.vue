@@ -1391,12 +1391,26 @@ export default {
         const { total, actualDownpayment, rePayment } =
           this.salesLogForm?.repayment_duration_id?.name === "six_months" && !this.FixedRepayment && this.salesLogForm?.business_type_id?.slug.includes('ap')
             ? decliningRepaymentCalculator(
+              this.selectedProduct.price,
+              data0,
+              data,
+              this.selected_discount?.percentage_discount
+            )
+            : data0.business_type_id.slug.includes("cash_loan") ||
+              data0.business_type_id.slug.includes("ap_rentals") ||
+              data0.business_type_id.slug.includes("ap_super") ||
+              data0.business_type_id.slug.includes("ap_no_bs_renewal") ||
+              data0.business_type_id.slug.includes("ap_no_bs_new") ||
+              data0.business_type_id.slug.includes("ap_starter")
+               ?
+
+              cashLoan(
                 this.selectedProduct.price,
                 data0,
                 data,
                 this.selected_discount?.percentage_discount
-              )
-            : calculate(
+              ) :
+              calculate(
                 this.selectedProduct.price,
                 data0,
                 data,

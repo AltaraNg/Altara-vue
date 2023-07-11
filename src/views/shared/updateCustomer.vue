@@ -2072,7 +2072,7 @@ import { mapGetters } from "vuex";
                 this.newCustomer = customer;
         },
         showBVN() {
-            return this.newCustomer.bvn === null ? true : this.auth("AdminAccess") ? true : false
+            return [this.newCustomer.bvn === null ? true : false, this.auth("AdminAccess")]
         }
         },
     computed: {

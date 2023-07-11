@@ -2096,7 +2096,7 @@
 
             <div class="spaceAfter"></div>
           </div>
-          <div v-if="showBVN">
+          <div v-if="showBVN()">
             <div class="spaceAfter"></div>
             <h5>Bank Information</h5>
 
@@ -2349,15 +2349,16 @@ export default {
         [this.fillWorkGuarantor, this.fillPersonalGuarantor] = [true, true]
       this.newCustomer = customer
     },
-    showBVN() {
-      if (this.newCustomer.bvn === null) {
-        return true
-      } else {
-        if (auth("adminAccess")) {
-          return true
-        }
-      }
-      return false
+    showBVN() {        
+    //   if (this.newCustomer.bvn === null) {
+    //     return true
+    //   } else {
+    //     if (this.auth("AdminAccess")) {
+    //       return true
+    //     }
+    //   }
+    //   return false
+    return this.newCustomer.bvn === null ? true : this.auth("AdminAccess") ? true : false
     }
   
   },

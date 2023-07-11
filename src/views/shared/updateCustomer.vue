@@ -2350,14 +2350,6 @@ export default {
       this.newCustomer = customer
     },
     showBVN() {        
-    //   if (this.newCustomer.bvn === null) {
-    //     return true
-    //   } else {
-    //     if (this.auth("AdminAccess")) {
-    //       return true
-    //     }
-    //   }
-    //   return false
     return this.newCustomer.bvn === null ? true : this.auth("AdminAccess") ? true : false
     }
   

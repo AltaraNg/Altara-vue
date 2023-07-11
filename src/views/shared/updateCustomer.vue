@@ -2096,7 +2096,7 @@
 
             <div class="spaceAfter"></div>
           </div>
-          <div v-if="bvnUpdates !== null && showBVN">
+          <div v-if="showBVN">
             <div class="spaceAfter"></div>
             <h5>Bank Information</h5>
 
@@ -2107,7 +2107,7 @@
                 name="bvn"
                 placeholder="Enter BVN"
                 type="text"
-                v-model="bvn"
+                v-model="newCustomer.bvn"
                 v-validate="'max:10'"
               />
               <small v-if="errors.first('bvn')">{{
@@ -2349,24 +2349,21 @@ export default {
         [this.fillWorkGuarantor, this.fillPersonalGuarantor] = [true, true]
       this.newCustomer = customer
     },
-    // isAdminUser() {
-    //   const adminRoles = [
-    //     roles.president,
-    //     roles.general_manager,
-    //     roles.software_engineering_lead,
-    //     roles.software_engineer,
-    //   ]
-    //   return adminRoles
-    // },
+    showBVN() {
+      if (this.newCustomer.bvn === null) {
+        return true
+      } else {
+        if (auth("adminAccess")) {
+          return true
+        }
+      }
+      return false
+    }
+  
   },
 
   computed: {
-    showBVN: function () {
-      return [
-        roles.president, roles.general_manager, roles.software_engineering_lead, roles.software_engineer
-      ].includes(this.authState.role)
-    },
-    ...mapGetters(["bvnUpdates"]),
+    ...mapGetters(["auth"]),
   },
   created() {
     get("/api/customer/create").then(({ data }) => this.prepareForm(data))

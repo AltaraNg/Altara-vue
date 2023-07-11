@@ -1837,44 +1837,62 @@
 
                         <div class="spaceAfter"></div>
                     </div>
+                            <div v-if="showBVN()">
+                                <div class="spaceAfter"></div>
+                                <h5>Bank Information</h5>
 
-                    <div v-if="mode === 'register'">
-                        <h5>Other Questions</h5>
-                        <div class="form-group col-md-4 px-md-3 px-1 float-left">
-                            <label>What product do you need?</label>
-                            <input
+                                <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                                  <label>BVN</label>
+                                  <input
                                     class="form-control"
-                                    data-vv-as="what product do you need"
-                                    name="what_product_do_you_need"
-                                    placeholder="Enter Product name"
+                                    name="bvn"
+                                    placeholder="Enter BVN"
                                     type="text"
-                                    v-model="newCustomer.what_product_do_you_need"
-                                    v-validate="'required|max:25'"
-                            />
-                            <small
-                                    v-if="errors.first('what_product_do_you_need')"
-                            >{{errors.first('what_product_do_you_need')}}
-                            </small>
-                        </div>
+                                    v-model="newCustomer.bvn"
+                                    v-validate="'max:10'"
+                                  />
+                                  <small v-if="errors.first('bvn')">{{
+                                      errors.first("bvn")
+                                  }}</small>
+                                </div>
+                            </div>
+                            <div v-if="mode === 'register'">
+                                <h5>Other Questions</h5>
+                                <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                                    <label>What product do you need?</label>
+                                    <input
+                                            class="form-control"
+                                            data-vv-as="what product do you need"
+                                            name="what_product_do_you_need"
+                                            placeholder="Enter Product name"
+                                            type="text"
+                                            v-model="newCustomer.what_product_do_you_need"
+                                            v-validate="'required|max:25'"
+                                    />
+                                    <small
+                                            v-if="errors.first('what_product_do_you_need')"
+                                    >{{ errors.first('what_product_do_you_need') }}
+                                    </small>
+                                </div>
 
-                        <div class="form-group col-md-4 px-md-3 px-1 float-left">
-                            <label>What do you need it for?</label>
-                            <input
-                                    class="form-control"
-                                    data-vv-as="what do you need it for"
-                                    name="what_do_you_need_it_for"
-                                    placeholder="Enter Reason.."
-                                    type="text"
-                                    v-model="newCustomer.what_do_you_need_it_for"
-                                    v-validate="'required|max:25'"
-                            />
-                            <small
-                                    v-if="errors.first('what_do_you_need_it_for')"
-                            >{{errors.first('what_do_you_need_it_for')}}
-                            </small>
-                        </div>
+                                <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                                    <label>What do you need it for?</label>
+                                    <input
+                                            class="form-control"
+                                            data-vv-as="what do you need it for"
+                                            name="what_do_you_need_it_for"
+                                            placeholder="Enter Reason.."
+                                            type="text"
+                                            v-model="newCustomer.what_do_you_need_it_for"
+                                            v-validate="'required|max:25'"
+                                    />
+                                    <small
+                                            v-if="errors.first('what_do_you_need_it_for')"
+                                    >{{ errors.first('what_do_you_need_it_for') }}
+                                    </small>
+                                </div>
 
-                        <!-- <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                                <!-- <div class="form-group col-md-4 px-md-3 px-1 float-left">
                                         <label class="w-100 float-left pl-1">Category</label>
                                         <div class="radio p-0 col-6 float-left">
                                             <input :value="true" id="lifestyle" type="radio" v-model="isLifestyle">
@@ -1886,47 +1904,48 @@
                                         </div>
                         </div>-->
 
-                        <!-- <div class="spaceBetween"></div> -->
+                                <!-- <div class="spaceBetween"></div> -->
 
-                        <div class="form-group col-md-4 px-md-3 px-1 float-left">
-                            <label>Office Branch</label>
-                            <select
-                                    class="custom-select w-100"
-                                    data-vv-as="office branch"
-                                    data-vv-validate-on="blur"
-                                    disabled
-                                    name="branch_id"
-                                    v-model="newCustomer.branch_id"
-                                    v-validate="'required'"
-                            >
-                                <option value>select office branch</option>
-                                <option :value="branch.id" v-for="(branch, index) in branches" :key="index">{{branch.name}}</option>
-                            </select>
-                            <small v-if="errors.first('branch_id')">{{errors.first('branch_id')}}</small>
-                        </div>
-                    </div>
-                    <!--form section for register and update ends here-->
+                                <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                                    <label>Office Branch</label>
+                                    <select
+                                            class="custom-select w-100"
+                                            data-vv-as="office branch"
+                                            data-vv-validate-on="blur"
+                                            disabled
+                                            name="branch_id"
+                                            v-model="newCustomer.branch_id"
+                                            v-validate="'required'"
+                                    >
+                                        <option value>select office branch</option>
+                                        <option :value="branch.id" v-for="(branch, index) in branches" :key="index">{{ branch.name }}</option>
+                                    </select>
+                                    <small v-if="errors.first('branch_id')">{{ errors.first('branch_id') }}</small>
+                                </div>
+                            </div>
+                            <!--form section for register and update ends here-->
 
-                    <hr class="style-two"/>
-                    <div class="col-sm-12 ml-auto mr-auto mt-md-2 mt-0 px-md-3 px-1 mb-3 float-right">
-                        <button class="btn btn-block btn-lg bg-default" type="submit">
-                            {{mode | capitalize}} Customer
-                            <i class="far fa-paper-plane ml-1"></i>
-                        </button>
+                            <hr class="style-two"/>
+                            <div class="col-sm-12 ml-auto mr-auto mt-md-2 mt-0 px-md-3 px-1 mb-3 float-right">
+                                <button class="btn btn-block btn-lg bg-default" type="submit">
+                                    {{ mode | capitalize }} Customer
+                                    <i class="far fa-paper-plane ml-1"></i>
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
-    </div>
 </template>
 <script>
-    import {Message} from "../../utilities/sms";
-    import {log} from "../../utilities/log";
-    import Flash from "../../utilities/flash";
-    import {get, post} from "../../utilities/api";
-    import Verification from "../DVA/verification/verification";
+import { Message } from "../../utilities/sms";
+import { log } from "../../utilities/log";
+import Flash from "../../utilities/flash";
+import { get, post } from "../../utilities/api";
+import Verification from "../DVA/verification/verification";
 import flash from '../../utilities/flash';
 import CustomerData from "../../mixins/CustomerData";
+import { mapGetters } from "vuex";
     export default {
         components: {Verification},
         mixins:[CustomerData],
@@ -2051,8 +2070,14 @@ import CustomerData from "../../mixins/CustomerData";
                 if (this.mode === "update")
                     [this.fillWorkGuarantor, this.fillPersonalGuarantor] = [true, true];
                 this.newCustomer = customer;
-            }
         },
+        showBVN() {
+            return this.newCustomer.bvn === null ? true : this.auth("AdminAccess") ? true : false
+        }
+        },
+    computed: {
+        ...mapGetters(["auth"]),
+    },
         created() {
             get("/api/customer/create").then(({data}) => this.prepareForm(data));
             /*on create of the component fetch the data required to prepare the form

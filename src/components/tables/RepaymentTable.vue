@@ -1,33 +1,34 @@
 <template>
 	<div>
-		<div class="row align-items-center  pt-3 pb-4 mx-auto ">
-			<div class="col light-heading" v-for="header in headings">
+		<div class="row align-items-center  pt-3 pb-4 w-100 tableWidth  ">
+			<div class="col light-heading  text-center" >S/N</div>
+			<div class="col light-heading  text-left" v-for="header in headings">
 				{{ header }}
 			</div>
 		</div>
 		<div class="mt-1 text-center">
-			<div class="mb-3 row attendance-item mx-auto text-center" :key="index" v-for="(customer, index) in customers"
+			<div class="mb-3 row attendance-item w-100 tableWidth text-left" :key="index" v-for="(customer, index) in customers"
 				v-if="customers.length !== 0">
-				<div class="col d-flex align-items-center" style="max-width: 120px">
+				<div class="col d-flex align-items-center" >
 					<span class="user mx-auto">{{ index + OId }}</span>
 				</div>
-				<div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
+				<div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center "
 					data-hoverable="true" @click="viewOrder(customer)">
 					{{ customer.order_number }}
 
 				</div>
-				<div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
+				<div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center "
 					data-hoverable="true" @click="viewCustomer(customer)" v-if="mode === 'renewal'">
 					ID: {{ customer.customer ? customer.customer.id : '' }}-{{
 						customer.customer ? customer.customer.employment_status : '' || ''
 					}}
 				</div>
-				<div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
+				<div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center "
 					data-hoverable="true" @click="viewAmmo(customer)">
 
 					| {{ customer.repayment | currency('₦') }}
 				</div>
-				<div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center">
+				<div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center ">
 					{{
 						formatDate(
 							customer.last_renewal_prompter_activity.attributes.created_at
@@ -77,7 +78,7 @@ export default {
 			type: Array,
 			required: false,
 			default: () => [
-				'S/N',
+				
 				'Order Number',
 				'Customer Info Summary',
 				'Repayment Summary',
@@ -170,4 +171,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.tableWidth{
+	width:25%;
+}
+</style>

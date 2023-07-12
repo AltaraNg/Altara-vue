@@ -6,20 +6,21 @@
 		</div>
 
 		<div class="center my-2 flex " style="gap: 10px">
-			<select name="order_type" class="custom-select flex-1">
+			<select name="order_type" class="custom-select flex-1" v-model="year">
 				<option :value="''" selected>Year</option>
+				<option v-for="option in availableYears" :value="option" :key="option">{{ option }}</option>
 
 			</select>
-			<select name="order_type" class="custom-select flex-1">
+			<select name="order_type" class="custom-select flex-1" v-model="month">
 				<option :value="''" selected>Month</option>
-
+				<option v-for="option in availableMonths" :value="option" :key="option">{{ option }}</option>
 			</select>
 
 
 
-			<select name="business_type" class="custom-select flex-1">
+			<select name="business_type" class="custom-select flex-1" v-model="repaymentPlan">
 				<option :value="''" selected>Repayment Plan</option>
-
+				<option v-for="option in availableRepaymentPlan" :value="option" :key="option">{{ option }}</option>
 			</select>
 
 			<select class="custom-select flex-1" v-validate="'required'">
@@ -95,7 +96,7 @@
 					</div>
 				</div>
 
-				<div v-if="pageParams && orders.length > 0">
+				<div v-if="pageParams && orders.length > 0" >
 					<base-pagination :page-param="pageParams" @fetchData="fetchData">
 					</base-pagination>
 				</div>
@@ -131,6 +132,26 @@ export default {
 	},
 	data() {
 		return {
+			year:'',
+			availableYears:['2001', '2002','2003'],
+			month: '',
+			availableMonths: ['January',
+				'February',
+				'March',
+				'April',
+				'May',
+				'June',
+				'July',
+				'August',
+				'September',
+				'October',
+				'November',
+				'December'],
+				availableRepaymentPlan:['Three_months',
+				'Six_Months',
+				'Nine_months',
+				'Twelve_months',],
+				repaymentPlan:'',
 			apiUrl: {
 				renewalList: '/api/renewal/prompters',
 			},

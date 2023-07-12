@@ -2073,7 +2073,7 @@ export default {
             if (this.mode === "update")
                 [this.fillWorkGuarantor, this.fillPersonalGuarantor] = [true, true];
             this.newCustomer = customer;
-            this.bvn = this.newCustomer.bvn;
+            this.bvn = this.newCustomer.bvn === -1 ? '' : this.newCustomer.bvn;
 
         },
         showBVN() {
@@ -2083,6 +2083,9 @@ export default {
             } else {
                 if (this.auth("AdminAccess")) {
                     return true
+                }
+                if(this.newCustomer.bvn === -1){
+                    return false
                 }
             }
             return false

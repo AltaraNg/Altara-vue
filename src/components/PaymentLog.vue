@@ -857,8 +857,7 @@ export default {
         "ap_cash_loan-collateral",
         "ap_cash_loan-no_collateral",
         "ap_cash_loan",
-        "ac_cash_loan",
-        "ap_products",
+        "ac_cash_loan",        
         "ap_employee_cash_loan",
         "ap_starter_cash_loan",
         "ap_starter_cash_loan-no_collateral",
@@ -1115,6 +1114,10 @@ export default {
       this.productOrder =
         this.salesLogForm?.business_type_id?.slug?.includes("ap_products") ||
         this.salesLogForm?.business_type_id?.slug?.includes("ac_products")
+
+       if(this.salesLogForm?.business_type_id?.slug === 'ap_products' ){
+        this.FixedRepayment = true;
+       }
     },
     customDate(event) {
       this.salesLogForm?.repayment_cycle_id?.name === "custom"
@@ -1389,14 +1392,24 @@ export default {
         }
 
         const { total, actualDownpayment, rePayment } =
-          this.salesLogForm?.repayment_duration_id?.name === "six_months" && !this.FixedRepayment && this.salesLogForm?.business_type_id?.slug.includes('ap')
+          (this.salesLogForm?.repayment_duration_id?.name === "six_months" && this.FixedRepayment === false && this.salesLogForm?.business_type_id?.slug.includes('ap'))
             ? decliningRepaymentCalculator(
+              this.selectedProduct.price,
+              data0,
+              data,
+              this.selected_discount?.percentage_discount
+            )
+            :
+             !(this.productPlans.includes(data0.business_type_id.slug))
+               ?
+
+              cashLoan(
                 this.selectedProduct.price,
                 data0,
                 data,
                 this.selected_discount?.percentage_discount
-              )
-            : calculate(
+              ) :
+              calculate(
                 this.selectedProduct.price,
                 data0,
                 data,

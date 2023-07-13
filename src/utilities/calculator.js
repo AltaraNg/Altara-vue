@@ -145,4 +145,57 @@ const populateDecliningRepaymentAmounts = (
   })
   return repayments
 }
-export { calculate, cashLoan, decliningRepaymentCalculator }
+const decliningRepaymentCalculatorForThreeMonths = (
+  productPrice,
+  data,
+  params,
+  percentage_discount
+) => {
+  const percentages = [
+    0.269482435205326,
+    0.166738587360158,
+    0.0639947395149903
+  ];
+  const repayments = [];
+  const count = repaymentCount(data.repayment_duration_id.value, 14)
+  const actualDownpayment = (data.payment_type_id.percent / 100) * productPrice
+  const residual = productPrice - actualDownpayment
+  const normalInstallment = residual / count
+  const normalInstallmentAndInterest =
+    normalInstallment + (interest / 100) * residual
+  const totalNormalInstallmentAndInterest = normalInstallmentAndInterest * count
+
+  const totalNormalInstallmentAndInterestAndDownpayment =
+    totalNormalInstallmentAndInterest + actualDownpayment
+
+  const labelPrice =
+    (tax / 100) * totalNormalInstallmentAndInterestAndDownpayment +
+    totalNormalInstallmentAndInterestAndDownpayment;
+
+    const decliningDownpayment = (data.payment_type_id.percent  / 100) * labelPrice;
+    const decliningResidual = labelPrice - decliningDownpayment;
+    percentages.forEach((percentage) => {
+      const repayment = percentage * decliningResidual;
+      repayments.push(repayment);
+      repayments.push(repayment);
+    });
+    const discountTedRepayment = applyDiscount(repayments, percentage_discount)
+    const sumOfRepayments = repayments.reduce(
+      (partialSum, nextNumber) => partialSum + nextNumber,
+      0
+    )
+    const sumOfDiscountedRepayments = discountTedRepayment.reduce(
+      (partialSum, nextNumber) => partialSum + nextNumber,
+      0
+    )
+    const total = sumOfRepayments + decliningDownpayment;
+    const discountedTotal = sumOfDiscountedRepayments + decliningDownpayment;
+    return {
+      actualDownpayment: decliningDownpayment.toFixed(2),
+      total: total.toFixed(2),
+      rePayment: sumOfRepayments.toFixed(2),
+      discountedTotal: discountedTotal.toFixed(2),
+      discountedRepayment: sumOfDiscountedRepayments.toFixed(2),
+    }
+}
+export { calculate, cashLoan, decliningRepaymentCalculator, decliningRepaymentCalculatorForThreeMonths }

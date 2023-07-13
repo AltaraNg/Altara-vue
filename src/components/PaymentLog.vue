@@ -709,7 +709,7 @@
 import { get, post } from "../utilities/api"
 import { mapGetters } from "vuex"
 import AutoComplete from "./AutoComplete.vue"
-import { calculate, cashLoan } from "../utilities/calculator"
+import { calculate, cashLoan, decliningRepaymentCalculator } from "../utilities/calculator"
 import VerificationCollectionData from "./modals/VerificationCollectionData"
 import Flash from "../utilities/flash"
 import discount from "./discount.vue"
@@ -857,8 +857,7 @@ export default {
         "ap_cash_loan-collateral",
         "ap_cash_loan-no_collateral",
         "ap_cash_loan",
-        "ac_cash_loan",
-        "ap_products",
+        "ac_cash_loan",        
         "ap_employee_cash_loan",
         "ap_starter_cash_loan",
         "ap_starter_cash_loan-no_collateral",
@@ -981,7 +980,9 @@ export default {
     computedPayment(firstvalue, secondvalue) {
       if (this.singleRepayment && this.addDownpayment) {
         return firstvalue
-      } else return secondvalue
+      } else {
+
+        return secondvalue}
     },
     watchCashPrice() {
       this.watchSalesCategory()
@@ -1113,6 +1114,10 @@ export default {
       this.productOrder =
         this.salesLogForm?.business_type_id?.slug?.includes("ap_products") ||
         this.salesLogForm?.business_type_id?.slug?.includes("ac_products")
+
+       if(this.salesLogForm?.business_type_id?.slug === 'ap_products' ){
+        this.FixedRepayment = true;
+       }
     },
     customDate(event) {
       this.salesLogForm?.repayment_cycle_id?.name === "custom"
@@ -1387,28 +1392,34 @@ export default {
         }
 
         const { total, actualDownpayment, rePayment } =
-          data0.business_type_id.slug.includes("cash_loan") ||
-          data0.business_type_id.slug.includes("ap_rentals") ||
-          data0.business_type_id.slug.includes("ap_super") ||
-          data0.business_type_id.slug.includes("ap_no_bs_renewal") ||
-          data0.business_type_id.slug.includes("ap_no_bs_new") ||
-          data0.business_type_id.slug.includes("ap_starter")
-            ? cashLoan(
+          (this.salesLogForm?.repayment_duration_id?.name === "six_months" && this.FixedRepayment === false && this.salesLogForm?.business_type_id?.slug.includes('ap'))
+            ? decliningRepaymentCalculator(
+              this.selectedProduct.price,
+              data0,
+              data,
+              this.selected_discount?.percentage_discount
+            )
+            :
+             !(this.productPlans.includes(data0.business_type_id.slug))
+               ?
+
+              cashLoan(
                 this.selectedProduct.price,
                 data0,
                 data,
                 this.selected_discount?.percentage_discount
-              )
-            : calculate(
+              ) :
+              calculate(
                 this.selectedProduct.price,
                 data0,
                 data,
                 this.selected_discount?.percentage_discount
               )
 
+
         this.repaymentCircle = data0.repayment_cycle_id?.value
         this.rDuration = data0.repayment_duration_id.value
-        this.fPayment = actualDownpayment
+        this.fPayment = Math.trunc(actualDownpayment)
         this.rPayment = rePayment
         this.pPrice = total
         this.canPerformAction = false
@@ -1643,7 +1654,13 @@ export default {
         this.$LIPS(true)
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes)
         this.biz_type = fetchBusinessTypes?.data?.data?.data
+        this.biz_type = this.biz_type.filter(item => {
+          return item.slug !== 'ap_bnpl'
+        })
         this.businessTypes = fetchBusinessTypes?.data?.data?.data
+        this.businessTypes = this.businessTypes.filter(item => {
+          return item.slug !== 'ap_bnpl'
+        })
         this.businessTypes = this.businessTypes.filter(item => {
           if (this.isAltaraCredit) {
             return item.slug.includes("ac_")
@@ -1846,6 +1863,7 @@ export default {
     },
     triggerToggleEventFixedRepayment() {
       this.FixedRepayment = !this.FixedRepayment
+      this.getCalc();
     },
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value)

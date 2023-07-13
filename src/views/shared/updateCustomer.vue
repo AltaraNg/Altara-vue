@@ -1837,44 +1837,62 @@
 
                         <div class="spaceAfter"></div>
                     </div>
+                            <div v-if="showBVN()">
+                                <div class="spaceAfter"></div>
+                                <h5>Bank Information</h5>
 
-                    <div v-if="mode === 'register'">
-                        <h5>Other Questions</h5>
-                        <div class="form-group col-md-4 px-md-3 px-1 float-left">
-                            <label>What product do you need?</label>
-                            <input
+                                <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                                  <label>BVN</label>
+                                  <input
                                     class="form-control"
-                                    data-vv-as="what product do you need"
-                                    name="what_product_do_you_need"
-                                    placeholder="Enter Product name"
-                                    type="text"
-                                    v-model="newCustomer.what_product_do_you_need"
-                                    v-validate="'required|max:25'"
-                            />
-                            <small
-                                    v-if="errors.first('what_product_do_you_need')"
-                            >{{errors.first('what_product_do_you_need')}}
-                            </small>
-                        </div>
+                                    name="bvn"
+                                    placeholder="Enter BVN"
+                                                                    type="number"
+                                                                    v-model="bvn"
+                                                                    v-validate="'max:11|min:11'"
+                                                          />
+                                                          <small v-if="errors.first('bvn')">{{
+                                                              errors.first("bvn")
+                                                          }}</small>
+                                                        </div>
+                                                    </div>
+                                                    <div v-if="mode === 'register'">
+                                                        <h5>Other Questions</h5>
+                                                        <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                                                            <label>What product do you need?</label>
+                                                            <input
+                                                                    class="form-control"
+                                                                    data-vv-as="what product do you need"
+                                                                    name="what_product_do_you_need"
+                                                                    placeholder="Enter Product name"
+                                                                    type="text"
+                                                                    v-model="newCustomer.what_product_do_you_need"
+                                                                    v-validate="'required|max:25'"
+                                                            />
+                                                            <small
+                                                                    v-if="errors.first('what_product_do_you_need')"
+                                                            >{{ errors.first('what_product_do_you_need') }}
+                                                            </small>
+                                                        </div>
 
-                        <div class="form-group col-md-4 px-md-3 px-1 float-left">
-                            <label>What do you need it for?</label>
-                            <input
-                                    class="form-control"
-                                    data-vv-as="what do you need it for"
-                                    name="what_do_you_need_it_for"
-                                    placeholder="Enter Reason.."
-                                    type="text"
-                                    v-model="newCustomer.what_do_you_need_it_for"
-                                    v-validate="'required|max:25'"
-                            />
-                            <small
-                                    v-if="errors.first('what_do_you_need_it_for')"
-                            >{{errors.first('what_do_you_need_it_for')}}
-                            </small>
-                        </div>
+                                                        <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                                                            <label>What do you need it for?</label>
+                                                            <input
+                                                                    class="form-control"
+                                                                    data-vv-as="what do you need it for"
+                                                                    name="what_do_you_need_it_for"
+                                                                    placeholder="Enter Reason.."
+                                                                    type="text"
+                                                                    v-model="newCustomer.what_do_you_need_it_for"
+                                                                    v-validate="'required|max:25'"
+                                                            />
+                                                            <small
+                                                                    v-if="errors.first('what_do_you_need_it_for')"
+                                                            >{{ errors.first('what_do_you_need_it_for') }}
+                                                            </small>
+                                                        </div>
 
-                        <!-- <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                                                        <!-- <div class="form-group col-md-4 px-md-3 px-1 float-left">
                                         <label class="w-100 float-left pl-1">Category</label>
                                         <div class="radio p-0 col-6 float-left">
                                             <input :value="true" id="lifestyle" type="radio" v-model="isLifestyle">
@@ -1886,173 +1904,197 @@
                                         </div>
                         </div>-->
 
-                        <!-- <div class="spaceBetween"></div> -->
+                                                        <!-- <div class="spaceBetween"></div> -->
 
-                        <div class="form-group col-md-4 px-md-3 px-1 float-left">
-                            <label>Office Branch</label>
-                            <select
-                                    class="custom-select w-100"
-                                    data-vv-as="office branch"
-                                    data-vv-validate-on="blur"
-                                    disabled
-                                    name="branch_id"
-                                    v-model="newCustomer.branch_id"
-                                    v-validate="'required'"
-                            >
-                                <option value>select office branch</option>
-                                <option :value="branch.id" v-for="(branch, index) in branches" :key="index">{{branch.name}}</option>
-                            </select>
-                            <small v-if="errors.first('branch_id')">{{errors.first('branch_id')}}</small>
-                        </div>
-                    </div>
-                    <!--form section for register and update ends here-->
+                                                        <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                                                            <label>Office Branch</label>
+                                                            <select
+                                                                    class="custom-select w-100"
+                                                                    data-vv-as="office branch"
+                                                                    data-vv-validate-on="blur"
+                                                                    disabled
+                                                                    name="branch_id"
+                                                                    v-model="newCustomer.branch_id"
+                                                                    v-validate="'required'"
+                                                            >
+                                                                <option value>select office branch</option>
+                                                                <option :value="branch.id" v-for="(branch, index) in branches" :key="index">{{ branch.name }}</option>
+                                                            </select>
+                                                            <small v-if="errors.first('branch_id')">{{ errors.first('branch_id') }}</small>
+                                                        </div>
+                                                    </div>
+                                                    <!--form section for register and update ends here-->
 
-                    <hr class="style-two"/>
-                    <div class="col-sm-12 ml-auto mr-auto mt-md-2 mt-0 px-md-3 px-1 mb-3 float-right">
-                        <button class="btn btn-block btn-lg bg-default" type="submit">
-                            {{mode | capitalize}} Customer
-                            <i class="far fa-paper-plane ml-1"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+                                                    <hr class="style-two"/>
+                                                    <div class="col-sm-12 ml-auto mr-auto mt-md-2 mt-0 px-md-3 px-1 mb-3 float-right">
+                                                        <button class="btn btn-block btn-lg bg-default" type="submit">
+                                                            {{ mode | capitalize }} Customer
+                                                            <i class="far fa-paper-plane ml-1"></i>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
 </template>
 <script>
-    import {Message} from "../../utilities/sms";
-    import {log} from "../../utilities/log";
-    import Flash from "../../utilities/flash";
-    import {get, post} from "../../utilities/api";
-    import Verification from "../DVA/verification/verification";
+import { Message } from "../../utilities/sms";
+import { log } from "../../utilities/log";
+import Flash from "../../utilities/flash";
+import { get, post } from "../../utilities/api";
+import Verification from "../DVA/verification/verification";
 import flash from '../../utilities/flash';
 import CustomerData from "../../mixins/CustomerData";
-    export default {
-        components: {Verification},
-        mixins:[CustomerData],
-        data(){
-            return{
-                gender: [ "Male","female"],
-            }
-        },
-        
-        methods: {
-            register() {
-                $('input[name="occ"]').attr('disabled', false);
-                this.$validator.validateAll().then(async result => {
-                    if (result) {
-                        if (this.newCustomer.employment_status === "unemployed") {
-                            Flash.setError(
-                                "you can only register customer from formal and informal sectors at the moment!"
-                            );
-                            return this.$scrollToTop();
-                        }
-                        if (this.$network()) {
-                            this.$LIPS(true);
-                            this.error = {};
-                            if (this.mode === "update") {
-                                let acc = this.$editAccess(this.user, this.newCustomer);
-                                if (!acc) return this.$networkErr("edit");
-                            }
-                            await post(
-                                `/api/customer${
-                                    this.mode === "update" ? "/" + this.newCustomer.id : ""
-                                    }`,
-                                this.newCustomer
-                            )
-                                .then(({data}) => {
-                                    let {
-                                        first_name: FN,
-                                        last_name: LN,
-                                        id,
-                                        branch,
-                                        telephone: tel
-                                    } = data.customer;
-                                    Flash.setSuccess(
-                                        `Customer ${this.mode}d successful! Customer ID is: ${id}`,
-                                        30000
-                                    );
-                                    log(`${this.mode}dCustomer`, `Customer ID :${id}`);
-                                    if (this.mode === "register") {
-                                        this.prepareForm(data.prepareForm)
-                                    }
-                                })
-                                .catch(e => {
-                                    e = e.response;
-                                    if (e.status === 422)
-                                        this.error = e.data.errors ? e.data.errors : e.data;
-                                    Flash.setError(
-                                        e.status === 422 ? this.$displayErrorText(this.error.data.errors) : e.message,
-                                        10000
-                                    );
-                                })
-                                .finally(()=>{
-                                    this.$isProcessing = false;
-                                });
-                            this.$scrollToTop();
-                            this.$LIPS(false);
-                        } else this.$networkErr();
-                    } else this.$networkErr("form");
-                    $('input[name="occ"]').attr('disabled', !(this.isOther && this.isClick));
-                    
-                });
-            },
-            checkOccupation(id) {
-                $(".occupation-title, .occupation-option").removeClass('active shadow-sm');
-                this.occupations.forEach(element => {
-                    if (element.id === id) {
-                        $(`.occupation-title[data-id="${id}"]`).addClass('active shadow-sm');
-                        this.occName = element.names;
-                        // this.newCustomer.employment_status = element.category;
-                        this.isClick = true;
-                        this.isOther = (element.id === 12) ? true : false
-                        if (element.id === 12) {
-                            this.isOther = true;
-                        } else {
-                            this.isOther = false;
-                        }
+import { mapGetters } from "vuex";
+export default {
+    components: { Verification },
+    mixins: [CustomerData],
+    data() {
+        return {
+            gender: ["Male", "female"],
+            bvn: ""
+        }
+
+    },
+
+    methods: {
+        register() {
+            $('input[name="occ"]').attr('disabled', false);
+
+            this.$validator.validateAll().then(async result => {
+                if (result) {
+                    if (this.newCustomer.employment_status === "unemployed") {
+                        Flash.setError(
+                            "you can only register customer from formal and informal sectors at the moment!"
+                        );
+                        return this.$scrollToTop();
                     }
-                });
-            },
-            getCustomerDetails(){
-                this.$LIPS(true)
-                get(`/api/customer-contact/get-by-id/${this.cc_reg_id}`).then(res => {
-                    let customer = res.data.data;
-                    this.newCustomer.first_name = (customer.name).split(" ")[0]
-                    this.newCustomer.last_name = (customer.name).split(" ")[1]
-                    this.newCustomer.telephone = customer.phone
-                    this.newCustomer.email = customer.email;
-                    this.newCustomer.reg_id = this.cc_reg_id;
-                }).catch(err => {
-                    flash.setError(err.status === 400 ? err.message : this.$displayErrorText("Reg Id does not exist"),
-                                        10000);
-                    const field = this.$validator.fields.find({name: 'cc_reg_id'});
-                    field.setFlags({invalid : true})
-                }).finally(() => {
-                    this.$LIPS(false);
-                })
-            },
-            setOccupation(name) {
-                $(".occupation-option").removeClass('active shadow-sm');
-                this.occName.forEach(element => {
-                    if (element == name) {
-                        this.newCustomer.occupation = element;
-                        $(`.occupation-option[data-name="${name}"]`).addClass('active shadow-sm');
-                    }
-                });
-            },
-            prepareForm(data) {
-                this.states = data.states;
-                this.branches = data.branches;
-                this.newCustomer = data.form;
-                this.user = data.user;
-            },
-            updateCustomer(customer) {
-                if (this.mode === "update")
-                    [this.fillWorkGuarantor, this.fillPersonalGuarantor] = [true, true];
-                this.newCustomer = customer;
-            }
+                    if (this.$network()) {
+                        this.$LIPS(true);
+                        this.error = {};
+                        if (this.mode === "update") {
+                            let acc = this.$editAccess(this.user, this.newCustomer);
+                            if (!acc) return this.$networkErr("edit");
+                        }
+                        this.newCustomer.bvn = this.bvn
+                        await post(
+                            `/api/customer${this.mode === "update" ? "/" + this.newCustomer.id : ""
+                            }`,
+                            this.newCustomer
+                        )
+                            .then(({ data }) => {
+                                let {
+                                    first_name: FN,
+                                    last_name: LN,
+                                    id,
+                                    branch,
+                                    telephone: tel
+                                } = data.customer;
+                                Flash.setSuccess(
+                                    `Customer ${this.mode}d successful! Customer ID is: ${id}`,
+                                    30000
+                                );
+                                log(`${this.mode}dCustomer`, `Customer ID :${id}`);
+                                if (this.mode === "register") {
+                                    this.prepareForm(data.prepareForm)
+                                }
+                            })
+                            .catch(e => {
+                                e = e.response;
+                                if (e.status === 422)
+                                    this.error = e.data.errors ? e.data.errors : e.data;
+                                Flash.setError(
+                                    e.status === 422 ? this.$displayErrorText(this.error.data.errors) : e.message,
+                                    10000
+                                );
+                            })
+                            .finally(() => {
+                                this.$isProcessing = false;
+                            });
+                        this.$scrollToTop();
+                        this.$LIPS(false);
+                    } else this.$networkErr();
+                } else this.$networkErr("form");
+                $('input[name="occ"]').attr('disabled', !(this.isOther && this.isClick));
+
+            });
         },
+        checkOccupation(id) {
+            $(".occupation-title, .occupation-option").removeClass('active shadow-sm');
+            this.occupations.forEach(element => {
+                if (element.id === id) {
+                    $(`.occupation-title[data-id="${id}"]`).addClass('active shadow-sm');
+                    this.occName = element.names;
+                    // this.newCustomer.employment_status = element.category;
+                    this.isClick = true;
+                    this.isOther = (element.id === 12) ? true : false
+                    if (element.id === 12) {
+                        this.isOther = true;
+                    } else {
+                        this.isOther = false;
+                    }
+                }
+            });
+        },
+        getCustomerDetails() {
+            this.$LIPS(true)
+            get(`/api/customer-contact/get-by-id/${this.cc_reg_id}`).then(res => {
+                let customer = res.data.data;
+                this.newCustomer.first_name = (customer.name).split(" ")[0]
+                this.newCustomer.last_name = (customer.name).split(" ")[1]
+                this.newCustomer.telephone = customer.phone
+                this.newCustomer.email = customer.email;
+                this.newCustomer.reg_id = this.cc_reg_id;
+            }).catch(err => {
+                flash.setError(err.status === 400 ? err.message : this.$displayErrorText("Reg Id does not exist"),
+                    10000);
+                const field = this.$validator.fields.find({ name: 'cc_reg_id' });
+                field.setFlags({ invalid: true })
+            }).finally(() => {
+                this.$LIPS(false);
+            })
+        },
+        setOccupation(name) {
+            $(".occupation-option").removeClass('active shadow-sm');
+            this.occName.forEach(element => {
+                if (element == name) {
+                    this.newCustomer.occupation = element;
+                    $(`.occupation-option[data-name="${name}"]`).addClass('active shadow-sm');
+                }
+            });
+        },
+        prepareForm(data) {
+            this.states = data.states;
+            this.branches = data.branches;
+            this.newCustomer = data.form;
+            this.user = data.user;
+        },
+        updateCustomer(customer) {
+            if (this.mode === "update")
+                [this.fillWorkGuarantor, this.fillPersonalGuarantor] = [true, true];
+            this.newCustomer = customer;
+            this.bvn = this.newCustomer.bvn === -1 ? '' : this.newCustomer.bvn;
+
+        },
+        showBVN() {
+
+            if (this.newCustomer.bvn === null) {
+                return true
+            } else {
+                if (this.auth("AdminAccess")) {
+                    return true
+                }
+                if(this.newCustomer.bvn === -1){
+                    return false
+                }
+            }
+            return false
+
+        }
+        },
+    computed: {
+        ...mapGetters(["auth"]),
+    },
         created() {
             get("/api/customer/create").then(({data}) => this.prepareForm(data));
             /*on create of the component fetch the data required to prepare the form

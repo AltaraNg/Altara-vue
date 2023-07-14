@@ -174,7 +174,26 @@
                         </div>
                         
                         <div class="spaceAfter"></div>
+                        <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                            <label>Date of Birth</label>
+                            <input
+                            class="form-control"
+                            data-vv-as="date of birth"
+                            name="date_of_birth"
+                            type="date"
+                            v-model="newCustomer.date_of_birth"
+                            v-validate="'required'"
+                            />
+                            <small v-if="errors.first('date_of_birth')">
+                                {{
+                                    errors.first("date_of_birth")
+                                }}
+                            </small>
+                        </div>
+                        
+                        <div class="spaceAfter"></div>
                     </div>
+                    
                     <!-- </div> -->
                     <!--form section for register stops here-->
 
@@ -279,7 +298,11 @@
                         </div>
 
                         <div class="spaceAfter"></div>
+
+                        
                     </div>
+
+                    
                     <!--form section for register and update stops here-->
 
                     <!--form section for register starts here-->

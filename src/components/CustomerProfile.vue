@@ -261,6 +261,14 @@
                     </th>
                     <td>{{ branch | capitalize }}</td>
                   </tr>
+                  <tr v-if="forCreditChecker">
+                    <th class="text-muted">
+                      <i class="mr-3 fas fa-university"></i>BVN
+                    </th>
+                    <td>
+                      {{ !customer.bvn ? "Not Available" : customer.bvn }}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>

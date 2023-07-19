@@ -162,14 +162,14 @@ const decliningRepaymentCalculatorForThreeMonths = (
   const residual = productPrice - actualDownpayment
   const normalInstallment = residual / count
   const normalInstallmentAndInterest =
-    normalInstallment + (interest / 100) * residual
+    normalInstallment + (params.interest / 100) * residual
   const totalNormalInstallmentAndInterest = normalInstallmentAndInterest * count
 
   const totalNormalInstallmentAndInterestAndDownpayment =
     totalNormalInstallmentAndInterest + actualDownpayment
 
   const labelPrice =
-    (tax / 100) * totalNormalInstallmentAndInterestAndDownpayment +
+    (params.tax / 100) * totalNormalInstallmentAndInterestAndDownpayment +
     totalNormalInstallmentAndInterestAndDownpayment;
 
     const decliningDownpayment = (data.payment_type_id.percent  / 100) * labelPrice;

@@ -403,8 +403,28 @@
                     />
                     <label :for="highestLevel">{{ highestLevel }}</label>
                   </div>
-               
-              </div>
+
+                  
+                </div>
+                <div v-if="showBVN()">
+                                <div class="spaceAfter"></div>
+                                <h5>Bank Information</h5>
+
+                                <div class="form-group col-md-4 px-md-3 px-1 float-left">
+                                  <label>BVN</label>
+                                  <input
+                                        class="form-control"
+                                        name="bvn"
+                                        placeholder="Enter BVN"
+                                        type="number"
+                                        v-model="bvn"
+                                        v-validate="'max:11|min:11'"
+                                        />
+                                        <small v-if="errors.first('bvn')">{{
+                                            errors.first("bvn")
+                                        }}</small>
+                                </div>
+                                </div>
             </div>
     </div>
 
@@ -413,6 +433,7 @@
 import { validationMixin } from 'vuelidate'
 import { get, post } from "../../utilities/api";
 import flash from "../../utilities/flash";
+import { mapGetters } from "vuex";
 export default{
     mixins: [validationMixin],
     props:{
@@ -449,7 +470,7 @@ export default{
    data(){
      return{
        cc_reg_id:"",
-       
+       bvn: ""
      }
    },
    methods:{
@@ -479,7 +500,25 @@ export default{
           this.$LIPS(false);
         });
     },
-   }
+    showBVN() {
+
+        if (this.formData.newCustomer.bvn === null) {
+            return true
+        } else {
+            if (this.auth("AdminAccess")) {
+                return true
+            }
+            if(this.formData.newCustomer.bvn === -1){
+                return false
+            }
+        }
+        return false
+      
+    }
+   },
+   computed: {
+        ...mapGetters(["auth"]),
+    },
     
 }
 

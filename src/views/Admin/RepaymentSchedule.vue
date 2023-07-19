@@ -7,33 +7,32 @@
 
 		<div class="center my-2 flex " style="gap: 10px">
 			<select name="order_type" class="custom-select flex-1" v-model="year">
-				<option :value="''" selected>Year</option>
+				<option value="year" selected>Year</option>
 				<option v-for="option in availableYears" :value="option" :key="option">{{ option }}</option>
 
 			</select>
 			<select name="order_type" class="custom-select flex-1" v-model="month">
-				<option :value="''" selected>Month</option>
-				<option v-for="option in availableMonths" :value="option" :key="option">{{ option }}</option>
+				<option value="month" selected>Month</option>
+				<option v-for="option in availableMonths" :value="option.id" :key="option.id">{{ option.name }}</option>
 			</select>
 
 
 
-			<select name="business_type" class="custom-select flex-1" v-model="repaymentPlan">
+			<select name="repayment_duration" class="custom-select flex-1" v-model="repaymentPlan">
 				<option :value="''" selected>Repayment Plan</option>
-				<option v-for="option in availableRepaymentPlan" :value="option" :key="option">{{ option }}</option>
+				<option v-for="option in availableRepaymentPlan" :value="option.id" :key="option.id">{{ option.name }}</option>
 			</select>
 
-			<select class="custom-select flex-1" v-validate="'required'">
-				<option value="">Showroom</option>
-				<option :value="'formal'">Formal</option>
-				<option :value="'informal'">Informal</option>
+			<select class="custom-select flex-1" v-validate="'required'" v-model="branch">
+				<option value="0" selected>Showroom</option>
+				<option v-for="option in Branches" :value="option.id">{{ option.name }}</option>
 			</select>
-			<button class="bg-default rounded ml-auto py-2 px-4">
+			<button class="bg-default rounded ml-auto py-2 px-4" @click="getReport()">
 				<span class="h5" style="width: 5rem">
 					Search
 				</span>
 			</button>
-			<button class="bg-default rounded ml-auto py-2 px-4">
+			<button class="bg-default rounded ml-auto py-2 px-4" @click="resetReport()">
 				<span class="h5" style="width: 5rem">
 					Reset
 				</span>
@@ -43,7 +42,8 @@
 			<div class=" card  hover-zoom hover-shadow  bg-white" v-for="(data, index) in StatData" :key="index">
 				<div>
 					<p>{{ data.title }}</p>
-					<p style="color: #04103B; font-weight: 700; font-size: 25px; line-height: 0.3;">{{ data.amount }}</p>
+					<p style="color: #04103B; font-weight: 700; font-size: 25px; line-height: 0.3;">{{
+						$formatCurrency(data.amount) || data.stat }}</p>
 					<div class="pt-4  flex" v-if="data.percent" style="align-items: center;">
 						<component :is="data.percentIcon" />
 						<div class="pl-1 font-weight-bold "
@@ -61,49 +61,39 @@
 
 		</div>
 		<div class="mx-4" style="margin-top:30px; margin-bottom: 40px; padding-left: 20px;">
-			<bar-chart :chart-data="barData" :options="barOption" ></bar-chart>
+			<bar-chart :chart-data="barData" :options="barOption"></bar-chart>
 		</div>
 		<div class="space-between mb-5 px-4">
-				<h3 class="text-capitalize mb-0">Customers</h3>
+			<h3 class="text-capitalize mb-0">Customers</h3>
+		</div>
+		<div v-if="isProcessing === false">
+			<div v-if="orders.length > 0">
+				<div class="tab-content" id="tabContent">
+					<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+						<repayment-table :customers="orders"></repayment-table>
+					</div>
+
+				</div>
 			</div>
-			<div v-if="isProcessing === false">
-					<div v-if="orders.length > 0">
-						<div class="tab-content" id="tabContent">
-							<div
-								class="tab-pane fade show active"
-								id="all"
-								role="tabpanel"
-								aria-labelledby="all-tab"
-							>
-								<repayment-table
-									:customers="orders"
-									
-								></repayment-table>
-							</div>
-							
-						</div>
-					</div>
 
-					<div v-else class="mx-4">
-						<zero-state
-							:title="'No Repayment List'"
-							:message="'There are currrently no customer that is owing'"
-						>
-							<template v-slot:image>
-								<img src="../../assets/thumb-up.png" />
-							</template>
-						</zero-state>
-					</div>
-				</div>
+			<div v-else class="mx-4">
+				<zero-state :title="'No Repayment List'" :message="'There are currrently no customer that is owing'">
+					<template v-slot:image>
+						<img src="../../assets/thumb-up.png" />
+					</template>
+				</zero-state>
+			</div>
+		</div>
 
-				<div v-if="pageParams && orders.length > 0" >
-					<base-pagination :page-param="pageParams" @fetchData="fetchData">
-					</base-pagination>
-				</div>
+		<div v-if="pageParams && orders.length > 0">
+			<base-pagination :page-param="pageParams" @fetchData="fetchData">
+			</base-pagination>
+		</div>
 
 	</div>
 </template>
 <script>
+import { get, byMethod } from '../../utilities/api';
 import Flash from '../../utilities/flash';
 import StatCard from '../../components/StatCard.vue';
 import users from '../../assets/users.vue'
@@ -113,7 +103,6 @@ import arrowUp from '../../assets/arrowUp.vue'
 import arrowDown from '../../assets/arrowDown.vue'
 import BarChart from '../../components/charts/BarChart.vue';
 import RepaymentTable from '../../components/tables/RepaymentTable.vue';
-import { get } from '../../utilities/api';
 import queryParam from '../../utilities/queryParam';
 import ZeroState from '../../components/ZeroState.vue';
 import BasePagination from '../../components/Pagination/BasePagination.vue';
@@ -121,10 +110,10 @@ export default {
 	components: {
 		StatCard,
 		users,
-		moneyStack, 
-		tracking, 
-		arrowUp, 
-		arrowDown, 
+		moneyStack,
+		tracking,
+		arrowUp,
+		arrowDown,
 		BarChart,
 		RepaymentTable,
 		BasePagination,
@@ -132,49 +121,42 @@ export default {
 	},
 	data() {
 		return {
-			year:'',
-			availableYears:['2001', '2002','2003'],
-			month: '',
-			availableMonths: ['January',
-				'February',
-				'March',
-				'April',
-				'May',
-				'June',
-				'July',
-				'August',
-				'September',
-				'October',
-				'November',
-				'December'],
-				availableRepaymentPlan:['Three_months',
-				'Six_Months',
-				'Nine_months',
-				'Twelve_months',],
-				repaymentPlan:'',
-			apiUrl: {
-				renewalList: '/api/renewal/prompters',
+			Branches: [],
+			branch: '0',
+			query: {},
+			reports: null,
+			year: 2023,
+			availableYears: this.getYearsToCurrentYear(),
+			month: 5,
+			availableMonths: this.getMonthsArrayWithIDs(),
+			availableRepaymentPlan: [],
+			repaymentPlan: '',
+			apiUrls: {
+				getReports: '/api/repayment-schedule/report',
+				repaymentDurations: '/api/repayment_duration',
+				branches: '/api/branches'
 			},
 			pageParams: {},
+			MonthlyStat: [],
 			orders: [],
 			isProcessing: true,
 			StatData: [
 				{
 					title: 'Total  Repayment Expected',
-					amount: '₦6,000,000',
+					amount: '',
 					icon: moneyStack
 				},
 				{
 					title: 'Total  Repayment Paid',
-					amount: '₦6,000,000',
-					percent: '0.83%',
+					amount: '',
+					percent: '',
 					percentIcon: arrowUp,
 					icon: tracking
 				},
 				{
 					title: 'Total Defaulters/Total Customers',
-					amount: '234/238',
-					percent: '98.3%',
+					amount: '',
+					percent: '',
 					percentIcon: arrowDown,
 					icon: users
 				},
@@ -275,9 +257,107 @@ export default {
 			this.OId = from;
 			this.$LIPS(false);
 		},
+		async getReport() {
+			this.$LIPS(true);
+			this.query.orderMonth = this.month;
+			this.query.orderYear = this.year;
+			this.query.branch = this.branch;
+			this.query.repaymentPlan = this.repaymentPlan;
+			try {
+				const report = await byMethod(
+					'GET',
+					this.apiUrls.getReports,
+					{},
+					this.query
+				);
+				this.reports = report.data.data.meta
+				// const PercentPaid = ((this.reports.actual_repayment/ this.reports.expected_repayment)*100).toFixed(2)
+				this.StatData = [
+					{
+						title: 'Total  Repayment Expected',
+						amount: this.reports.expected_repayment,
+						icon: moneyStack
+					},
+					{
+						title: 'Total  Repayment Paid',
+						amount: this.reports.actual_repayment,
+						percent: this.getPercent(this.reports.actual_repayment, this.reports.expected_repayment) + '%',
+						percentIcon: arrowUp,
+						icon: tracking
+					},
+					{
+						title: 'Total Defaulters/Total Orders',
+						stat: `${this.reports.defaultingOrders} / ${this.reports.total_orders}`,
+						percent: this.getPercent(this.reports.defaultingOrders, this.reports.total_orders) + '%',
+						percentIcon: arrowDown,
+						icon: users
+					},
+				],
+					// console.log(PercentPaid, 'PercentPaid');
+
+					this.MonthlyStat = Object.values(
+						this.reports.meta.groupByMonth
+					);
+				//sort the months to be serial
+
+			} catch (err) {
+				if (err.response) {
+					Flash.setError(err.response.statusText);
+				}
+			} finally {
+				this.$LIPS(false);
+			}
+		},
+		resetReport(){
+			this.month= new Date().getMonth();
+			this.year = new Date().getFullYear();
+			this.branch = 0;
+			this.repaymentPlan='';
+			this.getReport();
+		},
+		getPercent(value1, value2) {
+			return ((value1 / value2) * 100).toFixed(2)
+		},
+		async getRepaymentDuration() {
+			try {
+				const fetchRepaymentDuration = await get(this.apiUrls.repaymentDurations);
+				this.availableRepaymentPlan = fetchRepaymentDuration.data.data.data;
+			} catch (err) {
+				this.$displayErrorMessage(err);
+			}
+		},
+		async getBranches() {
+			try {
+				const fetchBranches = await get(this.apiUrls.branches);
+				this.Branches = fetchBranches.data.branches;
+			} catch (err) {
+				this.$displayErrorMessage(err);
+			}
+		},
+		getYearsToCurrentYear() {
+			const currentYear = new Date().getFullYear();
+			const yearsArray = Array.from({ length: currentYear - 2009 }, (_, index) => 2010 + index);
+			return yearsArray;
+		},
+		getMonthsArrayWithIDs() {
+			const months = [];
+			for (let i = 1; i <= 12; i++) {
+				const monthName = new Date(2023, i - 1, 1).toLocaleString('default', { month: 'long' });
+				months.push({ id: i, name: monthName });
+			}
+			return months;
+		},
 	},
 	async mounted() {
-		await this.fetchData();
+		this.getRepaymentDuration()
+		this.getBranches()
+		// await this.fetchData();
+
+
+	},
+	async created() {
+		await this.getReport();
+		console.log(this.reports);
 	}
 }
 

@@ -500,21 +500,13 @@ export default{
           this.$LIPS(false);
         });
     },
-    showBVN() {
-
-        if (this.formData.newCustomer.bvn === null) {
-            return true
-        } else {
-            if (this.auth("AdminAccess")) {
-                return true
-            }
-            if(this.formData.newCustomer.bvn === -1){
-                return false
-            }
-        }
-        return false
-      
-    }
+    showBVN() { 
+      if (this.formData.newCustomer.bvn === null || this.auth("AdminAccess")) {
+       return true; 
+    } else { 
+      return this.formData.newCustomer.bvn !== -1; 
+    } 
+  } 
    },
    computed: {
         ...mapGetters(["auth"]),

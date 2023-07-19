@@ -266,7 +266,7 @@
                       <i class="mr-3 fas fa-university"></i>BVN
                     </th>
                     <td>
-                      {{ !customer.bvn ? "Not Available" : customer.bvn }}
+                      {{ customer.bvn ||  "Not Available" }}
                     </td>
                   </tr>
                 </tbody>

@@ -20,7 +20,8 @@
 
 			<select name="repayment_duration" class="custom-select flex-1" v-model="repaymentPlan">
 				<option :value="''" selected>Repayment Plan</option>
-				<option v-for="option in availableRepaymentPlan" :value="option.id" :key="option.id">{{ option.name }}</option>
+				<option v-for="option in availableRepaymentPlan" :value="option.id" :key="option.id">{{ option.name }}
+				</option>
 			</select>
 
 			<select class="custom-select flex-1" v-validate="'required'" v-model="branch">
@@ -67,10 +68,10 @@
 			<h3 class="text-capitalize mb-0">Customers</h3>
 		</div>
 		<div v-if="isProcessing === false">
-			<div v-if="orders.length > 0">
+			<div v-if="order2.length > 0">
 				<div class="tab-content" id="tabContent">
 					<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
-						<repayment-table :customers="orders"></repayment-table>
+						<repayment-table :customers="order2"></repayment-table>
 					</div>
 
 				</div>
@@ -85,7 +86,7 @@
 			</div>
 		</div>
 
-		<div v-if="pageParams && orders.length > 0">
+		<div v-if="pageParams && order2.length > 0">
 			<base-pagination :page-param="pageParams" @fetchData="fetchData">
 			</base-pagination>
 		</div>
@@ -134,11 +135,13 @@ export default {
 			apiUrls: {
 				getReports: '/api/repayment-schedule/report',
 				repaymentDurations: '/api/repayment_duration',
-				branches: '/api/branches'
+				branches: '/api/branches',
+				renewalList: '/api/renewal/prompters',
 			},
 			pageParams: {},
 			MonthlyStat: [],
 			orders: [],
+			order2:[],
 			isProcessing: true,
 			StatData: [
 				{
@@ -161,41 +164,14 @@ export default {
 					icon: users
 				},
 			],
-			barData:{
-				labels: [
-					'January',
-					'February',
-					'March',
-					'April',
-					'May',
-					'June',
-					'July',
-					'August',
-					'September',
-					'October',
-					'November',
-					'December'
-				],
-				datasets: [
-					{
-						label: 'Total Repayment Expected',
-						backgroundColor: '#074A74',
-						data: [400000, 200000, 120000, 300009, 100000, 400000, 300009, 400000, 400000, 200000, 120000, 100001]
-					},
-					{
-						label: 'Total Repayment Paid',
-						backgroundColor: '#f87979',
-						data: [200000, 100000, 10000, 200000, 50000, 200000, 200000, 200000, 400000, 200000, 100002, 100001]
-					},
-				]
-			},
-			barOption:{
+			barData: {},
+			barOption: {
 				responsive: true,
 				maintainAspectRatio: false
 			}
 		}
 	},
-	methods:{
+	methods: {
 		fetchData() {
 			this.$LIPS(true);
 			this.pageParams.page = this.$route.query.page
@@ -214,7 +190,7 @@ export default {
 			};
 			this.$LIPS(true);
 
-			get(this.apiUrl.renewalList + queryParam(param))
+			get(this.apiUrls.renewalList + queryParam(param))
 				.then(({ data }) => {
 					this.prepareList(data);
 				})
@@ -251,11 +227,47 @@ export default {
 				prev_page_url,
 			});
 			this.orders = data;
+			this.order2 = this.reports.orders.slice(0, 10)
+			console.log(this.orders, 'renewal orders');
+			console.log(this.order2, 'only 15');
 			if (response.queryParams !== undefined) {
 				this.searchQuery = response.queryParams;
 			}
 			this.OId = from;
 			this.$LIPS(false);
+		},
+		getBarChartData() {
+			// {
+			// 	labels: [],
+			// 		datasets: [
+			// 			
+			// 		]
+			// }
+			this.barData = {
+				labels: Object.keys(this.reports.groupByMonth),
+				datasets: [
+					{
+						label: 'Total Repayment Expected',
+						backgroundColor: '#074A74',
+						data: Object.values(this.reports.groupByMonth).map(item => item.expected_repayment)
+					},
+					{
+						label: 'Total Repayment Paid',
+						backgroundColor: '#f87979',
+						data: Object.values(this.reports.groupByMonth).map(item => item.actual_repayment)
+					},
+					// {
+					// 	barPercentage: 1,
+					// 	barThickness: 12,
+					// 	maxBarThickness: 16,
+					// 	label: 'Number of sales',
+					// 	data: this.getSalesPerBranch(),
+					// 	backgroundColor: this.generateColorPalette(),
+					// 	borderColor: this.generateColorPalette(),
+					// 	borderWidth: 1,
+					// },
+				],
+			};
 		},
 		async getReport() {
 			this.$LIPS(true);
@@ -292,13 +304,12 @@ export default {
 						percentIcon: arrowDown,
 						icon: users
 					},
-				],
-					// console.log(PercentPaid, 'PercentPaid');
+				]
+				this.getBarChartData()
 
 					this.MonthlyStat = Object.values(
 						this.reports.meta.groupByMonth
 					);
-				//sort the months to be serial
 
 			} catch (err) {
 				if (err.response) {
@@ -308,13 +319,17 @@ export default {
 				this.$LIPS(false);
 			}
 		},
-		resetReport(){
-			this.month= new Date().getMonth();
+		// getRepaymentAmount(key){
+		// 	return Object.values(this.reports.groupByMonth)[key] 
+		// },
+		resetReport() {
+			this.month = new Date().getMonth();
 			this.year = new Date().getFullYear();
 			this.branch = 0;
-			this.repaymentPlan='';
+			this.repaymentPlan = '';
 			this.getReport();
 		},
+		
 		getPercent(value1, value2) {
 			return ((value1 / value2) * 100).toFixed(2)
 		},
@@ -351,14 +366,13 @@ export default {
 	async mounted() {
 		this.getRepaymentDuration()
 		this.getBranches()
-		// await this.fetchData();
-
+		await this.getReport();
+		await this.fetchData()
+		
+		console.log(this.reports.orders, 'repayment schedule');
+		
 
 	},
-	async created() {
-		await this.getReport();
-		console.log(this.reports);
-	}
 }
 
 </script>

@@ -31,7 +31,7 @@
 				<div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center ">
 					{{
 						formatDate(
-							customer.last_renewal_prompter_activity.attributes.created_at
+							customer.order_date
 						)
 						|| 'N/A'
 					}}

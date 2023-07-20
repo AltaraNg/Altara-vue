@@ -533,9 +533,6 @@ export default{
    computed: {
         ...mapGetters(["auth"]),
     },
-    mounted() {
-      console.log("FormDataaaaaaa", this.formData.newCustomer)
-    },
     
 }
 

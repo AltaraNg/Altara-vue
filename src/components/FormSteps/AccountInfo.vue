@@ -424,13 +424,13 @@
                     <div
                       class="error"
                       v-if="!$v.formData.newCustomer.bvn.minLength"
-                    >The minimumbvn is 11digit.</div>
+                    >The minimum bvn is 11 digits.</div>
                   </div>
                   <div v-if="memberHasError('newCustomer.bvn')" class="invalid-feedback">
                     <div
                       class="error"
                       v-if="!$v.formData.newCustomer.bvn.maxLength"
-                    >The maximum bvn is 11digit.</div>
+                    >The maximum bvn is 11 digits.</div>
                   </div>
                 </div>
                 

@@ -12,6 +12,7 @@ export default {
           last_name: "",
           middle_name: "",
           telephone: "",
+          bvn: "",
           email: "",
           date_of_birth: "",
           civil_status: "",
@@ -79,6 +80,10 @@ export default {
             gender: { required },
             registration_channel: { required },
             level_of_education: { required },
+            bvn: {
+              minLength: minLength(11),
+              maxLength: maxLength(11),
+            }
           },
         },
         {

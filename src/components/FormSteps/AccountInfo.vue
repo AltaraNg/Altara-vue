@@ -406,25 +406,34 @@
 
                   
                 </div>
-                <div v-if="showBVN()">
-                                <div class="spaceAfter"></div>
-                                <h5>Bank Information</h5>
-
-                                <div class="form-group col-md-4 px-md-3 px-1 float-left">
-                                  <label>BVN</label>
-                                  <input
-                                        class="form-control"
-                                        name="bvn"
-                                        placeholder="Enter BVN"
-                                        type="number"
-                                        v-model="bvn"
-                                        v-validate="'max:11|min:11'"
-                                        />
-                                        <small v-if="errors.first('bvn')">{{
-                                            errors.first("bvn")
-                                        }}</small>
-                                </div>
-                                </div>
+                <div class="spaceAfter"></div>
+                <h5>BVN Information</h5>
+                  <div class="form-group  col-md-12 px-md-3 px-1 float-left">
+                  <label>BVN</label>
+                  <input
+                    class="form-control col-md-4"
+                    name="bvn"
+                    placeholder="Enter BVN here.."
+                    type="number"
+                    v-model="formData.newCustomer.bvn"
+                    v-validate="'numeric|max:11|min:11'"
+                    :class="memberHasError('newCustomer.bvn') ? 'is-invalid' : ''"
+                  />
+                  
+                  <div v-if="memberHasError('newCustomer.bvn')" class="invalid-feedback">
+                    <div
+                      class="error"
+                      v-if="!$v.formData.newCustomer.bvn.minLength"
+                    >The minimumbvn is 11digit.</div>
+                  </div>
+                  <div v-if="memberHasError('newCustomer.bvn')" class="invalid-feedback">
+                    <div
+                      class="error"
+                      v-if="!$v.formData.newCustomer.bvn.maxLength"
+                    >The maximum bvn is 11digit.</div>
+                  </div>
+                </div>
+                
             </div>
     </div>
 
@@ -484,6 +493,7 @@ export default{
           this.formData.newCustomer.telephone = customer.phone;
           this.formData.newCustomer.email = customer.email;
           this.formData.newCustomer.reg_id = this.cc_reg_id;
+          this.formData.newCustomer.bvn = customer.bvn;
         })
         .catch((err) => {
           flash.setError(
@@ -493,23 +503,38 @@ export default{
             10000
           );
 
+          e = e.response;
+            if (e.status === 422)
+                this.error = e.data.errors ? e.data.errors : e.data;
+            Flash.setError(
+                e.status === 422 ? this.$displayErrorText(this.error.data.errors) : e.message,
+                10000
+            );
+
           const field = this.$validator.fields.find({ name: "cc_reg_id" });
           field.setFlags({ invalid: true });
+          
+
         })
         .finally(() => {
           this.$LIPS(false);
         });
     },
+
     showBVN() { 
       if (this.formData.newCustomer.bvn === null || this.auth("AdminAccess")) {
        return true; 
     } else { 
       return this.formData.newCustomer.bvn !== -1; 
     } 
-  } 
+  }, 
+    
    },
    computed: {
         ...mapGetters(["auth"]),
+    },
+    mounted() {
+      console.log("FormDataaaaaaa", this.formData.newCustomer)
     },
     
 }

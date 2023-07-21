@@ -68,10 +68,10 @@
 			<h3 class="text-capitalize mb-0">Customers</h3>
 		</div>
 		<div v-if="isProcessing === false">
-			<div v-if="order2.length > 0">
+			<div v-if="orders.length > 0">
 				<div class="tab-content" id="tabContent">
 					<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
-						<repayment-table :customers="order2"></repayment-table>
+						<repayment-table :customers="orders"></repayment-table>
 					</div>
 
 				</div>
@@ -86,8 +86,8 @@
 			</div>
 		</div>
 
-		<div v-if="pageParams && order2.length > 0">
-			<base-pagination :page-param="pageParams" @fetchData="fetchData">
+		<div v-if="pageParams && orders.length > 0">
+			<base-pagination :page-param="pageParams" @fetchData="getReport">
 			</base-pagination>
 		</div>
 
@@ -182,22 +182,21 @@ export default {
 				: this.$route.query.per_page;
 
 			let param = {
-				filterOrderbyBranch: true,
-				orderHasAtMostTwoPaymentsLeft: true,
-				...this.searchQuery,
+				...this.query,
 				page: this.pageParams.page,
 				per_page: this.pageParams.per_page,
 			};
 			this.$LIPS(true);
-
-			get(this.apiUrls.renewalList + queryParam(param))
-				.then(({ data }) => {
-					this.prepareList(data);
-				})
-				.catch(() => Flash.setError('Error Fetching Renewal List'))
-				.finally(() => {
-					this.isProcessing = false;
-				});
+			this.prepareList(this.reports.orders);
+			this.isProcessing = false;
+			// get(this.apiUrls.renewalList + queryParam(param))
+			// 	.then(({ data }) => {
+					
+			// 	})
+			// 	.catch(() => Flash.setError('Error Fetching Renewal List'))
+			// 	.finally(() => {
+			// 		
+			// 	});
 		},
 		prepareList(response) {
 			response.data.meta ? (this.meta = response.data.meta) : '';
@@ -213,7 +212,7 @@ export default {
 				to,
 				total,
 				prev_page_url,
-			} = response.data.renewal_prompters;
+			} = response;
 			this.pageParams = Object.assign({}, this.pageParams, {
 				current_page,
 				first_page_url,
@@ -226,23 +225,16 @@ export default {
 				total,
 				prev_page_url,
 			});
-			this.orders = data;
-			this.order2 = this.reports.orders.slice(0, 10)
-			console.log(this.orders, 'renewal orders');
-			console.log(this.order2, 'only 15');
+			this.orders= data;
+
 			if (response.queryParams !== undefined) {
-				this.searchQuery = response.queryParams;
+				this.query = response.queryParams;
 			}
 			this.OId = from;
 			this.$LIPS(false);
 		},
 		getBarChartData() {
-			// {
-			// 	labels: [],
-			// 		datasets: [
-			// 			
-			// 		]
-			// }
+		
 			this.barData = {
 				labels: Object.keys(this.reports.groupByMonth),
 				datasets: [
@@ -275,6 +267,9 @@ export default {
 			this.query.orderYear = this.year;
 			this.query.branch = this.branch;
 			this.query.repaymentPlan = this.repaymentPlan;
+			this.query.page = this.pageParams.page || 1;
+			this.query.per_page = this.pageParams.per_page || 10;
+
 			try {
 				const report = await byMethod(
 					'GET',
@@ -283,7 +278,7 @@ export default {
 					this.query
 				);
 				this.reports = report.data.data.meta
-				// const PercentPaid = ((this.reports.actual_repayment/ this.reports.expected_repayment)*100).toFixed(2)
+				
 				this.StatData = [
 					{
 						title: 'Total  Repayment Expected',

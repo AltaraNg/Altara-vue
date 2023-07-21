@@ -71,7 +71,7 @@
 			<div v-if="orders.length > 0">
 				<div class="tab-content" id="tabContent">
 					<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
-						<repayment-table :customers="orders"></repayment-table>
+						<repayment-table :customers="orders" :OId="OId"></repayment-table>
 					</div>
 
 				</div>
@@ -141,7 +141,7 @@ export default {
 			pageParams: {},
 			MonthlyStat: [],
 			orders: [],
-			order2:[],
+			order2: [],
 			isProcessing: true,
 			StatData: [
 				{
@@ -173,7 +173,7 @@ export default {
 	},
 	methods: {
 		fetchData() {
-			this.$LIPS(true);
+			// this.$LIPS(true);
 			this.pageParams.page = this.$route.query.page
 				? this.$route.query.page
 				: this.pageParams.page;
@@ -186,17 +186,9 @@ export default {
 				page: this.pageParams.page,
 				per_page: this.pageParams.per_page,
 			};
-			this.$LIPS(true);
 			this.prepareList(this.reports.orders);
 			this.isProcessing = false;
-			// get(this.apiUrls.renewalList + queryParam(param))
-			// 	.then(({ data }) => {
-					
-			// 	})
-			// 	.catch(() => Flash.setError('Error Fetching Renewal List'))
-			// 	.finally(() => {
-			// 		
-			// 	});
+
 		},
 		prepareList(response) {
 			response.data.meta ? (this.meta = response.data.meta) : '';
@@ -225,16 +217,12 @@ export default {
 				total,
 				prev_page_url,
 			});
-			this.orders= data;
-
-			if (response.queryParams !== undefined) {
-				this.query = response.queryParams;
-			}
+			this.orders = data;
 			this.OId = from;
-			this.$LIPS(false);
 		},
 		getBarChartData() {
-		
+
+
 			this.barData = {
 				labels: Object.keys(this.reports.groupByMonth),
 				datasets: [
@@ -263,12 +251,28 @@ export default {
 		},
 		async getReport() {
 			this.$LIPS(true);
-			this.query.orderMonth = this.month;
-			this.query.orderYear = this.year;
-			this.query.branch = this.branch;
-			this.query.repaymentPlan = this.repaymentPlan;
-			this.query.page = this.pageParams.page || 1;
-			this.query.per_page = this.pageParams.per_page || 10;
+
+
+			if (this.$route.query && this.query === this.$route.query) {
+				this.query = { ...this.query, ...this.$route.query };
+
+			}
+			else {
+				this.query.orderMonth = this.month;
+				this.query.orderYear = this.year;
+				this.query.branch = this.branch;
+				this.query.repaymentPlan = this.repaymentPlan;
+				this.query.page = this.pageParams.page || 1;
+				this.query.per_page = this.pageParams.per_page || 10;
+			}
+
+			this.$router.replace({
+				path: this.$route.path,
+				query: {
+					...this.$route.query,
+					...this.query
+				},
+			});
 
 			try {
 				const report = await byMethod(
@@ -278,7 +282,9 @@ export default {
 					this.query
 				);
 				this.reports = report.data.data.meta
-				
+				this.fetchData();
+
+
 				this.StatData = [
 					{
 						title: 'Total  Repayment Expected',
@@ -302,9 +308,10 @@ export default {
 				]
 				this.getBarChartData()
 
-					this.MonthlyStat = Object.values(
-						this.reports.meta.groupByMonth
-					);
+				this.MonthlyStat = Object.values(
+					this.reports.meta.groupByMonth
+				);
+
 
 			} catch (err) {
 				if (err.response) {
@@ -324,7 +331,7 @@ export default {
 			this.repaymentPlan = '';
 			this.getReport();
 		},
-		
+
 		getPercent(value1, value2) {
 			return ((value1 / value2) * 100).toFixed(2)
 		},
@@ -359,13 +366,13 @@ export default {
 		},
 	},
 	async mounted() {
-		this.getRepaymentDuration()
-		this.getBranches()
+		await this.getRepaymentDuration()
+		await this.getBranches()
 		await this.getReport();
-		await this.fetchData()
-		
+		// await this.fetchData()
+
 		console.log(this.reports.orders, 'repayment schedule');
-		
+
 
 	},
 }

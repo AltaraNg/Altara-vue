@@ -524,6 +524,8 @@ export default{
     showBVN() { 
       if (this.formData.newCustomer.bvn === null || this.auth("AdminAccess")) {
        return true; 
+    } else if (this.formData.newCustomer.bvn = "") {
+      this.formData.newCustomer.bvn.remove()
     } else { 
       return this.formData.newCustomer.bvn !== -1; 
     } 

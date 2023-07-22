@@ -236,23 +236,11 @@ export default {
 						backgroundColor: '#f87979',
 						data: Object.values(this.reports.groupByMonth).map(item => item.actual_repayment)
 					},
-					// {
-					// 	barPercentage: 1,
-					// 	barThickness: 12,
-					// 	maxBarThickness: 16,
-					// 	label: 'Number of sales',
-					// 	data: this.getSalesPerBranch(),
-					// 	backgroundColor: this.generateColorPalette(),
-					// 	borderColor: this.generateColorPalette(),
-					// 	borderWidth: 1,
-					// },
 				],
 			};
 		},
 		async getReport() {
 			this.$LIPS(true);
-
-
 			if (this.$route.query && this.query === this.$route.query) {
 				this.query = { ...this.query, ...this.$route.query };
 
@@ -275,6 +263,7 @@ export default {
 			});
 
 			try {
+				this.$LIPS(true);
 				const report = await byMethod(
 					'GET',
 					this.apiUrls.getReports,
@@ -320,10 +309,8 @@ export default {
 			} finally {
 				this.$LIPS(false);
 			}
+			// this.$LIPS(false);
 		},
-		// getRepaymentAmount(key){
-		// 	return Object.values(this.reports.groupByMonth)[key] 
-		// },
 		resetReport() {
 			this.month = new Date().getMonth();
 			this.year = new Date().getFullYear();
@@ -366,9 +353,11 @@ export default {
 		},
 	},
 	async mounted() {
+		this.$LIPS(true);
 		await this.getRepaymentDuration()
 		await this.getBranches()
 		await this.getReport();
+		
 		// await this.fetchData()
 
 		console.log(this.reports.orders, 'repayment schedule');

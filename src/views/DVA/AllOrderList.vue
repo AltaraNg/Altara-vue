@@ -163,7 +163,10 @@
                     `${!!branch_id ? `&branchId=${branch_id}` : ''}` +
                     `${!!date_from ? `&dateFrom=${date_from}` : ''}`)
                     .then(({data}) => this.prepareForm(data))
-                    .catch(() => Flash.setError('Error Preparing form'));
+                    .catch(() => Flash.setError('Error Preparing form')).finally(()=>{
+                this.$LIPS(false);
+                        
+                    });
             },
 
             next(firstPage = null) {

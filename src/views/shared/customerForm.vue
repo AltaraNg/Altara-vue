@@ -311,6 +311,9 @@ export default {
           if (this.$network()) {
             this.$LIPS(true)
             this.error = {}
+            if(this.formData.newCustomer.bvn === ""){
+              delete(this.formData.newCustomer.bvn);
+            }
             if (this.mode === "update") {
               let acc = this.$editAccess(this.user, this.formData.newCustomer)
               if (!acc) return this.$networkErr("edit")

@@ -3,7 +3,7 @@
         <div id="reminder" class="attendance">
 
             <custom-header :title="'Order List'"/>
-            <switch-component :options="options" @selected="handleSwitch"/>
+            <!-- <switch-component :options="options" @selected="handleSwitch"/> -->
             <div v-if="mode === 'old'">
             <div class="mt-2 mt-lg-3 row attendance-head attendance-view">
                 <div class="col-4 col-lg" v-for="{name:filter,model} in filters">
@@ -134,7 +134,7 @@
                         url: "/api/new_order"
                     }
                 ],
-                mode: null,
+                mode: "new",
                 page_size: 10,
                 date_from: null,
                 date_to: null,
@@ -211,8 +211,8 @@
             this.$props.withBranchFilter && this.filters.unshift({name: 'branch', model: 'branch_id'});
             this.addCustomerOptionsModalsToDom();
             this.$prepareBranches();
-            this.fetchData();
-            this.mode = 'old';
+            // this.fetchData();
+            this.mode = 'new';
         },
 
         destroyed() {

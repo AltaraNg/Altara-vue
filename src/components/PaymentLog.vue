@@ -1203,7 +1203,10 @@ export default {
             this.commitment.amount = this.selectedProduct.price * (3 / 100)
           }
         }
-        this.hasBVN = this.isAltaraPay && !(this.productPlans.includes(this.salesLogForm.business_type_id.slug)) && !this.customer.bvn
+        this.hasBVN = this.isAltaraPay 
+            && !(this.productPlans.includes(this.salesLogForm.business_type_id.slug)) 
+            && !this.customer.bvn
+            
         if (
           (this.selectedProduct.price > 80000 &&
             this.selectedProduct.price <= 110000 &&

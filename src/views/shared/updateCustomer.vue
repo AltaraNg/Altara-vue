@@ -1867,18 +1867,18 @@
                                 <div class="form-group col-md-4 px-md-3 px-1 float-left">
                                   <label>BVN</label>
                                   <input
-                                    class="form-control"
-                                    name="bvn"
-                                    placeholder="Enter BVN"
-                                                                    type="number"
-                                                                    v-model="bvn"
-                                                                    v-validate="'max:11|min:11'"
-                                                          />
-                                                          <small v-if="errors.first('bvn')">{{
-                                                              errors.first("bvn")
-                                                          }}</small>
-                                                        </div>
-                                                    </div>
+                                        class="form-control"
+                                        name="bvn"
+                                        placeholder="Enter BVN"
+                                        type="number"
+                                        v-model="bvn"
+                                        v-validate="'max:11|min:11'"
+                                        />
+                                        <small v-if="errors.first('bvn')">{{
+                                            errors.first("bvn")
+                                        }}</small>
+                                </div>
+                                </div>
                                                     <div v-if="mode === 'register'">
                                                         <h5>Other Questions</h5>
                                                         <div class="form-group col-md-4 px-md-3 px-1 float-left">

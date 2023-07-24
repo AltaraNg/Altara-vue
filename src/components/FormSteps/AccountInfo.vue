@@ -403,8 +403,37 @@
                     />
                     <label :for="highestLevel">{{ highestLevel }}</label>
                   </div>
-               
-              </div>
+
+                  
+                </div>
+                <div class="spaceAfter"></div>
+                <h5>BVN Information</h5>
+                  <div class="form-group  col-md-12 px-md-3 px-1 float-left">
+                  <label>BVN</label>
+                  <input
+                    class="form-control col-md-4"
+                    name="bvn"
+                    placeholder="Enter BVN here.."
+                    type="number"
+                    v-model="formData.newCustomer.bvn"
+                    v-validate="'numeric|max:11|min:11'"
+                    :class="memberHasError('newCustomer.bvn') ? 'is-invalid' : ''"
+                  />
+                  
+                  <div v-if="memberHasError('newCustomer.bvn')" class="invalid-feedback">
+                    <div
+                      class="error"
+                      v-if="!$v.formData.newCustomer.bvn.minLength"
+                    >The minimum bvn is 11 digits.</div>
+                  </div>
+                  <div v-if="memberHasError('newCustomer.bvn')" class="invalid-feedback">
+                    <div
+                      class="error"
+                      v-if="!$v.formData.newCustomer.bvn.maxLength"
+                    >The maximum bvn is 11 digits.</div>
+                  </div>
+                </div>
+                
             </div>
     </div>
 
@@ -413,6 +442,7 @@
 import { validationMixin } from 'vuelidate'
 import { get, post } from "../../utilities/api";
 import flash from "../../utilities/flash";
+import { mapGetters } from "vuex";
 export default{
     mixins: [validationMixin],
     props:{
@@ -449,7 +479,7 @@ export default{
    data(){
      return{
        cc_reg_id:"",
-       
+       bvn: ""
      }
    },
    methods:{
@@ -463,6 +493,7 @@ export default{
           this.formData.newCustomer.telephone = customer.phone;
           this.formData.newCustomer.email = customer.email;
           this.formData.newCustomer.reg_id = this.cc_reg_id;
+          this.formData.newCustomer.bvn = customer.bvn;
         })
         .catch((err) => {
           flash.setError(
@@ -472,14 +503,30 @@ export default{
             10000
           );
 
+          e = e.response;
+            if (e.status === 422)
+                this.error = e.data.errors ? e.data.errors : e.data;
+            Flash.setError(
+                e.status === 422 ? this.$displayErrorText(this.error.data.errors) : e.message,
+                10000
+            );
+
           const field = this.$validator.fields.find({ name: "cc_reg_id" });
           field.setFlags({ invalid: true });
+          
+
         })
         .finally(() => {
           this.$LIPS(false);
         });
     },
-   }
+
+   
+    
+   },
+   computed: {
+        ...mapGetters(["auth"]),
+    },
     
 }
 

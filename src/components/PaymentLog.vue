@@ -420,7 +420,10 @@
                   View Amortization
                 </button>
                 <br />
-              </div>
+                </div>
+                <div v-if="isBVN" class="large text-danger">
+                  Kindly update your BVN to view amortization
+                </div>
               <div class="d-flex">
                 <small
                   class="text-danger text-center mt-4 error-text"
@@ -828,6 +831,7 @@ export default {
       serial: false,
       renewalState: false,
       isAltaraPay: false,
+      isBVN: false,
       isAltaraCredit: true,
       isCashNCarry: false,
       useCreditCard: false,
@@ -957,6 +961,7 @@ export default {
         )
       )
     },
+    
 
     repaymentCycleFiltered() {
       let newArray = []
@@ -1407,7 +1412,7 @@ export default {
                 this.selectedProduct.price,
                 data0,
                 data,
-                this.selected_discount?.percentage_discount
+                this.selected_discount?.percentage_discount,
               ) :
               calculate(
                 this.selectedProduct.price,
@@ -1469,7 +1474,12 @@ export default {
             this.commitment.amount = this.selectedProduct.price * (3 / 100)
           }
         }
-
+        if (this.isAltaraPay && this.selectedProduct.product_name.includes('cash') && !this.customer.bvn) {
+        
+        this.canPerformAction = true
+        this.isBVN = true
+      
+    }
         if (
           (this.selectedProduct.price > 80000 &&
             this.selectedProduct.price <= 110000 &&

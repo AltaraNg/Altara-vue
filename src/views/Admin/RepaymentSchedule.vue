@@ -45,10 +45,10 @@
 					<p>{{ data.title }}</p>
 					<p style="color: #04103B; font-weight: 700; font-size: 25px; line-height: 0.3;">{{
 						$formatCurrency(data.amount) || data.stat }}</p>
-					<div class="pt-4  flex" v-if="data.percent" style="align-items: center;">
+					<div class="pt-4  flex"  style="align-items: center;">
 						<component :is="data.percentIcon" />
 						<div class="pl-1 font-weight-bold "
-							:class="data.title == 'Total  Repayment Paid' ? 'text-success' : 'text-danger'">{{ data.percent
+							:class="data.title == 'Total  Repayment Paid' ? 'text-success' : 'text-danger'">{{  data.percent != 'NaN%' ? data.percent : '0%'
 							}}</div>
 					</div>
 				</div>
@@ -277,20 +277,20 @@ export default {
 				this.StatData = [
 					{
 						title: 'Total  Repayment Expected',
-						amount: this.reports.expected_repayment,
+						amount: this.reports.expected_repayment || '0',
 						icon: moneyStack
 					},
 					{
 						title: 'Total  Repayment Paid',
-						amount: this.reports.actual_repayment,
-						percent: this.getPercent(this.reports.actual_repayment, this.reports.expected_repayment) + '%',
+						amount: this.reports.actual_repayment  || '0',
+						percent: this.getPercent(this.reports.actual_repayment, this.reports.expected_repayment) +  '%' ,
 						percentIcon: arrowUp,
 						icon: tracking
 					},
 					{
 						title: 'Total Defaulters/Total Orders',
 						stat: `${this.reports.defaultingOrders} / ${this.reports.total_orders}`,
-						percent: this.getPercent(this.reports.defaultingOrders, this.reports.total_orders) + '%',
+						percent: this.getPercent(this.reports.defaultingOrders, this.reports.total_orders) + '%' ,
 						percentIcon: arrowDown,
 						icon: users
 					},

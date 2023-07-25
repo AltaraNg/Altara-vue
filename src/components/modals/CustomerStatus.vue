@@ -37,7 +37,7 @@
   import Vue from 'vue'
   import InformalQuestions from './InformalQuestions.vue';
   import FormalQuestions from './FormalQuestions.vue';
-  import { mapActions, mapGetters } from 'vuex'
+  import { mapGetters } from 'vuex'
   export default {
     props: ["viewCustomer"],
     name: '',

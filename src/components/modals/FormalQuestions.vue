@@ -1,4 +1,6 @@
 <template>
+  <transition>
+
     <div>
       <div class="modal-header">
         <h3 class=" my-1" id="exampleModalLongTitle">
@@ -17,12 +19,14 @@
         </div>
       </div>
       <div class="modal-body mx-4">
+        <h4>This section is Formal, <strong @click="verifyInformalModal">Click to view the Informal section</strong></h4>
+        <div class="spaceAfter"></div>
         <form>
             <h5>Generic</h5>
           <div class="form-group my-3">
             <label for="checklist1" class=""
               >What location was visited and verified?
-</label
+            </label
             ><br />
             <div
               class="form-check form-check-radio form-check-inline"
@@ -396,6 +400,8 @@
             </div>
           </div>
 
+
+          <div class="spaceAfter"></div>
           <h5>Home</h5>
   
           <div class="form-group my-3">
@@ -623,6 +629,7 @@
             </div>
           </div>
   
+          <div class="spaceAfter"></div>
           <h5>Office/ Business</h5>
           <div class="form-group my-3">
             <label for="workingYears"
@@ -853,19 +860,26 @@
         </button>
       </div>
     </div>
+  </transition>
+    
   </template>
   
   <script>
   import { get, post } from "../../utilities/api"
   import { EventBus } from '../../utilities/event-bus'
+  import Vue from 'vue'
+  import InformalQuestions from './InformalQuestions.vue';
+  import { mapGetters } from 'vuex'
   
   export default {
-    props: {
+    props: [{
       customer: {
         required: true,
         default: {},
       },
-    },
+      
+    }, "viewCustomer"],
+    name: '',
     data() {
       return {
         verifiedOptions: ["Home", "Business", "Office", "Other"],
@@ -873,10 +887,63 @@
         verificationData: {},
         locationDurationOptions: ["less than 6 months","6months - 1 year","More than 1 year",],
         customerWorkingYearsOptions: ["less than 6 months","6months - 1 year","More than 1 year",],
+        customer: "",
+        showCustomer: false,
       }
     },
+
+    components: {
+    InformalQuestions,
+  },
+  computed: {
+    ...mapGetters(["auth"]),
+    full() {
+      return this.$route.meta.mode === "full"
+    },
+  },
+
+  created() {
+    $(".tooltip").remove()
+    if (this.viewCustomer) this.setCustomer(this.viewCustomer)
+    EventBus.$on("customer", customer => this.setCustomer(customer))
+    this.addCustomerOptionsModalsToDom()
+  },
   
     methods: {
+      
+      setCustomer(customer) {
+      Vue.set(this.$data, "customer", customer)
+      this.showCustomer = true
+    },
+
+    show(modal) {
+      this.$modal.show(modal)
+    },
+
+    hide(modal) {
+      this.$modal.hide(modal)
+    },
+
+    verifyInformalModal() {
+            this.$modal.show(
+                InformalQuestions,
+                { customer: this.customer },
+                {
+                name: "verificationForm",
+                classes: ["w-50", "overflow-hidden"],
+                adaptive: true,
+                resizable: true,
+                height: "auto",
+                width: "50%",
+                clickToClose: true,
+                maxHeight: 200,
+                },
+                {
+                closed: event => {},
+                }
+        )
+    },
+
       async save() {
         this.$validator.validateAll().then(async result => {
           if (result) {
@@ -908,6 +975,8 @@
         })
       },
     },
+
+    
   }
   </script>
   
@@ -918,6 +987,35 @@
   .modal-body {
     height: 75vh;
     overflow-y: auto;
+  }
+
+  h5 {
+    background-color: rgba(8, 74, 115, 0.07);
+    padding: 0.6rem 1.5rem;
+    border-radius: 3px;
+    font-size: 1.3rem !important;
+    font-weight: 600;
+    box-shadow: 0 0 0.5rem 0 rgba(8, 74, 115, 0.08) inset;
+    float: left;
+    width: 100%;
+    color: rgba(8, 74, 115, 0.9);
+  }
+
+  .spaceAfter {
+    padding: 1rem 0;
+    float: left;
+    width: 100%;
+  }
+
+  strong {
+    color: #FF3636;
+    cursor: pointer;
+    
+  }
+  h4 {
+    font-size: 1.3rem !important;
+    font-weight: 600;
+    color: rgba(8, 74, 115, 0.9);
   }
   
   </style>

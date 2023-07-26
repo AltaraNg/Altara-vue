@@ -438,7 +438,6 @@
 				
 			},
 			searchResponse(data){
-				console.log(data.data);
 				this.prepareList(data.data.data);
 			},
 

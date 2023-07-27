@@ -878,7 +878,6 @@
         verificationData: {},
         locationDurationOptions: ["less than 6 months","6months - 1 year","More than 1 year",],
         customerWorkingYearsOptions: ["less than 6 months","6months - 1 year","More than 1 year",],
-        customer: "",
         showCustomer: false,
         status: "Informal"
       }

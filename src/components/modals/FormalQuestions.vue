@@ -504,7 +504,7 @@
               >What is the nature of the home addess (location description? how does it look? Is it obvious the customer lives there? Family pictures ?)</label
             >
             <textarea
-              v-model="verificationData.reasonForDiffer"
+              v-model="verificationData.natureOfHomeAddress"
               class="form-control"
               id="exampleFormControlTextarea1"
               rows="3"
@@ -515,7 +515,7 @@
               >Who did you see at the house/speak to when you got to the house?</label
             >
             <textarea
-              v-model="verificationData.reasonForDiffer"
+              v-model="verificationData.whoYouSpeakTo"
               class="form-control"
               id="exampleFormControlTextarea2"
               rows="3"
@@ -571,7 +571,7 @@
                   type="radio"
                   class="form-check-input "
                   value="yes"
-                  name="checklist15"
+                  name="checklist22"
                   v-validate="'required'"
                 />
                 <span class="px-2">Same answer with customer</span>
@@ -585,7 +585,7 @@
                   type="radio"
                   class="form-check-input "
                   value="no"
-                  name="checklist15"
+                  name="checklist22"
                   v-validate="'required'"
                 />
                 <span class="px-2">Different from what customer said</span>
@@ -634,7 +634,7 @@
           <div class="form-group my-3">
             <label for="workingYears"
               >How many years has the customers been working with the company ( >1 year) ?  if Office/Business is verified
-</label
+            </label
             >
             <br>
             <div
@@ -715,7 +715,7 @@
                             
                             name="date_of_salary"
                             type="date"
-                            v-model="verificationData.date_of_salary"
+                            v-model="verificationData.dateOfSalary"
                             v-validate="'required'"
                     />
                     <small
@@ -872,14 +872,12 @@
   import { mapGetters } from 'vuex'
   
   export default {
-    props: [{
-      customer: {
-        required: true,
-        default: {},
-      },
-      
-    }, "viewCustomer"],
-    name: '',
+    props: {
+    customer: {
+      required: true,
+      default: {},
+    },
+  },
     data() {
       return {
         verifiedOptions: ["Home", "Business", "Office", "Other"],
@@ -887,11 +885,10 @@
         verificationData: {},
         locationDurationOptions: ["less than 6 months","6months - 1 year","More than 1 year",],
         customerWorkingYearsOptions: ["less than 6 months","6months - 1 year","More than 1 year",],
-        customer: "",
         showCustomer: false,
+        status: "Formal"
       }
     },
-
     components: {
     InformalQuestions,
   },
@@ -904,7 +901,7 @@
 
   created() {
     $(".tooltip").remove()
-    if (this.viewCustomer) this.setCustomer(this.viewCustomer)
+    if (this.customer) this.setCustomer(this.customer)
     EventBus.$on("customer", customer => this.setCustomer(customer))
     this.addCustomerOptionsModalsToDom()
   },
@@ -951,6 +948,7 @@
               this.$LIPS(true)
               this.verificationData.customer_id = this.customer.id
               this.verificationData.type = "verification"
+              this.verificationData.status = this.status
   
               let res = await post("/api/recommendation", this.verificationData)
               if (res.status === 200) {

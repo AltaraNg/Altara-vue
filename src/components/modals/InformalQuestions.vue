@@ -504,7 +504,7 @@
               >What is the nature of the home addess (location description? how does it look? Is it obvious the customer lives there? Family pictures ?)</label
             >
             <textarea
-              v-model="verificationData.reasonForDiffer"
+              v-model="verificationData.natureOfHomeAddress"
               class="form-control"
               id="exampleFormControlTextarea1"
               rows="3"
@@ -515,7 +515,7 @@
               >Who did you see at the house/speak to when you got to the house?</label
             >
             <textarea
-              v-model="verificationData.reasonForDiffer"
+              v-model="verificationData.whoYouSpeakTo"
               class="form-control"
               id="exampleFormControlTextarea2"
               rows="3"
@@ -571,7 +571,7 @@
                   type="radio"
                   class="form-check-input "
                   value="yes"
-                  name="checklist15"
+                  name="checklist22"
                   v-validate="'required'"
                 />
                 <span class="px-2">Same answer with customer</span>
@@ -585,7 +585,7 @@
                   type="radio"
                   class="form-check-input "
                   value="no"
-                  name="checklist15"
+                  name="checklist22"
                   v-validate="'required'"
                 />
                 <span class="px-2">Different from what customer said</span>
@@ -708,7 +708,7 @@
               >How often does the customer make sales? (Sales trend/is it seasonal)</label
             >
             <textarea
-              v-model="verificationData.customerWork"
+              v-model="verificationData.customerSales"
               class="form-control"
               id="exampleFormControlTextarea3"
               rows="3"
@@ -863,14 +863,14 @@
   import { mapGetters } from 'vuex'
   
   export default {
-    props: [{
+    props: {
       customer: {
         required: true,
         default: {},
       },
       
-    }, "viewCustomer"],
-    name: '',
+    },
+    
     data() {
       return {
         verifiedOptions: ["Home", "Shop/ Business"],
@@ -880,6 +880,7 @@
         customerWorkingYearsOptions: ["less than 6 months","6months - 1 year","More than 1 year",],
         customer: "",
         showCustomer: false,
+        status: "Informal"
       }
     },
 
@@ -895,7 +896,7 @@
 
   created() {
     $(".tooltip").remove()
-    if (this.viewCustomer) this.setCustomer(this.viewCustomer)
+    if (this.customer) this.setCustomer(this.customer)
     EventBus.$on("customer", customer => this.setCustomer(customer))
     this.addCustomerOptionsModalsToDom()
   },
@@ -942,6 +943,7 @@
               this.$LIPS(true)
               this.verificationData.customer_id = this.customer.id
               this.verificationData.type = "verification"
+              this.verificationData.status =  this.status
   
               let res = await post("/api/recommendation", this.verificationData)
               if (res.status === 200) {

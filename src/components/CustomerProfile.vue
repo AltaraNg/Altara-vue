@@ -305,7 +305,6 @@ import paystack from 'vue-paystack'
 import CustomerGuarantorsModal from '../components/modals/CustomerGuarantorsModal.vue'
 import VerificationCheckList from '../components/modals/VerificationCheckList.vue'
 import CreditReportModal from '../components/modals/CreditReportModal.vue'
-import CustomerStatus from './modals/CustomerStatus.vue'
 import FormalQuestions from './modals/FormalQuestions.vue'
 
 import { post } from '../utilities/api'
@@ -323,7 +322,6 @@ export default {
     CustomerMobileButton,
     paystack,
     CustomerGuarantorsModal,
-    CustomerStatus,
     FormalQuestions
   },
 

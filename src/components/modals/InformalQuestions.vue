@@ -893,13 +893,6 @@
       return this.$route.meta.mode === "full"
     },
   },
-
-  created() {
-    $(".tooltip").remove()
-    if (this.customer) this.setCustomer(this.customer)
-    EventBus.$on("customer", customer => this.setCustomer(customer))
-    this.addCustomerOptionsModalsToDom()
-  },
   
     methods: {
       

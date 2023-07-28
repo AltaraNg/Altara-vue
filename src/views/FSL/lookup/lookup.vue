@@ -573,6 +573,16 @@
                   >
                     {{ JSON.parse(verification.input_data).verifiedBy }}
                   </div>
+                  <div
+                    class="
+                    col-12 col-xs-3 col-md col-lg
+                    d-flex
+                    align-items-center
+
+                  "
+                  >
+                    {{ JSON.parse(verification.input_data).status }}
+                  </div>
 
                   <div
                     class="
@@ -1657,7 +1667,7 @@ export default {
         "Recommended Plans",
         "Input Data",
       ],
-      verificationHeaders: ["Date", "Verified By", "More Information"],
+      verificationHeaders: ["Date", "Verified By", "Status", "More Information"],
       creditReportHeaders: ["Date", "Compiled By", "Report Type", "Status", "More Information"],
       products: [],
       paymentForm: { payments: [] },
@@ -1820,6 +1830,7 @@ export default {
       this.$modal.show(
         ViewVerificationCheckList,
         { verification: JSON.parse(verification.input_data) },
+        
         {
           name: "verificationView",
           classes: ["w-50", "overflow-auto"],
@@ -1828,7 +1839,7 @@ export default {
           height: "auto",
           width: "50%",
           clickToClose: true,
-        }
+        },
       )
     },
     displayActiveCreditReport(creditReport){

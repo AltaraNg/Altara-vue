@@ -305,6 +305,7 @@ import paystack from 'vue-paystack'
 import CustomerGuarantorsModal from '../components/modals/CustomerGuarantorsModal.vue'
 import VerificationCheckList from '../components/modals/VerificationCheckList.vue'
 import CreditReportModal from '../components/modals/CreditReportModal.vue'
+import FormalQuestions from './modals/FormalQuestions.vue'
 
 import { post } from '../utilities/api'
 import { relative } from 'path'
@@ -321,6 +322,7 @@ export default {
     CustomerMobileButton,
     paystack,
     CustomerGuarantorsModal,
+    FormalQuestions
   },
 
   data() {
@@ -381,7 +383,7 @@ export default {
     },
     verifyModal() {
       this.$modal.show(
-        VerificationCheckList,
+        FormalQuestions,
         { customer: this.customer },
         {
           name: "verificationForm",

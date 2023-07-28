@@ -6,15 +6,7 @@
 		</div>
 
 		<div class="center my-2 flex " style="gap: 10px">
-			<!-- <select name="order_type" class="custom-select flex-1" v-model="year">
-				<option value="year" selected>Year</option>
-				<option v-for="option in availableYears" :value="option" :key="option">{{ option }}</option>
-
-			</select>
-			<select name="order_type" class="custom-select flex-1" v-model="month">
-				<option value="month" selected>Month</option>
-				<option v-for="option in availableMonths" :value="option.id" :key="option.id">{{ option.name }}</option>
-			</select> -->
+			
 			<div class="col ">
 	                   
 	                    <date-picker
@@ -136,17 +128,13 @@ export default {
 	},
 	data() {
 		return {
-			dateRange: null,
-			locale: "en", 
-			dateFormat: "DD-MM-YY", 
+			dateRange: this.getFirstAndLastDayOfCurrentMonth(),
+			locale: "en-US", 
+			dateFormat: "YYYY-MM-DD", 
 			Branches: [],
 			branch: '0',
 			query: {},
 			reports: null,
-			year: 2023,
-			availableYears: this.getYearsToCurrentYear(),
-			month: 5,
-			availableMonths: this.getMonthsArrayWithIDs(),
 			availableRepaymentPlan: [],
 			repaymentPlan: '',
 			apiUrls: {
@@ -190,7 +178,6 @@ export default {
 	},
 	methods: {
 		fetchData() {
-			// this.$LIPS(true);
 			this.pageParams.page = this.$route.query.page
 				? this.$route.query.page
 				: this.pageParams.page;
@@ -257,15 +244,13 @@ export default {
 			};
 		},
 		async getReport() {
-			console.log(this.dateRange)
 			this.$LIPS(true);
 			if (this.$route.query && this.query === this.$route.query) {
 				this.query = { ...this.query, ...this.$route.query };
 
 			}
 			else {
-				this.query.orderMonth = this.month;
-				this.query.orderYear = this.year;
+				this.query.scheduleDate = JSON.stringify(this.dateRange);
 				this.query.branch = this.branch;
 				this.query.repaymentPlan = this.repaymentPlan;
 				this.query.page = this.pageParams.page || 1;
@@ -330,8 +315,7 @@ export default {
 			// this.$LIPS(false);
 		},
 		resetReport() {
-			this.month = new Date().getMonth();
-			this.year = new Date().getFullYear();
+			
 			this.branch = 0;
 			this.repaymentPlan = '';
 			this.getReport();
@@ -356,19 +340,23 @@ export default {
 				this.$displayErrorMessage(err);
 			}
 		},
-		getYearsToCurrentYear() {
-			const currentYear = new Date().getFullYear();
-			const yearsArray = Array.from({ length: currentYear - 2009 }, (_, index) => 2010 + index);
-			return yearsArray;
-		},
-		getMonthsArrayWithIDs() {
-			const months = [];
-			for (let i = 1; i <= 12; i++) {
-				const monthName = new Date(2023, i - 1, 1).toLocaleString('default', { month: 'long' });
-				months.push({ id: i, name: monthName });
-			}
-			return months;
-		},
+		getFirstAndLastDayOfCurrentMonth() {
+			const today = new Date();
+			const year = today.getFullYear();
+			const month = today.getMonth() + 1; // JavaScript months are zero-based (0-11)
+			const firstDayOfMonth = new Date(year, month - 1, 1);
+			const lastDayOfMonth = new Date(year, month, 0);
+
+			const formatDate = (date) => {
+				const year = date.getFullYear();
+				const month = String(date.getMonth() + 1).padStart(2, '0');
+				const day = String(date.getDate()).padStart(2, '0');
+				return `${year}-${month}-${day}`;
+			};
+
+			return [formatDate(firstDayOfMonth), formatDate(lastDayOfMonth)];
+		}
+	
 	},
 	async mounted() {
 		this.$LIPS(true);

@@ -643,7 +643,7 @@
             >
               <label class="form-check-label">
                 <input
-                  v-model="verificationData.location"
+                  v-model="verificationData.yearsOfWork"
                   type="radio"
                   class="form-check-input "
                   :value="option"

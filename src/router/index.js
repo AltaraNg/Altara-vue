@@ -100,7 +100,7 @@ const BNPL_Orders = () => import('../views/BNPL/Orders.vue');
 const BNPLHome = () => import('../views/BNPL/HomePage.vue');
 const BNPL = () => import('../views/BNPL/index.vue')
 const OrderRequest = () => import('../views/FSL/order_request/orderRequest.vue');
-
+const RaffleCodeGenerator = () =>import("../views/FSL/raffle_code_generator/raffle_code_generator.vue");
 const CreditCheck = () => import('../views/CreditCheck/index.vue');
 const CreditCheckHome = () => import('../views/CreditCheck/HomePage.vue');
 const AllCreditChecks = () => import('../views/CreditCheck/AllCreditChecks.vue');
@@ -204,10 +204,9 @@ const router = new VueRouter({
           component: ReminderReportingTool,
           name: "ReminderReporting",
         },
-        
       ],
     },
-     {
+    {
       path: "/gen-utils",
       component: GenUtils,
       meta: { requiresAuth: true },
@@ -217,7 +216,7 @@ const router = new VueRouter({
           path: "home",
           component: GenUtilsHome,
           name: "GenUtilsHome",
-        }, 
+        },
         {
           path: "website-product",
           component: WebsiteProduct,
@@ -234,7 +233,7 @@ const router = new VueRouter({
           component: WebsiteProductForm,
           name: "websiteProductCreate",
           meta: { mode: "create" },
-        },           
+        },
       ],
     },
     {
@@ -295,19 +294,19 @@ const router = new VueRouter({
         {
           path: "bnpl-vendors",
           component: BNPL_Vendors,
-          name: "BNLPVendors"
+          name: "BNLPVendors",
         },
-        
+
         {
           path: "bnpl-orders",
           component: BNPL_Orders,
-          name: "BNLPOrders"
+          name: "BNLPOrders",
         },
         {
           path: "bnpl-dashboard",
           component: BNPL_Dashboard,
-          name: "BNLPDashboard"
-        }
+          name: "BNLPDashboard",
+        },
       ],
     },
     {
@@ -608,7 +607,7 @@ const router = new VueRouter({
           component: CashLogger,
           name: "payment-logger",
           meta: { mode: "create" },
-          props: (route) => ({ query: route.query }),
+          props: route => ({ query: route.query }),
         },
         {
           path: "sales-logger",
@@ -631,6 +630,10 @@ const router = new VueRouter({
         {
           path: "order-request",
           component: OrderRequest,
+        },
+        {
+          path: "raffle_code_generator",
+          component: RaffleCodeGenerator,
         },
       ],
     },
@@ -780,7 +783,7 @@ const router = new VueRouter({
     },
     { path: "*", component: NotFound, meta: { requiresAuth: true } },
   ],
-});
+})
 
 router.mode = 'html5';
 router.afterEach(writeHistory);

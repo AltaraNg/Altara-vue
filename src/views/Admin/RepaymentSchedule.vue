@@ -6,7 +6,7 @@
 		</div>
 
 		<div class="center my-2 flex " style="gap: 10px">
-			<select name="order_type" class="custom-select flex-1" v-model="year">
+			<!-- <select name="order_type" class="custom-select flex-1" v-model="year">
 				<option value="year" selected>Year</option>
 				<option v-for="option in availableYears" :value="option" :key="option">{{ option }}</option>
 
@@ -14,8 +14,19 @@
 			<select name="order_type" class="custom-select flex-1" v-model="month">
 				<option value="month" selected>Month</option>
 				<option v-for="option in availableMonths" :value="option.id" :key="option.id">{{ option.name }}</option>
-			</select>
-
+			</select> -->
+			<div class="col ">
+	                   
+	                    <date-picker
+						class="w-100"
+						v-model="dateRange"
+						:range="true"
+						:language="locale"
+						:format="dateFormat"
+						valueType="format"
+						placeholder="Date"
+	                    ></date-picker>
+	                  </div>
 
 
 			<select name="repayment_duration" class="custom-select flex-1" v-model="repaymentPlan">
@@ -105,10 +116,13 @@ import arrowDown from '../../assets/arrowDown.vue'
 import BarChart from '../../components/charts/BarChart.vue';
 import RepaymentTable from '../../components/tables/RepaymentTable.vue';
 import queryParam from '../../utilities/queryParam';
+import DatePicker from 'vue2-datepicker'
+import 'vue2-datepicker/index.css'
 import ZeroState from '../../components/ZeroState.vue';
 import BasePagination from '../../components/Pagination/BasePagination.vue';
 export default {
 	components: {
+		DatePicker,
 		StatCard,
 		users,
 		moneyStack,
@@ -122,6 +136,9 @@ export default {
 	},
 	data() {
 		return {
+			dateRange: null,
+			locale: "en", 
+			dateFormat: "DD-MM-YY", 
 			Branches: [],
 			branch: '0',
 			query: {},
@@ -240,6 +257,7 @@ export default {
 			};
 		},
 		async getReport() {
+			console.log(this.dateRange)
 			this.$LIPS(true);
 			if (this.$route.query && this.query === this.$route.query) {
 				this.query = { ...this.query, ...this.$route.query };

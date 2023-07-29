@@ -11,7 +11,7 @@
           <!--                    <div class="attendance-hea TODO:: cleanup d">-->
           <customer-profile :view-customer="customer" :verification-list="verificationList" />
           <!--             // TODO:: cleanup       </div>-->
-
+          
           <div style="display: flex; ">
             <custom-header
               :title="'All order(s)'"
@@ -163,6 +163,7 @@
                   >
                     {{ customer.employment_status }}
                   </div>
+
                   <div
                     class="
                     col-12 col-xs-2 col-md col-lg
@@ -318,36 +319,55 @@
                       :percent="percentage(order)"
                     />
                   </div>
-                
-                  <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
-                  >
-                    <button
-                      :disabled="order.business_type === 'Cash n Carry'"
-                      :class="
-                        order.status === 'Completed' ? 'approved' : 'pending'
-                      "
-                      @click="displayAmortization(order)"
-                      class="btn status my-sm-2"
-                    >
-                      View Plan
-                      <i
-                        :class="
-                          order.status === 'Completed'
-                            ? 'fa-check-circle'
-                            : 'fa-hourglass-half'
-                        "
-                        class="fas ml-3"
-                        style="font-size: 1.4rem"
-                      ></i>
-                      <!--                                        // TODO:: cleanup-->
-                    </button>
-                  </div>
+                  
+                  <div class="
+    col-12 col-xs-2 col-md col-lg
+    d-flex
+    align-items-center
+    justify-content-center"
+    :key="index"
+>
+    <select
+        class="custom-select w-100"
+        data-vv-as="order_status"
+        data-vv-validate-on="blur"
+        :name="'order_status_' + index"
+        v-model="order['order_status_' + index]"
+        v-validate="'required'"
+    >
+        <option disable value="Select Status">Select Status</option>
+        <option value="close">Close</option>
+        <option value="repossessed">Repossessed</option>
+    </select>
+</div>
+
+<div
+    class="
+        col-12 col-xs-2 col-md col-lg
+        d-flex
+        align-items-center
+        justify-content-center"
+>
+    <button
+        :disabled="order.business_type === 'Cash n Carry'"
+        :class="[
+            order.status === 'Completed' ? 'approved' : 'pending',
+            order['order_status_' + index] === 'repossessed' 
+            ? 'red-background' : (order['order_status_' + index] === 'close' 
+            ? 'green-background': 'yellow-background')
+        ]"
+        @click="displayAmortization(order)"
+        class="btn status my-sm-2"
+    >
+        View Plann
+        <i
+            :class="order.status === 'Completed' ? 'fa-check-circle' : 'fa-hourglass-half'"
+            class="fas ml-3"
+            style="font-size: 1.4rem"
+        ></i>
+    </button>
+</div>
+
                 </div>
               </div>
 
@@ -1657,6 +1677,7 @@ export default {
         "Product Name",
         "Total Product Price",
         "Type",
+        "Status",
         "Repayment Plans",
       ],
       recommendationHeaders: [
@@ -1699,6 +1720,7 @@ export default {
     },
     getClickedOrder(order) {
       this.clickedOrder = order
+      
     },
 
     async submitForm() {
@@ -2097,6 +2119,7 @@ export default {
         order.order_discount &&
         order?.order_discount?.slug !== "0_discount"
       ) {
+        console.log("OrderrrrrrrrrrrrDataaaaaaaaaa",order)
         return true
       } else {
         return false
@@ -2124,6 +2147,10 @@ export default {
           } repayment`
     },
   },
+
+//   mounted () {
+//  console.log(order)
+//   },
 
   computed: {
     ...mapGetters([
@@ -2203,5 +2230,15 @@ export default {
   -ms-flex-positive: 1;
   flex-grow: 1;
   max-width: 100%;
+}
+
+/* For green background */
+.green-background {
+  background-color: green;
+}
+
+/* For red background */
+.red-background {
+  background-color: red;
 }
 </style>

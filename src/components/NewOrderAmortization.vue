@@ -287,7 +287,7 @@
         data-dismiss="modal"
         href="javascript:"
         style="text-align: right"
-        >close dialogueee</a
+        >close dialogueeee</a
       >
       <div class="
     col-2 col-xs-2 col-md col-lg-2

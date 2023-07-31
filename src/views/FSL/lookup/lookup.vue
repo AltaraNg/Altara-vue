@@ -352,9 +352,7 @@
         :disabled="order.business_type === 'Cash n Carry'"
         :class="[
             order.status === 'Completed' ? 'approved' : 'pending',
-            NewOrderAmortization.orderStatus[2] 
-            ? 'red-background' : NewOrderAmortization.orderStatus[0] 
-            ? 'green-background':NewOrderAmortization.orderStatus[1] ? 'yellow-background' : ''
+
         ]"
         @click="displayAmortization(order)"
         class="btn status my-sm-2"

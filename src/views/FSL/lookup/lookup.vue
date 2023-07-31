@@ -320,7 +320,7 @@
                     />
                   </div>
                   
-                  <div class="
+                  <!-- <div class="
     col-12 col-xs-2 col-md col-lg
     d-flex
     align-items-center
@@ -332,14 +332,14 @@
         data-vv-as="order_status"
         data-vv-validate-on="blur"
         :name="'order_status_' + index"
-        v-model="order['order_status_' + index]"
+        v-model="NewOrderAmortization.orderStatus"
         v-validate="'required'"
     >
-        <option disable value="Select Status">Select Status</option>
+        <option selected disable value="Select Status">Select Status</option>
         <option value="close">Close</option>
         <option value="repossessed">Repossessed</option>
     </select>
-</div>
+</div> -->
 
 <div
     class="
@@ -352,9 +352,9 @@
         :disabled="order.business_type === 'Cash n Carry'"
         :class="[
             order.status === 'Completed' ? 'approved' : 'pending',
-            order['order_status_' + index] === 'repossessed' 
-            ? 'red-background' : (order['order_status_' + index] === 'close' 
-            ? 'green-background': 'yellow-background')
+            NewOrderAmortization.orderStatus[2] 
+            ? 'red-background' : NewOrderAmortization.orderStatus[0] 
+            ? 'green-background':NewOrderAmortization.orderStatus[1] ? 'yellow-background' : ''
         ]"
         @click="displayAmortization(order)"
         class="btn status my-sm-2"

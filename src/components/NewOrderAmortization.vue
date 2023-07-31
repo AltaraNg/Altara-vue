@@ -287,8 +287,27 @@
         data-dismiss="modal"
         href="javascript:"
         style="text-align: right"
-        >close dialogue</a
+        >close dialogueee</a
       >
+      <div class="
+    col-2 col-xs-2 col-md col-lg-2
+    d-flex
+  "
+    :key="index"
+>
+    <select
+        class="custom-select w-100"
+        data-vv-as="order_status"
+        data-vv-validate-on="blur"
+        :name="'order_status_' + index"
+        v-model="orderStatus"
+        
+    >
+        <option selected disable value="Select Status">Select Status</option>
+        <option value="close">Close</option>
+        <option value="repossessed">Repossessed</option>
+    </select>
+</div>
     </div>
     <div class="modal fade repayment" id="viewEdit">
       <div class="modal-dialog" role="document">
@@ -476,6 +495,8 @@ export default {
       showModal: false,
       canEditPayment: true,
       isReadOnly: false,
+      orderStatus:  ['close', 'repossessed', 'select_status']
+      ,
       showAmmoModal: false,
       showLateFeeModal: false,
       lateFeeItem: null,

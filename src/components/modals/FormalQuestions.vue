@@ -911,12 +911,6 @@
     },
   },
 
-  mounted() {
-    // Check if verificationData has any filled data initially
-    this.checkVerificationData();
-    console.log("checkVerificationnnnnnnnn",this.customer)
-  },
-  
     methods: {
       
       setCustomer(customer) {
@@ -967,7 +961,7 @@
                   icon: "success",
                   title: `verification saved successfully`,
                 })
-                this.checkVerificationData();
+                
                 this.verificationData = {}
                 EventBus.$emit("updateUser", this.customer.id)
                 
@@ -984,21 +978,7 @@
           }
         })
       },
-
-
-      checkVerificationData() {
-      // Check if any properties in verificationData have values
-      for (const prop in this.verificationData) {
-        if (this.verificationData[prop]) {
-          this.showVerifyIcon = true;
-          return;
-        }
-      }
-      this.showVerifyIcon = false;
     },
-    },
-
-    
   }
   </script>
   

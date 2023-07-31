@@ -9,7 +9,7 @@
       <transition name="fade">
         <div v-if="customer && show">
           <!--                    <div class="attendance-hea TODO:: cleanup d">-->
-          <customer-profile :view-customer="customer" />
+          <customer-profile :view-customer="customer" :verification-list="verificationList" />
           <!--             // TODO:: cleanup       </div>-->
 
           <div style="display: flex; ">
@@ -1577,6 +1577,7 @@ import Vue from "vue"
 import { log } from "../../../utilities/log"
 import Auth from "../../../utilities/auth"
 import Flash from "../../../utilities/flash"
+import {getRecommendationList} from "../../../utilities/getRecommendationList"
 import { get, post, put } from "../../../utilities/api"
 import CustomHeader from "../../../components/customHeader"
 import AutoComplete from "../../../components/AutoComplete"
@@ -1830,7 +1831,7 @@ export default {
       this.$modal.show(
         ViewVerificationCheckList,
         { verification: JSON.parse(verification.input_data) },
-        
+        console.log("Dataaaaaaaaaaaaaa", verification.input_data),
         {
           name: "verificationView",
           classes: ["w-50", "overflow-auto"],

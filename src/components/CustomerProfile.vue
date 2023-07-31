@@ -297,6 +297,7 @@ import Vue from 'vue'
 import Auth from '../utilities/auth'
 import { mapActions, mapGetters } from 'vuex'
 import { EventBus } from '../utilities/event-bus'
+import {getRecommendationList} from '../utilities/getRecommendationList'
 import AppNavigation from '../components/AppNavigation'
 import ApprovalStatusButton from '../components/ApprovalStatusButton'
 import CustomSMSButton from '../components/CustomSMSButton/CustomSMSButton'
@@ -306,12 +307,23 @@ import CustomerGuarantorsModal from '../components/modals/CustomerGuarantorsModa
 import VerificationCheckList from '../components/modals/VerificationCheckList.vue'
 import CreditReportModal from '../components/modals/CreditReportModal.vue'
 import FormalQuestions from './modals/FormalQuestions.vue'
+import Lookup from '../views/FSL/lookup/lookup.vue'
 
 import { post } from '../utilities/api'
 import { relative } from 'path'
 
 export default {
-  props: ["viewCustomer"],
+  props: {
+    viewCustomer: {
+      required: false,
+      default: ()=> {}
+    },
+    verificationList: {
+      required: false,
+      default: ()=> []
+    
+  }
+  },
 
   components: {
     CreditReportModal,
@@ -384,7 +396,11 @@ export default {
     verifyModal() {
       this.$modal.show(
         FormalQuestions,
-        { customer: this.customer },
+        // {Verification:this.verificationList},
+        {customer: this.customer,
+          verificationList: this.verificationList
+        
+        },
         {
           name: "verificationForm",
           classes: ["w-50", "overflow-hidden"],

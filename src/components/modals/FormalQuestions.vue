@@ -19,6 +19,12 @@
         </div>
       </div>
       <div class="modal-body mx-4">
+        <div class="d-flex align-items-center" v-if="verificationList.length > 0">
+          <div class="circle-icon mt-4">
+            <i class="fa fa-check" aria-hidden="true"></i>
+          </div>
+          <h4 class="ml-2  ">Verified</h4>
+        </div>
         <h4>This section is Formal, <strong @click="verifyInformalModal">Click to view the Informal section</strong></h4>
         <div class="spaceAfter"></div>
         <form>
@@ -877,6 +883,11 @@
       required: true,
       default: {},
     },
+    verificationList: {
+      required: false,
+      default: () => [],
+    },
+
   },
     data() {
       return {
@@ -886,7 +897,8 @@
         locationDurationOptions: ["less than 6 months","6months - 1 year","More than 1 year",],
         customerWorkingYearsOptions: ["less than 6 months","6months - 1 year","More than 1 year",],
         showCustomer: false,
-        status: "Formal"
+        status: "Formal",
+        showVerifyIcon: false,
       }
     },
     components: {
@@ -897,6 +909,12 @@
     full() {
       return this.$route.meta.mode === "full"
     },
+  },
+
+  mounted() {
+    // Check if verificationData has any filled data initially
+    this.checkVerificationData();
+    console.log("checkVerificationnnnnnnnn",this.customer)
   },
   
     methods: {
@@ -949,9 +967,10 @@
                   icon: "success",
                   title: `verification saved successfully`,
                 })
+                this.checkVerificationData();
                 this.verificationData = {}
                 EventBus.$emit("updateUser", this.customer.id)
-  
+                
                 this.$modal.hide("verificationForm")
               }
             } catch (err) {
@@ -965,6 +984,18 @@
           }
         })
       },
+
+
+      checkVerificationData() {
+      // Check if any properties in verificationData have values
+      for (const prop in this.verificationData) {
+        if (this.verificationData[prop]) {
+          this.showVerifyIcon = true;
+          return;
+        }
+      }
+      this.showVerifyIcon = false;
+    },
     },
 
     
@@ -1008,6 +1039,18 @@
     font-weight: 600;
     color: rgba(8, 74, 115, 0.9);
   }
-  
+
+  .circle-icon {
+    display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 10px; /* Adjust the size of the circle */
+  height: 10px; /* Adjust the size of the circle */
+  background-color: #4CAF50; /* Replace with your desired background color */
+  border-radius: 50%;
+  padding: 10px; /* Adjust the padding as needed */
+  font-size: 10px; /* Adjust the icon size */
+  color: white; /* Optionally, set the icon color */
+  }
   </style>
   

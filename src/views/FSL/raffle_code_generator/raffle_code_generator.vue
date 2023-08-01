@@ -17,13 +17,17 @@
 	                                                        </button>
     
                                 </div>
-								<p v-if="result" class="mt-5 pt-5 pr-5 mr-5" style="font-size: 50px; font-weight: 700;">The raffle code for {{ phone_number }} is <span style="color: #074A74;">AT#387Gt5</span> </p>
+								<p v-if="result" class="mt-5 pt-5 pr-5 mr-5" style="font-size: 50px; font-weight: 700;">The raffle code for {{ phone_number }} is <span style="color: #074A74;">AT#387Gt5</span> <CopyItem :item="phone_number"/> </p>
 		</div>
 		<div class="p-4" ><img style="height:80vh; width: auto;"  src="../../../assets//barcode.png"/></div>
 	</div>
 </template>
 <script>
+import CopyItem from '../../../components/CopyItem.vue';
 export default{
+	components: {
+		CopyItem
+	},
 	data(){
 		return{
 			phone_number:'',
@@ -45,7 +49,7 @@ export default{
 	width: 100%;
 	display: flex;
 	direction: row;
-	align-items: start;
+	align-items: flex-start;
 	justify-content: space-between;
 	margin-top: 10px;
 	padding:0 25px;

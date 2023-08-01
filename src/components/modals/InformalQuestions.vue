@@ -570,7 +570,7 @@
                   v-model="verificationData.houseLivedDuration"
                   type="radio"
                   class="form-check-input "
-                  value="yes"
+                  value="Same with customer"
                   name="checklist22"
                   v-validate="'required'"
                 />
@@ -584,7 +584,7 @@
                   v-model="verificationData.houseLivedDuration"
                   type="radio"
                   class="form-check-input "
-                  value="no"
+                  value="Diffferent answer from customer"
                   name="checklist22"
                   v-validate="'required'"
                 />
@@ -639,18 +639,18 @@
             <br>
             <div
               class="form-check form-check-radio form-check-inline"
-              v-for="option in customerWorkingYearsOptions"
+              v-for="yearsOption in customerWorkingYearsOptions"
             >
               <label class="form-check-label">
                 <input
                   v-model="verificationData.yearsOfWork"
                   type="radio"
                   class="form-check-input "
-                  :value="option"
+                  :value="yearsOption"
                   name="checklist17"
                   v-validate="'required'"
                 />
-                <span class="px-2">{{ option }}</span>
+                <span class="px-2">{{ yearsOption }}</span>
                 <span class="form-check-sign"> </span>
               </label>
             </div>

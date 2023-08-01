@@ -9,7 +9,7 @@
       <transition name="fade">
         <div v-if="customer && show">
           <!--                    <div class="attendance-hea TODO:: cleanup d">-->
-          <customer-profile :view-customer="customer" />
+          <customer-profile :view-customer="customer" :verification-list="verificationList" />
           <!--             // TODO:: cleanup       </div>-->
 
           <div style="display: flex; ">
@@ -572,6 +572,16 @@
                   "
                   >
                     {{ JSON.parse(verification.input_data).verifiedBy }}
+                  </div>
+                  <div
+                    class="
+                    col-12 col-xs-3 col-md col-lg
+                    d-flex
+                    align-items-center
+
+                  "
+                  >
+                    {{ JSON.parse(verification.input_data).status }}
                   </div>
 
                   <div
@@ -1657,7 +1667,7 @@ export default {
         "Recommended Plans",
         "Input Data",
       ],
-      verificationHeaders: ["Date", "Verified By", "More Information"],
+      verificationHeaders: ["Date", "Verified By", "Status", "More Information"],
       creditReportHeaders: ["Date", "Compiled By", "Report Type", "Status", "More Information"],
       products: [],
       paymentForm: { payments: [] },
@@ -1828,7 +1838,7 @@ export default {
           height: "auto",
           width: "50%",
           clickToClose: true,
-        }
+        },
       )
     },
     displayActiveCreditReport(creditReport){

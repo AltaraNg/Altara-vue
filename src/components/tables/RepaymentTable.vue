@@ -89,15 +89,6 @@ export default {
 		customers: {
 			type: Array,
 			required: false,
-			default: () => [
-				{
-					name: 'Omodamola Oladeji',
-					order_date: '12-27-2021',
-					id: 1234,
-					employment_status: 'Employed formal',
-					action: '',
-				},
-			],
 		},
 		OId: {
 			type: Number,

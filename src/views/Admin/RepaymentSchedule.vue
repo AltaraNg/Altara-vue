@@ -178,12 +178,8 @@ export default {
 	},
 	methods: {
 		fetchData() {
-			this.pageParams.page = this.$route.query.page
-				? this.$route.query.page
-				: this.pageParams.page;
-			this.pageParams.per_page = this.pageParams.per_page
-				? this.pageParams.per_page
-				: this.$route.query.per_page;
+			this.pageParams.page = this.$route.query.page || this.pageParams.page;
+			this.pageParams.per_page = this.pageParams.per_page || this.$route.query.per_page;
 
 			let param = {
 				...this.query,
@@ -247,7 +243,7 @@ export default {
 			this.$LIPS(true);
 			if (this.$route.query && this.query === this.$route.query) {
 				this.query = { ...this.query, ...this.$route.query };
-
+				//retaining the query after refresh so that the page remains the same
 			}
 			else {
 				this.query.scheduleDate = JSON.stringify(this.dateRange);
@@ -363,10 +359,6 @@ export default {
 		await this.getRepaymentDuration()
 		await this.getBranches()
 		await this.getReport();
-		
-		// await this.fetchData()
-
-		console.log(this.reports.orders, 'repayment schedule');
 
 
 	},

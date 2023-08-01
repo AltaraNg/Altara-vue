@@ -9,7 +9,7 @@
       <transition name="fade">
         <div v-if="customer && show">
           <!--                    <div class="attendance-hea TODO:: cleanup d">-->
-          <customer-profile :view-customer="customer" />
+          <customer-profile :view-customer="customer" :verification-list="verificationList" />
           <!--             // TODO:: cleanup       </div>-->
 
           <div style="display: flex; ">
@@ -1830,7 +1830,6 @@ export default {
       this.$modal.show(
         ViewVerificationCheckList,
         { verification: JSON.parse(verification.input_data) },
-        
         {
           name: "verificationView",
           classes: ["w-50", "overflow-auto"],

@@ -192,7 +192,7 @@
                   v-model="verificationData.customerChildren"
                   type="radio"
                   class="form-check-input "
-                  value="More thean 2"
+                  value="More than 2"
                   name="checklist5"
                   v-validate="'required'"
                 />

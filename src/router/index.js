@@ -93,6 +93,7 @@ const AltaraLoanHome = () => import('../views/AltaraLoan/HomePage.vue');
 const Admin = () => import('../views/Admin/Index.vue');
 const AdminHome = () => import('../views/Admin/HomePage.vue');
 const ReportingTool = () => import('../views/Admin/ReportingTool.vue');
+const RepaymentSchedule = () => import('../views/Admin/RepaymentSchedule.vue');
 const ReminderReportingTool = () => import('../views/Admin/ReminderCollectionData.vue');
 const BNPL_Vendors = () => import('../views/BNPL/Vendors.vue');
 const BNPL_Dashboard = () => import('../views/BNPL/BNPL_Dashboard.vue');
@@ -199,6 +200,11 @@ const router = new VueRouter({
         },
 
         { path: "reporting", component: ReportingTool, name: "ReportingTool" },
+        {
+          path: "repayment-schedule",
+          component: RepaymentSchedule,
+          name: "RepaymentSchedule",
+        },
         {
           path: "reminder-reporting",
           component: ReminderReportingTool,

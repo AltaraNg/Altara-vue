@@ -1,6 +1,6 @@
 <template>
 	<div class="wrapper">
-		<div class="w-50 pt-5 mt-5">
+		<div class=" pt-5 mt-5 child-div-1 ">
 			<div class="form-group " style="position: relative;">
                                   <label style="font-weight: 700;">GENERATE RAFFLE CODE</label>
                                   <input
@@ -16,10 +16,18 @@
 	                                                            <i class="far fa-paper-plane ml-1"></i>
 	                                                        </button>
     
-                                </div>
-								<p v-if="result" class="mt-5 pt-5 pr-5 mr-5" style="font-size: 50px; font-weight: 700;">The raffle code for {{ phone_number }} is <span style="color: #074A74;">{{ raffle_code }}</span> <CopyItem :item="raffle_code"/> </p>
+			</div>
+			<div v-if="result" class="mt-5 pt-5 pr-5 mr-5 ">
+				<div class="paragraph-container" >
+					<span style="margin-right:30px;">The raffle code for </span> 
+						<CopyItem :item="phone_number" /> <span style="margin-left:30px; margin-right:20px;">is</span>  
+						<CopyItem :item="raffle_code" class="inline-component" style="color:#074A74"/>
+					
+				</div>
+			</div>
+								
 		</div>
-		<div class="p-4" ><img style="height:80vh; width: auto;"  src="../../../assets//barcode.png"/></div>
+		<div class="p-4 child-div-2 " ><img style="height:80vh; width: auto;"  src="../../../assets//barcode.png"/></div>
 	</div>
 </template>
 <script>
@@ -54,5 +62,28 @@ export default{
 	justify-content: space-between;
 	margin-top: 10px;
 	padding:0 25px;
+}
+.paragraph-container {
+	width: 100%;
+  display: flex;
+  font-size: 50px;
+  font-weight: 700;
+  flex-wrap: wrap; 
+  /* Use Flexbox to keep the content inline */
+}
+@media (max-width: 768px) {
+  .child-div-2 {
+    display: none; /* Hide the second child div on tablet and mobile */
+  }
+  .child-div-1{
+	width: 100%;
+  }
+  .paragraph-container{
+	font-size: 26px;
+	font-weight: 600;
+  }
+}
+.child-div-1{
+	 flex: 1; 
 }
 </style>

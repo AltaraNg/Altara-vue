@@ -1,5 +1,5 @@
 <template>
-    <div  @click="copyItem" class="icon">
+    <div  @click="copyItem" class="icon">  
        <p>{{ item }}
         <span    style="margin-left: -8px;">
             <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">

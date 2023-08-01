@@ -2,7 +2,7 @@
     <div>
         <!-- Your item content -->
         <span @click="copyItem">
-            <i class="icon-copy" aria-label="Copy item">aaa</i>
+            <i class="icon-copy" aria-label="Copy item" style="color:black"></i>
         </span>
     </div>
 </template>

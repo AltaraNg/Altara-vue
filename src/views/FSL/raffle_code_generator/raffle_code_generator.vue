@@ -17,7 +17,7 @@
 	                                                        </button>
     
                                 </div>
-								<p v-if="result" class="mt-5 pt-5 pr-5 mr-5" style="font-size: 50px; font-weight: 700;">The raffle code for {{ phone_number }} is <span style="color: #074A74;">AT#387Gt5</span> <CopyItem :item="phone_number"/> </p>
+								<p v-if="result" class="mt-5 pt-5 pr-5 mr-5" style="font-size: 50px; font-weight: 700;">The raffle code for {{ phone_number }} is <span style="color: #074A74;">{{ raffle_code }}</span> <CopyItem :item="raffle_code"/> </p>
 		</div>
 		<div class="p-4" ><img style="height:80vh; width: auto;"  src="../../../assets//barcode.png"/></div>
 	</div>
@@ -31,7 +31,8 @@ export default{
 	data(){
 		return{
 			phone_number:'',
-			result:false
+			result:false,
+			raffle_code:'ATfy65GO'
 		}
 	},
 	methods: {

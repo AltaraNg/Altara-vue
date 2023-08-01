@@ -306,12 +306,23 @@ import CustomerGuarantorsModal from '../components/modals/CustomerGuarantorsModa
 import VerificationCheckList from '../components/modals/VerificationCheckList.vue'
 import CreditReportModal from '../components/modals/CreditReportModal.vue'
 import FormalQuestions from './modals/FormalQuestions.vue'
+import Lookup from '../views/FSL/lookup/lookup.vue'
 
 import { post } from '../utilities/api'
 import { relative } from 'path'
 
 export default {
-  props: ["viewCustomer"],
+  props: {
+    viewCustomer: {
+      required: false,
+      default: ()=> {}
+    },
+    verificationList: {
+      required: false,
+      default: ()=> []
+    
+  }
+  },
 
   components: {
     CreditReportModal,
@@ -384,7 +395,11 @@ export default {
     verifyModal() {
       this.$modal.show(
         FormalQuestions,
-        { customer: this.customer },
+        // {Verification:this.verificationList},
+        {customer: this.customer,
+          verificationList: this.verificationList
+        
+        },
         {
           name: "verificationForm",
           classes: ["w-50", "overflow-hidden"],

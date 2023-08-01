@@ -45,7 +45,7 @@
 
         <li class="list-group-item my-3">
           <label for="checklist1" class=""
-            >Distance to the customer's house/office/ business/shop</label
+            >Distance to the customer's house/office/ business/shop verified does not cost more than N300?</label
           >
           <p class="display-text">
             {{ verification.customerDistance }}
@@ -200,7 +200,7 @@
             >How many years has the customers been working with the company ( >1 year) ?  if Office/Business is verified</label
           >
           <p class="display-text">
-            {{ verification.location }}
+            {{ verification.yearsOfWork }}
           </p>
         </li>
         <li class="list-group-item my-3">
@@ -291,7 +291,7 @@
 
         <li class="list-group-item my-3">
           <label for="checklist1" class=""
-            >Distance to the customer's house/office/ business/shop</label
+            >Distance to the customer's house/office/ business/shop verified does not cost more than N300?</label
           >
           <p class="display-text">
             {{ verification.customerDistance }}
@@ -446,7 +446,7 @@
             >"How many years has the customer owned thier business ( >1 year) ?  if Shop/Business is verified</label
           >
           <p class="display-text">
-            {{ verification.location }}
+            {{ verification.yearsOfWork }}
           </p>
         </li>
         <li class="list-group-item my-3">

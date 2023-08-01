@@ -1,8 +1,8 @@
 <template>
 	<transition name="fade">
 		<div>
-			<div v-for="portal in filteredArray">
-				<portal-card 
+			<div v-for="portal in portals">
+				<portal-card
 					:url="portal.url"
 					:title="portal.title"
 					:url_c="portal.url_c"
@@ -112,14 +112,5 @@
 				],
 			};
 		},
-		computed:{
-			  filteredArray() {
-			if (!localStorage.getItem('flag') ) {
-				return this.portals.filter(item => item.url !== 'raffle_code_generator');
-			} else {
-				return this.portals;
-			}
-		}
-		}
 	};
 </script>

@@ -21,9 +21,9 @@ export default {
     filteredArray() {
       if (!localStorage.getItem('flag')) {
         return this.portals.filter(item => item.url !== 'repayment-schedule');
-      } else {
+      } 
         return this.portals;
-      }
+      
     }
   },
   data() {

@@ -11,12 +11,13 @@
                                         type="number"
                                         v-model="phone_number"
                                         />
-										  <button style="position: absolute; bottom: 5px; padding:6px 20px; right:5px; text-align: center; border-radius: 5px;" class="  bg-default" type="submit" :disabled="phone_number.length !== 11" @click="GenerateRaffleCode">
+										  <button style="position: absolute; bottom: 5px; padding:6px 20px; right:5px; text-align: center; border-radius: 5px;" class="  bg-default" type="submit" :disabled="phone_number.length > 14" @click="GenerateRaffleCode">
 	                                                            Generate
 	                                                            <i class="far fa-paper-plane ml-1"></i>
 	                                                        </button>
     
 			</div>
+			<p style="margin-top: -3px;" class="text-danger">Please enter a valid phone number using the format: 080XXXXXXXX (11 digits).</p>
 			<div v-if="result" class="mt-5 pt-5 pr-5 mr-5 ">
 				<div class="paragraph-container" >
 					<span style="margin-right:30px;">The raffle code for </span> 
@@ -45,7 +46,12 @@ export default{
 	},
 	methods: {
 		GenerateRaffleCode(){
+			this.formatPhoneNumber()
 			this.result= true
+		},
+		formatPhoneNumber () {
+			const cleanPhoneNumber = this.phone_number.replace(/\D/g, '').slice(-10);
+			this.phone_number =  `0${cleanPhoneNumber}`;
 		}
 	},
 }

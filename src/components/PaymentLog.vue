@@ -73,6 +73,11 @@
                   </option>
                 </select>
               </div>
+                <div class="col form-group">
+                  <label for="raffle_code" class="form-control-label">Raffle Code</label>
+                  <input v-model="salesLogForm.raffle_code" name="raffle_code" class="custom-select w-100"
+                    />
+                </div>
               <div class="col form-group" v-if="isBank54">
                 <label for="bvn" class="form-control-label">BVN</label>
                 <input type="text" class="form-control" v-model="salesLogForm.bvn" v-validate="'required'" />

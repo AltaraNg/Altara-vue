@@ -17,7 +17,7 @@
 	                                                        </button>
     
 			</div>
-			<p style="margin-top: -3px;" class="text-danger">Please enter a valid phone number using the format: 080XXXXXXXX (11 digits).</p>
+			<p style="margin-top: -3px;" >Please enter a valid phone number using the format: 080XXXXXXXX (11 digits).</p>
 			<div v-if="result" class="mt-5 pt-5 pr-5 mr-5 ">
 				<div class="paragraph-container" >
 					<span style="margin-right:30px;">The raffle code for </span> 

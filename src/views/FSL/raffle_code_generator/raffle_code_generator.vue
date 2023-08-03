@@ -10,8 +10,9 @@
                                         placeholder="Enter Phone number ..."
                                         type="number"
                                         v-model="phone_number"
+										@input="result= false"
                                         />
-										  <button style="position: absolute; bottom: 5px; padding:6px 20px; right:5px; text-align: center; border-radius: 5px;" class="  bg-default" type="submit" :disabled="phone_number.length > 14" @click="GenerateRaffleCode">
+										  <button style="position: absolute; bottom: 5px; padding:6px 20px; right:5px; text-align: center; border-radius: 5px;" class="  bg-default" type="submit" :disabled="phone_number.length < 11 || phone_number.length  > 15" @click="GenerateRaffleCode">
 	                                                            Generate
 	                                                            <i class="far fa-paper-plane ml-1"></i>
 	                                                        </button>
@@ -91,5 +92,8 @@ export default{
 }
 .child-div-1{
 	 flex: 1; 
+}
+button:disabled{
+	opacity: 0.5
 }
 </style>

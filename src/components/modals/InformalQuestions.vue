@@ -976,9 +976,8 @@
               && this.verificationData.whoYouSpokeWith !== undefined
               && this.verificationData.customerWorkDuration !== undefined;
   
-              let res = await post("/api/recommendation", this.verificationData)
               if (isGenericSectionFilled && isHomeSectionFilled || isOfficeSectionFilled) {
-
+              let res = await post("/api/recommendation", this.verificationData)
               if (res.status === 200) {
                 this.$swal({
                   icon: "success",

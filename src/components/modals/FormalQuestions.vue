@@ -986,9 +986,9 @@
               && this.verificationData.whoYouSpokeWith !== undefined
               && this.verificationData.customerWorkDuration !== undefined;
 
-              let res = await post("/api/recommendation", this.verificationData)
 
-              if (isGenericSectionFilled && isHomeSectionFilled || isOfficeSectionFilled) {
+              if (isGenericSectionFilled && (isHomeSectionFilled || isOfficeSectionFilled)) {
+              let res = await post("/api/recommendation", this.verificationData)
               if (res.status === 200) {
                 this.$swal({
                   icon: "success",
@@ -1006,11 +1006,13 @@
           icon: "error",
           title: `Unable to complete, Fill either Home section or Office Section completely to save.`,
         })
-      } else if (isOfficeSectionFilled) {
+        this.$LIPS(false)
+      } else if (isHomeSectionFilled || isOfficeSectionFilled) {
         this.$swal({
           icon: "error",
           title: `Unable to complete, Generic is compulsory`,
         })
+        this.$LIPS(false)
       }
             } catch (err) {
               this.$swal({

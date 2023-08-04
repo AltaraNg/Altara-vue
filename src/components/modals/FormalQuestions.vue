@@ -954,19 +954,23 @@
               this.verificationData.customer_id = this.customer.id
               this.verificationData.type = "verification"
               this.verificationData.status = this.status
-  
-              const isGenericSectionFilled = this.verificationData.locations !== undefined 
-              && this.verificationData.addressMatch !== undefined 
-              && this.verificationData.customerDistance !== undefined
-              && this.verificationData.married !== undefined
-              && this.verificationData.nameOfSpouse !== undefined
-              && this.verificationData.customerChildren !== undefined
-              && this.verificationData.spouseSalary !== undefined
-              && this.verificationData.addressByGuarantor !== undefined
-              && this.verificationData.collateralPictures !== undefined
-              && this.verificationData.accommodationPicture !== undefined
-              && this.verificationData.hasBvn !== undefined
-              && this.verificationData.spouseNotGuarantor !== undefined;
+
+              const requiredKeys = [
+              'locations',
+              'addressMatch',
+              'customerDistance',
+              'married',
+              'nameOfSpouse',
+              'customerChildren',
+              'spouseSalary',
+              'addressByGuarantor',
+              'collateralPictures',
+              'accommodationPicture',
+              'hasBvn',
+              'spouseNotGuarantor'
+              ];
+              const isGenericSectionFilled = requiredKeys.every(key => this.verificationData[key] !== undefined);
+
 
               const isHomeSectionFilled = this.verificationData.locationDuration !== undefined 
               && this.verificationData.bill !== undefined

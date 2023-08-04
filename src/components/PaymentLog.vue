@@ -1365,14 +1365,10 @@ export default {
 
         return
       }
-      // let checkList = JSON.parse(this.verificationList[0].input_data)
       if (
-        // checkList.addressByGuarantor === "yes" &&
-        // checkList.guarantorHomeVisited === "yes"
         this.verificationList.length > 0
       ) {
         this.allowBSSale = true
-        // this.canPerformAction = false
       } else {
         this.allowBSSale = false
         this.noBSVerbiage =

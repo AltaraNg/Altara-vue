@@ -955,7 +955,7 @@
               this.verificationData.type = "verification"
               this.verificationData.status = this.status
 
-              const requiredKeys = [
+              const genericRequiredKeys = [
               'locations',
               'addressMatch',
               'customerDistance',
@@ -969,26 +969,36 @@
               'hasBvn',
               'spouseNotGuarantor'
               ];
-              const isGenericSectionFilled = requiredKeys.every(key => this.verificationData[key] !== undefined);
+              const isGenericSectionFilled = genericRequiredKeys.every(key => this.verificationData[key] !== undefined);
 
 
-              const isHomeSectionFilled = this.verificationData.locationDuration !== undefined 
-              && this.verificationData.bill !== undefined
-              && this.verificationData.customerTravels !== undefined
-              && this.verificationData.natureOfHomeAddress !== undefined
-              && this.verificationData.whoYouSpeakTo !== undefined
-              && this.verificationData.ownHouse !== undefined
-              && this.verificationData.houseLivedDuration !== undefined
-              && this.verificationData.issueWithNeighbour !== undefined;
+              const homeRequiredKeys = [
+              'locationDuration',
+              'bill',
+              'customerTravels',
+              'natureOfHomeAddress',
+              'whoYouSpeakTo',
+              'ownHouse',
+              'houseLivedDuration',
+              'issueWithNeighbour',
+              ]
 
-              const isOfficeSectionFilled = this.verificationData.yearsOfWork !== undefined 
-              && this.verificationData.metManager !== undefined
-              && this.verificationData.customerWork !== undefined
-              && this.verificationData.dateOfSalary !== undefined
-              && this.verificationData.oftenTravel !== undefined
-              && this.verificationData.receipt !== undefined
-              && this.verificationData.whoYouSpokeWith !== undefined
-              && this.verificationData.customerWorkDuration !== undefined;
+
+              const isHomeSectionFilled = homeRequiredKeys.every(key => this.verificationData[key] !== undefined);
+
+              const officeRequiredKeys = [
+              'yearsOfWork',
+              'metManager',
+              'customerWork',
+              'dateOfSalary',
+              'oftenTravel',
+              'receipt',
+              'whoYouSpokeWith',
+              'customerWorkDuration',
+              ]
+
+              const isOfficeSectionFilled = officeRequiredKeys.every(key => this.verificationData[key] !== undefined);
+              
 
 
               if (isGenericSectionFilled && (isHomeSectionFilled || isOfficeSectionFilled)) {
@@ -1005,27 +1015,27 @@
                 this.$modal.hide("verificationForm")
               }
        
-      } else if (isGenericSectionFilled) {
-        this.$swal({
-          icon: "error",
-          title: `Unable to complete, Fill either Home section or Office Section completely to save.`,
-        })
-        this.$LIPS(false)
-      } else if (isHomeSectionFilled || isOfficeSectionFilled) {
-        this.$swal({
-          icon: "error",
-          title: `Unable to complete, Generic is compulsory`,
-        })
-        this.$LIPS(false)
-      }
-            } catch (err) {
-              this.$swal({
-                icon: "error",
-                title: `Unable to complete`,
-              })
-            } finally {
-              this.$LIPS(false)
-            }
+              } else if (isGenericSectionFilled) {
+                this.$swal({
+                  icon: "error",
+                  title: `Unable to complete, Fill either Home section or Office Section completely to save.`,
+                })
+                this.$LIPS(false)
+              } else if (isHomeSectionFilled || isOfficeSectionFilled) {
+                this.$swal({
+                  icon: "error",
+                  title: `Unable to complete, Generic is compulsory`,
+                })
+                this.$LIPS(false)
+              }
+              } catch (err) {
+                this.$swal({
+                  icon: "error",
+                  title: `Unable to complete`,
+                })
+              } finally {
+                this.$LIPS(false)
+              }
           }
         })
       },

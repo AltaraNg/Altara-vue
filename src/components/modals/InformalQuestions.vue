@@ -937,82 +937,100 @@
         )
     },
 
-      async save() {
+    async save() {
         this.$validator.validateAll().then(async result => {
           if (result) {
             try {
               this.$LIPS(true)
               this.verificationData.customer_id = this.customer.id
               this.verificationData.type = "verification"
-              this.verificationData.status =  this.status
-              const isGenericSectionFilled = this.verificationData.location !== undefined 
-              && this.verificationData.addressMatch !== undefined 
-              && this.verificationData.customerDistance !== undefined
-              && this.verificationData.married !== undefined
-              && this.verificationData.nameOfSpouse !== undefined
-              && this.verificationData.customerChildren !== undefined
-              && this.verificationData.spouseSalary !== undefined
-              && this.verificationData.addressByGuarantor !== undefined
-              && this.verificationData.collateralPictures !== undefined
-              && this.verificationData.accommodationPicture !== undefined
-              && this.verificationData.hasBvn !== undefined
-              && this.verificationData.spouseNotGuarantor !== undefined;
+              this.verificationData.status = this.status
 
-              const isHomeSectionFilled = this.verificationData.locationDuration !== undefined 
-              && this.verificationData.bill !== undefined
-              && this.verificationData.customerTravels !== undefined
-              && this.verificationData.natureOfHomeAddress !== undefined
-              && this.verificationData.whoYouSpeakTo !== undefined
-              && this.verificationData.ownHouse !== undefined
-              && this.verificationData.houseLivedDuration !== undefined
-              && this.verificationData.issueWithNeighbour !== undefined;
+              const genericRequiredKeys = [
+              'location',
+              'addressMatch',
+              'customerDistance',
+              'married',
+              'nameOfSpouse',
+              'customerChildren',
+              'spouseSalary',
+              'addressByGuarantor',
+              'collateralPictures',
+              'accommodationPicture',
+              'hasBvn',
+              'spouseNotGuarantor'
+              ];
+              const isGenericSectionFilled = genericRequiredKeys.every(key => this.verificationData[key] !== undefined);
 
-              const isOfficeSectionFilled = this.verificationData.yearsOfWorkInformal !== undefined 
-              && this.verificationData.metManagerInformal !== undefined
-              && this.verificationData.customerWork !== undefined
-              && this.verificationData.customerSales !== undefined
-              && this.verificationData.oftenTravel !== undefined
-              && this.verificationData.receipt !== undefined
-              && this.verificationData.whoYouSpokeWith !== undefined
-              && this.verificationData.customerWorkDuration !== undefined;
-  
-              if (isGenericSectionFilled && isHomeSectionFilled || isOfficeSectionFilled) {
+
+              const homeRequiredKeys = [
+              'locationDuration',
+              'bill',
+              'customerTravels',
+              'natureOfHomeAddress',
+              'whoYouSpeakTo',
+              'ownHouse',
+              'houseLivedDuration',
+              'issueWithNeighbour',
+              ]
+
+
+              const isHomeSectionFilled = homeRequiredKeys.every(key => this.verificationData[key] !== undefined);
+
+              const officeRequiredKeys = [
+              'yearsOfWorkInformal',
+              'metManagerInformal',
+              'customerWork',
+              'customerSales',
+              'oftenTravel',
+              'receipt',
+              'whoYouSpokeWith',
+              'customerWorkDuration',
+              ]
+
+              const isOfficeSectionFilled = officeRequiredKeys.every(key => this.verificationData[key] !== undefined);
+              
+
+
+              if (isGenericSectionFilled && (isHomeSectionFilled || isOfficeSectionFilled)) {
               let res = await post("/api/recommendation", this.verificationData)
               if (res.status === 200) {
                 this.$swal({
                   icon: "success",
                   title: `verification saved successfully`,
                 })
+                
                 this.verificationData = {}
                 EventBus.$emit("updateUser", this.customer.id)
-  
+                
                 this.$modal.hide("verificationForm")
               }
-              }else if (isGenericSectionFilled) {
+       
+              } else if (isGenericSectionFilled) {
                 this.$swal({
-                icon: "error",
-                title: `Unable to complete, Fill either Home section or Office Section completely to save.`,
-              })
-              } else if (isOfficeSectionFilled) {
+                  icon: "error",
+                  title: `Unable to complete, Fill either Home section or Office Section completely to save.`,
+                })
+                this.$LIPS(false)
+              } else if (isHomeSectionFilled || isOfficeSectionFilled) {
                 this.$swal({
-                icon: "error",
-                title: `Unable to complete, Generic is compulsory`,
-            })
-      }
-            } catch (err) {
-              this.$swal({
-                icon: "error",
-                title: `Unable to complete`,
-              })
-            } finally {
-              this.$LIPS(false)
-            }
+                  icon: "error",
+                  title: `Unable to complete, Generic is compulsory`,
+                })
+                this.$LIPS(false)
+              }
+              } catch (err) {
+                this.$swal({
+                  icon: "error",
+                  title: `Unable to complete`,
+                })
+              } finally {
+                this.$LIPS(false)
+              }
           }
         })
       },
     },
-
-    
   }
   </script>
   

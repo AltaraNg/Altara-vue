@@ -75,24 +75,24 @@
                 <th>Repayment</th>
                 <td
                   v-for="(armor, index) in amortizationData"
-                  v-html="index + 1"
+                  v-html="index + 1" :key="index"
                 ></td>
               </tr>
               <tr class="table-separator">
                 <th>Due Date</th>
-                <td v-for="armo in amortizationData">
+                <td v-for="armo in amortizationData" :key="armo">
                   {{ armo.expected_payment_date }}
                 </td>
               </tr>
               <tr>
                 <th>Actual Pay Day</th>
-                <td v-for="armo in amortizationData">
+                <td v-for="armo in amortizationData" :key="armo">
                   {{ armo.actual_payment_date }}
                 </td>
               </tr>
               <tr class="table-separator status-row">
                 <th>Status</th>
-                <td v-for="armo in amortizationData">
+                <td v-for="armo in amortizationData" :key="armo">
                   <div
                     v-if="
                       armo.actual_payment_date &&
@@ -136,7 +136,7 @@
               </tr>
               <tr class="table-separator">
                 <th>Repayment Amount</th>
-                <td v-for="armo in amortizationData">
+                <td v-for="armo in amortizationData" :key="armo">
                   {{ $formatCurrency(armo.expected_amount) }}
                 </td>
               </tr>
@@ -146,6 +146,7 @@
                   v-for="(armo, index) in amortizationData"
                   @click="updateAmmo(armo, index)"
                   class="pointer"
+                  :key="armo"
                 >
                   {{ $formatCurrency(armo.actual_amount) }}
                 </td>
@@ -165,13 +166,13 @@
               <tbody class="text-center">
                 <tr class="table-separator">
                   <th>Penalty Date</th>
-                  <td style="font-weight: 800;" v-for="latefee in lateFEES">
+                  <td style="font-weight: 800;" v-for="latefee in lateFEES" :key="latefee">
                     {{ new Date(latefee.date_created).toLocaleDateString() }}
                   </td>
                 </tr>
                 <tr class="table-separator">
                   <th>Late Fee Amount Due</th>
-                  <td style="font-weight: 800;" v-for="latefee in lateFEES">
+                  <td style="font-weight: 800;" v-for="latefee in lateFEES" :key="latefee">
                     {{ $formatCurrency(latefee.amount_due) }}
                   </td>
                 </tr>
@@ -183,13 +184,14 @@
                     v-for="(latefee, index) in lateFEES"
                     @click="updateLateFee(latefee, index)"
                     class="pointer"
+                    :key="latefee"
                   >
                     {{ $formatCurrency(latefee.amount_paid) }}
                   </td>
                 </tr>
                 <tr class="table-separator status-row">
                   <th>Status</th>
-                  <td v-for="latefee in lateFEES">
+                  <td v-for="latefee in lateFEES" :key="latefee">
                     <div
                       v-if="latefee.amount_due === latefee.amount_paid"
                       class="green"
@@ -206,7 +208,8 @@
                   <th>Date Paid</th>
                   <td
                     style="font-weight: 800;"
-                    v-for="(latefee, index) in lateFEES"
+                    v-for="(latefee) in lateFEES"
+                    :key="latefee"
                   >
                     {{
                       latefee.date_paid !== null
@@ -290,24 +293,24 @@
         >close dialogueeee</a
       >
       <div class="
-    col-2 col-xs-2 col-md col-lg-2
-    d-flex
-  "
-    :key="index"
->
+        col-2 col-xs-2 col-md col-lg-2
+        d-flex
+        "
+      >
     <select
         class="custom-select w-100"
         data-vv-as="order_status"
         data-vv-validate-on="blur"
-        :name="'order_status_' + index"
-        v-model="orderStatus"
+        :name="'order_status_'"
+        v-model="currentStatus"
+        @change="updateOrderStatus(currentStatus)"
         
     >
-        <option selected disable value="Select Status">Select Status</option>
-        <option value="close">Close</option>
-        <option value="repossessed">Repossessed</option>
+        <option selected disabled value="Select Status">Select Status</option>
+        <option :value="status" :key="status.id" v-for="status in orderStatusData">{{ status.name }} </option>
+        <!-- <option :value="status.id" :key="status.id" v-for="status in orderStatus">Repossessed</option> -->
     </select>
-</div>
+    </div>
     </div>
     <div class="modal fade repayment" id="viewEdit">
       <div class="modal-dialog" role="document">
@@ -452,7 +455,7 @@ import Flash from '../utilities/flash'
 import { mapGetters } from 'vuex'
 import Auth from '../utilities/auth'
 import LogForm from './LogForm'
-import { get, patch, put } from '../utilities/api'
+import { get, patch, put, post } from '../utilities/api'
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
 
@@ -495,8 +498,10 @@ export default {
       showModal: false,
       canEditPayment: true,
       isReadOnly: false,
-      orderStatus:  ['close', 'repossessed', 'select_status']
-      ,
+      orderStatus:  [],
+      orderStatusData: [],
+      currentStatus: "Select Status",
+      columnsData: [],
       showAmmoModal: false,
       showLateFeeModal: false,
       lateFeeItem: null,
@@ -508,7 +513,14 @@ export default {
         id: Auth.state.user_id,
       },
       amortizationData: this.order.amortization,
+      apiUrls: {
+        orderStatus: `/api/order_status`,
+        changeOrderStatus: `/api/change-order-status`
     }
+  }
+  },
+  async beforeMount() {
+    await this.getOrderStatus()
   },
   methods: {
     done() {
@@ -565,6 +577,29 @@ export default {
 
     closeAmmoModal() {
       this.showAmmoModal = false
+    },
+    async getOrderStatus() {
+      try {
+        const fetchOrderStatus = await get(this.apiUrls.orderStatus)
+        this.orderStatusData = fetchOrderStatus?.data?.data?.data
+        this.orderStatus = new Array(this.orderStatusData.length).fill('Select Status');
+      } catch (err) {
+        this.$displayErrorMessage(err)
+      }
+    },
+    async updateOrderStatus(index) {
+      post(this.apiUrls.changeOrderStatus, {
+          "status_id": index.id,
+          "order_id": this.order.id
+        })
+        .then(res => {
+          console.log(res);
+          return res
+        })
+        .catch(err => {
+          this.$LIPS(false)
+          Flash.setError("Error: " + err.message)
+        })
     },
     save() {
       this.$LIPS(true)
@@ -658,6 +693,9 @@ export default {
       return this.auth('AdminAccess')
     },
   },
+  mounted () {
+    console.log("Order Status", this.order)
+  }
 }
 </script>
 <style scoped>

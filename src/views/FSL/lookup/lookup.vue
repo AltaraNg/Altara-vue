@@ -351,7 +351,7 @@
     <button
         :disabled="order.business_type === 'Cash n Carry'"
         :class="[
-            order.status === 'Completed' ? 'approved' : 'pending',
+            order.status === 'closed' ? 'repossessed' : 'pending',
 
         ]"
         @click="displayAmortization(order)"

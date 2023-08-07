@@ -75,7 +75,7 @@
               </div>
                 <div class="col form-group">
                   <label for="raffle_code" class="form-control-label">Raffle Code (Optional)</label>
-                  <input v-model="salesLogForm.raffle_code" name="raffle_code" class="custom-select w-100"
+                  <input @input="validatedRaffleCode = false" v-model="salesLogForm.raffle_code" name="raffle_code" class="custom-select w-100"
                     />
                    
                 </div>
@@ -397,6 +397,20 @@
               </div>
             </div>
           </div>
+          <div v-if="salesLogForm.raffle_code" :class="{ 'disableRaffleCode': validatedRaffleCode }" >
+            <div class=" form-group  col" style="display:flex; flex-direction: column;">
+                    <label for="raffle_code" class="form-control-label">Raffle Code (Optional)</label>
+                    <div style="display: flex; align-items: center;">
+                      <input @input="validatedRaffleCode = false" v-model="salesLogForm.raffle_code" name="raffle_code" class="custom-select" style="width: 20%; padding-left: 20px;"
+                        /> 
+                        <img src="../assets/checkCircle.png" v-if="validatedRaffleCode"/>
+                         <button v-else class="btn bg-default" @click="validateRaffleCode()" type="submit">Validate</button>
+                         
+                    </div>
+                    
+                  </div>  
+                
+           </div>
           <div class="text-center" v-if="isAltaraPay">
             <p class="d-block text-danger">
               {{
@@ -523,6 +537,7 @@ export default {
       hasBVN: false,
 
       apiUrls: {
+        raffle_code:`/api/validate-raffle-draw`,
         repaymentDuration: `/api/repayment_duration`,
         orderType: `/api/order-types`,
         repaymentCycles: `/api/repayment_cycle`,
@@ -617,6 +632,7 @@ export default {
       salesCategories: null,
       showDiscount: null,
       salesCatName: null,
+      validatedRaffleCode:null
     }
   },
   async beforeMount() {
@@ -716,6 +732,21 @@ export default {
     },
   },
   methods: {
+    async validateRaffleCode(){
+        try {
+        const Validate = await post(this.apiUrls.raffle_code, {
+           "phone_number": this.customer.telephone,
+            "code": this.salesLogForm.raffle_code
+        })
+        Flash.setSuccess('Raffle Code Validated')
+        this.validatedRaffleCode = true
+        console.log(Validate)
+        
+       
+      } catch (err) {
+        this.$displayErrorMessage('The given data failed to pass validation')
+      }
+    },
     computedPayment(firstvalue, secondvalue) {
       if (this.singleRepayment && this.addDownpayment) {
         return firstvalue
@@ -931,6 +962,7 @@ export default {
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
       }
+      this.salesLogForm.raffle_code && this.validatedRaffleCode ? data.raffle_code = this.salesLogForm.raffle_code : null;
 
       data.fixed_repayment = this.salesLogForm.business_type_id?.slug.includes("bs") ? false : data.fixed_repayment;
 
@@ -1714,5 +1746,9 @@ export default {
 
 .hidden {
   display: hidden;
+}
+.disableRaffleCode{
+  pointer-events: none;
+  opacity: 0.5;
 }
 </style>

@@ -697,9 +697,6 @@ export default {
     },
 
   },
-  mounted () {
-    console.log("Order Status", this.orderStatusData)
-  }
 }
 </script>
 <style scoped>

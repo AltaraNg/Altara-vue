@@ -2163,9 +2163,6 @@ export default {
     },
   },
 
-  mounted () {
-  console.log("orderStatusDataaa", this.order.status)
-  },
 
   computed: {
     ...mapGetters([

@@ -320,26 +320,6 @@
                     />
                   </div>
                   
-                  <!-- <div class="
-    col-12 col-xs-2 col-md col-lg
-    d-flex
-    align-items-center
-    justify-content-center"
-    :key="index"
->
-    <select
-        class="custom-select w-100"
-        data-vv-as="order_status"
-        data-vv-validate-on="blur"
-        :name="'order_status_' + index"
-        v-model="NewOrderAmortization.orderStatus"
-        v-validate="'required'"
-    >
-        <option selected disable value="Select Status">Select Status</option>
-        <option value="close">Close</option>
-        <option value="repossessed">Repossessed</option>
-    </select>
-</div> -->
 
 <div
     class="
@@ -354,9 +334,9 @@
         @click="displayAmortization(order)"
         class="btn status my-sm-2"
     >
-        View Plann
+        View Plan
         <i
-            :class="order.status === 'Completed' ? 'fa-check-circle' : 'fa-hourglass-half'"
+            :class="statusOrderIcon(order.status)"
             class="fas ml-3"
             style="font-size: 1.4rem"
         ></i>
@@ -1727,6 +1707,16 @@ export default {
         return 'not-approved'
       }
        
+    },
+
+    statusOrderIcon (status)  {
+      if (status === 'Completed' || status === 'Closed') {
+        return 'fa-check-circle'
+      } else if (status === 'Active' || status === 'Pending') {
+        return 'fa-hourglass-half'
+      } else {
+        return 'fa-arrows-alt'
+      }
     },
 
     async submitForm() {

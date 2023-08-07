@@ -80,19 +80,19 @@
               </tr>
               <tr class="table-separator">
                 <th>Due Date</th>
-                <td v-for="armo in amortizationData" :key="armo">
+                <td v-for="armo in amortizationData" :key="armo.id">
                   {{ armo.expected_payment_date }}
                 </td>
               </tr>
               <tr>
                 <th>Actual Pay Day</th>
-                <td v-for="armo in amortizationData" :key="armo">
+                <td v-for="armo in amortizationData" :key="armo.id">
                   {{ armo.actual_payment_date }}
                 </td>
               </tr>
               <tr class="table-separator status-row">
                 <th>Status</th>
-                <td v-for="armo in amortizationData" :key="armo">
+                <td v-for="armo in amortizationData" :key="armo.id">
                   <div
                     v-if="
                       armo.actual_payment_date &&
@@ -136,7 +136,7 @@
               </tr>
               <tr class="table-separator">
                 <th>Repayment Amount</th>
-                <td v-for="armo in amortizationData" :key="armo">
+                <td v-for="armo in amortizationData" :key="armo.id">
                   {{ $formatCurrency(armo.expected_amount) }}
                 </td>
               </tr>
@@ -146,7 +146,7 @@
                   v-for="(armo, index) in amortizationData"
                   @click="updateAmmo(armo, index)"
                   class="pointer"
-                  :key="armo"
+                  :key="armo.id"
                 >
                   {{ $formatCurrency(armo.actual_amount) }}
                 </td>
@@ -551,7 +551,7 @@ export default {
       this.$emit('preparePayments')
     },
     canSelectStatus() {
-      return this.auth('CoordinatorAndVCRAccess')
+      return this.auth('CoordinatorAccess') || this.auth('DVAAccess')
     },
 
     updateAmmo(armo, index) {

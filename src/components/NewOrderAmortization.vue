@@ -292,13 +292,13 @@
         style="text-align: right"
         >close dialogueeee</a
       >
-      <div class="
+      <div v-if="canSelectStatus()" class="
         col-2 col-xs-2 col-md col-lg-2
         d-flex
         "
       >
     <select
-        class="custom-select w-100"
+        class="custom-select w-100 "
         data-vv-as="order_status"
         data-vv-validate-on="blur"
         :name="'order_status_'"
@@ -550,6 +550,9 @@ export default {
     preparePayments() {
       this.$emit('preparePayments')
     },
+    canSelectStatus() {
+      return this.auth('CoordinatorAndVCRAccess')
+    },
 
     updateAmmo(armo, index) {
       if (this.canEditAmmoPayment && this.standAlone === false) {
@@ -593,8 +596,8 @@ export default {
           "order_id": this.order.id
         })
         .then(res => {
-          console.log(res);
-          return res
+          this.$emit('updateOrderStatus', res.data)
+          return res;
         })
         .catch(err => {
           this.$LIPS(false)
@@ -692,9 +695,10 @@ export default {
       // return this.auth('FSLLead') || this.auth('DVALead')
       return this.auth('AdminAccess')
     },
+
   },
   mounted () {
-    console.log("Order Status", this.order)
+    console.log("Order Status", this.orderStatusData)
   }
 }
 </script>

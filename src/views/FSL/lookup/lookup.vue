@@ -350,10 +350,7 @@
 >
     <button
         :disabled="order.business_type === 'Cash n Carry'"
-        :class="[
-            order.status === 'closed' ? 'repossessed' : 'pending',
-
-        ]"
+        :class="statusOrder(order.status)"
         @click="displayAmortization(order)"
         class="btn status my-sm-2"
     >
@@ -1721,6 +1718,17 @@ export default {
       
     },
 
+    statusOrder (status) {
+      if (status === 'Completed' || status === 'Closed') {
+        return 'approved'
+      } else if (status === 'Active' || status === 'Pending') {
+        return 'pending'
+      } else {
+        return 'not-approved'
+      }
+       
+    },
+
     async submitForm() {
       const updateData = {
         product_id: this.selectedProduct.id,
@@ -2117,7 +2125,6 @@ export default {
         order.order_discount &&
         order?.order_discount?.slug !== "0_discount"
       ) {
-        console.log("OrderrrrrrrrrrrrDataaaaaaaaaa",order)
         return true
       } else {
         return false
@@ -2130,9 +2137,19 @@ export default {
       let element = this.customer.new_orders.find(item => {
         return item.id === data.order
       })
+      
       element.paystack_auth_code = data.auth_code
       let index = this.customer.new_orders.indexOf(element)
       Vue.set(this.$data.customer.new_orders, index, element)
+    },
+    handleUpdateOrderStatus(updatedStatus) {
+      // Find the index of the updated status in orderStatusData array
+      const index = this.order.status.findIndex(status => status.id === updatedStatus.id);
+
+      if (index !== -1) {
+        // Update the order status at the specified index
+        this.orderStatusData[index] = updatedStatus;
+      }
     },
     computeDownpayment(result) {
       return typeof JSON.parse(result.result).ans == "object" &&
@@ -2146,9 +2163,9 @@ export default {
     },
   },
 
-//   mounted () {
-//  console.log(order)
-//   },
+  mounted () {
+  console.log("orderStatusDataaa", this.order.status)
+  },
 
   computed: {
     ...mapGetters([
@@ -2196,6 +2213,7 @@ export default {
     this.$LIPS(true)
     EventBus.$on("reloadUser", this.updateCustomerData)
     EventBus.$on("updateUser", this.processForm)
+    EventBus.$on("statusOrder", this.handleUpdateOrderStatus)
     this.$LIPS(false);
   },
 

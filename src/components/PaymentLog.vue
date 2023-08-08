@@ -206,7 +206,7 @@
                   type="submit" v-on:click="getCalc()">
                   View Summary
                 </button>
-                <button v-else class="btn bg-default" :disabled="canPerformAction || hasBVN" type="submit">
+                <button v-else class="btn bg-default" :disabled="canPerformAction || hasBVN || hasNoBs" type="submit">
                   View Amortization
                 </button>
                 <br />
@@ -515,6 +515,7 @@ export default {
       hideOrderSummary: true,
       canPerformAction: false,
       hasBVN: false,
+      hasNoBs: false,
 
       apiUrls: {
         repaymentDuration: `/api/repayment_duration`,
@@ -1204,6 +1205,7 @@ export default {
           }
         }
         this.hasBVN = this.isAltaraPay && !(this.productPlans.includes(this.salesLogForm.business_type_id.slug)) && !this.customer.bvn
+        this.hasNoBs = this.isAltaraPay && salesCatName.name === "No BS" && this.checkVerified()
         if (
           (this.selectedProduct.price > 80000 &&
             this.selectedProduct.price <= 110000 &&
@@ -1358,16 +1360,13 @@ export default {
     checkVerified() {
       if (this.verificationList.length === 0) {
         this.allowBSSale = false
-
         this.noBSVerbiage =
           "Customer's home address and guarantor's home address has not been verified!!!"
 
         return
       }
-      let checkList = JSON.parse(this.verificationList[0].input_data)
       if (
-        checkList.homeVisited === "yes" &&
-        checkList.guarantorHomeVisited === "yes"
+        this.verificationList.length > 0
       ) {
         this.allowBSSale = true
       } else {

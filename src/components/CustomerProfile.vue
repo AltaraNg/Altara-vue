@@ -305,12 +305,24 @@ import paystack from 'vue-paystack'
 import CustomerGuarantorsModal from '../components/modals/CustomerGuarantorsModal.vue'
 import VerificationCheckList from '../components/modals/VerificationCheckList.vue'
 import CreditReportModal from '../components/modals/CreditReportModal.vue'
+import FormalQuestions from './modals/FormalQuestions.vue'
+import Lookup from '../views/FSL/lookup/lookup.vue'
 
 import { post } from '../utilities/api'
 import { relative } from 'path'
 
 export default {
-  props: ["viewCustomer"],
+  props: {
+    viewCustomer: {
+      required: false,
+      default: ()=> {}
+    },
+    verificationList: {
+      required: false,
+      default: ()=> []
+    
+  }
+  },
 
   components: {
     CreditReportModal,
@@ -321,6 +333,7 @@ export default {
     CustomerMobileButton,
     paystack,
     CustomerGuarantorsModal,
+    FormalQuestions
   },
 
   data() {
@@ -381,8 +394,12 @@ export default {
     },
     verifyModal() {
       this.$modal.show(
-        VerificationCheckList,
-        { customer: this.customer },
+        FormalQuestions,
+        // {Verification:this.verificationList},
+        {customer: this.customer,
+          verificationList: this.verificationList
+        
+        },
         {
           name: "verificationForm",
           classes: ["w-50", "overflow-hidden"],

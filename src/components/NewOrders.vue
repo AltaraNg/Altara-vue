@@ -3,7 +3,7 @@
 		<div class=" mb-3 attendance-head">
 			<resueable-search
 				:url="renewal ? url + '?renewalList=true' : url"
-				@childToParent="prepareList"
+				@childToParent="searchResponse"
 				:showBranch="true"
 				:showDate="true"
 			>
@@ -427,10 +427,18 @@
 				return;
 			},
 			viewStuffs(item, model) {
-				this.modalItem = item;
+				if(!item){
+					alert(`${model} does not exist`);
+				}else{
+					this.modalItem = item;
 				this.mode = model;
 				this.showModalContent = true;
 				return $(`#viewStuffs`).modal('toggle');
+				}
+				
+			},
+			searchResponse(data){
+				this.prepareList(data.data.data);
 			},
 
 			convertDate(date) {

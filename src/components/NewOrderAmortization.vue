@@ -591,18 +591,21 @@ export default {
       }
     },
     async updateOrderStatus(index) {
-      post(this.apiUrls.changeOrderStatus, {
+      this.$LIPS(true);
+      await post(this.apiUrls.changeOrderStatus, {
           "status_id": index.id,
           "order_id": this.order.id
         })
         .then(res => {
           this.$emit('updateOrderStatus', res.data)
+          this.done();
           return res;
         })
         .catch(err => {
           this.$LIPS(false)
           Flash.setError("Error: " + err.message)
         })
+        this.$LIPS(false);
     },
     save() {
       this.$LIPS(true)

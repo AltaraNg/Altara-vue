@@ -268,7 +268,7 @@
                       v-if="
                         order.payment_gateway === 'Paystack' &&
                           order.paystack_auth_code != null &&
-                          order.status !== 'Completed' &&
+                          (order.status !== 'Completed' || order.status !== 'Repossessed' || order.status !== 'Closed') &&
                           canLogDD && manualDD
                       "
                     >
@@ -1652,7 +1652,6 @@ export default {
         "Product Name",
         "Total Product Price",
         "Type",
-        "Status",
         "Repayment Plans",
       ],
       recommendationHeaders: [

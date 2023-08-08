@@ -290,7 +290,7 @@
         data-dismiss="modal"
         href="javascript:"
         style="text-align: right"
-        >close dialogueeee</a
+        >close dialogue</a
       >
       <div v-if="canSelectStatus()" class="
         col-2 col-xs-2 col-md col-lg-2
@@ -551,7 +551,7 @@ export default {
       this.$emit('preparePayments')
     },
     canSelectStatus() {
-      return this.auth('CoordinatorAccess') || this.auth('DVAAccess')
+      return this.auth('CoordinatorAccess') || this.auth('DVACaptain')
     },
 
     updateAmmo(armo, index) {

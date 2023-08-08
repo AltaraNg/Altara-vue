@@ -75,7 +75,7 @@
               </div>
                 <div class="col form-group">
                   <label for="raffle_code" class="form-control-label">Raffle Code (Optional)</label>
-                  <input @input="validatedRaffleCode = false" v-model="salesLogForm.raffle_code" name="raffle_code" class="custom-select w-100"
+                  <input @input="ResetInput()" v-model="salesLogForm.raffle_code" name="raffle_code" class="custom-select w-100"
                     />
                    
                 </div>
@@ -401,12 +401,13 @@
             <div class=" form-group  col" style="display:flex; flex-direction: column;">
                     <label for="raffle_code" class="form-control-label">Raffle Code (Optional)</label>
                     <div style="display: flex; align-items: center;">
-                      <input @input="validatedRaffleCode = false" v-model="salesLogForm.raffle_code" name="raffle_code" class="custom-select" style="width: 20%; padding-left: 20px;"
+                      <input @input="ResetInput()" v-model="salesLogForm.raffle_code" name="raffle_code" class="custom-select" style="width: 20%; padding-left: 20px;"
                         /> 
                         <img src="../assets/checkCircle.png" v-if="validatedRaffleCode"/>
                          <button v-else class="btn bg-default" @click="validateRaffleCode()" type="submit">Validate</button>
                          
                     </div>
+                    <p v-if="error" class="text-danger">{{ error }}</p>
                     
                   </div>  
                 
@@ -632,7 +633,8 @@ export default {
       salesCategories: null,
       showDiscount: null,
       salesCatName: null,
-      validatedRaffleCode:null
+      validatedRaffleCode:null,
+      error:null
     }
   },
   async beforeMount() {
@@ -732,20 +734,21 @@ export default {
     },
   },
   methods: {
+    ResetInput(){
+      this.validatedRaffleCode = false;
+      this.error= null
+    },
     async validateRaffleCode(){
-        try {
-        const Validate = await post(this.apiUrls.raffle_code, {
+      await post(this.apiUrls.raffle_code, {
            "phone_number": this.customer.telephone,
             "code": this.salesLogForm.raffle_code
+        }).then(res=>{
+           Flash.setSuccess('Raffle Code Validated')
+          this.validatedRaffleCode = true
+        }).catch(error =>{
+           this.error = error.response.data.message
         })
-        Flash.setSuccess('Raffle Code Validated')
-        this.validatedRaffleCode = true
-        console.log(Validate)
-        
        
-      } catch (err) {
-        this.$displayErrorMessage('The given data failed to pass validation')
-      }
     },
     computedPayment(firstvalue, secondvalue) {
       if (this.singleRepayment && this.addDownpayment) {

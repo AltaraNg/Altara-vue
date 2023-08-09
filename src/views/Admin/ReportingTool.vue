@@ -53,6 +53,10 @@
 				<option :value="'formal'">Formal</option>
 				<option :value="'informal'">Informal</option>
 			</select>
+			<div class="col d-flex align-items-center"  style="font-size: 8.5px;">
+	                <toggle-button v-on:valueChangedEvent="triggerToggleEvent" :switchName="'billboardOrders'" :key="'billboardOrders'"
+	                  :defaultState="billboardOrders" :label="'Billboard Orders'" />
+	              </div>
 		</div>
 		<div class="flex mt-3 mb-5 px-4 ">
 			<button
@@ -270,9 +274,11 @@
 	import BarChart from '../../components/charts/BarChart.vue';
 	import PieChart from '../../components/charts/PieChart.vue';
 	import Flash from '../../utilities/flash';
+	import ToggleButton from "../../components/ToggleButton.vue"
 
 	export default {
 		components: {
+			ToggleButton,
 			StatCard,
 			DatePicker,
 			BarChart,
@@ -283,6 +289,7 @@
 		},
 		data() {
 			return {
+				billboardOrders:false,
 				lengthOfBranches:'',
 				TotalSalesBySalesCategory:[],
 				reports: null,
@@ -414,6 +421,13 @@
 		},
 
 		methods: {
+			triggerToggleEvent(value, switchName) {
+				this[`triggerToggleEvent${switchName}`](value)
+			},
+			triggerToggleEventbillboardOrders(){
+				this.billboardOrders = !this.billboardOrders
+				console.log(this.billboardOrders ,'from toggle')
+			},
 			addPercentageToSalesCategory() {
 				this.SalesBySalesCategoryTotal = this.TotalSalesBySalesCategory.reduce((sum, item) => sum + item['total_sales'], 0);		
 			this.TotalSalesBySalesCategory = this.TotalSalesBySalesCategory.map(item => {
@@ -482,12 +496,14 @@
 				};
 			},
 			async getReport() {
+				console.log(this.billboardOrders, 'from get reports')
 				this.$LIPS(true);
 				this.query.fromDate = this.fromDate;
 				this.query.toDate = this.toDate;
 				this.query.businessType = this.businessType;
 				this.query.sector = this.sector;
 				this.query.orderType = this.orderType;
+				this.billboardOrders ? this.query.billboardOrders = 'true' : delete this.query.billboardOrders ;
 				try {
 					const report = await byMethod(
 						'GET',

@@ -825,7 +825,7 @@
           </div>
         </div>
       </div>
-      <div class="modal fade repayment" id="amortization">
+      <div class="modal fade repayment" id="amortization" @click.stop="">
         <div class="modal-dialog modal-xl" role="document">
           <div class="modal-content" v-if="showModalContent">
             <div v-if="!newOrder">
@@ -1177,6 +1177,9 @@
             </div>
             <div v-else>
               <new-order-amortization
+              :key="bootx_out"
+              @close="destroyModal"
+              :status="order.status"
                 :lateFEES="lateFEES"
                 :order="order"
                 :customer="customer"
@@ -1685,10 +1688,18 @@ export default {
       role: "",
 
       paystackReference: null,
+      bootx_out: '001'
     }
   },
 
   methods: {
+    destroyModal(){
+      this.showModalContent = false
+      this.bootx_out += '1'
+
+      return $(`#amortization`).modal("toggle")
+    },
+
     selectType(type) {
       selectType(type, this.states)
     },

@@ -462,7 +462,7 @@ import 'vue2-datepicker/index.css'
 export default {
   name: 'NewOrderAmortization',
   components: { LogForm, DatePicker },
-  props: {
+  props: { 
     order: {
       type: Object,
     },
@@ -540,7 +540,7 @@ export default {
           this.$LIPS(false)
           Flash.setError('Error Fetching customer detail')
         })
-    },
+    },    
     addPaymentForm(data) {
       this.$emit('addPayment', data)
     },
@@ -599,12 +599,7 @@ export default {
         })
         .then(res => {
           this.$emit('updateOrderStatus', res.data)
-          this.done();
-          
-          // this.$set(this.selectedStatus, this.instanceId, index);
-
-  // Store the selected status in localStorage for the specific instance
-  // localStorage.setItem(`selectedOrderStatus_${this.instanceId}`);
+          this.done();        
           return res;
         })
         .catch(err => {
@@ -690,13 +685,8 @@ export default {
       await this.getOrderStatus();
     // Retrieve the selected status from localStorage for each instance
     let status = this.orderStatusData.find((status)=> status.name === this.order.status )
-this.selectedStatus = status
-console.log("status", status)
-    // for (const status of this.orderStatusData) {
-    //   // console.log("order Status", status)
-    //   const storedStatus = localStorage.getItem(`selectedOrderStatus_${status.id}`);
-    //   this.$set(this.selectedStatus, status.id, storedStatus ? JSON.parse(storedStatus) : this.order.status);
-    // }
+    this.selectedStatus = status
+
   },
   updated() {
     this.calcDebt(this.order.amortization) === 0
@@ -707,11 +697,7 @@ console.log("status", status)
     order: function() {
       this.amortizationData = this.order.amortization
     },
-  },
-  mounted () {
-let status = this.orderStatusData.find((status)=> status.name === this.order.status )
-console.log("statussss", this.orderStatusData)
-  },
+  }, 
   computed: {
     ...mapGetters(['auth', 'getAuthUserDetails']),
 

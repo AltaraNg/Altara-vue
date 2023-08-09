@@ -103,12 +103,6 @@
 						url_c: 'Order Request from mobile app',
 						desc: 'Order Request from mobile app',
 					},
-					 	{
-						url: 'raffle_code_generator',
-						title: 'Raffle Code Generator',
-						url_c: 'Generate Raffle Code for Prospective Customers',
-						desc: 'Generate Raffle Code for Prospective Customers',
-					},
 				],
 			};
 		},

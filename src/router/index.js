@@ -101,7 +101,7 @@ const BNPL_Orders = () => import('../views/BNPL/Orders.vue');
 const BNPLHome = () => import('../views/BNPL/HomePage.vue');
 const BNPL = () => import('../views/BNPL/index.vue')
 const OrderRequest = () => import('../views/FSL/order_request/orderRequest.vue');
-const RaffleCodeGenerator = () =>import("../views/FSL/raffle_code_generator/raffle_code_generator.vue");
+const RaffleCodeGenerator = () =>import("../views/Admin/raffle_code_generator/raffle_code_generator.vue");
 const CreditCheck = () => import('../views/CreditCheck/index.vue');
 const CreditCheckHome = () => import('../views/CreditCheck/HomePage.vue');
 const AllCreditChecks = () => import('../views/CreditCheck/AllCreditChecks.vue');
@@ -209,6 +209,10 @@ const router = new VueRouter({
           path: "reminder-reporting",
           component: ReminderReportingTool,
           name: "ReminderReporting",
+        },
+        {
+          path: "raffle_code_generator",
+          component: RaffleCodeGenerator,
         },
       ],
     },
@@ -636,10 +640,6 @@ const router = new VueRouter({
         {
           path: "order-request",
           component: OrderRequest,
-        },
-        {
-          path: "raffle_code_generator",
-          component: RaffleCodeGenerator,
         },
       ],
     },

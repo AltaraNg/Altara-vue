@@ -264,11 +264,11 @@
                         "
                       ></PaystackModal>
                     </span>
+                    <div>
                     <span
                       v-if="
                         order.payment_gateway === 'Paystack' &&
                           order.paystack_auth_code != null &&
-                          displayDebitCard(order.status) &&
                           canLogDD && manualDD
                       "
                     >
@@ -278,6 +278,7 @@
                         :customer="customer"
                       ></CustomDirectDebitModalButton>
                     </span>
+                    </div>
                     {{ order.order_number }}
                   </div>
                   <div
@@ -1905,10 +1906,10 @@ export default {
       return $(`#amortization`).modal("toggle")
     },
 
-    displayDebitCard (status) {
-      if (status !== 'Completed' 
-      || status !== 'Repossessed' 
-      || status !== 'Closed') {
+    displayDebitCard () {
+      if (this.order.status !== 'Completed' 
+      || this.order.status !== 'Repossessed' 
+      || this.order.status !== 'Closed') {
         return true
       }
     },
@@ -2204,7 +2205,13 @@ export default {
     },
 
     manualDD(){
-      return process.env.VUE_APP_MANUAL_DD === 'true';
+      if (this.order.status !== 'Completed' 
+      || this.order.status !== 'Repossessed' 
+      || this.order.status !== 'Closed') {
+        return process.env.VUE_APP_MANUAL_DD === 'false';
+      } else {
+        return process.env.VUE_APP_MANUAL_DD === 'true';
+      }
     },
     forDVA() {
       return this.auth("DVAAccess")

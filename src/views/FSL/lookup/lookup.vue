@@ -268,7 +268,7 @@
                       v-if="
                         order.payment_gateway === 'Paystack' &&
                           order.paystack_auth_code != null &&
-                          (order.status !== 'Completed' || order.status !== 'Repossessed' || order.status !== 'Closed') &&
+                          displayDebitCard(order.status) &&
                           canLogDD && manualDD
                       "
                     >
@@ -1892,6 +1892,14 @@ export default {
 
       this.showModalContent = true
       return $(`#amortization`).modal("toggle")
+    },
+
+    displayDebitCard (status) {
+      if (status !== 'Completed' 
+      || status !== 'Repossessed' 
+      || status !== 'Closed') {
+        return true
+      }
     },
 
     addPaymentForm(type) {

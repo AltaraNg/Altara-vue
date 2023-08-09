@@ -302,13 +302,13 @@
         data-vv-as="order_status"
         data-vv-validate-on="blur"
         :name="'order_status_'"
-        v-model="currentStatus"
-        @change="updateOrderStatus(currentStatus)"
+        v-model="selectedStatus"
+      @change="updateOrderStatus(selectedStatus)"
         
     >
         <option selected disabled value="Select Status">Select Status</option>
         <option :value="status" :key="status.id" v-for="status in orderStatusData">{{ status.name }} </option>
-        <!-- <option :value="status.id" :key="status.id" v-for="status in orderStatus">Repossessed</option> -->
+
     </select>
     </div>
     </div>
@@ -498,9 +498,10 @@ export default {
       showModal: false,
       canEditPayment: true,
       isReadOnly: false,
-      orderStatus:  [],
+      // orderStatus:  [],
       orderStatusData: [],
-      currentStatus: "Select Status",
+      // currentStatus:  "Select status",
+      selectedStatus: {},
       columnsData: [],
       showAmmoModal: false,
       showLateFeeModal: false,
@@ -599,6 +600,11 @@ export default {
         .then(res => {
           this.$emit('updateOrderStatus', res.data)
           this.done();
+          
+          // this.$set(this.selectedStatus, this.instanceId, index);
+
+  // Store the selected status in localStorage for the specific instance
+  // localStorage.setItem(`selectedOrderStatus_${this.instanceId}`);
           return res;
         })
         .catch(err => {
@@ -676,10 +682,21 @@ export default {
       return totalRepayment - totalPaid
     },
   },
-  created() {
+  async created() {
     this.calcDebt(this.order.amortization) === 0
       ? (this.completed = true)
       : (this.completed = false)
+
+      await this.getOrderStatus();
+    // Retrieve the selected status from localStorage for each instance
+    let status = this.orderStatusData.find((status)=> status.name === this.order.status )
+this.selectedStatus = status
+console.log("status", status)
+    // for (const status of this.orderStatusData) {
+    //   // console.log("order Status", status)
+    //   const storedStatus = localStorage.getItem(`selectedOrderStatus_${status.id}`);
+    //   this.$set(this.selectedStatus, status.id, storedStatus ? JSON.parse(storedStatus) : this.order.status);
+    // }
   },
   updated() {
     this.calcDebt(this.order.amortization) === 0
@@ -691,6 +708,10 @@ export default {
       this.amortizationData = this.order.amortization
     },
   },
+  mounted () {
+let status = this.orderStatusData.find((status)=> status.name === this.order.status )
+console.log("statussss", this.orderStatusData)
+  },
   computed: {
     ...mapGetters(['auth', 'getAuthUserDetails']),
 
@@ -698,6 +719,11 @@ export default {
       // return this.auth('FSLLead') || this.auth('DVALead')
       return this.auth('AdminAccess')
     },
+    // instanceId() {
+    //   // Calculate a unique instance ID based on your needs
+    //   // For example, you can use this.order.id or any other identifier
+    //   return this.order.id;
+    // },
 
   },
 }

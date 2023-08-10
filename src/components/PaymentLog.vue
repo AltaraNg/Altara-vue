@@ -746,7 +746,7 @@ export default {
            Flash.setSuccess('Raffle Code Validated')
           this.validatedRaffleCode = true
         }).catch(error =>{
-           this.error = error.response.data.message
+           this.error = error.response.data.code == 9 ? error.response.data.data.errors.code[0]: error.response.data.message
         })
        
     },

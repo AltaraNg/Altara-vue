@@ -407,7 +407,7 @@
                          <button v-else class="btn bg-default" @click="validateRaffleCode()" type="submit">Validate</button>
                          
                     </div>
-                    <p v-if="error" class="text-danger">{{ error }}</p>
+                    <p v-if="error" class="text-danger" style="text-transform: capitalize;">{{ error }}</p>
                     
                   </div>  
                 
@@ -746,7 +746,7 @@ export default {
            Flash.setSuccess('Raffle Code Validated')
           this.validatedRaffleCode = true
         }).catch(error =>{
-           this.error = error.response.data.code == 9 ? error?.response?.data?.data?.errors?.code[0] || error.response?.data?.data?.errors?.phone_number[0] : error.response.data.message
+           this.error = error.response.data.message
         })
        
     },

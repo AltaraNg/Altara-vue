@@ -73,6 +73,12 @@
                   </option>
                 </select>
               </div>
+                <div class="col form-group">
+                  <label for="raffle_code" class="form-control-label">Raffle Code (Optional)</label>
+                  <input @input="ResetInput()" v-model="salesLogForm.raffle_code" name="raffle_code" class="custom-select w-100"
+                    />
+                   
+                </div>
               <div class="col form-group" v-if="isBank54">
                 <label for="bvn" class="form-control-label">BVN</label>
                 <input type="text" class="form-control" v-model="salesLogForm.bvn" v-validate="'required'" />
@@ -206,7 +212,7 @@
                   type="submit" v-on:click="getCalc()">
                   View Summary
                 </button>
-                <button v-else class="btn bg-default" :disabled="canPerformAction || hasBVN" type="submit">
+                <button v-else class="btn bg-default" :disabled="canPerformAction || hasBVN || hasNoBs" type="submit">
                   View Amortization
                 </button>
                 <br />
@@ -391,6 +397,21 @@
               </div>
             </div>
           </div>
+          <div v-if="salesLogForm.raffle_code" :class="{ 'disableRaffleCode': validatedRaffleCode }" >
+            <div class=" form-group  col" style="display:flex; flex-direction: column;">
+                    <label for="raffle_code" class="form-control-label">Raffle Code (Optional)</label>
+                    <div style="display: flex; align-items: center;">
+                      <input @input="ResetInput()" v-model="salesLogForm.raffle_code" name="raffle_code" class="custom-select" style="width: 20%; padding-left: 20px;"
+                        /> 
+                        <img src="../assets/checkCircle.png" v-if="validatedRaffleCode"/>
+                         <button v-else class="btn bg-default" @click="validateRaffleCode()" type="submit">Validate</button>
+                         
+                    </div>
+                    <p v-if="error" class="text-danger" style="text-transform: capitalize;">{{ error }}</p>
+                    
+                  </div>  
+                
+           </div>
           <div class="text-center" v-if="isAltaraPay">
             <p class="d-block text-danger">
               {{
@@ -515,8 +536,10 @@ export default {
       hideOrderSummary: true,
       canPerformAction: false,
       hasBVN: false,
+      hasNoBs: false,
 
       apiUrls: {
+        raffle_code:`/api/validate-raffle-draw`,
         repaymentDuration: `/api/repayment_duration`,
         orderType: `/api/order-types`,
         repaymentCycles: `/api/repayment_cycle`,
@@ -611,6 +634,8 @@ export default {
       salesCategories: null,
       showDiscount: null,
       salesCatName: null,
+      validatedRaffleCode:null,
+      error:null
     }
   },
   async beforeMount() {
@@ -710,6 +735,22 @@ export default {
     },
   },
   methods: {
+    ResetInput(){
+      this.validatedRaffleCode = false;
+      this.error= null
+    },
+    async validateRaffleCode(){
+      await post(this.apiUrls.raffle_code, {
+           "phone_number": this.customer.telephone,
+            "code": this.salesLogForm.raffle_code
+        }).then(res=>{
+           Flash.setSuccess('Raffle Code Validated')
+          this.validatedRaffleCode = true
+        }).catch(error =>{
+           this.error = error?.response?.data?.message
+        })
+       
+    },
     computedPayment(firstvalue, secondvalue) {
       if (this.singleRepayment && this.addDownpayment) {
         return firstvalue
@@ -925,6 +966,7 @@ export default {
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
       }
+      this.salesLogForm.raffle_code && this.validatedRaffleCode ? data.raffle_code = this.salesLogForm.raffle_code : null;
 
       data.fixed_repayment = this.salesLogForm.business_type_id?.slug.includes("bs") ? false : data.fixed_repayment;
 
@@ -1204,6 +1246,7 @@ export default {
           }
         }
         this.hasBVN = this.isAltaraPay && !(this.productPlans.includes(this.salesLogForm.business_type_id.slug)) && !this.customer.bvn
+        this.hasNoBs = this.isAltaraPay && salesCatName.name === "No BS" && this.checkVerified()
         if (
           (this.selectedProduct.price > 80000 &&
             this.selectedProduct.price <= 110000 &&
@@ -1358,16 +1401,13 @@ export default {
     checkVerified() {
       if (this.verificationList.length === 0) {
         this.allowBSSale = false
-
         this.noBSVerbiage =
           "Customer's home address and guarantor's home address has not been verified!!!"
 
         return
       }
-      let checkList = JSON.parse(this.verificationList[0].input_data)
       if (
-        checkList.homeVisited === "yes" &&
-        checkList.guarantorHomeVisited === "yes"
+        this.verificationList.length > 0
       ) {
         this.allowBSSale = true
       } else {
@@ -1708,5 +1748,9 @@ export default {
 
 .hidden {
   display: hidden;
+}
+.disableRaffleCode{
+  pointer-events: none;
+  opacity: 0.5;
 }
 </style>

@@ -24,7 +24,7 @@
             >What location was visited and verified?</label
           >
           <p class="display-text">
-            {{ verification.location }}
+            {{ verification.locations.join(", ") }}
           </p>
         </li>
         <li class="list-group-item my-3">
@@ -270,7 +270,7 @@
             >What location was visited and verified?</label
           >
           <p class="display-text">
-            {{ verification.location }}
+            {{ verification.location.join(", ") }}
           </p>
         </li>
         <li class="list-group-item my-3">
@@ -446,7 +446,7 @@
             >"How many years has the customer owned thier business ( >1 year) ?  if Shop/Business is verified</label
           >
           <p class="display-text">
-            {{ verification.yearsOfWork }}
+            {{ verification.yearsOfWorkInformal }}
           </p>
         </li>
         <li class="list-group-item my-3">
@@ -454,7 +454,7 @@
             >Have we met with the sellers/co-workers and do they speak well of the customer?</label
           >
           <p class="display-text">
-            {{ verification.metManager }}
+            {{ verification.metManagerInformal }}
           </p>
         </li>
         <li class="list-group-item my-3">

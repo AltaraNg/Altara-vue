@@ -36,7 +36,7 @@ export default {
     },
 };
 </script>
-<style>
+<style scoped>
 .copy{
     cursor: pointer;
     margin-right: 15px;;

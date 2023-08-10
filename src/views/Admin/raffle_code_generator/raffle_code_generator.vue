@@ -53,12 +53,10 @@ export default{
 			 await post('/api/raffle_draw_code', {
 				phone_number: this.phone_number
 			}).then(res=>{
-				console.log(res)
 				this.raffle_code = res.data.data.code
 				this.result = true
 			}).catch(err=>{
 				 Flash.setError('This number has a code that has not been used')
-				console.log(err)
 				this.result = false
 			});
 			
@@ -70,7 +68,7 @@ export default{
 	},
 }
 </script>
-<style>
+<style scoped>
 .w-50{
 	width:50%
 }

@@ -426,7 +426,6 @@
 			},
 			triggerToggleEventbillboardOrders(){
 				this.billboardOrders = !this.billboardOrders
-				console.log(this.billboardOrders ,'from toggle')
 			},
 			addPercentageToSalesCategory() {
 				this.SalesBySalesCategoryTotal = this.TotalSalesBySalesCategory.reduce((sum, item) => sum + item['total_sales'], 0);		
@@ -496,7 +495,6 @@
 				};
 			},
 			async getReport() {
-				console.log(this.billboardOrders, 'from get reports')
 				this.$LIPS(true);
 				this.query.fromDate = this.fromDate;
 				this.query.toDate = this.toDate;

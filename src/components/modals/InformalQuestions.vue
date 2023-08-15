@@ -30,16 +30,17 @@
             ><br />
             <div
               class="form-check form-check-radio form-check-inline"
-              v-for="option in verifiedOptions"
+              v-for="option in verifiedOptions" :key="option"
             >
               <label class="form-check-label">
                 <input
                   v-model="verificationData.location"
-                  type="radio"
-                  class="form-check-input "
+                  type="checkbox"
+                  class="form-check-input"
                   :value="option"
-                  name="checklist1"
+                  id="option"
                   v-validate="'required'"
+                  
                 />
                 <span class="px-2">{{ option }}</span>
                 <span class="form-check-sign"> </span>
@@ -69,6 +70,7 @@
                   value="yes"
                   name="checklist2"
                   v-validate="'required'"
+                  
                 />
                 <span class="px-2">Yes</span>
                 <span class="form-check-sign"> </span>
@@ -83,6 +85,7 @@
                   value="no"
                   name="checklist2"
                   v-validate="'required'"
+                  
                 />
                 <span class="px-2">No</span>
                 <span class="form-check-sign"> </span>
@@ -105,6 +108,7 @@
                   value="yes"
                   name="checklist3"
                   v-validate="'required'"
+                  
                 />
                 <span class="px-2">Yes</span>
                 <span class="form-check-sign"> </span>
@@ -119,6 +123,7 @@
                   value="no"
                   name="checklist3"
                   v-validate="'required'"
+                  
                 />
                 <span class="px-2">No</span>
                 <span class="form-check-sign"> </span>
@@ -139,6 +144,7 @@
                   value="yes"
                   name="checklist4"
                   v-validate="'required'"
+                  
                 />
                 <span class="px-2">Yes</span>
                 <span class="form-check-sign"> </span>
@@ -153,6 +159,7 @@
                   value="no"
                   name="checklist4"
                   v-validate="'required'"
+                  
                 />
                 <span class="px-2">No</span>
                 <span class="form-check-sign"> </span>
@@ -412,7 +419,7 @@
   
             <div
               class="form-check form-check-radio form-check-inline"
-              v-for="option in locationDurationOptions"
+              v-for="option in locationDurationOptions" :key="option"
             >
               <label class="form-check-label">
                 <input
@@ -421,7 +428,7 @@
                   class="form-check-input "
                   :value="option"
                   name="checklist12"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">{{ option }}</span>
                 <span class="form-check-sign"> </span>
@@ -443,7 +450,7 @@
                   class="form-check-input "
                   value="yes"
                   name="checklist13"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">Yes</span>
                 <span class="form-check-sign"> </span>
@@ -457,7 +464,7 @@
                   class="form-check-input "
                   value="no"
                   name="checklist13"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">No</span>
                 <span class="form-check-sign"> </span>
@@ -478,7 +485,7 @@
                   class="form-check-input "
                   value="yes"
                   name="checklist14"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">Yes</span>
                 <span class="form-check-sign"> </span>
@@ -492,7 +499,7 @@
                   class="form-check-input "
                   value="no"
                   name="checklist14"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">No</span>
                 <span class="form-check-sign"> </span>
@@ -536,7 +543,7 @@
                   class="form-check-input "
                   value="yes"
                   name="checklist15"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">Yes</span>
                 <span class="form-check-sign"> </span>
@@ -550,7 +557,7 @@
                   class="form-check-input "
                   value="no"
                   name="checklist15"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">No</span>
                 <span class="form-check-sign"> </span>
@@ -572,7 +579,7 @@
                   class="form-check-input "
                   value="Same with customer"
                   name="checklist22"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">Same answer with customer</span>
                 <span class="form-check-sign"> </span>
@@ -586,7 +593,7 @@
                   class="form-check-input "
                   value="Diffferent answer from customer"
                   name="checklist22"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">Different from what customer said</span>
                 <span class="form-check-sign"> </span>
@@ -607,7 +614,7 @@
                   class="form-check-input "
                   value="yes"
                   name="checklist16"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">Yes</span>
                 <span class="form-check-sign"> </span>
@@ -621,7 +628,7 @@
                   class="form-check-input "
                   value="no"
                   name="checklist16"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">No</span>
                 <span class="form-check-sign"> </span>
@@ -639,16 +646,16 @@
             <br>
             <div
               class="form-check form-check-radio form-check-inline"
-              v-for="yearsOption in customerWorkingYearsOptions"
+              v-for="yearsOption in customerWorkingYearsOptions" :key="yearsOption"
             >
               <label class="form-check-label">
                 <input
-                  v-model="verificationData.yearsOfWork"
+                  v-model="verificationData.yearsOfWorkInformal"
                   type="radio"
                   class="form-check-input "
                   :value="yearsOption"
                   name="checklist17"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">{{ yearsOption }}</span>
                 <span class="form-check-sign"> </span>
@@ -665,12 +672,12 @@
             <div class="form-check form-check-radio form-check-inline">
               <label class="form-check-label">
                 <input
-                  v-model="verificationData.metManager"
+                  v-model="verificationData.metManagerInformal"
                   type="radio"
                   class="form-check-input "
                   value="yes"
                   name="checklist18"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">Yes</span>
                 <span class="form-check-sign"> </span>
@@ -679,12 +686,12 @@
             <div class="form-check form-check-radio form-check-inline">
               <label class="form-check-label">
                 <input
-                  v-model="verificationData.metManager"
+                  v-model="verificationData.metManagerInformal"
                   type="radio"
                   class="form-check-input "
                   value="no"
                   name="checklist18"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">No</span>
                 <span class="form-check-sign"> </span>
@@ -700,7 +707,7 @@
               class="form-control"
               id="exampleFormControlTextarea3"
               rows="3"
-              v-validate="'required'"
+              
             ></textarea>
           </div>
           <div class="form-group my-3">
@@ -712,7 +719,7 @@
               class="form-control"
               id="exampleFormControlTextarea3"
               rows="3"
-              v-validate="'required'"
+              
             ></textarea>
           </div>
 
@@ -730,7 +737,7 @@
                   class="form-check-input "
                   value="yes"
                   name="checklist19"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">Yes</span>
                 <span class="form-check-sign"> </span>
@@ -744,7 +751,7 @@
                   class="form-check-input "
                   value="no"
                   name="checklist19"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">No</span>
                 <span class="form-check-sign"> </span>
@@ -765,7 +772,7 @@
                   class="form-check-input "
                   value="yes"
                   name="checklist20"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">Yes</span>
                 <span class="form-check-sign"> </span>
@@ -779,7 +786,7 @@
                   class="form-check-input "
                   value="no"
                   name="checklist20"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">No</span>
                 <span class="form-check-sign"> </span>
@@ -796,7 +803,7 @@
               class="form-control"
               id="exampleFormControlTextarea5"
               rows="3"
-              v-validate="'required'"
+              
             ></textarea>
           </div>
   
@@ -814,7 +821,7 @@
                   class="form-check-input "
                   value="Same answer with customer"
                   name="checklist21"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">Same answer with customer</span>
                 <span class="form-check-sign"> </span>
@@ -828,7 +835,7 @@
                   class="form-check-input "
                   value="Different from what customer said"
                   name="checklist21"
-                  v-validate="'required'"
+                  
                 />
                 <span class="px-2">Different from what customer said</span>
                 <span class="form-check-sign"> </span>
@@ -875,7 +882,9 @@
       return {
         verifiedOptions: ["Home", "Shop/ Business"],
         vAgents: null,
-        verificationData: {},
+        verificationData: {
+          location: []
+        },
         locationDurationOptions: ["less than 6 months","6months - 1 year","More than 1 year",],
         customerWorkingYearsOptions: ["less than 6 months","6months - 1 year","More than 1 year",],
         showCustomer: false,
@@ -928,40 +937,100 @@
         )
     },
 
-      async save() {
+    async save() {
         this.$validator.validateAll().then(async result => {
           if (result) {
             try {
               this.$LIPS(true)
               this.verificationData.customer_id = this.customer.id
               this.verificationData.type = "verification"
-              this.verificationData.status =  this.status
-  
+              this.verificationData.status = this.status
+
+              const genericRequiredKeys = [
+              'location',
+              'addressMatch',
+              'customerDistance',
+              'married',
+              'nameOfSpouse',
+              'customerChildren',
+              'spouseSalary',
+              'addressByGuarantor',
+              'collateralPictures',
+              'accommodationPicture',
+              'hasBvn',
+              'spouseNotGuarantor'
+              ];
+              const isGenericSectionFilled = genericRequiredKeys.every(key => this.verificationData[key] !== undefined);
+
+
+              const homeRequiredKeys = [
+              'locationDuration',
+              'bill',
+              'customerTravels',
+              'natureOfHomeAddress',
+              'whoYouSpeakTo',
+              'ownHouse',
+              'houseLivedDuration',
+              'issueWithNeighbour',
+              ]
+
+
+              const isHomeSectionFilled = homeRequiredKeys.every(key => this.verificationData[key] !== undefined);
+
+              const officeRequiredKeys = [
+              'yearsOfWorkInformal',
+              'metManagerInformal',
+              'customerWork',
+              'customerSales',
+              'oftenTravel',
+              'receipt',
+              'whoYouSpokeWith',
+              'customerWorkDuration',
+              ]
+
+              const isOfficeSectionFilled = officeRequiredKeys.every(key => this.verificationData[key] !== undefined);
+              
+
+
+              if (isGenericSectionFilled && (isHomeSectionFilled || isOfficeSectionFilled)) {
               let res = await post("/api/recommendation", this.verificationData)
               if (res.status === 200) {
                 this.$swal({
                   icon: "success",
                   title: `verification saved successfully`,
                 })
+                
                 this.verificationData = {}
                 EventBus.$emit("updateUser", this.customer.id)
-  
+                
                 this.$modal.hide("verificationForm")
               }
-            } catch (err) {
-              this.$swal({
-                icon: "error",
-                title: `Unable to complete`,
-              })
-            } finally {
-              this.$LIPS(false)
-            }
+       
+              } else if (isGenericSectionFilled) {
+                this.$swal({
+                  icon: "error",
+                  title: `Unable to complete, Fill either Home section or Office Section completely to save.`,
+                })
+                this.$LIPS(false)
+              } else if (isHomeSectionFilled || isOfficeSectionFilled) {
+                this.$swal({
+                  icon: "error",
+                  title: `Unable to complete, Generic is compulsory`,
+                })
+                this.$LIPS(false)
+              }
+              } catch (err) {
+                this.$swal({
+                  icon: "error",
+                  title: `Unable to complete`,
+                })
+              } finally {
+                this.$LIPS(false)
+              }
           }
         })
       },
     },
-
-    
   }
   </script>
   

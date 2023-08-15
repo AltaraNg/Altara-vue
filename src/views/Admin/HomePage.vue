@@ -48,6 +48,12 @@ export default {
           url_c: 'View reminder report',
           desc: 'View reminder report',
         },
+        {
+						url: 'raffle_code_generator',
+						title: 'Raffle Code Generator',
+						url_c: 'Generate Raffle Code',
+						desc: 'Generate Raffle Code for Prospective Customers',
+        },
       ],
     }
   },

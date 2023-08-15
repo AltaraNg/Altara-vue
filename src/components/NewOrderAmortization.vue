@@ -707,11 +707,6 @@ export default {
       // return this.auth('FSLLead') || this.auth('DVALead')
       return this.auth('AdminAccess')
     },
-    // instanceId() {
-    //   // Calculate a unique instance ID based on your needs
-    //   // For example, you can use this.order.id or any other identifier
-    //   return this.order.id;
-    // },
 
   },
 }

@@ -326,7 +326,6 @@
         align-items-center
         justify-content-center"
 >
-<span>{{JSON.stringify(order.status) }}</span>
     <button
         :disabled="order.business_type === 'Cash n Carry'"
         :class="statusOrder(order.status)"
@@ -2169,7 +2168,7 @@ export default {
           } repayment`
     },
     showDirectDebit(order) {
-      console.log("Orderrrrrrr", order.status)
+      
       return order.payment_gateway === 'Paystack' &&
                           order.paystack_auth_code != null &&
                           this.canLogDD && this.manualDD && (order.status === 'Active' ||
@@ -2228,8 +2227,6 @@ export default {
     EventBus.$on("updateUser", this.processForm)
     EventBus.$on("statusOrder", this.handleUpdateOrderStatus)
     this.$LIPS(false);
-    
-    // console.log("OrderStatussss", this.order.status)
   },
 
   async mounted() {
@@ -2237,7 +2234,6 @@ export default {
     this.$prepareBranches()
     this.$preparePaymentMethods()
     this.role = parseInt(localStorage.getItem("role"))
-    console.log("Order", this.order)
   },
 }
 </script>

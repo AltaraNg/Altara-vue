@@ -1,180 +1,179 @@
 <template>
-  <div>
-    <div style="display: flex; align-items: end; " class="w-100 ">
-      <div style="width: 85%;">
-        <AutocompleteSearch title="customer lookup" @customer-selected="processForm"
-          :url="'/api/customer/autocomplete'" />
-      </div>
-      <div style="padding-bottom: 14px; margin-left: -25px;">
-        <button class="btn bg-default" style="padding: 23px 30px; display: flex; align-items: center;" type="submit">
-          <upload class="pr-2" />Upload Document
-        </button>
-      </div>
+  <div style="position:relative">
+    <div class="details" v-if="seeDetails">
+           <BankStatementDetails @close="seeDetails = false"/>
+          </div>
+      <div v-else>
+         <div style="display: flex; align-items: end; " class="w-100 ">
+        <div style="width: 85%;">
+          <AutocompleteSearch title="customer lookup" @customer-selected="processForm"
+            :url="'/api/customer/autocomplete'" />
+        </div>
+        <div style="padding-bottom: 14px; margin-left: -25px;">
+          <button class="btn bg-default" style="padding: 23px 30px; display: flex; align-items: center;" type="submit">
+            <upload class="pr-2" />Upload Document
+          </button>
+        </div>
 
-    </div>
-    <div class="space-between mb-5 pl-5 mt-5 ml-5 px-4">
-      <h3 class="text-capitalize mb-0">Filters</h3>
-    </div>
-    <div class="center my-2  ml-5 pl-5 " style=" display: flex; align-items: center;">
-      <div style="width:60%; display: flex;">
-        <div style="width:30%; margin-right: 2%;">
-          <label style="color: #074A74; font-weight: 800;">DATE</label>
-          <input type="date" name="repayment_duration" class="custom-select flex-1 w-100" v-model="repaymentPlan" />
+      </div>
+      <div class="space-between mb-5 pl-5 mt-5 ml-5 px-4">
+        <h3 class="text-capitalize mb-0">Filters</h3>
+      </div>
+      <div class="center my-2  ml-5 pl-5 " style=" display: flex; align-items: center;">
+        <div style="width:60%; display: flex;">
+          <div style="width:30%; margin-right: 2%;">
+            <label style="color: #074A74; font-weight: 800;">DATE</label>
+            <input type="date" name="repayment_duration" class="custom-select flex-1 w-100" v-model="repaymentPlan" />
+
+
+          </div>
+          <div style="width:30%; margin-right: 2%;">
+            <label style="color: #074A74; font-weight: 800;">STATUS</label>
+            <select name="repayment_duration" class="custom-select flex-1 w-100" v-model="repaymentPlan">
+              <option v-for="option in availableRepaymentPlan" :value="option.id" :key="option.id">{{ option.name }}
+              </option>
+            </select>
+          </div>
+          <div style="width:30%; margin-right: 2%;">
+            <label style="color: #074A74; font-weight: 800;">CUSTOMER ID</label>
+            <input type="number" name="repayment_duration" class="custom-select flex-1 w-100" v-model="repaymentPlan"/>
+          </div>
+
 
 
         </div>
-        <div style="width:30%; margin-right: 2%;">
-          <label style="color: #074A74; font-weight: 800;">STATUS</label>
-          <select name="repayment_duration" class="custom-select flex-1 w-100" v-model="repaymentPlan">
-            <option v-for="option in availableRepaymentPlan" :value="option.id" :key="option.id">{{ option.name }}
-            </option>
-          </select>
+        <div style="width:40%; display: flex; justify-content: end; padding-right: 43px;">
+          <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4" @click="getReport()">
+            <span class="h5" style="width: 5rem">
+              Search
+            </span>
+          </button>
+          <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4" @click="resetReport()">
+            <span class="h5" style="width: 5rem">
+              Reset
+            </span>
+          </button>
         </div>
-        <div style="width:30%; margin-right: 2%;">
-          <label style="color: #074A74; font-weight: 800;">CUSTOMER ID</label>
-          <input type="number" name="repayment_duration" class="custom-select flex-1 w-100" v-model="repaymentPlan"/>
-        </div>
-
-
 
       </div>
-      <div style="width:40%; display: flex; justify-content: end; padding-right: 43px;">
-        <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4" @click="getReport()">
-          <span class="h5" style="width: 5rem">
-            Search
-          </span>
-        </button>
-        <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4" @click="resetReport()">
-          <span class="h5" style="width: 5rem">
-            Reset
-          </span>
-        </button>
-      </div>
-
-    </div>
-    <div>
-       <div class="mt-5 pt-5 attendance-head">
-            <div class="row mt-5 px-4 pt-3 pb-4 text-left">
+      <div >
+         <div class="mt-5 pt-5 attendance-head">
+              <div class="row mt-5 px-4 pt-3 pb-4 text-left">
             
-              <div
-                class="col light-heading"
-                v-for="(header, index) in headings"
-                :key="index"
-              >
-                {{ header }}
+                <div
+                  class="col light-heading"
+                  v-for="(header, index) in headings"
+                  :key="index"
+                >
+                  {{ header }}
+                </div>
               </div>
             </div>
-          </div>
-          <div
-          class="mt-1 attendance-body text-left"
-          key="table"
-          v-if="creditChecks.length > 0 && creditChecks"
-        >
-          <div
-            class="mb-3 row d-flex bg-white table-hover"
-            :key="index"
-            v-for="(creditCheck, index) in creditChecks"
-          >
-            <!-- {{ creditCheck }} -->
-            <div class="col-12 col-xs-3 col-md col-lg  align-items-start  ">
-              <span
-                class="user mx-auto text-white bg-default"
-                >{{ index + OId }}</span
-              >
-            </div>
-         
             <div
-              class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left"
+            class="mt-1 attendance-body text-left"
+            key="table"
+            v-if="creditChecks.length > 0 && creditChecks"
+          >
+            <div
+              class="mb-3 row d-flex bg-white table-hover"
+              :key="index"
+              v-for="(creditCheck, index) in creditChecks"
             >
-              {{ creditCheck.customer_id }}
-            </div>
-           <div
+              <!-- {{ creditCheck }} -->
+              <div class="col-12 col-xs-3 col-md col-lg  align-items-start  ">
+                <span
+                  class="user mx-auto text-white bg-default"
+                  >{{ index + OId }}</span
+                >
+              </div>
+         
+              <div
                 class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left"
               >
-                {{ creditCheck.customer.first_name }}
-                {{ creditCheck.customer.last_name }}
+                {{ creditCheck.customer_id }}
+              </div>
+             <div
+                  class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left"
+                >
+                  {{ creditCheck.customer.first_name }}
+                  {{ creditCheck.customer.last_name }}
               
 
               
-            </div>
-            <div
-                class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left"
-              >
-                21/12/2002
+              </div>
+              <div
+                  class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left"
+                >
+                  21/12/2002
 
              
-            </div>
+              </div>
             
-            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center">
-              <span
-                class="badge badge-success bg-success text-white font-weight-bold"
-                v-if="creditCheck.status === 'passed'"
-                >Passed</span
-              >
-              <span
-                class="badge badge-warning bg-warning text-black font-weight-bold"
-                v-if="creditCheck.status === 'pending'"
-                >Pending</span
-              >
-              <span
-                class="badge badge-danger bg-danger text-white font-weight-bold"
-                v-if="creditCheck.status === 'failed'"
-                >Failed</span
-              >
-            </div>
-            <div
-              class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left"
-            >
-              <div class="dropdown">
-                <button
-                  type="button"
-                  class="btn btn-info dropdown-toggle"
-                  data-toggle="dropdown"
-                  :id="'dropdownMenuButton' + creditCheck.id"
-                  @click="setSelectedCreditCheck(creditCheck)"
-                  
+              <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center">
+                <span
+                  class="badge badge-success bg-success text-white font-weight-bold"
+                  v-if="creditCheck.status === 'passed'"
+                  >Passed</span
                 >
-                  View
-                </button>
-                <div
-                  class="dropdown-menu"
-                  :aria-labelledby="'dropdownMenuButton' + creditCheck.id"
+                <span
+                  class="badge badge-warning bg-warning text-black font-weight-bold"
+                  v-if="creditCheck.status === 'pending'"
+                  >Pending</span
                 >
+                <span
+                  class="badge badge-danger bg-danger text-white font-weight-bold"
+                  v-if="creditCheck.status === 'failed'"
+                  >Failed</span
+                >
+              </div>
+              <div
+                class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left"
+              >
+                <div class="dropdown">
                   <button
-                    class="dropdown-item"
                     type="button"
-                    data-toggle="modal"
-                    data-target="#creditCheckModal"
+                    class="btn btn-info bg-default dropdown-toggle"
+                 
+                    :id="'dropdownMenuButton' + creditCheck.id"
+                    @click="seeDetails = true"
+                  
                   >
-                    Change Status
+                    View
                   </button>
+               
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div v-else class="h4 text-center">No Data</div>
-        <div v-if="pageParams">
-          <base-pagination :page-param="pageParams" @fetchData="fetchData">
-          </base-pagination>
-        </div>
-    </div>
+          <div v-else class="h4 text-center">No Data</div>
+          <div v-if="pageParams">
+            <base-pagination :page-param="pageParams" @fetchData="fetchData">
+            </base-pagination>
+          </div>
+        
+        
+      </div>
+      </div>
+
   </div>
 </template>
 <script>
 import AutocompleteSearch from "../../components/AutocompleteSearch/AutocompleteSearch.vue"
 import { get, post, put } from "../../utilities/api"
 import BasePagination from "../../components/Pagination/BasePagination.vue"
+import BankStatementDetails from "../../components/BankStatementDetails.vue"
 import upload from "../../assets/upload.vue"
 export default {
   components: {
     AutocompleteSearch,
+    BankStatementDetails,
     upload,
     BasePagination
 
   },
   data() {
     return {
+      seeDetails: true,
        pageParams: {
         page: 1,
         limit: 15,
@@ -284,4 +283,15 @@ export default {
   },
 }
 </script>
+<style scoped>
+.details{
+ background-color: #F7F7FF;
+ position: absolute;
+ top: -40px;
+ right: 0;
+ z-index: 1000;
+ min-height: 80vh;
+ min-width: 100%; 
+}
+</style>
 

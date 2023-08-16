@@ -166,13 +166,13 @@
               <tbody class="text-center">
                 <tr class="table-separator">
                   <th>Penalty Date</th>
-                  <td style="font-weight: 800;" v-for="latefee in lateFEES" :key="latefee">
+                  <td style="font-weight: 800;" v-for="latefee in lateFEES" :key="latefee.id">
                     {{ new Date(latefee.date_created).toLocaleDateString() }}
                   </td>
                 </tr>
                 <tr class="table-separator">
                   <th>Late Fee Amount Due</th>
-                  <td style="font-weight: 800;" v-for="latefee in lateFEES" :key="latefee">
+                  <td style="font-weight: 800;" v-for="latefee in lateFEES" :key="latefee.id">
                     {{ $formatCurrency(latefee.amount_due) }}
                   </td>
                 </tr>
@@ -184,14 +184,14 @@
                     v-for="(latefee, index) in lateFEES"
                     @click="updateLateFee(latefee, index)"
                     class="pointer"
-                    :key="latefee"
+                    :key="latefee.id"
                   >
                     {{ $formatCurrency(latefee.amount_paid) }}
                   </td>
                 </tr>
                 <tr class="table-separator status-row">
                   <th>Status</th>
-                  <td v-for="latefee in lateFEES" :key="latefee">
+                  <td v-for="latefee in lateFEES" :key="latefee.id">
                     <div
                       v-if="latefee.amount_due === latefee.amount_paid"
                       class="green"
@@ -209,7 +209,7 @@
                   <td
                     style="font-weight: 800;"
                     v-for="(latefee) in lateFEES"
-                    :key="latefee"
+                    :key="latefee.id"
                   >
                     {{
                       latefee.date_paid !== null

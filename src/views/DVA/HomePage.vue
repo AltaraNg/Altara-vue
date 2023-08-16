@@ -135,6 +135,13 @@ export default {
           url_c: "Check suitable plan for informal",
           desc: "Recommendation Service Informal",
         },
+         {
+          
+          url: "bank_statement_reader",
+          title: "Bank Statement Reader",
+          url_c: "Bank Statement Reader",
+          desc: "Bank Statement Reader",
+        },
 
         // TODO:: cleanup
       ],

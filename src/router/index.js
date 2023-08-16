@@ -105,7 +105,7 @@ const RaffleCodeGenerator = () =>import("../views/Admin/raffle_code_generator/ra
 const CreditCheck = () => import('../views/CreditCheck/index.vue');
 const CreditCheckHome = () => import('../views/CreditCheck/HomePage.vue');
 const AllCreditChecks = () => import('../views/CreditCheck/AllCreditChecks.vue');
-const BankStatementReader = () => import("../views/CreditCheck/BankStatementReader.vue")
+const BankStatementReader = () => import("../views/DVA/BankStatementReader.vue")
 
 
 Vue.use(VueRouter);
@@ -153,11 +153,7 @@ const router = new VueRouter({
         { path: "/", redirect: { name: "CreditCheckHome" } },
         { path: "home", component: CreditCheckHome, name: "CreditCheckHome" },
         { path: "all", component: AllCreditChecks, name: "AllCreditChecks" },
-        {
-          path: "bank_statement_reader",
-          component: BankStatementReader,
-          name: "BankStatementReader",
-        },
+
         {
           path: "lookup",
           component: CustomerLookup,
@@ -332,6 +328,11 @@ const router = new VueRouter({
         { path: "/", redirect: { name: "DVAHome" } },
         { path: "home", component: DVAHome, name: "DVAHome" },
         { path: "message", component: DVAMessage, name: "DVAMessage" },
+        {
+          path: "bank_statement_reader",
+          component: BankStatementReader,
+          name: "BankStatementReader",
+        },
         {
           path: "customer/update",
           component: updateCustomer,

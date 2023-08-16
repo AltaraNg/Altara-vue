@@ -33,14 +33,7 @@
                         desc: "View all Credit Checks",
                         aces: this.$store.getters.auth('CreditCheckAccess'),
                     },
-                    {
-                    id: 3,
-                    url: "bank_statement_reader",
-                    title: "Bank Statement Reader",
-                    url_c: "Bank Statement Reader",
-                    desc: "Bank Statement Reader",
-                    aces: this.$store.getters.auth('CreditCheckAccess'),
-                },
+                   
                 ]
             }
         }

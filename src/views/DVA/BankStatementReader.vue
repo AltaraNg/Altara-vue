@@ -1,7 +1,7 @@
 <template>
   <div style="position:relative">
     <div class="details" v-if="seeDetails">
-           <BankStatementDetails @close="seeDetails = false"/>
+           <BankStatementDetails @close="seeDetails = false" :BankStatement="BankStatement"/>
           </div>
       <div v-else>
          <div style="display: flex; align-items: end; " class="w-100 ">
@@ -135,7 +135,7 @@
                     class="btn btn-info bg-default dropdown-toggle"
                  
                     :id="'dropdownMenuButton' + creditCheck.id"
-                    @click="seeDetails = true"
+                    @click="seeMore(creditCheck)"
                   
                   >
                     View
@@ -173,7 +173,9 @@ export default {
   },
   data() {
     return {
-      seeDetails: true,
+      repaymentPlan:'',
+      BankStatement:{},
+      seeDetails: false,
        pageParams: {
         page: 1,
         limit: 15,
@@ -225,6 +227,11 @@ export default {
           Flash.setError("Error Fetching customer detail")
         })
       this.$LIPS(false)
+    },
+    seeMore(creditCheck){
+      this.BankStatement = creditCheck
+      console.log(this.BankStatement, 'BankStatement')
+      this.seeDetails = true
     },
     async fetchData(params = {}) {
       this.$scrollToTop()

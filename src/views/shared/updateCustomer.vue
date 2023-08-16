@@ -1969,13 +1969,17 @@ import Verification from "../DVA/verification/verification";
 import flash from '../../utilities/flash';
 import CustomerData from "../../mixins/CustomerData";
 import { mapGetters } from "vuex";
+import roles from "../../utilities/roles";
+import Auth from "../../utilities/auth";
 export default {
     components: { Verification },
     mixins: [CustomerData],
     data() {
         return {
             gender: ["Male", "female"],
-            bvn: ""
+            bvn: "",
+            roles: roles,
+            authState: Auth.state,
         }
 
     },
@@ -2101,7 +2105,7 @@ export default {
         },
         showBVN() {
 
-            if (this.newCustomer.bvn === null && !this.auth("DSAAccess")) {
+            if (this.newCustomer.bvn === null && !this.cannotView) {
                 return true
             } else if (this.auth("AdminAccess")) {
                     return true
@@ -2115,6 +2119,12 @@ export default {
         }
         },
     computed: {
+        cannotView: function () {
+      return [
+        roles.dsa_captain,
+        roles.dsa,
+      ].includes(this.authState.role);
+    },
         ...mapGetters(["auth"]),
     },
         created() {

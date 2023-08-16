@@ -2101,17 +2101,16 @@ export default {
         },
         showBVN() {
 
-            if (this.newCustomer.bvn === null) {
+            if (this.newCustomer.bvn === null && !this.auth("DSAAccess")) {
                 return true
-            } else {
-                if (this.auth("AdminAccess")) {
+            } else if (this.auth("AdminAccess")) {
                     return true
-                }
-                if(this.newCustomer.bvn === -1){
+            } else if(this.newCustomer.bvn === -1){
                     return false
-                }
+            } else {
+                return false
             }
-            return false
+        
 
         }
         },

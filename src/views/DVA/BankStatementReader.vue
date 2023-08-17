@@ -1,48 +1,91 @@
 <template>
   <div style="position:relative">
     <div class="details" v-if="seeDetails">
-           <BankStatementDetails @close="seeDetails = false" :BankStatement="BankStatement"/>
-          </div>
-      <div v-else>
-         <div style="display: flex; align-items: end; " class="w-100 ">
-        <div style="width: 85%;">
+      <BankStatementDetails @close="seeDetails = false" :BankStatement="BankStatement" />
+    </div>
+    <div v-else>
+      <form enctype="multipart/form-data" @submit.prevent="uploadBankStatement" class="pb-5"
+        style="background-color: #d7e2d8;">
+        <div style="width: 100%;">
           <AutocompleteSearch title="customer lookup" @customer-selected="processForm"
             :url="'/api/customer/autocomplete'" />
         </div>
-        <div style="padding-bottom: 14px; margin-left: -25px;">
-          <button class="btn bg-default" style="padding: 23px 30px; display: flex; align-items: center;" type="submit">
+        <div style="padding-bottom: 14px; display: flex; " class="pl-5 ml-5 mt-5 ">
+          <div style="width:23%; margin-right: 2%;">
+            <label style="color: #074A74; font-weight: 800;">Minimum Salary (Optional)</label>
+            <input type="number" name="repayment_duration" class="custom-select flex-1 w-100"
+              v-model="bankStatementData.min_salary" />
+
+
+          </div>
+          <div style="width:23%; margin-right: 2%;">
+            <label style="color: #074A74; font-weight: 800;">Maximum Salary (Optional)</label>
+            <input type="number" name="repayment_duration" class="custom-select flex-1 w-100"
+              v-model="bankStatementData.max_salary" />
+
+
+          </div>
+          <div style="width:23%; margin-right: 2%; ">
+            <div style="position: relative;">
+              <label style="color: #074A74; font-weight: 800;">BANK NAME</label>
+              <select name="bank_statement_choice" class="customSelect   flex-1 w-100"
+                v-model="bankStatementData.bank_statement_choice">
+                <option v-for="option in statementChoices" :value="option.key" :key="option.key">{{ option.name }}
+                </option>
+              </select>
+              <input type="file" ref="pdfInput" accept="application/pdf" style="display: none"
+                @change="handlePDFChange" />
+              <pdf style="position:absolute; right: 10px; bottom:5px; cursor:pointer" @click.native="uploadPDF()" />
+
+            </div>
+            <div v-if="bankStatementData.bank_statement_pdf">
+              Selected PDF: {{ bankStatementData.bank_statement_pdf.name }}
+            </div>
+          </div>
+
+          <button class="btn bg-default" style=" display: flex; align-items: center; justify-content: center; width:21%;"
+            type="submit">
             <upload class="pr-2" />Upload Document
           </button>
+
         </div>
 
-      </div>
+
+      </form>
       <div class="space-between mb-5 pl-5 mt-5 ml-5 px-4">
         <h3 class="text-capitalize mb-0">Filters</h3>
       </div>
       <div class="center my-2  ml-5 pl-5 " style=" display: flex; align-items: center;">
-        <div style="width:60%; display: flex;">
-          <div style="width:30%; margin-right: 2%;">
+        <div style="width:70%; display: flex;">
+          <div style="width:20%; margin-right: 2%;">
             <label style="color: #074A74; font-weight: 800;">DATE</label>
             <input type="date" name="repayment_duration" class="custom-select flex-1 w-100" v-model="repaymentPlan" />
 
 
           </div>
-          <div style="width:30%; margin-right: 2%;">
+          <div style="width:20%; margin-right: 2%;">
             <label style="color: #074A74; font-weight: 800;">STATUS</label>
             <select name="repayment_duration" class="custom-select flex-1 w-100" v-model="repaymentPlan">
               <option v-for="option in availableRepaymentPlan" :value="option.id" :key="option.id">{{ option.name }}
               </option>
             </select>
           </div>
-          <div style="width:30%; margin-right: 2%;">
+          <div style="width:20%; margin-right: 2%;">
+            <label style="color: #074A74; font-weight: 800;">BANK NAME</label>
+            <select name="repayment_duration" class="custom-select flex-1 w-100" v-model="searchQuery.statement_choice">
+              <option v-for="option in statementChoices" :value="option.key" :key="option.key">{{ option.name }}
+              </option>
+            </select>
+          </div>
+          <div style="width:20%; margin-right: 2%;">
             <label style="color: #074A74; font-weight: 800;">CUSTOMER ID</label>
-            <input type="number" name="repayment_duration" class="custom-select flex-1 w-100" v-model="repaymentPlan"/>
+            <input type="number" name="repayment_duration" class="custom-select flex-1 w-100" v-model="repaymentPlan" />
           </div>
 
 
 
         </div>
-        <div style="width:40%; display: flex; justify-content: end; padding-right: 43px;">
+        <div style="width:30%; display: flex; justify-content: end; padding-right: 43px;">
           <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4" @click="getReport()">
             <span class="h5" style="width: 5rem">
               Search
@@ -56,127 +99,99 @@
         </div>
 
       </div>
-      <div >
-         <div class="mt-5 pt-5 attendance-head">
-              <div class="row mt-5 px-4 pt-3 pb-4 text-left">
-            
-                <div
-                  class="col light-heading"
-                  v-for="(header, index) in headings"
-                  :key="index"
-                >
-                  {{ header }}
-                </div>
-              </div>
+      <div>
+        <div class="mt-5 pt-5 attendance-head">
+          <div class="row mt-5 px-4 pt-3 pb-4 text-left">
+
+            <div class="col light-heading" v-for="(header, index) in headings" :key="index">
+              {{ header }}
             </div>
-            <div
-            class="mt-1 attendance-body text-left"
-            key="table"
-            v-if="creditChecks.length > 0 && creditChecks"
-          >
-            <div
-              class="mb-3 row d-flex bg-white table-hover"
-              :key="index"
-              v-for="(creditCheck, index) in creditChecks"
-            >
-              <!-- {{ creditCheck }} -->
-              <div class="col-12 col-xs-3 col-md col-lg  align-items-start  ">
-                <span
-                  class="user mx-auto text-white bg-default"
-                  >{{ index + OId }}</span
-                >
-              </div>
-         
-              <div
-                class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left"
-              >
-                {{ creditCheck.customer_id }}
-              </div>
-             <div
-                  class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left"
-                >
-                  {{ creditCheck.customer.first_name }}
-                  {{ creditCheck.customer.last_name }}
-              
+          </div>
+        </div>
+        <div class="mt-1 attendance-body text-left" key="table" v-if="bankStatements.length > 0 && this.bankStatements">
+          <div class="mb-3 row d-flex bg-white table-hover" :key="index" v-for="(creditCheck, index) in creditChecks">
+            <!-- {{ creditCheck }} -->
+            <div class="col-12 col-xs-3 col-md col-lg  align-items-start  ">
+              <span class="user mx-auto text-white bg-default">{{ index + OId }}</span>
+            </div>
 
-              
-              </div>
-              <div
-                  class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left"
-                >
-                  21/12/2002
+            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
+              {{ creditCheck.customer_id }}
+            </div>
+            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
+              {{ creditCheck.customer.first_name }}
+              {{ creditCheck.customer.last_name }}
 
-             
-              </div>
-            
-              <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center">
-                <span
-                  class="badge badge-success bg-success text-white font-weight-bold"
-                  v-if="creditCheck.status === 'passed'"
-                  >Passed</span
-                >
-                <span
-                  class="badge badge-warning bg-warning text-black font-weight-bold"
-                  v-if="creditCheck.status === 'pending'"
-                  >Pending</span
-                >
-                <span
-                  class="badge badge-danger bg-danger text-white font-weight-bold"
-                  v-if="creditCheck.status === 'failed'"
-                  >Failed</span
-                >
-              </div>
-              <div
-                class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left"
-              >
-                <div class="dropdown">
-                  <button
-                    type="button"
-                    class="btn btn-info bg-default dropdown-toggle"
-                 
-                    :id="'dropdownMenuButton' + creditCheck.id"
-                    @click="seeMore(creditCheck)"
-                  
-                  >
-                    View
-                  </button>
-               
-                </div>
+
+
+            </div>
+            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
+              21/12/2002
+
+
+            </div>
+
+            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center">
+              <span class="badge badge-success bg-success text-white font-weight-bold"
+                v-if="creditCheck.status === 'passed'">Passed</span>
+              <span class="badge badge-warning bg-warning text-black font-weight-bold"
+                v-if="creditCheck.status === 'pending'">Pending</span>
+              <span class="badge badge-danger bg-danger text-white font-weight-bold"
+                v-if="creditCheck.status === 'failed'">Failed</span>
+            </div>
+            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
+              <div class="dropdown">
+                <button type="button" class="btn btn-info bg-default dropdown-toggle"
+                  :id="'dropdownMenuButton' + creditCheck.id" @click="seeMore(creditCheck)">
+                  View
+                </button>
+
               </div>
             </div>
           </div>
-          <div v-else class="h4 text-center">No Data</div>
-          <div v-if="pageParams">
-            <base-pagination :page-param="pageParams" @fetchData="fetchData">
-            </base-pagination>
-          </div>
-        
-        
+        </div>
+        <div v-else class="h4 text-center">No Data</div>
+        <div v-if="pageParams">
+          <base-pagination :page-param="pageParams" @fetchData="fetchData">
+          </base-pagination>
+        </div>
+
+
       </div>
-      </div>
+    </div>
 
   </div>
 </template>
 <script>
 import AutocompleteSearch from "../../components/AutocompleteSearch/AutocompleteSearch.vue"
 import { get, post, put } from "../../utilities/api"
+import pdf from '../../assets/pdf.vue'
 import BasePagination from "../../components/Pagination/BasePagination.vue"
 import BankStatementDetails from "../../components/BankStatementDetails.vue"
 import upload from "../../assets/upload.vue"
+import { toMulipartedForm } from '../../utilities/form'
 export default {
   components: {
     AutocompleteSearch,
     BankStatementDetails,
     upload,
-    BasePagination
+    BasePagination,
+    pdf
 
   },
   data() {
     return {
-      repaymentPlan:'',
-      BankStatement:{},
+      selectedPDF: null,
+      bankStatementData: {
+        min_salary: '',
+        max_salary: '',
+        bank_statement_choice: 0,
+        bank_statement_pdf: null
+      },
+      repaymentPlan: '',
+      BankStatement: {},
       seeDetails: false,
-       pageParams: {
+      pageParams: {
         page: 1,
         limit: 15,
       },
@@ -196,12 +211,15 @@ export default {
       query: {},
       reports: null,
       availableRepaymentPlan: [],
+      statementChoices: [],
+      bankStatements: [],
       repaymentPlan: '',
       apiUrls: {
         getReports: '/api/repayment-schedule/report',
         repaymentDurations: '/api/repayment_duration',
         branches: '/api/branches',
-        renewalList: '/api/renewal/prompters',
+        bank_statements: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statements',
+        statement_choices: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statement-choices'
       },
       pageParams: {},
       MonthlyStat: [],
@@ -210,10 +228,36 @@ export default {
       isProcessing: true,
       barData: {},
       searchQuery: { status: "pending", searchTerm: "" },
-      OId:null           
+      OId: null
     }
   },
   methods: {
+    uploadPDF() {
+      this.$refs.pdfInput.click();
+    },
+    handlePDFChange(event) {
+      const selectedFile = event.target.files[0];
+      if (selectedFile && selectedFile.type === 'application/pdf') {
+        // Handle the selected PDF file
+        this.bankStatementData.bank_statement_pdf = selectedFile;
+      } else {
+        alert('Please select a valid PDF file.');
+      }
+    },
+   async uploadBankStatement() {
+      console.log(this.bankStatementData)
+      const form = toMulipartedForm(this.bankStatementData);
+      await post(this.apiUrls.bank_statements, form)
+        .then(({ data }) => {
+          console.log(data)
+          Flash.setSuccess("Document Updated Successfully!")
+        })
+        .catch(e => {
+         console.log(e)
+        })
+      this.$LIPS(false)
+
+    },
     async processForm(id) {
       this.show = false
       this.$LIPS(true)
@@ -228,7 +272,24 @@ export default {
         })
       this.$LIPS(false)
     },
-    seeMore(creditCheck){
+    async getStatementChoices() {
+      try {
+        const fetchStatementChoices = await get(this.apiUrls.statement_choices);
+        this.statementChoices = fetchStatementChoices.data;
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
+    async getBankStatement() {
+      try {
+        const fetchBankStatement = await get(this.apiUrls.bank_statements);
+        this.bankStatements = fetchBankStatement.data.items;
+        console.log(this.bankStatements)
+      } catch (err) {
+        this.$displayErrorMessage(err);
+      }
+    },
+    seeMore(creditCheck) {
       this.BankStatement = creditCheck
       console.log(this.BankStatement, 'BankStatement')
       this.seeDetails = true
@@ -264,7 +325,7 @@ export default {
         total,
         prev_page_url,
       } = response?.data?.data?.creditCheckerVerifications
-      
+
       this.pageParams = Object.assign({}, this.pageParams, {
         current_page,
         first_page_url,
@@ -283,22 +344,46 @@ export default {
       }
     },
   },
-   created() {
+  created() {
     this.searchQuery.status = this.$route?.query?.status
     this.searchQuery.searchTerm = this.$route?.query?.searchTerm
     this.fetchData({ ...this.searchQuery })
   },
+  mounted() {
+    this.getStatementChoices()
+    this.getBankStatement()
+  },
 }
 </script>
 <style scoped>
-.details{
- background-color: #F7F7FF;
- position: absolute;
- top: -40px;
- right: 0;
- z-index: 1000;
- min-height: 80vh;
- min-width: 100%; 
+.customSelect {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: white;
+  border: none;
+
+  color: black;
+  padding: 8px 12px;
+  font-size: 16px;
+  width: 200px;
+  outline: none;
+  box-shadow: none;
+}
+
+.customSelect:focus {
+  border: 0.1px solid #074a74ce !important;
+  box-shadow: rgba(#074a74, 0.25) 0 0 0 1.596px;
+}
+
+.details {
+  background-color: #F7F7FF;
+  position: absolute;
+  top: -40px;
+  right: 0;
+  z-index: 1000;
+  min-height: 80vh;
+  min-width: 100%;
 }
 </style>
 

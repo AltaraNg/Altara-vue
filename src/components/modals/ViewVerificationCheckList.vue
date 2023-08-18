@@ -508,6 +508,178 @@
         
       </ol>
     </div>
+    <div class="modal-body" v-if="verification.status === 'Guarantor' ">
+      <ol class="list-group">
+        <h5>Guarantor</h5>
+        <li class="list-group-item my-3">
+          <label for="checklist1" class=""
+            >How long have you known the customer</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorHowLong }}
+          </p>
+        </li>
+
+        <li class="list-group-item my-3">
+          <label for="checklist2" class=""
+            >What is your relationship with this customer?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerRelationship }}
+          </p>
+        </li>
+
+        <li class="list-group-item my-3">
+          <label for="checklist3" class=""
+            >What is the customer occupation?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerOccupation }}
+          </p>
+        </li>
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlSelect2"
+            >How long has the customer done this business or job?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerBusinessYear }}
+          </p>
+        </li>
+
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlSelect2"
+            >Where does the customer work or where is the customer's business?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerAddress }}
+          </p>
+        </li>
+        <li class="list-group-item">
+          <label for="exampleFormControlTextarea1"
+            >Does the customer own their own house or shop?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerOwnHouse }}
+          </p>
+        </li>
+
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlSelect2"
+            >How many times has the customer borrowed money in the last 6 months?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerBorrowed }}
+          </p>
+        </li>
+
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlSelect2"
+            >Has the customer ever been in trouble with the police?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerTrouble }}
+          </p>
+        </li>
+
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlTextarea1"
+            >What is the name and address of the customer's mosque/church?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerChurchAddress }}
+          </p>
+        </li>
+
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlTextarea1"
+            >Does the customer plan to relocate in the next 6 months?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerRelocate }}
+          </p>
+        </li>
+
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlTextarea1"
+            >Does the customer spend a lot of time outside their current location [Ibadan/Ilorin/OgunState]?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerTimeOutside }}
+          </p>
+        </li>
+
+        <li class="list-group-item my-3">
+          <label for="checklist4">What is the customer called in the neighborhood?</label>
+          <p class="display-text">
+            {{ verification.guarantorCustomerNameByNeighbor }}
+          </p>
+        </li>
+        
+        <li class="list-group-item my-3">
+          <label for="checklist5">Does the customer have a large life event in the next 6 months ? (e.g. birth of a child, burial, children going to university)</label>
+          <p class="display-text">
+            {{ verification.guarantorCustomerLargeLife }}
+          </p>
+        </li>
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlTextarea1"
+            >Can you share the name of anyone else who can vouch for the customer?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerVouch }}
+          </p>
+        </li>
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlTextarea1"
+            >If Yes (Can you share the name of anyone else who can vouch for the customer?)</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerYesVouch }}
+          </p>
+        </li>
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlTextarea1"
+            >Are you employed or do you own a business?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorEmployStatus }}
+          </p>
+        </li>
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlTextarea1"
+            >Does your monthly pay expend 3x the customer's monthly repayment?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorMonthlyPay }}
+          </p>
+        </li>
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlTextarea1"
+            >Can you provide your own address?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorAddress }}
+          </p>
+        </li>
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlTextarea1"
+            >Have you stood as a guarantor for this cutomer and/or anyone in particiular before?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerStoodFor }}
+          </p>
+        </li>
+        <li class="list-group-item my-3">
+          <label for="exampleFormControlTextarea1"
+            >What was the outcome of their payment? Did they ever default and if yes how did you handle it?</label
+          >
+          <p class="display-text">
+            {{ verification.guarantorCustomerDefault }}
+          </p>
+        </li>
+        <div class="spaceAfter"></div>
+      </ol>
+    </div>
     <div class="modal-footer px-4">
       <button
         type="button"

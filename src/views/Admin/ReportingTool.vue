@@ -53,7 +53,7 @@
 				<option :value="'formal'">Formal</option>
 				<option :value="'informal'">Informal</option>
 			</select>
-			<div class="col d-flex align-items-center"  style="font-size: 8.5px;">
+			<div class="col d-flex align-items-center" v-if="flag"  style="font-size: 8.5px;">
 	                <toggle-button v-on:valueChangedEvent="triggerToggleEvent" :switchName="'billboardOrders'" :key="'billboardOrders'"
 	                  :defaultState="billboardOrders" :label="'Billboard Orders'" />
 	              </div>
@@ -289,6 +289,7 @@
 		},
 		data() {
 			return {
+				flag: localStorage.getItem('flag'),
 				billboardOrders:false,
 				lengthOfBranches:'',
 				TotalSalesBySalesCategory:[],

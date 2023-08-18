@@ -29,8 +29,8 @@
                     <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{ $formatCurrency(BankStatement.closing_balance ) }}</p>
                 </div>
                 <div class="box text-center" style="width:30%">
-                    <p style="font-size: 13px;">Average Monthly Balance</p>
-                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">₦8,329.87</p>
+                    <p style="font-size: 13px;">Average Monthly Balance</p> 
+                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{ $formatCurrency(BankStatement.average_monthly_balance) }}7</p>
                 </div>
             </div>
             <div class="mb-4" style="display: flex; align-items: center; ">

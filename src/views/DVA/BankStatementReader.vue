@@ -276,8 +276,12 @@ export default {
     },
    
     seeMore(bankStatement) {
+       this.seeDetails = true
       this.BankStatement = bankStatement
-      this.seeDetails = true
+      setTimeout(() => {
+       this.$scrollToTop()
+      }, 1000);
+      
     },
     async fetchData(params = {}) {
       this.$scrollToTop()

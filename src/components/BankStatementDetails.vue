@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="">
         <div class="pt-5 mb-5 ml-5 pointer" style="display: flex; align-items: center; color: #958A8A;"
             @click="$emit('close')">
             <back /><span class="ml-2">Back</span>
@@ -7,26 +7,26 @@
         <div class="   box  mb-5 ">
             <p class="pb-5" style="font-size: 16px; font-weight: 700; ">Bank_statement.PDF</p>
             <div class="pb-2 alignCenterJustifyBetween" style=" font-size: 13px;">
-                <p>Customer ID : <span style="font-weight: 700;">27976-formal</span></p>
+                <p>Customer ID : <span style="font-weight: 700;">{{ BankStatement.customer_id }}</span></p>
                 <p>Status : <span style="font-weight: 700;">Processed</span></p>
             </div>
             <div class="pb-2 alignCenterJustifyBetween" style=" font-size: 13px;">
-                <p>Account Number : <span style="font-weight: 700;">0976890887</span></p>
-                <p>Account Name : <span style="font-weight: 700;">Olumide Olakode</span></p>
+                <p>Account Number : <span style="font-weight: 700;">{{ BankStatement.account_number }}</span></p>
+                <p>Account Name : <span style="font-weight: 700;">{{ BankStatement.account_name }}</span></p>
             </div>
             <div class="pb-2 alignCenterJustifyBetween" style=" font-size: 13px;">
-                <p>Statement Period : <span style="font-weight: 700;">October 2, 2022 - December 31, 2022 </span></p>
+                <p>Statement Period : <span style="font-weight: 700;">{{ BankStatement.start_date }} - {{ BankStatement.end_date }} </span></p>
             </div>
         </div>
-        <div v-if="BankStatement.status == 'passed'">
+        <div >
             <div class="mb-4" style="display: flex; align-items: center;">
                 <div class="box text-center" style="width:30%">
                     <p style="font-size: 13px;">Opening Balance</p>
-                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">₦527,382.25</p>
+                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{ $formatCurrency(BankStatement.opening_balance) }}</p>
                 </div>
                 <div class="box text-center" style="width:30%">
                     <p style="font-size: 13px;">Closing Balance</p>
-                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">₦4,123.55</p>
+                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{ $formatCurrency(BankStatement.closing_balance ) }}</p>
                 </div>
                 <div class="box text-center" style="width:30%">
                     <p style="font-size: 13px;">Average Monthly Balance</p>
@@ -36,23 +36,23 @@
             <div class="mb-4" style="display: flex; align-items: center; ">
                 <div class="box text-center" style="width:30%">
                     <p style="font-size: 13px;">Total Turnover Credits</p>
-                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">₦527,382.25</p>
+                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{ $formatCurrency(BankStatement.total_deposit) }}</p>
                 </div>
                 <div class="box text-center" style="width:30%">
                     <p style="font-size: 13px;">Total Turnover Debits</p>
-                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">₦485,226.06</p>
+                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{ $formatCurrency(BankStatement.total_withdrawal) }}</p>
                 </div>
-                <div class="box text-center" style="width:30%">
+                <a class="box text-center" style="width:30%" :href="BankStatement.salary_predictions_file_url" target="_blank">
                     <p style="font-size: 13px;"> Predicted Salary Income</p>
-                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">₦208,329.87</p>
-                </div>
+                     <excel/>
+                </a>
             </div>
             <div class="box  " style="margin-top: 50px; margin-bottom: 40px;">
                 <div style="display: flex; justify-content: end;">
                     <div style="width:30%; margin-right: 2%;">
                         <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
                         <input type="number" name="repayment_duration" class="custom-select flex-1 w-100"
-                            v-model="repaymentPlan" />
+                            v-model="repaymentAmount" />
                     </div>
                 </div>
                 <p class="pb-5" style="font-size: 26px; font-weight: 800; color: #074A74;">Repayment Capability Table.</p>
@@ -74,10 +74,10 @@
                 </div>
             </div>
         </div>
-        <div v-if="BankStatement.status == 'pending'" style="display: flex; justify-content: center;">
+        <!-- <div v-if="BankStatement.status == 'pending'" style="display: flex; justify-content: center;">
             <img src="../assets/Spinner-1s-200px.gif"/>
-        </div>
-        <div v-if="BankStatement.status == 'failed'">
+        </div> -->
+        <!-- <div v-if="BankStatement.status == 'failed'">
                 <div class="box p-5">
                     <div style="display: flex; align-items: start;">
                         <warning />
@@ -85,21 +85,28 @@
                     </div>
                     <p class="mt-5" style="font-size: 16px;">There was an error during file processing. please try again later.</p>
                 </div>
-            </div>
+            </div> -->
         
     </div>
 </template>
 <script>
 import back from '../assets/back.vue';
 import warning from '../assets/warning.vue';
+import excel from '../assets/excel.vue'
 export default {
     components: {
         back,
-        warning
+        warning,
+        excel
     },
     props:{
         BankStatement:{
             type:Object
+        }
+    },
+    data(){
+        return{
+            repaymentAmount:''
         }
     }
 }

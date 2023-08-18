@@ -1,9 +1,12 @@
 <template>
   <div style="position:relative">
-    <div class="details" v-if="seeDetails">
-      <BankStatementDetails @close="seeDetails = false" :BankStatement="BankStatement" />
-    </div>
-    <div v-else>
+    <transition name="slide" mode="out-in">
+       <div class="details" v-if="seeDetails">
+        <BankStatementDetails @close="seeDetails = false" :BankStatement="BankStatement" />
+      </div>
+    </transition>
+   
+    <div v-if="!seeDetails" >
       <form enctype="multipart/form-data" @submit.prevent="uploadBankStatement" class="pb-5"
         style="background-color: #d7e2d8;">
         <div style="width: 100%;">
@@ -109,40 +112,34 @@
           </div>
         </div>
         <div class="mt-1 attendance-body text-left" key="table" v-if="bankStatements.length > 0 && this.bankStatements">
-          <div class="mb-3 row d-flex bg-white table-hover" :key="index" v-for="(creditCheck, index) in creditChecks">
+          <div class="mb-3 row d-flex bg-white table-hover" :key="index" v-for="(bankStatement, index) in bankStatements">
             <!-- {{ creditCheck }} -->
             <div class="col-12 col-xs-3 col-md col-lg  align-items-start  ">
               <span class="user mx-auto text-white bg-default">{{ index + OId }}</span>
             </div>
 
             <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
-              {{ creditCheck.customer_id }}
+              {{ bankStatement.customer_id }}
             </div>
             <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
-              {{ creditCheck.customer.first_name }}
-              {{ creditCheck.customer.last_name }}
+              {{ bankStatement.account_name }}
 
 
 
             </div>
             <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
-              21/12/2002
+              {{ new Date(bankStatement.created_at).toISOString().split('T')[0] }}
 
 
             </div>
 
             <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center">
-              <span class="badge badge-success bg-success text-white font-weight-bold"
-                v-if="creditCheck.status === 'passed'">Passed</span>
-              <span class="badge badge-warning bg-warning text-black font-weight-bold"
-                v-if="creditCheck.status === 'pending'">Pending</span>
-              <span class="badge badge-danger bg-danger text-white font-weight-bold"
-                v-if="creditCheck.status === 'failed'">Failed</span>
+              {{ bankStatement.account_number }}
             </div>
             <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
               <div class="dropdown">
-                <button type="button" class="btn btn-info bg-default dropdown-toggle"
-                  :id="'dropdownMenuButton' + creditCheck.id" @click="seeMore(creditCheck)">
+                <button type="button" class="btn btn-info bg-default "
+                  :id="'dropdownMenuButton' + bankStatement.id" @click="seeMore(bankStatement)">
                   View
                 </button>
 
@@ -166,10 +163,11 @@
 import AutocompleteSearch from "../../components/AutocompleteSearch/AutocompleteSearch.vue"
 import { get, post, put } from "../../utilities/api"
 import pdf from '../../assets/pdf.vue'
-import BasePagination from "../../components/Pagination/BasePagination.vue"
+import BasePagination from "../../components/Pagination/BankStatementPagination.vue"
 import BankStatementDetails from "../../components/BankStatementDetails.vue"
 import upload from "../../assets/upload.vue"
 import { toMulipartedForm } from '../../utilities/form'
+import Flash from "../../utilities/flash";
 export default {
   components: {
     AutocompleteSearch,
@@ -183,6 +181,7 @@ export default {
     return {
       selectedPDF: null,
       bankStatementData: {
+        customer_id :'',
         min_salary: '',
         max_salary: '',
         bank_statement_choice: 0,
@@ -227,7 +226,7 @@ export default {
       order2: [],
       isProcessing: true,
       barData: {},
-      searchQuery: { status: "pending", searchTerm: "" },
+      searchQuery: { },
       OId: null
     }
   },
@@ -245,31 +244,26 @@ export default {
       }
     },
    async uploadBankStatement() {
-      console.log(this.bankStatementData)
+      this.$scrollToTop()
+      this.$LIPS(true)
       const form = toMulipartedForm(this.bankStatementData);
       await post(this.apiUrls.bank_statements, form)
         .then(({ data }) => {
           console.log(data)
           Flash.setSuccess("Document Updated Successfully!")
+          this.bankStatementData= {};
+          this.fetchData()
         })
         .catch(e => {
-         console.log(e)
+          Flash.setError("Bank statement processing failed, unable to process the selected bank statement.")
+
         })
       this.$LIPS(false)
 
     },
     async processForm(id) {
-      this.show = false
+      this.bankStatementData.customer_id  = id
       this.$LIPS(true)
-
-      await get(`/api/customer/lookup/${id}`)
-        .then(res => {
-          console.log(res)
-        })
-        .catch(e => {
-          this.$LIPS(false)
-          Flash.setError("Error Fetching customer detail")
-        })
       this.$LIPS(false)
     },
     async getStatementChoices() {
@@ -280,65 +274,56 @@ export default {
         this.$displayErrorMessage(err);
       }
     },
-    async getBankStatement() {
-      try {
-        const fetchBankStatement = await get(this.apiUrls.bank_statements);
-        this.bankStatements = fetchBankStatement.data.items;
-        console.log(this.bankStatements)
-      } catch (err) {
-        this.$displayErrorMessage(err);
-      }
-    },
-    seeMore(creditCheck) {
-      this.BankStatement = creditCheck
-      console.log(this.BankStatement, 'BankStatement')
+   
+    seeMore(bankStatement) {
+      this.BankStatement = bankStatement
       this.seeDetails = true
     },
     async fetchData(params = {}) {
       this.$scrollToTop()
       this.$LIPS(true)
-      const url = "api/all/credit/checker"
       params.page = this.pageParams.page ?? 1
       params.per_page = this.pageParams.limit ?? 15
-      await get(url, params)
+      await get(this.apiUrls.bank_statements, params)
         .then((response) => {
-          this.creditChecks =
-            response.data?.data?.creditCheckerVerifications?.data
-          this.setPagination(response)
+          this.bankStatements = response.data.items;
+          this.setPagination(response.data)
         })
         .catch((err) => {
-          flash.setError("Error occurred fetching credit checks")
+          console.log(err)
+          Flash.setError("Error occurred fetching Bank Statements")
         })
       this.$LIPS(false)
     },
     setPagination(response) {
+      console.log(response, 'inpagination')
       const {
-        current_page,
+        page,
         first_page_url,
         from,
-        last_page,
+        pages,
         last_page_url,
         data,
-        per_page,
+        size,
         next_page_url,
         to,
         total,
         prev_page_url,
-      } = response?.data?.data?.creditCheckerVerifications
+      } = response
 
       this.pageParams = Object.assign({}, this.pageParams, {
-        current_page,
+        page,
         first_page_url,
         from,
-        last_page,
+        pages,
         last_page_url,
-        per_page,
+        size,
         next_page_url,
         to,
         total,
         prev_page_url,
       })
-      this.OId = from;
+      this.OId = page==1 ? page : page*size;
       if (response.queryParams !== undefined) {
         this.searchQuery = response.queryParams
       }
@@ -351,7 +336,6 @@ export default {
   },
   mounted() {
     this.getStatementChoices()
-    this.getBankStatement()
   },
 }
 </script>
@@ -383,7 +367,14 @@ export default {
   right: 0;
   z-index: 1000;
   min-height: 80vh;
-  min-width: 100%;
+  min-width: 100%
+}
+.slide-enter-active, .slide-leave-active {
+  transition: all 0.6s;
+}
+
+.slide-enter, .slide-leave-to {
+  transform: translateX(100%);
 }
 </style>
 

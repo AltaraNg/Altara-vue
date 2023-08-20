@@ -100,49 +100,108 @@
                 </label>
               </div>
             </div>
-  
-            <div class="form-group my-3">
-              <label for="checklist4" class=""
-                >What is the customer occupation?</label
-              ><br />
-              
-            </div>
-            <div class="form-group my-3">
-              <textarea
-                cols="2"
-                class="form-control "
-                v-model="verificationData.guarantorCustomerOccupation"
-              ></textarea>
-            </div>
-            <div class="form-group my-3">
-              <label for="checklist17" class=""
-                >How long has the customer done this business or job?</label
-              ><br />
-              
-            </div>
-            <div class="form-group my-3">
-              <textarea
-                cols="2"
-                class="form-control "
-                v-model="verificationData.guarantorCustomerBusinessYear"
-              ></textarea>
-            </div>
-            <div class="form-group my-3">
-              <label for="checklist18" class=""
-                >Where does the customer work or where is the customer's business?</label
-              ><br />
-              
-            </div>
-            <div class="form-group my-3">
-              <textarea
-                cols="2"
-                class="form-control "
-                v-model="verificationData.guarantorCustomerAddress"
-              ></textarea>
-            </div>
-  
             <div class="form-group my-3">
               <label for="checklist5" class=""
+                >What is the customer occupation?</label
+              ><br />
+              <div class="form-check form-check-radio form-check-inline">
+                <label class="form-check-label">
+                  <input
+                    v-model="verificationData.guarantorCustomerOccupation"
+                    type="radio"
+                    class="form-check-input "
+                    value="Same with customer"
+                    name="checklist5"
+                    v-validate="'required'"
+                  />
+                  <span class="px-2">Same with customer</span>
+                  <span class="form-check-sign"> </span>
+                </label>
+              </div>
+              <div class="form-check form-check-radio form-check-inline">
+                <label class="form-check-label">
+                  <input
+                    v-model="verificationData.guarantorCustomerOccupation"
+                    type="radio"
+                    class="form-check-input "
+                    value="Different from customer"
+                    name="checklist5"
+                    v-validate="'required'"
+                  />
+                  <span class="px-2">Different from customer</span>
+                  <span class="form-check-sign"> </span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group my-3">
+              <label for="checklist51" class=""
+                >How long has the customer done this business or job?</label
+              ><br />
+              <div class="form-check form-check-radio form-check-inline">
+                <label class="form-check-label">
+                  <input
+                    v-model="verificationData.guarantorCustomerBusinessYear"
+                    type="radio"
+                    class="form-check-input "
+                    value="Same with customer"
+                    name="checklist51"
+                    v-validate="'required'"
+                  />
+                  <span class="px-2">Same with customer</span>
+                  <span class="form-check-sign"> </span>
+                </label>
+              </div>
+              <div class="form-check form-check-radio form-check-inline">
+                <label class="form-check-label">
+                  <input
+                    v-model="verificationData.guarantorCustomerBusinessYear"
+                    type="radio"
+                    class="form-check-input "
+                    value="Different from customer"
+                    name="checklist51"
+                    v-validate="'required'"
+                  />
+                  <span class="px-2">Different from customer</span>
+                  <span class="form-check-sign"> </span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group my-3">
+              <label for="checklist52" class=""
+                >Where does the customer work or where is the customer's business?</label
+              ><br />
+              <div class="form-check form-check-radio form-check-inline">
+                <label class="form-check-label">
+                  <input
+                    v-model="verificationData.guarantorCustomerAddress"
+                    type="radio"
+                    class="form-check-input "
+                    value="Same with customer"
+                    name="checklist52"
+                    v-validate="'required'"
+                  />
+                  <span class="px-2">Same with customer</span>
+                  <span class="form-check-sign"> </span>
+                </label>
+              </div>
+              <div class="form-check form-check-radio form-check-inline">
+                <label class="form-check-label">
+                  <input
+                    v-model="verificationData.guarantorCustomerAddress"
+                    type="radio"
+                    class="form-check-input "
+                    value="Different from customer"
+                    name="checklist52"
+                    v-validate="'required'"
+                  />
+                  <span class="px-2">Different from customer</span>
+                  <span class="form-check-sign"> </span>
+                </label>
+              </div>
+            </div>
+  
+            <div class="form-group my-3">
+              <label for="checklist53" class=""
                 >Does the customer own their own house or shop?  </label
               ><br />
               <div class="form-check form-check-radio form-check-inline">
@@ -152,7 +211,7 @@
                     type="radio"
                     class="form-check-input "
                     value="Yes"
-                    name="checklist5"
+                    name="checklist53"
                     v-validate="'required'"
                   />
                   <span class="px-2">Yes</span>
@@ -166,7 +225,7 @@
                     type="radio"
                     class="form-check-input "
                     value="No"
-                    name="checklist5"
+                    name="checklist53"
                     v-validate="'required'"
                   />
                   <span class="px-2">No</span>

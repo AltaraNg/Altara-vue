@@ -261,6 +261,8 @@
               <th>{{ $formatCurrency(order.commitment_amount) }}</th>
               <td>Commitment Percentage</td>
               <th>{{ order.commitment_percentage }}%</th>
+              <td>Raffle Draw Code</td>
+              <th>{{ order.raffle_draw_code || 'N/A' }}</th>
             </tr>
           </tbody>
         </table>

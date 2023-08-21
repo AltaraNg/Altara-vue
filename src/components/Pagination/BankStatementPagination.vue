@@ -36,28 +36,28 @@
 				<ul class="pagination pagination-lg mb-0">
 					<!---->
 					<li
-						:class="{ disabled: !pageParam.first_page_url }"
+						:class="{ disabled: pageParam.page == 1 }"
 						class="page-item"
 					>
 						<a href="javascript:" @click="prev(1)" class="page-link">First</a>
 					</li>
-					<li :class="{ disabled: !pageParam.prev_page_url }" class="page-item">
+					<li :class="{ disabled: pageParam.page == 1 }" class="page-item">
 						<a href="javascript:" @click="prev()" class="page-link">Prev</a>
 					</li>
 					<!---->
 					<li class="page-item">
 						<span class="page-link w-100"
-							>page:{{ pageParam.current_page }}</span
+							>page:{{ pageParam.page }}</span
 						>
 					</li>
 					<!---->
-					<li :class="{ disabled: !pageParam.next_page_url }" class="page-item">
+					<li :class="{ disabled: pageParam.page == pageParam.pages }" class="page-item">
 						<a href="javascript:" @click="next()" class="page-link">Next</a>
 					</li>
-					<li :class="{ disabled: !pageParam.last_page_url }" class="page-item">
+					<li :class="{ disabled: pageParam.page == pageParam.pages }" class="page-item">
 						<a
 							href="javascript:"
-							@click="next(pageParam.last_page)"
+							@click="next(pageParam.pages)"
 							class="page-link"
 							>Last</a
 						>
@@ -80,10 +80,10 @@
 
 		methods: {
 			next(firstPage = null) {
-				if (this.pageParam.next_page_url) {
+				if (this.pageParam.page !== this.pageParam.pages) {
 					this.pageParam.page = firstPage
 						? firstPage
-						: parseInt(this.pageParam.current_page) + 1;
+						: parseInt(this.pageParam.page) + 1;
 					this.$router.push({
 						path: this.$route.path,
 						query: {
@@ -95,10 +95,10 @@
 				}
 			},
 			prev(lastPage = null) {
-				if (this.pageParam.prev_page_url) {
+				if (this.pageParam.page !== 1) {
 					this.pageParam.page = lastPage
 						? lastPage
-						: parseInt(this.pageParam.current_page) - 1;
+						: parseInt(this.pageParam.page) - 1;
 					this.$router.push({
 						path: this.$route.path,
 						query: {

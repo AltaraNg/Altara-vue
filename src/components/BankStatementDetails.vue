@@ -1,10 +1,10 @@
 <template>
     <div class="">
-        <div class="pt-5 mb-5 ml-5 pointer" style="display: flex; align-items: center; color: #958A8A;"
+        <div class="mt-5 mb-5 ml-5 pointer w-100" style="display: flex; align-items: center; color: #958A8A;"
             @click="$emit('close')">
-            <back /><span class="ml-2">Back</span>
+             <i class="far  fa-arrow-alt-circle-left float-left " style="font-size: 1.5em;" ></i><span class="ml-2" style="font-size: small;">Back</span>
         </div>
-        <div class="   box  mb-5 ">
+        <div class="   box bg-default text-white  mb-5 " >
             <p class="pb-5" style="font-size: 16px; font-weight: 700; ">Bank_statement.PDF</p>
             <div class="pb-2 alignCenterJustifyBetween" style=" font-size: 13px;">
                 <p>Customer ID : <span style="font-weight: 700;">{{ BankStatement.customer_id }}</span></p>
@@ -30,7 +30,7 @@
                 </div>
                 <div class="box text-center" style="width:30%">
                     <p style="font-size: 13px;">Average Monthly Balance</p> 
-                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{ $formatCurrency(BankStatement.average_monthly_balance) }}7</p>
+                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{ $formatCurrency(BankStatement.average_monthly_balance) || 'N/A'  }}</p>
                 </div>
             </div>
             <div class="mb-4" style="display: flex; align-items: center; ">
@@ -47,7 +47,7 @@
                      <excel/>
                 </a>
             </div>
-            <div class="box  " style="margin-top: 50px; margin-bottom: 40px;">
+            <div class="box  " style="margin-top: 50px; margin-bottom: 40px; pointer-events: none; opacity: 0.3;">
                 <div style="display: flex; justify-content: end;">
                     <div style="width:30%; margin-right: 2%;">
                         <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
@@ -62,15 +62,15 @@
                 </div>
                 <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #F7F7FF;">
                     <p>Month 1</p>
-                    <p style="font-weight: 700;">20</p>
+                    <p style="font-weight: 700;">0</p>
                 </div>
                 <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #E9E9FF;">
                     <p>Month 2</p>
-                    <p style="font-weight: 700;">15</p>
+                    <p style="font-weight: 700;">0</p>
                 </div>
                 <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #F7F7FF;">
                     <p>Month 3</p>
-                    <p style="font-weight: 700;">16</p>
+                    <p style="font-weight: 700;">0</p>
                 </div>
             </div>
         </div>
@@ -92,7 +92,7 @@
 <script>
 import back from '../assets/back.vue';
 import warning from '../assets/warning.vue';
-import excel from '../assets/excel.vue'
+import excel from '../assets/excel.vue';
 export default {
     components: {
         back,

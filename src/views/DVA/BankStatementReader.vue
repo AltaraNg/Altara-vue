@@ -8,7 +8,7 @@
    
     <div v-if="!seeDetails" >
       <form enctype="multipart/form-data" @submit.prevent="uploadBankStatement" class="pb-5"
-        style="background-color: #d7e2d8;">
+        style="background-color: #d7e2d861;">
         <div style="width: 100%;">
           <AutocompleteSearch title="customer lookup" @customer-selected="processForm"
             :url="'/api/customer/autocomplete'" />
@@ -33,6 +33,7 @@
               <label style="color: #074A74; font-weight: 800;">BANK NAME</label>
               <select name="bank_statement_choice" class="customSelect   flex-1 w-100"
                 v-model="bankStatementData.bank_statement_choice">
+                <option selected >Select bank</option>
                 <option v-for="option in statementChoices" :value="option.key" :key="option.key">{{ option.name }}
                 </option>
               </select>
@@ -75,7 +76,7 @@
           </div>
           <div style="width:20%; margin-right: 2%;">
             <label style="color: #074A74; font-weight: 800;">BANK NAME</label>
-            <select name="repayment_duration" class="custom-select flex-1 w-100" v-model="searchQuery.statement_choice">
+            <select name="repayment_duration" class="custom-select flex-1 w-100" v-model="pageParams.statement_choice">
               <option v-for="option in statementChoices" :value="option.key" :key="option.key">{{ option.name }}
               </option>
             </select>
@@ -184,16 +185,12 @@ export default {
         customer_id :'',
         min_salary: '',
         max_salary: '',
-        bank_statement_choice: 0,
+        bank_statement_choice: 'Select bank',
         bank_statement_pdf: null
       },
       repaymentPlan: '',
       BankStatement: {},
       seeDetails: false,
-      pageParams: {
-        page: 1,
-        limit: 15,
-      },
       locale: "en-US",
       dateFormat: "YYYY-MM-DD",
       Branches: [],
@@ -203,7 +200,7 @@ export default {
         "Customer ID",
         "Full Name",
         "Date",
-        "Status",
+        "Account Number",
         "Action",
       ],
       branch: '0',
@@ -220,13 +217,12 @@ export default {
         bank_statements: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statements',
         statement_choices: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statement-choices'
       },
-      pageParams: {},
+      pageParams: { page :1, size: 10},
       MonthlyStat: [],
       orders: [],
       order2: [],
       isProcessing: true,
       barData: {},
-      searchQuery: { },
       OId: null
     }
   },
@@ -286,12 +282,15 @@ export default {
     async fetchData(params = {}) {
       this.$scrollToTop()
       this.$LIPS(true)
-      params.page = this.pageParams.page ?? 1
-      params.per_page = this.pageParams.limit ?? 15
+       params.page = this.pageParams.page ?? 1
+      params.size = this.pageParams.size ?? 15
       await get(this.apiUrls.bank_statements, params)
         .then((response) => {
           this.bankStatements = response.data.items;
           this.setPagination(response.data)
+           this.$router.push({
+            query: { page:  params.page },
+          })
         })
         .catch((err) => {
           console.log(err)
@@ -327,16 +326,16 @@ export default {
         total,
         prev_page_url,
       })
-      this.OId = page==1 ? page : page*size;
+      this.OId = page==1 ? page :  (page - 1) * size + 1;
       if (response.queryParams !== undefined) {
-        this.searchQuery = response.queryParams
+        this.pageParams = response.queryParams
       }
     },
   },
   created() {
-    this.searchQuery.status = this.$route?.query?.status
-    this.searchQuery.searchTerm = this.$route?.query?.searchTerm
-    this.fetchData({ ...this.searchQuery })
+    this.pageParams.size = this.$route?.query?.size
+    this.pageParams.page = this.$route?.query?.page
+    this.fetchData({ ...this.pageParams })
   },
   mounted() {
     this.getStatementChoices()

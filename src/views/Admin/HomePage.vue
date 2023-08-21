@@ -1,7 +1,7 @@
 <template>
   <transition name="fade">
     <div>
-      <div v-for="portal in filteredArray">
+      <div v-for="portal in portals">
         <portal-card
           :url="portal.url"
           :title="portal.title"
@@ -17,15 +17,6 @@
 import PortalCard from '../../components/portalCard'
 export default {
   components: { PortalCard },
-  computed: {
-    filteredArray() {
-      if (!localStorage.getItem('flag')) {
-        return this.portals.filter(item => item.url !== 'repayment-schedule');
-      } 
-        return this.portals;
-      
-    }
-  },
   data() {
     return {
       portals: [

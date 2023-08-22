@@ -48,7 +48,7 @@
               style="margin-left:-10px"
             />
 
-            <!-- <div
+            <div
               class="mt-5 attendance-head ml-auto pointer"
               @click="addDocument"
               v-if="states.order"
@@ -58,13 +58,14 @@
 
                 Add More
               </div>
-            </div> -->
+            </div>
           </div>
           <div v-if="action !== 'update'" class="w-100">
             <div
               class="float-left col-lg-3 col-sm-6 px-0 px-sm-3"
-              v-for="type in cardView"
+              v-for="(type, index) in cardView"
               v-if="states.order"
+              :key="index"
             >
               <div :class="DivClass(type) " class="card card-stats" >
                 <div class="card-body ">
@@ -1093,6 +1094,8 @@ export default {
         "processing_fee",
         "guarantor_id",
         "proof_of_income",
+        // "utility_bill",
+        // "residence"
       ],
       verification: {},
       form: {
@@ -1178,6 +1181,7 @@ export default {
         this.verification = JSON.parse(
           JSON.stringify(data.customer.verification)
         )
+        console.log("Verification", this.verification)
         this.form.id_card = data.customer.document.id_card_url
         this.form.passport = data.customer.document.passport_url
         this.work_guarantor_address = `${this.customer.guaadd_houseno},
@@ -1193,6 +1197,8 @@ export default {
         this.form.guarantor_id = data?.customer?.document?.guarantor_id_url
         this.form.proof_of_income =
           data?.customer?.document?.proof_of_income_url
+          // this.form.utility_bill = data?.customer?.document?.utility_bill_url
+          // this.form.residence = data?.customer?.document?.residence_url
         this.veriData.forEach(e => {
           //e is the current array element during the foreach call;
           this[`${e}Btns`] = !!!data.customer[e]
@@ -1425,6 +1431,9 @@ export default {
        * values, when a user selects a different option but doesn't submit
        * it after opening and closing the modal responsible for that
        * particular action*/
+      console.log("Customer", this.customer.new_documents)
+      console.log("Keyyy", this.customer.verification)
+      console.log("CardView", this.cardView)
     })
   },
 }

@@ -20,6 +20,7 @@
       </div>
       <div class="modal-body mx-4">
         <h4>This section is Informal, <strong @click="verifyFormalModal">Click to view the Formal section</strong></h4>
+        <h4>Click to view <strong @click="verifyGuarantorModal">Guarantor section</strong> </h4>
         <div class="spaceAfter"></div>
         <form>
             <h5>Generic</h5>
@@ -867,6 +868,7 @@
   import { EventBus } from '../../utilities/event-bus'
   import Vue from 'vue'
   import FormalQuestions from './FormalQuestions.vue';
+  import GuarantorQuestions from './GuarantorQuestions.vue';
   import { mapGetters } from 'vuex'
   
   export default {
@@ -894,6 +896,7 @@
 
     components: {
     FormalQuestions,
+    GuarantorQuestions
   },
   computed: {
     ...mapGetters(["auth"]),
@@ -920,6 +923,25 @@
     verifyFormalModal() {
             this.$modal.show(
                 FormalQuestions,
+                { customer: this.customer },
+                {
+                name: "verificationForm",
+                classes: ["w-50", "overflow-hidden"],
+                adaptive: true,
+                resizable: true,
+                height: "auto",
+                width: "50%",
+                clickToClose: true,
+                maxHeight: 200,
+                },
+                {
+                closed: event => {},
+                }
+        )
+    },
+    verifyGuarantorModal() {
+            this.$modal.show(
+              GuarantorQuestions,
                 { customer: this.customer },
                 {
                 name: "verificationForm",

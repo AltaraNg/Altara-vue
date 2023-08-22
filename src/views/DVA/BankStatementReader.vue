@@ -1,12 +1,12 @@
 <template>
   <div style="position:relative">
     <transition name="slide" mode="out-in">
-       <div class="details" v-if="seeDetails">
+      <div class="details" v-if="seeDetails">
         <BankStatementDetails @close="seeDetails = false" :BankStatement="BankStatement" />
       </div>
     </transition>
-   
-    <div v-if="!seeDetails" >
+
+    <div v-if="!seeDetails">
       <form enctype="multipart/form-data" @submit.prevent="uploadBankStatement" class="pb-5"
         style="background-color: #d7e2d861;">
         <div style="width: 100%;">
@@ -33,7 +33,7 @@
               <label style="color: #074A74; font-weight: 800;">BANK NAME</label>
               <select name="bank_statement_choice" class="customSelect   flex-1 w-100"
                 v-model="bankStatementData.bank_statement_choice">
-                <option selected >Select bank</option>
+                <option selected>Select bank</option>
                 <option v-for="option in statementChoices" :value="option.key" :key="option.key">{{ option.name }}
                 </option>
               </select>
@@ -47,8 +47,8 @@
             </div>
           </div>
 
-          <button class="btn bg-default" style=" display: flex; align-items: center; justify-content: center; width:21%;"
-            type="submit">
+          <button :disabled="isButtonDisabled" class="btn bg-default"
+            style=" display: flex; align-items: center; justify-content: center; width:21%;" type="submit">
             <upload class="pr-2" />Upload Document
           </button>
 
@@ -139,8 +139,8 @@
             </div>
             <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
               <div class="dropdown">
-                <button type="button" class="btn btn-info bg-default "
-                  :id="'dropdownMenuButton' + bankStatement.id" @click="seeMore(bankStatement)">
+                <button type="button" class="btn btn-info bg-default " :id="'dropdownMenuButton' + bankStatement.id"
+                  @click="seeMore(bankStatement)">
                   View
                 </button>
 
@@ -182,7 +182,7 @@ export default {
     return {
       selectedPDF: null,
       bankStatementData: {
-        customer_id :'',
+        customer_id: '',
         min_salary: '',
         max_salary: '',
         bank_statement_choice: 'Select bank',
@@ -217,7 +217,7 @@ export default {
         bank_statements: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statements',
         statement_choices: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statement-choices'
       },
-      pageParams: { page :1, size: 10},
+      pageParams: { page: 1, size: 10 },
       MonthlyStat: [],
       orders: [],
       order2: [],
@@ -239,7 +239,7 @@ export default {
         alert('Please select a valid PDF file.');
       }
     },
-   async uploadBankStatement() {
+    async uploadBankStatement() {
       this.$scrollToTop()
       this.$LIPS(true)
       const form = toMulipartedForm(this.bankStatementData);
@@ -247,7 +247,7 @@ export default {
         .then(({ data }) => {
           console.log(data)
           Flash.setSuccess("Document Updated Successfully!")
-          this.bankStatementData= {};
+          this.bankStatementData = {};
           this.fetchData()
         })
         .catch(e => {
@@ -258,7 +258,7 @@ export default {
 
     },
     async processForm(id) {
-      this.bankStatementData.customer_id  = id
+      this.bankStatementData.customer_id = id
       this.$LIPS(true)
       this.$LIPS(false)
     },
@@ -270,26 +270,26 @@ export default {
         this.$displayErrorMessage(err);
       }
     },
-   
+
     seeMore(bankStatement) {
-       this.seeDetails = true
+      this.seeDetails = true
       this.BankStatement = bankStatement
       setTimeout(() => {
-       this.$scrollToTop()
+        this.$scrollToTop()
       }, 1000);
-      
+
     },
     async fetchData(params = {}) {
       this.$scrollToTop()
       this.$LIPS(true)
-       params.page = this.pageParams.page ?? 1
+      params.page = this.pageParams.page ?? 1
       params.size = this.pageParams.size ?? 15
       await get(this.apiUrls.bank_statements, params)
         .then((response) => {
           this.bankStatements = response.data.items;
           this.setPagination(response.data)
-           this.$router.push({
-            query: { page:  params.page },
+          this.$router.push({
+            query: { page: params.page },
           })
         })
         .catch((err) => {
@@ -326,11 +326,19 @@ export default {
         total,
         prev_page_url,
       })
-      this.OId = page==1 ? page :  (page - 1) * size + 1;
+      this.OId = page == 1 ? page : (page - 1) * size + 1;
       if (response.queryParams !== undefined) {
         this.pageParams = response.queryParams
       }
     },
+  },
+  computed: {
+    isButtonDisabled() {
+      return (
+       ! this.bankStatementData.customer_id  ||
+        this.bankStatementData.bank_statement_choice === 'Select bank' || !this.bankStatementData.bank_statement_pdf
+      );
+    }
   },
   created() {
     this.pageParams.size = this.$route?.query?.size
@@ -372,11 +380,14 @@ export default {
   min-height: 80vh;
   min-width: 100%
 }
-.slide-enter-active, .slide-leave-active {
+
+.slide-enter-active,
+.slide-leave-active {
   transition: all 0.6s;
 }
 
-.slide-enter, .slide-leave-to {
+.slide-enter,
+.slide-leave-to {
   transform: translateX(100%);
 }
 </style>

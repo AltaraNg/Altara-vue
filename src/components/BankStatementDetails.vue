@@ -2,9 +2,10 @@
     <div class="">
         <div class="mt-5 mb-5 ml-5 pointer w-100" style="display: flex; align-items: center; color: #958A8A;"
             @click="$emit('close')">
-             <i class="far  fa-arrow-alt-circle-left float-left " style="font-size: 1.5em;" ></i><span class="ml-2" style="font-size: small;">Back</span>
+            <i class="far  fa-arrow-alt-circle-left float-left " style="font-size: 1.5em;"></i><span class="ml-2"
+                style="font-size: small;">Back</span>
         </div>
-        <div class="   box bg-default text-white  mb-5 " >
+        <div class="   box bg-default text-white  mb-5 ">
             <p class="pb-5" style="font-size: 16px; font-weight: 700; ">Bank_statement.PDF</p>
             <div class="pb-2 alignCenterJustifyBetween" style=" font-size: 13px;">
                 <p>Customer ID : <span style="font-weight: 700;">{{ BankStatement.customer_id }}</span></p>
@@ -15,37 +16,69 @@
                 <p>Account Name : <span style="font-weight: 700;">{{ BankStatement.account_name }}</span></p>
             </div>
             <div class="pb-2 alignCenterJustifyBetween" style=" font-size: 13px;">
-                <p>Statement Period : <span style="font-weight: 700;">{{ BankStatement.start_date }} - {{ BankStatement.end_date }} </span></p>
+                <p>Statement Period : <span style="font-weight: 700;">{{ BankStatement.start_date }} - {{
+                    BankStatement.end_date }} </span></p>
             </div>
         </div>
-        <div >
+        <div>
             <div class="mb-4" style="display: flex; align-items: center;">
-                <div class="box text-center" style="width:30%">
-                    <p style="font-size: 13px;">Opening Balance</p>
-                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{ $formatCurrency(BankStatement.opening_balance) }}</p>
+                <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
+                    <img src="../assets/bankStatementIcons/opening_balance.png" style="width:25%; " />
+                    <div>
+                        <p style="font-size: 13px;">Opening Balance</p>
+                        <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
+                            $formatCurrency(BankStatement.opening_balance) }}</p>
+
+                    </div>
                 </div>
-                <div class="box text-center" style="width:30%">
-                    <p style="font-size: 13px;">Closing Balance</p>
-                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{ $formatCurrency(BankStatement.closing_balance ) }}</p>
+                <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
+                    <img src="../assets/bankStatementIcons/closing_balance.png" style="width:25%; " />
+                    <div>
+                        <p style="font-size: 13px;">Closing Balance</p>
+                        <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
+                            $formatCurrency(BankStatement.closing_balance) }}</p>
+                    </div>
+
                 </div>
-                <div class="box text-center" style="width:30%">
-                    <p style="font-size: 13px;">Average Monthly Balance</p> 
-                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{ $formatCurrency(BankStatement.average_monthly_balance) || 'N/A'  }}</p>
+                <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
+                    <img src="../assets/bankStatementIcons/average_monthly_balance.png" style="width:25%; " />
+                    <div>
+                        <p style="font-size: 13px;">Average Monthly Balance</p>
+                        <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
+                            $formatCurrency(BankStatement.average_monthly_balance) || 'N/A' }}</p>
+                    </div>
+
                 </div>
             </div>
             <div class="mb-4" style="display: flex; align-items: center; ">
-                <div class="box text-center" style="width:30%">
-                    <p style="font-size: 13px;">Total Turnover Credits</p>
-                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{ $formatCurrency(BankStatement.total_deposit) }}</p>
+                <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
+                    <img src="../assets/bankStatementIcons/turnover_credits.png" style="width:25%; " />
+                    <div>
+                        <p style="font-size: 13px;">Total Turnover Credits</p>
+                        <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
+                            $formatCurrency(BankStatement.total_deposit) }}</p>
+                    </div>
+
                 </div>
-                <div class="box text-center" style="width:30%">
-                    <p style="font-size: 13px;">Total Turnover Debits</p>
-                    <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{ $formatCurrency(BankStatement.total_withdrawal) }}</p>
+                <div class="box text-center"
+                    style="width:30%; display: flex; align-items: center; justify-content: space-around;">
+                    <img src="../assets/bankStatementIcons/total_debits.png" style="width:25%; " />
+                    <div>
+                        <p style="font-size: 13px;">Total Turnover Debits</p>
+                        <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
+                            $formatCurrency(BankStatement.total_withdrawal) }}</p>
+
+                    </div>
                 </div>
-                <a class="box text-center" style="width:30%" :href="BankStatement.salary_predictions_file_url" target="_blank">
-                    <p style="font-size: 13px;"> Predicted Salary Income</p>
-                     <excel/>
-                </a>
+                <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
+                    <img src="../assets/bankStatementIcons/predicted_salary.png" style="width:25%; " />
+                    <div>
+                        <p style="font-size: 13px;"> Predicted Salary Income</p>
+                        <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
+                            $formatCurrency(BankStatement.predicted_average_salary) || 'N/A' }}</p>
+                    </div>
+
+                </div>
             </div>
             <div class="box  " style="margin-top: 50px; margin-bottom: 40px; pointer-events: none; opacity: 0.3;">
                 <div style="display: flex; justify-content: end;">
@@ -86,7 +119,7 @@
                     <p class="mt-5" style="font-size: 16px;">There was an error during file processing. please try again later.</p>
                 </div>
             </div> -->
-        
+
     </div>
 </template>
 <script>
@@ -99,14 +132,14 @@ export default {
         warning,
         excel
     },
-    props:{
-        BankStatement:{
-            type:Object
+    props: {
+        BankStatement: {
+            type: Object
         }
     },
-    data(){
-        return{
-            repaymentAmount:''
+    data() {
+        return {
+            repaymentAmount: ''
         }
     }
 }
@@ -125,5 +158,4 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-</style>
+}</style>

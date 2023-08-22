@@ -1903,14 +1903,6 @@ export default {
       return $(`#amortization`).modal("toggle")
     },
 
-    // displayDebitCard () {
-    //   if (this.order.status !== 'Completed' 
-    //   || this.order.status !== 'Repossessed' 
-    //   || this.order.status !== 'Closed') {
-    //     return true
-    //   }
-    // },
-
     addPaymentForm(type) {
       if (this.newOrder) {
         let initLevel = 0

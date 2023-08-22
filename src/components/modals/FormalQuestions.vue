@@ -19,13 +19,17 @@
         </div>
       </div>
       <div class="modal-body mx-4">
+        <div class="d-flex align-items-center justify-content-between">
+        <h4>This section is Formal, <strong @click="verifyInformalModal">Click to view the Informal section</strong></h4>
         <div class="d-flex align-items-center" v-if="verificationList.length > 0">
           <div class="circle-icon mt-4">
             <i class="fa fa-check" aria-hidden="true"></i>
           </div>
           <h4 class="ml-2  ">Verified</h4>
         </div>
-        <h4>This section is Formal, <strong @click="verifyInformalModal">Click to view the Informal section</strong></h4>
+
+        </div>
+        <h4>Click to view <strong @click="verifyGuarantorModal">Guarantor section</strong> </h4>
         <div class="spaceAfter"></div>
         <form>
             <h5>Generic</h5>
@@ -873,6 +877,7 @@
   import { EventBus } from '../../utilities/event-bus'
   import Vue from 'vue'
   import InformalQuestions from './InformalQuestions.vue';
+  import GuarantorQuestions from './GuarantorQuestions.vue';
   import { mapGetters } from 'vuex'
   
   export default {
@@ -903,6 +908,7 @@
     },
     components: {
     InformalQuestions,
+    GuarantorQuestions
   },
   computed: {
     ...mapGetters(["auth"]),
@@ -929,6 +935,25 @@
     verifyInformalModal() {
             this.$modal.show(
                 InformalQuestions,
+                { customer: this.customer },
+                {
+                name: "verificationForm",
+                classes: ["w-50", "overflow-hidden"],
+                adaptive: true,
+                resizable: true,
+                height: "auto",
+                width: "50%",
+                clickToClose: true,
+                maxHeight: 200,
+                },
+                {
+                closed: event => {},
+                }
+        )
+    },
+    verifyGuarantorModal() {
+            this.$modal.show(
+              GuarantorQuestions,
                 { customer: this.customer },
                 {
                 name: "verificationForm",

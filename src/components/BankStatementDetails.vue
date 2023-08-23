@@ -80,32 +80,38 @@
 
                 </div>
             </div>
-            <div class="box  " style="margin-top: 50px; margin-bottom: 40px; pointer-events: none; opacity: 0.3;">
-                <div style="display: flex; justify-content: end;">
-                    <div style="width:30%; margin-right: 2%;">
-                        <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
-                        <input type="number" name="repayment_duration" class="custom-select flex-1 w-100"
-                            v-model="repaymentAmount" />
+            <div>
+                <p class="font-black" style="position:absolute; opacity: 1; z-index: 100; font-size: 70px; right: 30%; bottom: 20%;">Coming Soon...</p>
+                <div class="box relative " style="margin-top: 50px; margin-bottom: 40px; pointer-events: none; opacity: 0.3;">
+                    
+                    <div style="display: flex; justify-content: end;">
+                        <div style="width:30%; margin-right: 2%;">
+                            <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
+                            <input type="number" name="repayment_duration" class="custom-select flex-1 w-100"
+                                v-model="repaymentAmount" />
+                        </div>
+                    </div>
+                    <p class="pb-5" style="font-size: 26px; font-weight: 800; color: #074A74;">Repayment Capability Table.</p>
+                    <div class="p-2 alignCenterJustifyBetween" style=" font-size: 18px; font-weight: 800;">
+                        <p>Month</p>
+                        <p>No of Days</p>
+                    </div>
+                    <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #F7F7FF;">
+                        <p>Month 1</p>
+                        <p style="font-weight: 700;">0</p>
+                    </div>
+                    <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #E9E9FF;">
+                        <p>Month 2</p>
+                        <p style="font-weight: 700;">0</p>
+                    </div>
+                    <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #F7F7FF;">
+                        <p>Month 3</p>
+                        <p style="font-weight: 700;">0</p>
                     </div>
                 </div>
-                <p class="pb-5" style="font-size: 26px; font-weight: 800; color: #074A74;">Repayment Capability Table.</p>
-                <div class="p-2 alignCenterJustifyBetween" style=" font-size: 18px; font-weight: 800;">
-                    <p>Month</p>
-                    <p>No of Days</p>
                 </div>
-                <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #F7F7FF;">
-                    <p>Month 1</p>
-                    <p style="font-weight: 700;">0</p>
-                </div>
-                <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #E9E9FF;">
-                    <p>Month 2</p>
-                    <p style="font-weight: 700;">0</p>
-                </div>
-                <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #F7F7FF;">
-                    <p>Month 3</p>
-                    <p style="font-weight: 700;">0</p>
-                </div>
-            </div>
+            
+             
         </div>
         <!-- <div v-if="BankStatement.status == 'pending'" style="display: flex; justify-content: center;">
             <img src="../assets/Spinner-1s-200px.gif"/>

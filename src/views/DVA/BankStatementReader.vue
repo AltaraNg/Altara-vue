@@ -62,40 +62,36 @@
       <div class="center my-2  ml-5 pl-5 " style=" display: flex; align-items: center;">
         <div style="width:70%; display: flex;">
           <div style="width:20%; margin-right: 2%;">
-            <label style="color: #074A74; font-weight: 800;">DATE</label>
-            <input type="date" name="repayment_duration" class="custom-select flex-1 w-100" v-model="repaymentPlan" />
+             <label style="color: #074A74; font-weight: 800;">DATE</label>
+            <date-picker class="w-100" v-model="dateRange" :range="true" :language="locale" :format="dateFormat"
+              valueType="format" placeholder="Date"></date-picker>
+
 
 
           </div>
           <div style="width:20%; margin-right: 2%;">
-            <label style="color: #074A74; font-weight: 800;">STATUS</label>
-            <select name="repayment_duration" class="custom-select flex-1 w-100" v-model="repaymentPlan">
-              <option v-for="option in availableRepaymentPlan" :value="option.id" :key="option.id">{{ option.name }}
-              </option>
-            </select>
+            <label style="color: #074A74; font-weight: 800;">ACCOUNT NAME</label>
+            <input type="text" name="account_name" class="custom-select flex-1 w-100" v-model="pageParams.account_name" />
           </div>
           <div style="width:20%; margin-right: 2%;">
-            <label style="color: #074A74; font-weight: 800;">BANK NAME</label>
-            <select name="repayment_duration" class="custom-select flex-1 w-100" v-model="pageParams.statement_choice">
-              <option v-for="option in statementChoices" :value="option.key" :key="option.key">{{ option.name }}
-              </option>
-            </select>
+            <label style="color: #074A74; font-weight: 800;">ACCOUNT NUMBER</label>
+            <input type="number" name="account_number" class="custom-select flex-1 w-100" v-model="pageParams.account_number" />
           </div>
           <div style="width:20%; margin-right: 2%;">
             <label style="color: #074A74; font-weight: 800;">CUSTOMER ID</label>
-            <input type="number" name="repayment_duration" class="custom-select flex-1 w-100" v-model="repaymentPlan" />
+            <input type="number" name="customer_id" class="custom-select flex-1 w-100" v-model="pageParams.customer_id" />
           </div>
 
 
 
         </div>
         <div style="width:30%; display: flex; justify-content: end; padding-right: 43px;">
-          <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4" @click="getReport()">
+          <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4" @click="Search()">
             <span class="h5" style="width: 5rem">
               Search
             </span>
           </button>
-          <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4" @click="resetReport()">
+          <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4" @click="resetFilter()">
             <span class="h5" style="width: 5rem">
               Reset
             </span>
@@ -163,6 +159,8 @@
 <script>
 import AutocompleteSearch from "../../components/AutocompleteSearch/AutocompleteSearch.vue"
 import { get, post, put } from "../../utilities/api"
+import DatePicker from 'vue2-datepicker'
+import 'vue2-datepicker/index.css'
 import pdf from '../../assets/pdf.vue'
 import BasePagination from "../../components/Pagination/BankStatementPagination.vue"
 import BankStatementDetails from "../../components/BankStatementDetails.vue"
@@ -175,7 +173,8 @@ export default {
     BankStatementDetails,
     upload,
     BasePagination,
-    pdf
+    pdf,
+    DatePicker
 
   },
   data() {
@@ -217,16 +216,27 @@ export default {
         bank_statements: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statements',
         statement_choices: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statement-choices'
       },
-      pageParams: { page: 1, size: 10 },
+      pageParams: { page: 1, size: 10, customer_id:'', account_name:'', account_number:'' },
       MonthlyStat: [],
       orders: [],
       order2: [],
       isProcessing: true,
       barData: {},
-      OId: null
+      OId: null,
+      dateRange:[]
     }
   },
   methods: {
+     async resetFilter() {
+      this.dateRange= []
+      this.pageParams= {
+        page: 1, size: 15}
+     await this.fetchData(this.pageParams)
+    },
+   async Search(){
+      this.pageParams.page = 1;
+      await this.fetchData()
+    },
     uploadPDF() {
       this.$refs.pdfInput.click();
     },
@@ -245,7 +255,6 @@ export default {
       const form = toMulipartedForm(this.bankStatementData);
       await post(this.apiUrls.bank_statements, form)
         .then(({ data }) => {
-          console.log(data)
           Flash.setSuccess("Document Updated Successfully!")
           this.bankStatementData = {};
           this.fetchData()
@@ -282,18 +291,15 @@ export default {
     async fetchData(params = {}) {
       this.$scrollToTop()
       this.$LIPS(true)
-      params.page = this.pageParams.page ?? 1
-      params.size = this.pageParams.size ?? 15
-      await get(this.apiUrls.bank_statements, params)
+      await get(this.apiUrls.bank_statements, {...params, ...this.pageParams, from_date:this.dateRange[0], to_date: this.dateRange[1] })
         .then((response) => {
           this.bankStatements = response.data.items;
           this.setPagination(response.data)
           this.$router.push({
-            query: { page: params.page },
+            query: { page: this.pageParams.page },
           })
         })
         .catch((err) => {
-          console.log(err)
           Flash.setError("Error occurred fetching Bank Statements")
         })
       this.$LIPS(false)
@@ -335,7 +341,7 @@ export default {
   computed: {
     isButtonDisabled() {
       return (
-       ! this.bankStatementData.customer_id  ||
+        !this.bankStatementData.customer_id ||
         this.bankStatementData.bank_statement_choice === 'Select bank' || !this.bankStatementData.bank_statement_pdf
       );
     }

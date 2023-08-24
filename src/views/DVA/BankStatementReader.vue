@@ -30,7 +30,7 @@
           </div>
           <div style="width:23%; margin-right: 2%; ">
             <div style="position: relative;">
-              <label style="color: #074A74; font-weight: 800;">BANK NAME</label>
+              <label style="color: #074A74; font-weight: 800;">Bank Name</label>
               <select name="bank_statement_choice" class="customSelect   flex-1 w-100"
                 v-model="bankStatementData.bank_statement_choice">
                 <option selected>Select bank</option>
@@ -71,11 +71,11 @@
           </div>
           <div style="width:20%; margin-right: 2%;">
             <label style="color: #074A74; font-weight: 800;">ACCOUNT NAME</label>
-            <input type="text" name="account_name" class="custom-select flex-1 w-100" v-model="pageParams.account_name" />
+            <input type="text" name="account_name" class="customSelect  flex-1 w-100" v-model="pageParams.account_name" />
           </div>
           <div style="width:20%; margin-right: 2%;">
             <label style="color: #074A74; font-weight: 800;">ACCOUNT NUMBER</label>
-            <input type="number" name="account_number" class="custom-select flex-1 w-100" v-model="pageParams.account_number" />
+            <input type="number" name="account_number" class="customSelect flex-1 w-100" v-model="pageParams.account_number" />
           </div>
           <div style="width:20%; margin-right: 2%;">
             <label style="color: #074A74; font-weight: 800;">CUSTOMER ID</label>
@@ -362,8 +362,8 @@ export default {
   -moz-appearance: none;
   appearance: none;
   background-color: white;
-  border: none;
-
+  border-radius: 2px;
+  border-color: rgba(156, 155, 155, 0.432);
   color: black;
   padding: 8px 12px;
   font-size: 16px;
@@ -373,8 +373,8 @@ export default {
 }
 
 .customSelect:focus {
-  border: 0.1px solid #074a74ce !important;
-  box-shadow: rgba(#074a74, 0.25) 0 0 0 1.596px;
+  border: 0.1px solid #074a7464 !important;
+  box-shadow: rgba(#074a74d6, 0.25) 0 0 10px 10px;
 }
 
 .details {

@@ -74,8 +74,18 @@ export default {
               minLength: minLength(11),
               maxLength: maxLength(11),
             },
-            email: { required },
-            date_of_birth: { required },
+            email: {
+              required,
+            },
+            date_of_birth: {
+              required,
+              validateAge: value => {
+                const dob = new Date(value)
+                const minAgeDate = new Date()
+                minAgeDate.setFullYear(minAgeDate.getFullYear() - 21)
+                return dob <= minAgeDate
+              },
+            },
             civil_status: { required },
             gender: { required },
             registration_channel: { required },
@@ -83,7 +93,7 @@ export default {
             bvn: {
               minLength: minLength(11),
               maxLength: maxLength(11),
-            }
+            },
           },
         },
         {
@@ -144,7 +154,14 @@ export default {
           },
         },
       ],
-      channels: ["Facebook", "Sales App", "Billboard", "Radio", "Website", "None"],
+      channels: [
+        "Facebook",
+        "Sales App",
+        "Billboard",
+        "Radio",
+        "Website",
+        "None",
+      ],
       occupations: [
         {
           id: 1,
@@ -344,6 +361,6 @@ export default {
       isActive: false,
       isOther: false,
       identity: 0,
-    };
+    }
   },
 };

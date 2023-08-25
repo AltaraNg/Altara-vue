@@ -222,13 +222,14 @@
                     class="error"
                     v-if="!$v.formData.newCustomer.date_of_birth.required"
                   >Please provide your date of birth.</div>
+                   <div
+                        class="error"
+                        v-if="!$v.formData.newCustomer.date_of_birth.validateAge "
+                      >You must be at least 21 years old.</div>
+                    </div>
                 </div>
-                <small v-if="errors.first('date_of_birth')">
-                  {{
-                    errors.first("date_of_birth")
-                  }}
-                </small>
-              </div>
+             
+             
 
               <div class="spaceAfter"></div>
 

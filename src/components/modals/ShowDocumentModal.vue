@@ -54,7 +54,17 @@ export default {
     },
   },
   data() {
-    return {}
+    return {
+      form: {
+        id_card: "",
+        passport: "",
+        document: "",
+        proof_of_income: "",
+        guarantor_id: "",
+        utility_bill: "",
+        residence_proof: "",
+      },
+    }
   },
 
   methods: {

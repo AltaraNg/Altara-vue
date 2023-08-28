@@ -61,10 +61,11 @@
             </div>
           </div>
           <div v-if="action !== 'update'" class="w-100">
-            <div
+            <div>
+            <div v-if="states.order">
+              <div
               class="float-left col-lg-3 col-sm-6 px-0 px-sm-3"
-              v-for="(type, index) in cardView"
-              v-if="states.order"
+              v-for="(type, index) in veriView"
               :key="index"
             >
               <div :class="DivClass(type) " class="card card-stats" >
@@ -106,9 +107,63 @@
                 </div>
               </div>
             </div>
+            <div
+              class="float-left col-lg-3 col-sm-6 px-0 px-sm-3"
+              v-for="(type, index) in picsView"
+              
+              :key="index"
+            >
+              <div :class="DivClass(type) " class="card card-stats" >
+                <div class="card-body ">
+                  <div class="statistics statistics-horizontal">
+                    <div class="info info-horizontal">
+                      <div class="row">
+                        <div class="col-4">
+                          <div
+                            class="icon icon-warning icon-circle position-relative" v-if="displayActiveDocument(type)"
+                          >
+                            <!-- <i :class="IconClass(type)" class="fas"></i> -->
+                            <i :class="'fa-check'" class="fas"></i>
+                          </div>
+                          <div
+                            class="icon icon-warning icon-circle position-relative" v-if="!displayActiveDocument(type)"
+                          >
+                            <!-- <i :class="IconClass(type)" class="fas"></i> -->
+                            <i :class="'fa-times'" class="fas"></i>
+                          </div>
+                        </div>
+                        <div class="col-8 text-right">
+                          <h4 class="info-title font-weight-bold mb-0">
+                            {{ type | capitalize }}
+                          </h4>
+                          <h6 class="stats-title">
+                            {{ displayActiveDocument(type) ? "Verified" : "Not Verified" }}
+                          </h6>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  @click="modal(type + '_modal')"
+                  class="card-footer pointer"
+                >
+                  <i class="now-ui-icons ui-1_calendar-60 pr-1"></i>
+                  {{ displayActiveDocument(type) ? "Verified" : "Not Verified" }}
+                  <small v-if="!key(type)" style="font-size: 9px"
+                    >(Click here to update status!)</small
+                  >
+                  <span class="float-right" style="font-size: 10px" v-else>
+                    by - {{ customer["document"].staff_name | capitalize }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            </div>
+            </div>
 
             <div class="w-100 d-flex flex-wrap">
-              <div
+              <!-- <div
                 class=" col-lg-3 col-sm-6 px-3"
                 v-for="item in customer.new_documents"
                 v-if="states.order && customer.new_documents.length > 0"
@@ -143,7 +198,7 @@
                     </span>
                   </div>
                 </div>
-              </div>
+              </div> -->
             </div>
 
             <div v-if="states.verification" class="mb-5">
@@ -382,59 +437,71 @@
       </transition>
 
       <div v-if="action !== 'update'">
-        <div :id="type + '_modal'" class="modal fade" v-for="type in picsView">
-          <div class="modal-dialog"  :style="{ pointerEvents:( type == 'passport' || type == 'id_card') ? 'none' : 'auto' }">
-            <div class="modal-content">
-              <div class="modal-header py-2">
-                <h6 class="modal-title py-1">
-                  {{ type | capitalize }} Verification Status
-                </h6>
-                <a
-                  aria-label="Close"
-                  class="close py-1"
-                  data-dismiss="modal"
-                  href="javascript:"
-                >
-                  <span aria-hidden="true" class="modal-close text-danger">
-                    <i class="fas fa-times"></i>
-                  </span>
-                </a>
-              </div>
-              <form
-                @submit.prevent="save(type, type + '_modal')"
-                enctype="multipart/form-data"
-                v-if="customer"
-              >
-                <div class="modal-body">
-                  <div class="bg-default text-white">
-                    max-size: 512kb max-dimension: 1200 x 1200
-                  </div>
-                  <div class="upload-image p-2">
-                    <div class="upload-box">
-                      <image-upload v-model="$data['form'][type]" />
+        <div v-if="states.order">
+              <div :id="type + '_modal'" class="modal fade" v-for="(type, index) in picsView" :key="index">
+                <div class="modal-dialog"  :style="{ pointerEvents:( type == 'passport' || type == 'id_card') ? 'none' : 'auto' }">
+                  <div class="modal-content">
+                    <div class="modal-header py-2">
+                      <h6 class="modal-title py-1">
+                        {{ type | capitalize }} Verification Status
+                      </h6>
+                      <a
+                        aria-label="Close"
+                        class="close py-1"
+                        data-dismiss="modal"
+                        href="javascript:"
+                      >
+                        <span aria-hidden="true" class="modal-close text-danger">
+                          <i class="fas fa-times"></i>
+                        </span>
+                      </a>
                     </div>
+                    <form
+                      @submit.prevent="save(type, type + '_modal')"
+                      enctype="multipart/form-data"
+                      v-if="customer"
+                    >
+                      <div class="modal-body">
+                        <div class="bg-default text-white">
+                          max-size: 512kb max-dimension: 1200 x 1200
+                        </div>
+                        <div class="upload-image p-2">
+                          <div class="upload-box" v-if="!displayActiveDocument(type)">
+                            <image-upload v-model="$data['form'][type]" />
+                          </div>
+                          <div>
+                          <div v-if="displayActiveDocument(type)">
+                            <div v-for="(item, index) in customer.new_documents" :key="index">
+                              <div v-if="item.name === type">
+                                <image-upload :value="item.document_url" />
+                              </div>
+
+                            </div>
+                        </div>
+                          </div>
+                        </div>
+                        <small v-if="error[type]">{{ error[type][0] }}</small>
+                      </div>
+                      <div class="modal-footer">
+                        <button
+                          class="m-2 btn btn-secondary"
+                          data-dismiss="modal"
+                          type="button"
+                        >
+                          cancel
+                        </button>
+                        <button
+                          :disabled="$isProcessing"
+                          class="m-2 btn bg-default"
+                          type="submit"
+                        >
+                          Save changes <i class="far fa-paper-plane ml-1"></i>
+                        </button>
+                      </div>
+                    </form>
                   </div>
-                  <small v-if="error[type]">{{ error[type][0] }}</small>
                 </div>
-                <div class="modal-footer">
-                  <button
-                    class="m-2 btn btn-secondary"
-                    data-dismiss="modal"
-                    type="button"
-                  >
-                    cancel
-                  </button>
-                  <button
-                    :disabled="$isProcessing"
-                    class="m-2 btn bg-default"
-                    type="submit"
-                  >
-                    Save changes <i class="far fa-paper-plane ml-1"></i>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+              </div>
         </div>
 
         <div class="modal fade" id="address_modal">
@@ -774,7 +841,7 @@
           </div>
         </div>
 
-        <div :id="type + '_modal'" class="modal fade" v-for="type in veriView">
+        <div :id="type + '_modal'" class="modal fade" v-for="(type, index) in veriView" :key="index">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header py-2">
@@ -1014,7 +1081,7 @@
 import Vue from "vue"
 import { log } from "../../../utilities/log"
 import Flash from "../../../utilities/flash"
-import { get, post } from "../../../utilities/api"
+import { get, post, put } from "../../../utilities/api"
 import { EventBus } from "../../../utilities/event-bus"
 import { toMulipartedForm } from "../../../utilities/form"
 import ImageUpload from "../../../components/ImageUpload"
@@ -1077,7 +1144,7 @@ export default {
         "Status",
         "More Information",
       ],
-      picsView: ["id_card", "passport", "proof_of_income", "guarantor_id"],
+      picsView: ["id_card", "passport", "proof_of_income", "guarantor_id", "utility_bill", "residence_proof"],
       veriView: ["work_guarantor", "personal_guarantor", "processing_fee"],
       veriData: [
         "address",
@@ -1094,8 +1161,8 @@ export default {
         "processing_fee",
         "guarantor_id",
         "proof_of_income",
-        // "utility_bill",
-        // "residence"
+        "utility_bill",
+        "residence_proof"
       ],
       verification: {},
       form: {
@@ -1104,12 +1171,19 @@ export default {
         document: "",
         proof_of_income: "",
         guarantor_id: "",
+        utility_bill: "",
+        residence_proof: "",
       },
       error: {},
       storeURL: "",
       user: {},
       work_guarantor_address: "",
       personal_guarantor_address: "",
+      fileName: null,
+      verificationData: {},
+      file: null,
+      imgSrc: null,
+      displayDocument: false,
     }
   },
 
@@ -1161,8 +1235,8 @@ export default {
   
     DivClass(key) {
       return {
-        success: this.key(key),
-        "no-success": !this.key(key),
+        success: this.displayActiveDocument(key),
+        "no-success": !this.displayActiveDocument(key),
       }
       /*this is similar to the DivClass method only
        * that it return a different class
@@ -1181,9 +1255,8 @@ export default {
         this.verification = JSON.parse(
           JSON.stringify(data.customer.verification)
         )
-        console.log("Verification", this.verification)
-        this.form.id_card = data.customer.document.id_card_url
-        this.form.passport = data.customer.document.passport_url
+        this.form.id_card = data.customer.new_documents.id_card_url
+        this.form.passport = data.customer.new_documents.passport_url
         this.work_guarantor_address = `${this.customer.guaadd_houseno},
                         ${this.customer.guaadd_street},
                         ${this.customer.gua_area},
@@ -1194,11 +1267,11 @@ export default {
                         ${this.customer?.pgua_area},
                         ${this.customer?.personal_guarantor_city},
                         ${this.customer?.personal_guarantor_state}`
-        this.form.guarantor_id = data?.customer?.document?.guarantor_id_url
+        this.form.guarantor_id = data?.customer?.new_documents?.guarantor_id_url
         this.form.proof_of_income =
-          data?.customer?.document?.proof_of_income_url
-          // this.form.utility_bill = data?.customer?.document?.utility_bill_url
-          // this.form.residence = data?.customer?.document?.residence_url
+          data?.customer?.new_documents?.proof_of_income_url
+          this.form.utility_bill = data?.customer?.new_documents?.utility_bill_url
+          this.form.residence_proof = data?.customer?.new_documents?.residence_url
         this.veriData.forEach(e => {
           //e is the current array element during the foreach call;
           this[`${e}Btns`] = !!!data.customer[e]
@@ -1255,6 +1328,14 @@ export default {
           clickToClose: true,
         }
       )
+    },
+
+    displayActiveDocument(document) {
+      return this.customer.new_documents.find((item)=> item.name === document)
+    },
+
+    imageUrl(url){
+        return `${process.env.VUE_APP_S3_URL}/${url}`
     },
 
     displayActiveCreditReport(creditReport) {
@@ -1358,26 +1439,43 @@ export default {
     },
 
     async save(document, modal) {
-      this.storeURL = `/api/document/${this.customer.document.id}?_method=PUT&document=${document}`
-      this.$LIPS(true)
-      this.form.document = document
-      const form = toMulipartedForm(this.form, "edit")
-      await post(this.storeURL, form)
-        .then(({ data }) => {
-          this.updateView(data.response)
-          log(
-            `Customer${this.$options.filters.capitalize(document)}Upload`,
-            `Customer ID : ${this.customer.id}`
-          )
-          this.modal(modal)
-          Flash.setSuccess("Document Updated Successfully!")
-          this.done()
-        })
-        .catch(e => {
-          this.error = e.response.data.data.errors
-        })
-      this.$LIPS(false)
-      this.$scrollToTop()
+      this.$validator.validateAll().then(async result => {
+        if (result) {
+          try {
+            this.$LIPS(true)
+            this.verificationData = {
+                customer_id: this.customer.id,
+                document: this.form[document],
+                name: document
+            }
+            let form = toMulipartedForm(this.verificationData, "edit");
+
+            let res = await post(`/api/new_document`, form)
+            if (res.status === 200) {
+              
+              this.updateView(res.data)
+              this.displayDocument = res.data.data.find((item)=> item.name === document)
+              this.$swal({
+                icon: "success",
+                title: res.data.response,
+              })
+              this.verificationData = {}
+
+              this.modal(modal)
+              Flash.setSuccess("Document Updated Successfully!")
+              this.done()
+            }
+          } catch (err) {
+            this.$swal({
+              icon: "error",
+              title: `Unable to complete`,
+            })
+          } finally {
+            this.$LIPS(false)
+            this.$scrollToTop()
+          }
+        }
+      })
     },
 
     getRecommendationList(id) {
@@ -1422,6 +1520,7 @@ export default {
   mounted() {
     $(document).on("hidden.bs.modal", ".modal", () => {
       this.verification = JSON.parse(JSON.stringify(this.customer.verification))
+      
       /*this.verification holds a copy of the this.customer.verification. this.verification is what is used to style
        * the card. this.customer.verification on the other hand is used to calculate the approval status, when
        * changing the status on the front end the this.verification is what is changed but when it is
@@ -1431,10 +1530,11 @@ export default {
        * values, when a user selects a different option but doesn't submit
        * it after opening and closing the modal responsible for that
        * particular action*/
-      console.log("Customer", this.customer.new_documents)
-      console.log("Keyyy", this.customer.verification)
-      console.log("CardView", this.cardView)
+
+       
     })
   },
+  created() {
+  }
 }
 </script>

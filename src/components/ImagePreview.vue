@@ -1,9 +1,9 @@
 <template>
     <div class="position-relative" v-if="image">
         <img :src="image">
-        <button class="btn btn-danger upload-close m-0 px-3 py-2" @click.prevent="$emit('close')">
+        <!-- <button class="btn btn-danger upload-close m-0 px-3 py-2" @click.prevent="$emit('close')">
             <i class="fas fa-times text-white"></i>
-        </button>
+        </button> -->
     </div>
 </template>
 <script type="text/javascript">
@@ -36,7 +36,8 @@
                 } else if (typeof this.preview === 'string') {
                     this.image = `${process.env.VUE_APP_S3_URL}/${this.preview}`;
                 } else this.image = null;
-            }
+            },
+            
         }
     }
 </script>

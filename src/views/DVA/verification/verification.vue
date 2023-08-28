@@ -48,7 +48,7 @@
               style="margin-left:-10px"
             />
 
-            <div
+            <!-- <div
               class="mt-5 attendance-head ml-auto pointer"
               @click="addDocument"
               v-if="states.order"
@@ -58,7 +58,7 @@
 
                 Add More
               </div>
-            </div>
+            </div> -->
           </div>
           <div v-if="action !== 'update'" class="w-100">
             <div>
@@ -1151,7 +1151,7 @@ export default {
         "More Information",
       ],
       picsView: ["id_card", "passport", "proof_of_income", "guarantor_id", "utility_bill", "residence_proof"],
-      veriView: ["work_guarantor", "personal_guarantor", "processing_fee"],
+      veriView: ["work_guarantor", "personal_guarantor", "processing_fee", "address"],
       veriData: [
         "address",
         "work_guarantor",

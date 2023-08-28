@@ -225,7 +225,7 @@
                    <div
                         class="error"
                         v-if="!$v.formData.newCustomer.date_of_birth.validateAge "
-                      >You must be at least 21 years old.</div>
+                      >Customer must be at least 21 years old.</div>
                     </div>
                 </div>
              

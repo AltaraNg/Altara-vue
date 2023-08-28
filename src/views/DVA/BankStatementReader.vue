@@ -363,7 +363,7 @@ export default {
   appearance: none;
   background-color: white;
   border-radius: 2px;
-  border-color: rgba(156, 155, 155, 0.432);
+  border-color: rgba(194, 194, 194, 0.282);
   color: black;
   padding: 8px 12px;
   font-size: 16px;

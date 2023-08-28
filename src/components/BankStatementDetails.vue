@@ -1,5 +1,5 @@
 <template>
-    <div class="">
+    <div style="body">
         <div class="mt-5 mb-5 ml-5 pointer w-100" style="display: flex; align-items: center; color: #958A8A;"
             @click="$emit('close')">
             <i class="far  fa-arrow-alt-circle-left float-left " style="font-size: 1.5em;"></i><span class="ml-2"
@@ -80,8 +80,8 @@
 
                 </div>
             </div>
-            <div>
-                <p class="font-black" style="position:absolute; opacity: 1; z-index: 100; font-size: 70px; right: 30%; bottom: 20%;">Coming Soon...</p>
+            <div class="relative " >
+                <p class="font-black" style="position:absolute; opacity: 1; z-index: 100; font-size: 70px; right: 30%; bottom: -100px;">Coming Soon...</p>
                 <div class="box relative " style="margin-top: 50px; margin-bottom: 40px; pointer-events: none; opacity: 0.3;">
                     
                     <div style="display: flex; justify-content: end;">
@@ -164,4 +164,10 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-}</style>
+}
+.body{
+    overflow-y: scroll;
+    height: 100%;
+}
+
+</style>

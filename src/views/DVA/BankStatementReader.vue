@@ -1,5 +1,5 @@
 <template>
-  <div style="position:relative">
+  <div style="position:relative;  ">
     <transition name="slide" mode="out-in">
       <div class="details" v-if="seeDetails">
         <BankStatementDetails @close="seeDetails = false" :BankStatement="BankStatement" />
@@ -281,11 +281,12 @@ export default {
     },
 
     seeMore(bankStatement) {
-      this.seeDetails = true
-      this.BankStatement = bankStatement
-      setTimeout(() => {
-        this.$scrollToTop()
+       setTimeout(() => {
+        this.seeDetails = true
       }, 1000);
+      
+      this.BankStatement = bankStatement
+     
 
     },
     async fetchData(params = {}) {
@@ -381,15 +382,27 @@ export default {
   background-color: #F7F7FF;
   position: absolute;
   top: -40px;
+  overflow: auto;
   right: 0;
   z-index: 1000;
-  min-height: 80vh;
+  overflow-x: hidden;
+  height: 100vh;
   min-width: 100%
+}
+
+.details::-webkit-scrollbar-thumb {
+  /* Scrollbar thumb (the draggable part) */
+  background-color: transparent; /* Hide the thumb */
+}
+
+.details::-webkit-scrollbar-track {
+  /* Scrollbar track (the background) */
+  background-color: transparent; /* Hide the track */
 }
 
 .slide-enter-active,
 .slide-leave-active {
-  transition: all 0.6s;
+  transition: all 0.2s;
 }
 
 .slide-enter,

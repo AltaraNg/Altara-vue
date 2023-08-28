@@ -146,16 +146,22 @@
                 </div>
                 <div
                   @click="modal(type + '_modal')"
-                  class="card-footer pointer"
+                  class="card-footer pointer d-flex flex-wrap justify-content-between"
                 >
+                <div>
                   <i class="now-ui-icons ui-1_calendar-60 pr-1"></i>
                   {{ displayActiveDocument(type) ? "Verified" : "Not Verified" }}
-                  <small v-if="!key(type)" style="font-size: 9px"
+                  <small v-if="!displayActiveDocument(type)" style="font-size: 9px"
                     >(Click here to update status!)</small
                   >
-                  <span class="float-right" style="font-size: 10px" v-else>
-                    by - {{ customer["document"].staff_name | capitalize }}
+                </div>
+                  <div v-for="(item, index) in customer.new_documents" :key="index" class="">
+                  <div v-if="item.name === type">
+                  <span class="float-right" style="font-size: 10px" >
+                    by - {{ item.user | capitalize }}
                   </span>
+                  </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -389,7 +389,9 @@ export default {
   height: 100vh;
   min-width: 100%
 }
-
+.details::-webkit-scrollbar {
+  width: 1px; /* Width of the hidden scrollbar */
+}
 .details::-webkit-scrollbar-thumb {
   /* Scrollbar thumb (the draggable part) */
   background-color: transparent; /* Hide the thumb */
@@ -402,7 +404,7 @@ export default {
 
 .slide-enter-active,
 .slide-leave-active {
-  transition: all 0.2s;
+  transition: all 0.4s;
 }
 
 .slide-enter,

@@ -182,7 +182,7 @@
                             name="date_of_birth"
                             type="date"
                             v-model="newCustomer.date_of_birth"
-                            v-validate="'required'"
+                            v-validate="'required|age_check'"
                             />
                             <small v-if="errors.first('date_of_birth')">
                                 {{

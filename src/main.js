@@ -20,8 +20,6 @@ import VModal from 'vue-js-modal'
 import "./utilities/globalFunctions.js";
 import 'sweetalert2/dist/sweetalert2.min.css';
 
-import './utilities/CustomValidation'
-
 
 Vue.config.productionTip = false
 Object.defineProperty(Vue.prototype, '$_', { value: _ });

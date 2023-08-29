@@ -183,7 +183,7 @@
                             type="date"
                             :max="maxDate"
                             v-model="newCustomer.date_of_birth"
-                            v-validate="'required|age_check'"
+                            v-validate="'required'"
                             />
                             <small v-if="errors.first('date_of_birth')">
                                 {{

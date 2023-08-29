@@ -79,12 +79,6 @@ export default {
             },
             date_of_birth: {
               required,
-              validateAge: value => {
-                const dob = new Date(value)
-                const minAgeDate = new Date()
-                minAgeDate.setFullYear(minAgeDate.getFullYear() - 21)
-                return dob <= minAgeDate
-              },
             },
             civil_status: { required },
             gender: { required },

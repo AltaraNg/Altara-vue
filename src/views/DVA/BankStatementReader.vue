@@ -92,7 +92,7 @@
               <upload class="pr-2" />Upload Document
             </button>
           </div>
-          <div  style="display: flex; width: 100%; justify-content: end;">
+          <div class="mt-4"  style="display: flex; width: 100%; justify-content: center;">
             <button :disabled="isButtonDisabled" class="btn bg-default" v-if="formMode.newCustomer"
                   style=" display: flex; align-items: center; justify-content: center; width:21%;" type="submit">
                   <upload class="pr-2" />Upload Document

@@ -7,62 +7,109 @@
     </transition>
 
     <div v-if="!seeDetails">
-      <form enctype="multipart/form-data" @submit.prevent="uploadBankStatement" class="pb-5"
-        style="background-color: #d7e2d861;">
-        <div style="width: 100%;">
-          <AutocompleteSearch title="customer lookup" @customer-selected="processForm"
-            :url="'/api/customer/autocomplete'" />
-        </div>
-        <div style="padding-bottom: 14px; display: flex; " class="pl-5 ml-5 mt-5 ">
-          <div style="width:23%; margin-right: 2%;">
-            <label style="color: #074A74; font-weight: 800;">Minimum Salary (Optional)</label>
-            <input type="number" name="repayment_duration" class="custom-select flex-1 w-100"
-              v-model="bankStatementData.min_salary" />
-
-
-          </div>
-          <div style="width:23%; margin-right: 2%;">
-            <label style="color: #074A74; font-weight: 800;">Maximum Salary (Optional)</label>
-            <input type="number" name="repayment_duration" class="custom-select flex-1 w-100"
-              v-model="bankStatementData.max_salary" />
-
-
-          </div>
-          <div style="width:23%; margin-right: 2%; ">
-            <div style="position: relative;">
-              <label style="color: #074A74; font-weight: 800;">Bank Name</label>
-              <select name="bank_statement_choice" class="customSelect   flex-1 w-100"
-                v-model="bankStatementData.bank_statement_choice">
-                <option selected>Select bank</option>
-                <option v-for="option in statementChoices" :value="option.key" :key="option.key">{{ option.name }}
-                </option>
-              </select>
-              <input type="file" ref="pdfInput" accept="application/pdf" style="display: none"
-                @change="handlePDFChange" />
-              <pdf style="position:absolute; right: 10px; bottom:5px; cursor:pointer" @click.native="uploadPDF()" />
-
-            </div>
-            <div v-if="bankStatementData.bank_statement_pdf">
-              Selected PDF: {{ bankStatementData.bank_statement_pdf.name }}
-            </div>
-          </div>
-
-          <button :disabled="isButtonDisabled" class="btn bg-default"
-            style=" display: flex; align-items: center; justify-content: center; width:21%;" type="submit">
-            <upload class="pr-2" />Upload Document
-          </button>
-
+      <div>
+        <div style="display: flex; ">
+          <custom-header :title="'Existing Customer'" @click.native="selectType('existingCustomer')" :style="!formMode.existingCustomer
+            ? 'opacity: 0.2; cursor:pointer;'
+            : 'cursor:pointer;'
+            " />
+          <custom-header :title="'New Customer'" @click.native="selectType('newCustomer')" :style="!formMode.newCustomer
+            ? 'opacity: 0.2; cursor:pointer;'
+            : 'cursor:pointer; '
+            " style="margin-left:-10px" />
         </div>
 
+        <form enctype="multipart/form-data" @submit.prevent="uploadBankStatement" class="pb-5"
+          style="background-color: #d7e2d861;">
+          <div style="width: 100%;" v-if="formMode.existingCustomer">
+            <AutocompleteSearch title="customer lookup" @customer-selected="processForm"
+              :url="'/api/customer/autocomplete'" />
+          </div>
 
-      </form>
+          <div style="padding-bottom: 14px; display: flex; flex-wrap: wrap; " class="pl-5 ml-5 mt-5 ">
+            <div v-if="formMode.newCustomer" style="width:23%; margin-right: 2%;" class="mt-5">
+              <label style="color: #074A74; font-weight: 800;">First Name</label>
+              <input type="text" name="first_name" class="customSelect flex-1 w-100"
+                v-model="bankStatementData.first_name" />
+            </div>
+            <div v-if="formMode.newCustomer" style="width:23%; margin-right: 2%;" class="mt-5">
+              <label style="color: #074A74; font-weight: 800;">Middle Name</label>
+              <input type="text" name="middle_name" class="customSelect flex-1 w-100"
+                v-model="bankStatementData.middle_name" />
+
+
+            </div>
+            <div v-if="formMode.newCustomer" style="width:23%; margin-right: 2%;" class="mt-5">
+              <label style="color: #074A74; font-weight: 800;">Last Name</label>
+              <input type="text" name="last_name" class="customSelect flex-1 w-100"
+                v-model="bankStatementData.last_name" />
+            </div>
+              <div v-if="formMode.newCustomer" style="width:23%; margin-right: 2%;" class="mt-5">
+                <label style="color: #074A74; font-weight: 800;">Phone Number</label>
+                <input type="number" name="phone_number" class="customSelect flex-1 w-100"
+                  v-model="bankStatementData.phone_number" />
+              </div>
+                <div v-if="formMode.newCustomer" style="width:23%; margin-right: 2%;" class="mt-5">
+                <label style="color: #074A74; font-weight: 800;">Address</label>
+                <input type="text" name="address" class="customSelect flex-1 w-100"
+                  v-model="bankStatementData.address" />
+              </div>
+
+            <div style="width:23%; margin-right: 2%;" class="mt-5">
+              <label style="color: #074A74; font-weight: 800;">Minimum Salary (Optional)</label>
+              <input type="number" name="repayment_duration" class="custom-select flex-1 w-100"
+                v-model="bankStatementData.min_salary" />
+
+
+            </div>
+            <div style="width:23%; margin-right: 2%;" class="mt-5">
+              <label style="color: #074A74; font-weight: 800;">Maximum Salary (Optional)</label>
+              <input type="number" name="repayment_duration" class="custom-select flex-1 w-100"
+                v-model="bankStatementData.max_salary" />
+
+
+            </div>
+            <div style="width:23%; margin-right: 2%;"  class="mt-5">
+              <div style="position: relative;">
+                <label style="color: #074A74; font-weight: 800;">Bank Name</label>
+                <select name="bank_statement_choice" class="customSelect   flex-1 w-100"
+                  v-model="bankStatementData.bank_statement_choice">
+                  <option selected>Select bank</option>
+                  <option v-for="option in statementChoices" :value="option.key" :key="option.key">{{ option.name }}
+                  </option>
+                </select>
+                <input type="file" ref="pdfInput" accept="application/pdf" style="display: none"
+                  @change="handlePDFChange" />
+                <pdf style="position:absolute; right: 10px; bottom:5px; cursor:pointer" @click.native="uploadPDF()" />
+
+              </div>
+              <div v-if="bankStatementData.bank_statement_pdf">
+                Selected PDF: {{ bankStatementData.bank_statement_pdf.name }}
+              </div>
+            </div> 
+            <button :disabled="isButtonDisabled" class="btn bg-default" v-if="formMode.existingCustomer"
+              style=" display: flex; align-items: center; justify-content: center; width:21%;" type="submit">
+              <upload class="pr-2" />Upload Document
+            </button>
+          </div>
+          <div  style="display: flex; width: 100%; justify-content: end;">
+            <button :disabled="isButtonDisabled" class="btn bg-default" v-if="formMode.newCustomer"
+                  style=" display: flex; align-items: center; justify-content: center; width:21%;" type="submit">
+                  <upload class="pr-2" />Upload Document
+                </button>
+          </div>
+           
+
+
+        </form>
+      </div>
       <div class="space-between mb-5 pl-5 mt-5 ml-5 px-4">
         <h3 class="text-capitalize mb-0">Filters</h3>
       </div>
       <div class="center my-2  ml-5 pl-5 " style=" display: flex; align-items: center;">
         <div style="width:70%; display: flex;">
           <div style="width:20%; margin-right: 2%;">
-             <label style="color: #074A74; font-weight: 800;">DATE</label>
+            <label style="color: #074A74; font-weight: 800;">DATE</label>
             <date-picker class="w-100" v-model="dateRange" :range="true" :language="locale" :format="dateFormat"
               valueType="format" placeholder="Date"></date-picker>
 
@@ -75,7 +122,8 @@
           </div>
           <div style="width:20%; margin-right: 2%;">
             <label style="color: #074A74; font-weight: 800;">ACCOUNT NUMBER</label>
-            <input type="number" name="account_number" class="customSelect flex-1 w-100" v-model="pageParams.account_number" />
+            <input type="number" name="account_number" class="customSelect flex-1 w-100"
+              v-model="pageParams.account_number" />
           </div>
           <div style="width:20%; margin-right: 2%;">
             <label style="color: #074A74; font-weight: 800;">CUSTOMER ID</label>
@@ -159,6 +207,7 @@
 <script>
 import AutocompleteSearch from "../../components/AutocompleteSearch/AutocompleteSearch.vue"
 import { get, post, put } from "../../utilities/api"
+import CustomHeader from "../../components/customHeader"
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
 import pdf from '../../assets/pdf.vue'
@@ -167,6 +216,7 @@ import BankStatementDetails from "../../components/BankStatementDetails.vue"
 import upload from "../../assets/upload.vue"
 import { toMulipartedForm } from '../../utilities/form'
 import Flash from "../../utilities/flash";
+import { selectType } from "../../utilities/log.js"
 export default {
   components: {
     AutocompleteSearch,
@@ -174,18 +224,28 @@ export default {
     upload,
     BasePagination,
     pdf,
-    DatePicker
+    DatePicker,
+    CustomHeader
 
   },
   data() {
     return {
+      formMode: {
+        newCustomer: false,
+        existingCustomer: true,
+      },
       selectedPDF: null,
       bankStatementData: {
         customer_id: '',
         min_salary: '',
         max_salary: '',
         bank_statement_choice: 'Select bank',
-        bank_statement_pdf: null
+        bank_statement_pdf: null,
+        first_name:'',
+        middle_name:'',
+        last_name:'',
+        phone_number:'',
+        address:''
       },
       repaymentPlan: '',
       BankStatement: {},
@@ -216,24 +276,28 @@ export default {
         bank_statements: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statements',
         statement_choices: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statement-choices'
       },
-      pageParams: { page: 1, size: 10, customer_id:'', account_name:'', account_number:'' },
+      pageParams: { page: 1, size: 10, customer_id: '', account_name: '', account_number: '' },
       MonthlyStat: [],
       orders: [],
       order2: [],
       isProcessing: true,
       barData: {},
       OId: null,
-      dateRange:[]
+      dateRange: []
     }
   },
   methods: {
-     async resetFilter() {
-      this.dateRange= []
-      this.pageParams= {
-        page: 1, size: 15}
-     await this.fetchData(this.pageParams)
+    selectType(type) {
+      selectType(type, this.formMode)
     },
-   async Search(){
+    async resetFilter() {
+      this.dateRange = []
+      this.pageParams = {
+        page: 1, size: 15
+      }
+      await this.fetchData(this.pageParams)
+    },
+    async Search() {
       this.pageParams.page = 1;
       await this.fetchData()
     },
@@ -281,18 +345,18 @@ export default {
     },
 
     seeMore(bankStatement) {
-       setTimeout(() => {
+      setTimeout(() => {
         this.seeDetails = true
       }, 1000);
-      
+
       this.BankStatement = bankStatement
-     
+
 
     },
     async fetchData(params = {}) {
       this.$scrollToTop()
       this.$LIPS(true)
-      await get(this.apiUrls.bank_statements, {...params, ...this.pageParams, from_date:this.dateRange[0], to_date: this.dateRange[1] })
+      await get(this.apiUrls.bank_statements, { ...params, ...this.pageParams, from_date: this.dateRange[0], to_date: this.dateRange[1] })
         .then((response) => {
           this.bankStatements = response.data.items;
           this.setPagination(response.data)
@@ -389,17 +453,22 @@ export default {
   height: 100vh;
   min-width: 100%
 }
+
 .details::-webkit-scrollbar {
-  width: 1px; /* Width of the hidden scrollbar */
+  width: 1px;
+  /* Width of the hidden scrollbar */
 }
+
 .details::-webkit-scrollbar-thumb {
   /* Scrollbar thumb (the draggable part) */
-  background-color: transparent; /* Hide the thumb */
+  background-color: transparent;
+  /* Hide the thumb */
 }
 
 .details::-webkit-scrollbar-track {
   /* Scrollbar track (the background) */
-  background-color: transparent; /* Hide the track */
+  background-color: transparent;
+  /* Hide the track */
 }
 
 .slide-enter-active,

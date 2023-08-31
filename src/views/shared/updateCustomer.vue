@@ -181,6 +181,7 @@
                             data-vv-as="date of birth"
                             name="date_of_birth"
                             type="date"
+                            :max="maxDate"
                             v-model="newCustomer.date_of_birth"
                             v-validate="'required'"
                             />
@@ -2119,6 +2120,13 @@ export default {
         }
         },
     computed: {
+        maxDate() {
+            const today = new Date();
+            const minDate = new Date();
+            minDate.setFullYear(today.getFullYear() - 21);
+            const formattedDate = minDate.toISOString().split('T')[0];
+            return formattedDate;
+        },
         cannotView: function () {
       return [
         roles.dsa_captain,

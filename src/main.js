@@ -21,8 +21,6 @@ import "./utilities/globalFunctions.js";
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 
-
-
 Vue.config.productionTip = false
 Object.defineProperty(Vue.prototype, '$_', { value: _ });
 VuexRouterSync.sync(store, router);

@@ -124,7 +124,7 @@
                         </div>
                         <div class="col-8 text-right">
                           <h4 class="info-title font-weight-bold mb-0">
-                            {{ type | capitalize }}
+                            {{ convertToDisplayName(type) | capitalize }}
                           </h4>
                           <h6 class="stats-title">
                             {{ displayActiveDocument(type) ? "Verified" : "Not Verified" }}
@@ -485,7 +485,7 @@
             </div>
           </div>
         </div>
-        <div :id="type + '_modal'" class="modal fade" v-for="type in newDocView">
+        <div :id="type + '_modal'" class="modal fade" v-for="(type, index) in newDocView" :key="index">
           <div class="modal-dialog"  :style="{ pointerEvents:( type == 'passport' || type == 'id_card') ? 'none' : 'auto' }">
             <div class="modal-content">
               <div class="modal-header py-2">
@@ -1409,6 +1409,14 @@ export default {
         return `${process.env.VUE_APP_S3_URL}/${url}`
     },
 
+    convertToDisplayName(name) {
+      const words = name.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1));
+      const filteredWords = words.filter(word => word !== "Url");
+      const displayName = filteredWords.join(' ');
+
+      return displayName;
+    },
+
     addDocument() {
       this.$modal.show(
         AddDocumentModal,
@@ -1516,44 +1524,71 @@ export default {
       this.$scrollToTop()
     },
     async saveNewDoc(document, modal) {
-      this.$validator.validateAll().then(async result => {
-        if (result) {
-          try {
-            this.$LIPS(true)
-            this.verificationData = {
+      this.storeURL = "/api/new_document"
+      this.$LIPS(true)
+      this.verificationData = {
                 customer_id: this.customer.id,
                 document: this.form[document],
                 name: document
             }
-            let form = toMulipartedForm(this.verificationData, "edit");
-
-            let res = await post(`/api/new_document`, form)
-            if (res.status === 200) {
-              
-              this.updateView(res.data)
-              this.displayDocument = res.data.data.find((item)=> item.name === document)
-              this.$swal({
-                icon: "success",
-                title: res.data.response,
-              })
-              this.verificationData = {}
-
-              this.modal(modal)
-              Flash.setSuccess("Document Updated Successfully!")
-              this.done()
-            }
-          } catch (err) {
-            this.$swal({
-              icon: "error",
-              title: `Unable to complete`,
-            })
-          } finally {
-            this.$LIPS(false)
-            this.$scrollToTop()
-          }
-        }
-      })
+      // this.form.document = document
+      const form = toMulipartedForm(this.verificationData, "edit")
+      await post(this.storeURL, form)
+        .then(({ data }) => {
+          this.updateView(data.response)
+          log(
+            `Customer${this.$options.filters.capitalize(document)}Upload`,
+            `Customer ID : ${this.customer.id}`
+          )
+          this.modal(modal)
+          Flash.setSuccess("Document Updated Successfully!")
+          this.done()
+        })
+        .catch(e => {
+          this.error = "Unable to complete"
+        })
+      this.$LIPS(false)
+      this.$scrollToTop()
     },
+    // async saveNewDoc(document, modal) {
+    //   this.$validator.validateAll().then(async result => {
+    //     if (result) {
+    //       try {
+    //         this.$LIPS(true)
+    //         this.verificationData = {
+    //             customer_id: this.customer.id,
+    //             document: this.form[document],
+    //             name: document
+    //         }
+    //         let form = toMulipartedForm(this.verificationData, "edit");
+
+    //         let res = await post(`/api/new_document`, form)
+    //         if (res.status === 200) {
+              
+    //           this.updateView(res.data)
+    //           this.displayDocument = res.data.data.find((item)=> item.name === document)
+    //           this.$swal({
+    //             icon: "success",
+    //             title: res.data.response,
+    //           })
+    //           this.verificationData = {}
+
+    //           this.modal(modal)
+    //           Flash.setSuccess("Document Updated Successfully!")
+    //           this.done()
+    //         }
+    //       } catch (err) {
+    //         this.$swal({
+    //           icon: "error",
+    //           title: `Unable to complete`,
+    //         })
+    //       } finally {
+    //         this.$LIPS(false)
+    //         this.$scrollToTop()
+    //       }
+    //     }
+    //   })
+    // },
 
     getRecommendationList(id) {
       get(`/api/customer-recommendation/${id}`)

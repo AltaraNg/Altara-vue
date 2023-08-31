@@ -81,14 +81,17 @@
                 </div>
             </div>
             <div class="relative " >
-                <p class="font-black" style="position:absolute; opacity: 1; z-index: 100; font-size: 70px; right: 30%; bottom: -100px;">Coming Soon...</p>
-                <div class="box relative " style="margin-top: 50px; margin-bottom: 40px; pointer-events: none; opacity: 0.3;">
+                <div class="box relative " style="margin-top: 50px; margin-bottom: 40px;">
                     
                     <div style="display: flex; justify-content: end;">
-                        <div style="width:30%; margin-right: 2%;">
+                        <div style="width:30%; margin-right: 2%; position: relative;" class="form-group "> 
                             <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
-                            <input type="number" name="repayment_duration" class="custom-select flex-1 w-100"
-                                v-model="repaymentAmount" />
+                            <input type="number" name="repayment_amount" v-model="repayment_amount" class="custom-select flex-1 w-100"
+                                />
+                                <button style="position: absolute; bottom: 2px; padding:6px 20px; right:3px; text-align: center; border-radius: 5px;" class="  bg-default" @click="getRepaymentCapability" >
+    	                                                            Check
+    	                                                            <i class="far fa-paper-plane ml-1"></i>
+    	                                                        </button>
                         </div>
                     </div>
                     <p class="pb-5" style="font-size: 26px; font-weight: 800; color: #074A74;">Repayment Capability Table.</p>
@@ -132,6 +135,7 @@
 import back from '../assets/back.vue';
 import warning from '../assets/warning.vue';
 import excel from '../assets/excel.vue';
+import { get, post, put } from "../utilities/api"
 export default {
     components: {
         back,
@@ -143,10 +147,26 @@ export default {
             type: Object
         }
     },
+     computed: {
+        repaymentCapabilityUrl() {
+            return `https://fast-alt-7790f3f68854.herokuapp.com/bank-statements/${this.BankStatement.id}/repayment/capability/${this.repayment_amount}`;
+        }
+    },
     data() {
         return {
-            repaymentAmount: ''
+            repayment_amount: '',
         }
+    },
+    methods:{
+         async getRepaymentCapability() {
+            console.log('hello', this.repayment_amount)
+            try {
+                const fetchRepaymentCapability = await get(this.repaymentCapabilityUrl);
+                console.log(fetchRepaymentCapability)
+            } catch (err) {
+                this.$displayErrorMessage(err);
+            }
+        },
     }
 }
 </script>

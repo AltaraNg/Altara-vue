@@ -129,6 +129,16 @@
             <label style="color: #074A74; font-weight: 800;">CUSTOMER ID</label>
             <input type="number" name="customer_id" class="custom-select flex-1 w-100" v-model="pageParams.customer_id" />
           </div>
+           <div style="width:20%; margin-right: 2%;" >
+              
+                  <label style="color: #074A74; font-weight: 800;">BANK NAME</label>
+                  <select name="bank_statement_choice" class="customSelect   flex-1 w-100"
+                    v-model="pageParams.bank_statement_choice">
+                    <option selected>Select bank</option>
+                    <option v-for="option in statementChoices" :value="option.key" :key="option.key">{{ option.name }}
+                    </option>
+                  </select>
+              </div> 
 
 
 
@@ -276,7 +286,7 @@ export default {
         bank_statements: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statements',
         statement_choices: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statement-choices'
       },
-      pageParams: { page: 1, size: 10, customer_id: '', account_name: '', account_number: '' },
+      pageParams: { page: 1, size: 10, customer_id: '', account_name: '', account_number: '', bank_statement_choice:'' },
       MonthlyStat: [],
       orders: [],
       order2: [],

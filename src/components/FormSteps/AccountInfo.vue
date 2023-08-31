@@ -213,6 +213,7 @@
                   data-vv-as="date of birth"
                   name="date_of_birth"
                   type="date"
+                  :max="maxDate"
                   v-model="formData.newCustomer.date_of_birth"
                   :class="memberHasError('newCustomer.date_of_birth') ? 'is-invalid' : ''"
                   v-validate="'required'"
@@ -222,13 +223,11 @@
                     class="error"
                     v-if="!$v.formData.newCustomer.date_of_birth.required"
                   >Please provide your date of birth.</div>
+                   
+                    </div>
                 </div>
-                <small v-if="errors.first('date_of_birth')">
-                  {{
-                    errors.first("date_of_birth")
-                  }}
-                </small>
-              </div>
+             
+             
 
               <div class="spaceAfter"></div>
 
@@ -525,6 +524,13 @@ export default{
     
    },
    computed: {
+    maxDate() {
+      const today = new Date();
+      const minDate = new Date();
+      minDate.setFullYear(today.getFullYear() - 21);
+      const formattedDate = minDate.toISOString().split('T')[0];
+      return formattedDate;
+    },
         ...mapGetters(["auth"]),
     },
     

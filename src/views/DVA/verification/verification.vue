@@ -1550,45 +1550,6 @@ export default {
       this.$LIPS(false)
       this.$scrollToTop()
     },
-    // async saveNewDoc(document, modal) {
-    //   this.$validator.validateAll().then(async result => {
-    //     if (result) {
-    //       try {
-    //         this.$LIPS(true)
-    //         this.verificationData = {
-    //             customer_id: this.customer.id,
-    //             document: this.form[document],
-    //             name: document
-    //         }
-    //         let form = toMulipartedForm(this.verificationData, "edit");
-
-    //         let res = await post(`/api/new_document`, form)
-    //         if (res.status === 200) {
-              
-    //           this.updateView(res.data)
-    //           this.displayDocument = res.data.data.find((item)=> item.name === document)
-    //           this.$swal({
-    //             icon: "success",
-    //             title: res.data.response,
-    //           })
-    //           this.verificationData = {}
-
-    //           this.modal(modal)
-    //           Flash.setSuccess("Document Updated Successfully!")
-    //           this.done()
-    //         }
-    //       } catch (err) {
-    //         this.$swal({
-    //           icon: "error",
-    //           title: `Unable to complete`,
-    //         })
-    //       } finally {
-    //         this.$LIPS(false)
-    //         this.$scrollToTop()
-    //       }
-    //     }
-    //   })
-    // },
 
     getRecommendationList(id) {
       get(`/api/customer-recommendation/${id}`)

@@ -1424,9 +1424,6 @@ export default {
       })
       return result
     },
-    deleteObjectsByName(arr, namesToDelete) {
-      return arr.filter((obj) => !namesToDelete.includes(obj.name));
-    },
     async getBusinessTypes() {
       try {
         this.$LIPS(true)
@@ -1435,11 +1432,12 @@ export default {
         this.biz_type = this.biz_type.filter(item => {
           return item.slug !== 'ap_bnpl'
         })
-        const namesToDelete = ["Super Loan (New)", "Super Loan (Renewal)"];
-        const businessTypesData = fetchBusinessTypes?.data?.data?.data
-        this.businessTypes = this.deleteObjectsByName(businessTypesData, namesToDelete)
+        this.businessTypes = fetchBusinessTypes?.data?.data?.data
         this.businessTypes = this.businessTypes.filter(item => {
-          return item.slug !== 'ap_bnpl'
+          return item.slug !== 'ap_bnpl'&& 
+          item.slug !== 'ap_super_loan-new'&& 
+          item.slug !== 'ap_super_loan-renewal'
+
         })
         this.businessTypes = this.businessTypes.filter(item => {
           if (this.isAltaraCredit) {

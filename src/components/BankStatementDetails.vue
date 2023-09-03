@@ -99,18 +99,21 @@
                         <p>Month</p>
                         <p>No of Days</p>
                     </div>
-                    <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #F7F7FF;">
-                        <p>Month 1</p>
-                        <p style="font-weight: 700;">0</p>
+                    <div v-for="(repayment, index) in repaymentCapability" :key="index">
+                         <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #F7F7FF;">
+                            <p>{{ repayment.month_name || 0 }}</p>
+                            <p style="font-weight: 700;">{{ repayment.count || 0 }}</p>
+                        </div>
                     </div>
-                    <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #E9E9FF;">
+                   
+                    <!-- <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #E9E9FF;">
                         <p>Month 2</p>
                         <p style="font-weight: 700;">0</p>
                     </div>
                     <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #F7F7FF;">
                         <p>Month 3</p>
                         <p style="font-weight: 700;">0</p>
-                    </div>
+                    </div> -->
                 </div>
                 </div>
             
@@ -155,16 +158,21 @@ export default {
     data() {
         return {
             repayment_amount: '',
+            repaymentCapability:[]
         }
     },
     methods:{
          async getRepaymentCapability() {
+            this.$LIPS(true)
             console.log('hello', this.repayment_amount)
             try {
                 const fetchRepaymentCapability = await get(this.repaymentCapabilityUrl);
-                console.log(fetchRepaymentCapability)
+                this.repaymentCapability = fetchRepaymentCapability.data.data
+                console.log(this.repaymentCapability, 'this.repaymentCapability');
             } catch (err) {
                 this.$displayErrorMessage(err);
+            } finally{
+                this.$LIPS(false)
             }
         },
     }

@@ -1509,10 +1509,6 @@ export default {
       await post(this.storeURL, form)
         .then(({ data }) => {
           this.updateView(data.response)
-          log(
-            `Customer${this.$options.filters.capitalize(document)}Upload`,
-            `Customer ID : ${this.customer.id}`
-          )
           this.modal(modal)
           Flash.setSuccess("Document Updated Successfully!")
           this.done()

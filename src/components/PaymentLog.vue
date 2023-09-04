@@ -1434,7 +1434,8 @@ export default {
         })
         this.businessTypes = fetchBusinessTypes?.data?.data?.data
         this.businessTypes = this.businessTypes.filter(item => {
-          return item.slug !== 'ap_bnpl'
+          return !['ap_bnpl', 'ap_super_loan-new', 'ap_super_loan-renewal'].includes(item.slug)
+
         })
         this.businessTypes = this.businessTypes.filter(item => {
           if (this.isAltaraCredit) {

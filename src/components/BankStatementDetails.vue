@@ -80,44 +80,87 @@
 
                 </div>
             </div>
-            <div class="relative " >
-                <div class="box relative " style="margin-top: 50px; margin-bottom: 40px;">
-                    
+            <div class="relative " style="display:flex; justify-content: space-between; margin-top: 50px; margin-bottom: 40px;">
+                <div class="box relative " style="width:40%; height: fit-content;">
+
                     <div style="display: flex; justify-content: end;">
-                        <div style="width:30%; margin-right: 2%; position: relative;" class="form-group "> 
+                        <div style="width:60%; margin-right: 2%; position: relative;" class="form-group ">
                             <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
-                            <input type="number" name="repayment_amount" v-model="repayment_amount" class="custom-select flex-1 w-100"
-                                />
-                                <button style="position: absolute; bottom: 2px; padding:6px 20px; right:3px; text-align: center; border-radius: 5px;" class="  bg-default" @click="getRepaymentCapability" >
-    	                                                            Check
-    	                                                            <i class="far fa-paper-plane ml-1"></i>
-    	                                                        </button>
+                            <input type="number" name="repayment_amount" v-model="repayment_amount"
+                                class="custom-select flex-1 w-100" />
+                            <button
+                                style="position: absolute; bottom: 2px; padding:6px 20px; right:3px; text-align: center; border-radius: 5px;"
+                                class="  bg-default" @click="getRepaymentCapability">
+                                Check
+                                <i class="far fa-paper-plane ml-1"></i>
+                            </button>
                         </div>
                     </div>
-                    <p class="pb-5" style="font-size: 26px; font-weight: 800; color: #074A74;">Repayment Capability Table.</p>
+                    <p class="pb-5" style="font-size: 16px; font-weight: 800; color: #074A74;">Repayment Capability Table.
+                    </p>
                     <div class="p-2 alignCenterJustifyBetween" style=" font-size: 18px; font-weight: 800;">
                         <p>Month</p>
                         <p>No of Days</p>
                     </div>
                     <div v-for="(repayment, index) in repaymentCapability" :key="index">
-                         <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #F7F7FF;">
+                        <div class="p-2 mb-2 alignCenterJustifyBetween"
+                            style=" font-size: 18px; background-color: #F7F7FF;">
                             <p>{{ repayment.month_name || 0 }}</p>
                             <p style="font-weight: 700;">{{ repayment.count || 0 }}</p>
                         </div>
                     </div>
-                   
-                    <!-- <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #E9E9FF;">
-                        <p>Month 2</p>
-                        <p style="font-weight: 700;">0</p>
+                    <div v-if="!repaymentCapability.length">
+                        <p style="font-size: 15px; font-weight: 800; color: #074A74;" class="text-center mt-5">This Bank
+                            Statement does not have the available funds to repay this repayment amount. </p>
                     </div>
-                    <div class="p-2 mb-2 alignCenterJustifyBetween" style=" font-size: 18px; background-color: #F7F7FF;">
-                        <p>Month 3</p>
-                        <p style="font-weight: 700;">0</p>
-                    </div> -->
                 </div>
+                 <div class="box" style="background-color: transparent; padding: 0 ">
+                    <div class="attendance-head">
+                        <div class="row mt-5 px-4 pt-3 pb-4 text-left">
+
+                            <div class="col light-heading" v-for="(header, index) in headings" :key="index">
+                                {{ header }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-1 attendance-body text-left" key="table"
+                        v-if="BankStatementTransactions.length > 0 && this.BankStatementTransactions">
+                        <div class="mb-3 row d-flex bg-white table-hover" :key="index"
+                            v-for="(BankStatementTransaction, index) in BankStatementTransactions">
+                            <!-- {{ creditCheck }} -->
+                            <div class="col-12 col-xs-3 col-md col-lg  align-items-start  ">
+                                <span class="user mx-auto text-white bg-default">{{ index + 1 }}</span>
+                            </div>
+
+                            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
+                              {{ BankStatementTransaction.description }}
+                            </div>
+                            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
+                                 {{ new Date(BankStatementTransaction.created_at).toISOString().split('T')[0] }}
+
+
+                            </div>
+                            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
+                                {{ BankStatementTransaction.balance }}
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div v-else class="h4 text-center">No Data</div>
+                    <div v-if="pageParams">
+                        <base-pagination :page-param="pageParams" @fetchData="fetchData">
+                        </base-pagination>
+                    </div>
+
+
                 </div>
-            
-             
+            </div>
+
+           
+
+
         </div>
         <!-- <div v-if="BankStatement.status == 'pending'" style="display: flex; justify-content: center;">
             <img src="../assets/Spinner-1s-200px.gif"/>
@@ -139,43 +182,72 @@ import back from '../assets/back.vue';
 import warning from '../assets/warning.vue';
 import excel from '../assets/excel.vue';
 import { get, post, put } from "../utilities/api"
+import BankStatementPagination from './Pagination/BankStatementPagination.vue';
 export default {
     components: {
         back,
         warning,
-        excel
+        excel,
+        BankStatementPagination
     },
     props: {
         BankStatement: {
             type: Object
         }
     },
-     computed: {
+    computed: {
         repaymentCapabilityUrl() {
             return `https://fast-alt-7790f3f68854.herokuapp.com/bank-statements/${this.BankStatement.id}/repayment/capability/${this.repayment_amount}`;
         }
     },
     data() {
         return {
+            statementDetails: `https://fast-alt-7790f3f68854.herokuapp.com/bank-statements/${this.BankStatement.id}`,
             repayment_amount: '',
-            repaymentCapability:[]
+            repaymentCapability: [
+                {
+                    month_name: 'Month Name',
+                    count: 0
+                }
+            ],
+            BankStatementTransactions: null,
+            headings: [
+                "S/N",
+                "Description",
+                "Date",
+                "Balance",
+            ],
         }
     },
-    methods:{
-         async getRepaymentCapability() {
+    methods: {
+        async getRepaymentCapability() {
             this.$LIPS(true)
-            console.log('hello', this.repayment_amount)
             try {
                 const fetchRepaymentCapability = await get(this.repaymentCapabilityUrl);
                 this.repaymentCapability = fetchRepaymentCapability.data.data
                 console.log(this.repaymentCapability, 'this.repaymentCapability');
             } catch (err) {
                 this.$displayErrorMessage(err);
-            } finally{
+            } finally {
                 this.$LIPS(false)
             }
         },
-    }
+        async getBankStatementDetails() {
+            this.$LIPS(true)
+            try {
+                const fetchBankStatementDetails = await get(this.statementDetails);
+                this.BankStatementTransactions = fetchBankStatementDetails.data.data.bankStatementDayEndTransactions
+                console.log(this.BankStatementTransactions, 'this.BankStatementTransactions');
+            } catch (err) {
+                this.$displayErrorMessage(err);
+            } finally {
+                this.$LIPS(false)
+            }
+        },
+    },
+    mounted() {
+        this.getBankStatementDetails()
+    },
 }
 </script>
 <style scoped>
@@ -193,9 +265,8 @@ export default {
     align-items: center;
     justify-content: space-between;
 }
-.body{
+
+.body {
     overflow-y: scroll;
     height: 100%;
-}
-
-</style>
+}</style>

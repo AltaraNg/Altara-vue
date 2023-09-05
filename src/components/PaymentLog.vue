@@ -1657,10 +1657,10 @@
           const unwrapped = fetchGetCalclations.data.data;
           this.calculation = unwrapped;
 
-          // const filter = this.calculation.filter(obj => {
-          //   return obj.business_type_id >= 15
-          // })
-          // const unwrapped0 = JSON.stringify(unwrapped)
+          // const filter = this.calculation.filter((obj) => {
+          //   return obj.business_type_id >= 15;
+          // });
+          // const unwrapped0 = JSON.stringify(unwrapped);
         } catch (err) {
           this.$displayErrorMessage(err);
         }
@@ -1766,7 +1766,11 @@
           const fetchBusinessTypes = await get(this.apiUrls.businessTypes);
           this.biz_type = fetchBusinessTypes?.data?.data?.data;
           this.biz_type = this.biz_type.filter((item) => {
-            return item.slug !== "ap_bnpl";
+            return ![
+              "ap_bnpl",
+              "ap_super_loan-new",
+              "ap_super_loan-renewal",
+            ].includes(item.slug);
           });
           this.businessTypes = fetchBusinessTypes?.data?.data?.data;
           this.businessTypes = this.businessTypes.filter((item) => {

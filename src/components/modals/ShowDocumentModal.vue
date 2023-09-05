@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="modal-header">
-      <h3 class=" my-1" id="exampleModalLongTitle">
+      <h3 class="my-1" id="exampleModalLongTitle">
         {{ document.name }}
       </h3>
       <div slot="top-right">
@@ -24,7 +24,12 @@
           </div>
           <div class="upload-image p-2">
             <div class="upload-box">
-                <img :src="imageUrl(document.document_url)" width="200" height="200" :alt="document.name"/>
+              <img
+                :src="imageUrl(document.document_url)"
+                width="200"
+                height="200"
+                :alt="document.name"
+              />
             </div>
           </div>
         </div>
@@ -44,39 +49,39 @@
 </template>
 
 <script>
-// import ImageUpload from "../ImageUpload.vue"
-export default {
-  components: { },
-  props: {
-    document: {
-      required: true,
-      default: {},
+  // import ImageUpload from "../ImageUpload.vue"
+  export default {
+    components: {},
+    props: {
+      document: {
+        required: true,
+        default: {},
+      },
     },
-  },
-  data() {
-    return {}
-  },
+    data() {
+      return {};
+    },
 
-  methods: {
-    imageUrl(url){
-        return `${process.env.VUE_APP_S3_URL}/${url}`
-    }
-  },
-  created() {},
-}
+    methods: {
+      imageUrl(url) {
+        return `${process.env.VUE_APP_S3_URL}/${url}`;
+      },
+    },
+    created() {},
+  };
 </script>
 
 <style lang="scss" scoped>
-.modal-dialog {
-  overflow-y: initial !important;
-}
-.modal-body {
-  overflow-y: auto;
-}
-.display-text {
-  color: black;
-  font-size: 1.5em;
-  font-weight: 500;
-  text-transform: capitalize;
-}
+  .modal-dialog {
+    overflow-y: initial !important;
+  }
+  .modal-body {
+    overflow-y: auto;
+  }
+  .display-text {
+    color: black;
+    font-size: 1.5em;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
 </style>

@@ -1,9 +1,7 @@
 <template>
   <div>
     <div class="modal-header">
-      <h3 class=" my-1" id="exampleModalLongTitle">
-        Verification Checklists
-      </h3>
+      <h3 class="my-1" id="exampleModalLongTitle">Verification Checklists</h3>
       <div slot="top-right">
         <span
           type="button"
@@ -16,7 +14,7 @@
         </span>
       </div>
     </div>
-    <div class="modal-body" v-if="verification.status === 'Formal' ">
+    <div class="modal-body" v-if="verification.status === 'Formal'">
       <ol class="list-group">
         <h5>Generic</h5>
         <li class="list-group-item my-3">
@@ -30,13 +28,14 @@
         <li class="list-group-item my-3">
           <label for="checklist">If other, Specify</label>
           <p class="display-text">
-            {{ verification.otherOption || 'N/A' }}
+            {{ verification.otherOption || "N/A" }}
           </p>
         </li>
 
         <li class="list-group-item my-3">
           <label for="checklist1" class=""
-            >Does the address match what was given on the application Form?</label
+            >Does the address match what was given on the application
+            Form?</label
           >
           <p class="display-text">
             {{ verification.addressMatch }}
@@ -45,16 +44,15 @@
 
         <li class="list-group-item my-3">
           <label for="checklist1" class=""
-            >Distance to the customer's house/office/ business/shop verified does not cost more than N300?</label
+            >Distance to the customer's house/office/ business/shop verified
+            does not cost more than N300?</label
           >
           <p class="display-text">
             {{ verification.customerDistance }}
           </p>
         </li>
         <li class="list-group-item my-3">
-          <label for="exampleFormControlSelect2"
-            >Is customer married?</label
-          >
+          <label for="exampleFormControlSelect2">Is customer married?</label>
           <p class="display-text">
             {{ verification.married }}
           </p>
@@ -62,7 +60,8 @@
 
         <li class="list-group-item my-3">
           <label for="exampleFormControlSelect2"
-            >If Yes - What is the name of their husband / wife and what is their number</label
+            >If Yes - What is the name of their husband / wife and what is their
+            number</label
           >
           <p class="display-text">
             {{ verification.nameOfSpouse }}
@@ -88,7 +87,8 @@
 
         <li class="list-group-item my-3">
           <label for="exampleFormControlSelect2"
-            >Guarantor gave the same house address/workplace address as the customer?</label
+            >Guarantor gave the same house address/workplace address as the
+            customer?</label
           >
           <p class="display-text">
             {{ verification.addressByGuarantor }}
@@ -106,7 +106,8 @@
 
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Customer has provided a picture of his accomodation/workplace  and it is the same as what was verified by the VCR?</label
+            >Customer has provided a picture of his accomodation/workplace and
+            it is the same as what was verified by the VCR?</label
           >
           <p class="display-text">
             {{ verification.accommodationPicture }}
@@ -123,7 +124,9 @@
         </li>
 
         <li class="list-group-item my-3">
-          <label for="checklist">None of the Guarantors are the spouse of the customer</label>
+          <label for="checklist"
+            >None of the Guarantors are the spouse of the customer</label
+          >
           <p class="display-text">
             {{ verification.spouseNotGuarantor }}
           </p>
@@ -132,14 +135,17 @@
         <div class="spaceAfter"></div>
         <h5>Home</h5>
         <li class="list-group-item my-3">
-          <label for="checklist">How long has the customer lived at his/her location?</label>
+          <label for="checklist"
+            >How long has the customer lived at his/her location?</label
+          >
           <p class="display-text">
             {{ verification.locationDuration }}
           </p>
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Utility Bill OR Rent receipt OR Water bill provided? Does the address match the house address on the form?</label
+            >Utility Bill OR Rent receipt OR Water bill provided? Does the
+            address match the house address on the form?</label
           >
           <p class="display-text">
             {{ verification.bill }}
@@ -155,7 +161,9 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >What is the nature of the home addess (location description? how does it look? Is it obvious the customer lives there? Family pictures ?)</label
+            >What is the nature of the home addess (location description? how
+            does it look? Is it obvious the customer lives there? Family
+            pictures ?)</label
           >
           <p class="display-text">
             {{ verification.natureOfHomeAddress }}
@@ -163,7 +171,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Who did you see at the house/speak to when you got to the house?</label
+            >Who did you see at the house/speak to when you got to the
+            house?</label
           >
           <p class="display-text">
             {{ verification.whoYouSpeakTo }}
@@ -179,7 +188,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Based on the feedback from neighbours, How long has the customer lived there?</label
+            >Based on the feedback from neighbours, How long has the customer
+            lived there?</label
           >
           <p class="display-text">
             {{ verification.houseLivedDuration }}
@@ -187,7 +197,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >[Ask Question to neighbour] Have they had any issues with the neighbours or anyone in the area?</label
+            >[Ask Question to neighbour] Have they had any issues with the
+            neighbours or anyone in the area?</label
           >
           <p class="display-text">
             {{ verification.issueWithNeighbour }}
@@ -197,7 +208,8 @@
         <h5>Office/ Business</h5>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >How many years has the customers been working with the company ( >1 year) ?  if Office/Business is verified</label
+            >How many years has the customers been working with the company ( >1
+            year) ? if Office/Business is verified</label
           >
           <p class="display-text">
             {{ verification.yearsOfWork }}
@@ -205,7 +217,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Have we met with the manager/HR/colleagues and do they speak well of the customer?</label
+            >Have we met with the manager/HR/colleagues and do they speak well
+            of the customer?</label
           >
           <p class="display-text">
             {{ verification.metManager }}
@@ -237,7 +250,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Utility Bill OR Rent receipt OR Water bill provided? Does the address match the house address on the form?</label
+            >Utility Bill OR Rent receipt OR Water bill provided? Does the
+            address match the house address on the form?</label
           >
           <p class="display-text">
             {{ verification.receipt }}
@@ -253,16 +267,16 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Based on the feedback from collegues, How long has the customer worked there?</label
+            >Based on the feedback from collegues, How long has the customer
+            worked there?</label
           >
           <p class="display-text">
             {{ verification.customerWorkDuration }}
           </p>
         </li>
-        
       </ol>
     </div>
-    <div class="modal-body" v-if="verification.status === 'Informal' ">
+    <div class="modal-body" v-if="verification.status === 'Informal'">
       <ol class="list-group">
         <h5>Generic</h5>
         <li class="list-group-item my-3">
@@ -276,13 +290,14 @@
         <li class="list-group-item my-3">
           <label for="checklist">If other, Specify</label>
           <p class="display-text">
-            {{ verification.otherOption || 'N/A' }}
+            {{ verification.otherOption || "N/A" }}
           </p>
         </li>
 
         <li class="list-group-item my-3">
           <label for="checklist1" class=""
-            >Does the address match what was given on the application Form?</label
+            >Does the address match what was given on the application
+            Form?</label
           >
           <p class="display-text">
             {{ verification.addressMatch }}
@@ -291,16 +306,15 @@
 
         <li class="list-group-item my-3">
           <label for="checklist1" class=""
-            >Distance to the customer's house/office/ business/shop verified does not cost more than N300?</label
+            >Distance to the customer's house/office/ business/shop verified
+            does not cost more than N300?</label
           >
           <p class="display-text">
             {{ verification.customerDistance }}
           </p>
         </li>
         <li class="list-group-item my-3">
-          <label for="exampleFormControlSelect2"
-            >Is customer married?</label
-          >
+          <label for="exampleFormControlSelect2">Is customer married?</label>
           <p class="display-text">
             {{ verification.married }}
           </p>
@@ -308,7 +322,8 @@
 
         <li class="list-group-item my-3">
           <label for="exampleFormControlSelect2"
-            >If Yes - What is the name of their husband / wife and what is their number</label
+            >If Yes - What is the name of their husband / wife and what is their
+            number</label
           >
           <p class="display-text">
             {{ verification.nameOfSpouse }}
@@ -334,7 +349,8 @@
 
         <li class="list-group-item my-3">
           <label for="exampleFormControlSelect2"
-            >Guarantor gave the same house address/workplace address as the customer?</label
+            >Guarantor gave the same house address/workplace address as the
+            customer?</label
           >
           <p class="display-text">
             {{ verification.addressByGuarantor }}
@@ -352,7 +368,8 @@
 
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Customer has provided a picture of his accomodation/workplace  and it is the same as what was verified by the VCR?</label
+            >Customer has provided a picture of his accomodation/workplace and
+            it is the same as what was verified by the VCR?</label
           >
           <p class="display-text">
             {{ verification.accommodationPicture }}
@@ -369,7 +386,9 @@
         </li>
 
         <li class="list-group-item my-3">
-          <label for="checklist">None of the Guarantors are the spouse of the customer</label>
+          <label for="checklist"
+            >None of the Guarantors are the spouse of the customer</label
+          >
           <p class="display-text">
             {{ verification.spouseNotGuarantor }}
           </p>
@@ -378,14 +397,17 @@
         <div class="spaceAfter"></div>
         <h5>Home</h5>
         <li class="list-group-item my-3">
-          <label for="checklist">How long has the customer lived at his/her location?</label>
+          <label for="checklist"
+            >How long has the customer lived at his/her location?</label
+          >
           <p class="display-text">
             {{ verification.locationDuration }}
           </p>
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Utility Bill OR Rent receipt OR Water bill provided? Does the address match the house address on the form?</label
+            >Utility Bill OR Rent receipt OR Water bill provided? Does the
+            address match the house address on the form?</label
           >
           <p class="display-text">
             {{ verification.bill }}
@@ -401,7 +423,9 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >What is the nature of the home addess (location description? how does it look? Is it obvious the customer lives there? Family pictures ?)</label
+            >What is the nature of the home addess (location description? how
+            does it look? Is it obvious the customer lives there? Family
+            pictures ?)</label
           >
           <p class="display-text">
             {{ verification.natureOfHomeAddress }}
@@ -409,7 +433,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Who did you see at the house/speak to when you got to the house?</label
+            >Who did you see at the house/speak to when you got to the
+            house?</label
           >
           <p class="display-text">
             {{ verification.whoYouSpeakTo }}
@@ -425,7 +450,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Based on the feedback from neighbours, How long has the customer lived there?</label
+            >Based on the feedback from neighbours, How long has the customer
+            lived there?</label
           >
           <p class="display-text">
             {{ verification.houseLivedDuration }}
@@ -433,7 +459,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >[Ask Question to neighbour] Have they had any issues with the neighbours or anyone in the area?</label
+            >[Ask Question to neighbour] Have they had any issues with the
+            neighbours or anyone in the area?</label
           >
           <p class="display-text">
             {{ verification.issueWithNeighbour }}
@@ -443,7 +470,8 @@
         <h5>Office/ Business</h5>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >"How many years has the customer owned thier business ( >1 year) ?  if Shop/Business is verified</label
+            >"How many years has the customer owned thier business ( >1 year) ?
+            if Shop/Business is verified</label
           >
           <p class="display-text">
             {{ verification.yearsOfWorkInformal }}
@@ -451,7 +479,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Have we met with the sellers/co-workers and do they speak well of the customer?</label
+            >Have we met with the sellers/co-workers and do they speak well of
+            the customer?</label
           >
           <p class="display-text">
             {{ verification.metManagerInformal }}
@@ -467,7 +496,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >How often does the customer make sales? (Sales trend/is it seasonal)</label
+            >How often does the customer make sales? (Sales trend/is it
+            seasonal)</label
           >
           <p class="display-text">
             {{ verification.customerSales }}
@@ -483,7 +513,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Utility Bill OR Rent receipt OR Water bill provided? Does the address match the house address on the form?</label
+            >Utility Bill OR Rent receipt OR Water bill provided? Does the
+            address match the house address on the form?</label
           >
           <p class="display-text">
             {{ verification.receipt }}
@@ -499,16 +530,16 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Based on the feedback from collegues, How long has the customer worked there?</label
+            >Based on the feedback from collegues, How long has the customer
+            worked there?</label
           >
           <p class="display-text">
             {{ verification.customerWorkDuration }}
           </p>
         </li>
-        
       </ol>
     </div>
-    <div class="modal-body" v-if="verification.status === 'Guarantor' ">
+    <div class="modal-body" v-if="verification.status === 'Guarantor'">
       <ol class="list-group">
         <h5>Guarantor</h5>
         <li class="list-group-item my-3">
@@ -548,7 +579,8 @@
 
         <li class="list-group-item my-3">
           <label for="exampleFormControlSelect2"
-            >Where does the customer work or where is the customer's business?</label
+            >Where does the customer work or where is the customer's
+            business?</label
           >
           <p class="display-text">
             {{ verification.guarantorCustomerAddress }}
@@ -565,7 +597,8 @@
 
         <li class="list-group-item my-3">
           <label for="exampleFormControlSelect2"
-            >How many times has the customer borrowed money in the last 6 months?</label
+            >How many times has the customer borrowed money in the last 6
+            months?</label
           >
           <p class="display-text">
             {{ verification.guarantorCustomerBorrowed }}
@@ -583,7 +616,8 @@
 
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >What is the name and address of the customer's mosque/church?</label
+            >What is the name and address of the customer's
+            mosque/church?</label
           >
           <p class="display-text">
             {{ verification.guarantorCustomerChurchAddress }}
@@ -601,7 +635,8 @@
 
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Does the customer spend a lot of time outside their current location [Ibadan/Ilorin/OgunState]?</label
+            >Does the customer spend a lot of time outside their current
+            location [Ibadan/Ilorin/OgunState]?</label
           >
           <p class="display-text">
             {{ verification.guarantorCustomerTimeOutside }}
@@ -609,21 +644,27 @@
         </li>
 
         <li class="list-group-item my-3">
-          <label for="checklist4">What is the customer called in the neighborhood?</label>
+          <label for="checklist4"
+            >What is the customer called in the neighborhood?</label
+          >
           <p class="display-text">
             {{ verification.guarantorCustomerNameByNeighbor }}
           </p>
         </li>
-        
+
         <li class="list-group-item my-3">
-          <label for="checklist5">Does the customer have a large life event in the next 6 months ? (e.g. birth of a child, burial, children going to university)</label>
+          <label for="checklist5"
+            >Does the customer have a large life event in the next 6 months ?
+            (e.g. birth of a child, burial, children going to university)</label
+          >
           <p class="display-text">
             {{ verification.guarantorCustomerLargeLife }}
           </p>
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Can you share the name of anyone else who can vouch for the customer?</label
+            >Can you share the name of anyone else who can vouch for the
+            customer?</label
           >
           <p class="display-text">
             {{ verification.guarantorCustomerVouch }}
@@ -631,7 +672,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >If Yes (Can you share the name of anyone else who can vouch for the customer?)</label
+            >If Yes (Can you share the name of anyone else who can vouch for the
+            customer?)</label
           >
           <p class="display-text">
             {{ verification.guarantorCustomerYesVouch }}
@@ -647,7 +689,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Does your monthly pay expend 3x the customer's monthly repayment?</label
+            >Does your monthly pay expend 3x the customer's monthly
+            repayment?</label
           >
           <p class="display-text">
             {{ verification.guarantorMonthlyPay }}
@@ -663,7 +706,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >Have you stood as a guarantor for this cutomer and/or anyone in particiular before?</label
+            >Have you stood as a guarantor for this cutomer and/or anyone in
+            particiular before?</label
           >
           <p class="display-text">
             {{ verification.guarantorCustomerStoodFor }}
@@ -671,7 +715,8 @@
         </li>
         <li class="list-group-item my-3">
           <label for="exampleFormControlTextarea1"
-            >What was the outcome of their payment? Did they ever default and if yes how did you handle it?</label
+            >What was the outcome of their payment? Did they ever default and if
+            yes how did you handle it?</label
           >
           <p class="display-text">
             {{ verification.guarantorCustomerDefault }}
@@ -694,38 +739,38 @@
 </template>
 
 <script>
-export default {
-  props: {
-    verification: {
-      required: true,
-      default: {},
+  export default {
+    props: {
+      verification: {
+        required: true,
+        default: {},
+      },
     },
-  },
-  data() {
-    return {}
-  },
+    data() {
+      return {};
+    },
 
-  methods: {},
-  created() {},
-}
+    methods: {},
+    created() {},
+  };
 </script>
 
 <style lang="scss" scoped>
-.modal-dialog {
-  overflow-y: initial !important;
-}
-.modal-body {
-  height: 75vh;
-  overflow-y: auto;
-}
-.display-text{
+  .modal-dialog {
+    overflow-y: initial !important;
+  }
+  .modal-body {
+    height: 75vh;
+    overflow-y: auto;
+  }
+  .display-text {
     color: black;
     font-size: 1.5em;
     font-weight: 500;
     text-transform: capitalize;
-}
+  }
 
-h5 {
+  h5 {
     background-color: rgba(8, 74, 115, 0.07);
     padding: 0.6rem 1.5rem;
     border-radius: 3px;

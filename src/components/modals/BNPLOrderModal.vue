@@ -50,10 +50,14 @@
             </tr>
             <tr>
               <th>Downpayment</th>
-              <td>{{ Intl.NumberFormat("en-US", {
+              <td>
+                {{
+                  Intl.NumberFormat("en-US", {
                     style: "currency",
                     currency: "NGR",
-                  }).format(modalItem.down_payment) }}</td>
+                  }).format(modalItem.down_payment)
+                }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -64,36 +68,36 @@
 </template>
 
 <script>
-export default {
-  props: {
-    modalItem: {
-      required: true,
+  export default {
+    props: {
+      modalItem: {
+        required: true,
+      },
     },
-  },
 
-  methods: {
-    closeModal() {
-      this.$emit("close")
+    methods: {
+      closeModal() {
+        this.$emit("close");
+      },
     },
-  },
-  computed: {
-    repDur() {
-      return this.repaymentDuration.find(item => {
-        return item.id === this.modalItem.repayment_duration_id
-      }).value
+    computed: {
+      repDur() {
+        return this.repaymentDuration.find((item) => {
+          return item.id === this.modalItem.repayment_duration_id;
+        }).value;
+      },
+      repCyc() {
+        return this.repaymentCyclesopt.find((item) => {
+          return item.id === this.modalItem.repayment_cycle_id;
+        }).name;
+      },
+      downPay() {
+        return this.downPaymentRates.find((item) => {
+          return item.id === this.modalItem.down_payment_rate_id;
+        }).percent;
+      },
     },
-    repCyc() {
-      return this.repaymentCyclesopt.find(item => {
-        return item.id === this.modalItem.repayment_cycle_id
-      }).name
-    },
-    downPay() {
-      return this.downPaymentRates.find(item => {
-        return item.id === this.modalItem.down_payment_rate_id
-      }).percent
-    },
-  },
-}
+  };
 </script>
 
 <style lang="scss" scoped></style>

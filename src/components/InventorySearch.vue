@@ -52,44 +52,44 @@
 </template>
 
 <script>
-import queryParam from "../utilities/queryParam";
-import { mapGetters } from "vuex";
+  import queryParam from "../utilities/queryParam";
+  import { mapGetters } from "vuex";
 
-export default {
-  name: "InventorySearch",
-  props: {
-    searchColumns: {},
-  },
-  data() {
-    return {
-      searchQ: "",
-      searchFilter: {},
-      branch: null,
-    };
-  },
-
-  methods: {
-    searchEvent() {
-      let filters = {};
-
-      filters[this.searchFilter] = this.searchQ;
-      const filterParam = queryParam({
-        ...filters,
-        branch: this.branch === null ? "" : this.branch,
-      });
-      this.$emit("childToParent", filterParam);
+  export default {
+    name: "InventorySearch",
+    props: {
+      searchColumns: {},
     },
-  },
-  computed: {
-    ...mapGetters(["getBranches"]),
-  },
-};
+    data() {
+      return {
+        searchQ: "",
+        searchFilter: {},
+        branch: null,
+      };
+    },
+
+    methods: {
+      searchEvent() {
+        let filters = {};
+
+        filters[this.searchFilter] = this.searchQ;
+        const filterParam = queryParam({
+          ...filters,
+          branch: this.branch === null ? "" : this.branch,
+        });
+        this.$emit("childToParent", filterParam);
+      },
+    },
+    computed: {
+      ...mapGetters(["getBranches"]),
+    },
+  };
 </script>
 
 <style scoped>
-.searchBar {
-  background-color: #fff;
-  border-radius: 7px;
-  padding: 20px;
-}
+  .searchBar {
+    background-color: #fff;
+    border-radius: 7px;
+    padding: 20px;
+  }
 </style>

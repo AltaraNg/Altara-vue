@@ -1,4 +1,4 @@
-import OrderWithPromiseCall from './reminder';
-import Order from './order';
+import OrderWithPromiseCall from "./reminder";
+import Order from "./order";
 
-export {OrderWithPromiseCall,Order};
+export { OrderWithPromiseCall, Order };

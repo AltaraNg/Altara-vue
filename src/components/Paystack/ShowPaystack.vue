@@ -79,166 +79,165 @@
 </template>
 
 <script>
-import Vue from "vue"
-import { mapGetters } from "vuex"
-import { post } from "../../utilities/api"
-import Flash from "../../utilities/flash"
-import { EventBus } from "../../utilities/event-bus"
-import paystack from "vue-paystack"
+  import Vue from "vue";
+  import { mapGetters } from "vuex";
+  import { post } from "../../utilities/api";
+  import Flash from "../../utilities/flash";
+  import { EventBus } from "../../utilities/event-bus";
+  import paystack from "vue-paystack";
 
-export default {
-  components: {
-    paystack,
-  },
-
-  data() {
-    return {
-      order: null,
-      value: null,
-      DSAId: null,
-      DSAName: null,
-      message: null,
-      customer: null,
-      messageType: "custom",
-      showChangeCustomerManagerModal: true,
-      verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
-      paystack_auth_code_url: "/api/pay_stack_auth_code",
-      paystackkey: process.env.VUE_APP_PAYSTACK_KEY || "",
-      paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || "",
-      authorization_code: null,
-      paystackReference: null,
-    }
-  },
-
-  computed: {
-    reference() {
-      let text = ""
-      let possible =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" +
-        this.order?.order_number
-      for (let i = 0; i < 10; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length))
-      return text
-    },
-    telephone() {
-      if (this.customer != null) return this.customer.telephone
-      if (this.order != null) return this.order.order.customer.telephone
-      return null
+  export default {
+    components: {
+      paystack,
     },
 
-    orderNumber() {
-      if (this.order != null) return this.order.order_number
-      return null
+    data() {
+      return {
+        order: null,
+        value: null,
+        DSAId: null,
+        DSAName: null,
+        message: null,
+        customer: null,
+        messageType: "custom",
+        showChangeCustomerManagerModal: true,
+        verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
+        paystack_auth_code_url: "/api/pay_stack_auth_code",
+        paystackkey: process.env.VUE_APP_PAYSTACK_KEY || "",
+        paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || "",
+        authorization_code: null,
+        paystackReference: null,
+      };
     },
 
-    customerName() {
-      let customer
-      if (this.customer != null) customer = this.customer
-      else if (this.order != null) customer = this.order.order.customer
-      return this.$getCustomerFullName(customer)
+    computed: {
+      reference() {
+        let text = "";
+        let possible =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" +
+          this.order?.order_number;
+        for (let i = 0; i < 10; i++)
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+        return text;
+      },
+      telephone() {
+        if (this.customer != null) return this.customer.telephone;
+        if (this.order != null) return this.order.order.customer.telephone;
+        return null;
+      },
+
+      orderNumber() {
+        if (this.order != null) return this.order.order_number;
+        return null;
+      },
+
+      customerName() {
+        let customer;
+        if (this.customer != null) customer = this.customer;
+        else if (this.order != null) customer = this.order.order.customer;
+        return this.$getCustomerFullName(customer);
+      },
+
+      ...mapGetters(["getAuthUserDetails"]),
     },
 
-    ...mapGetters(["getAuthUserDetails"]),
-  },
+    methods: {
+      async processPaymentPayStackPayment(resp) {
+        this.paystackReference = resp.reference;
+        if (resp.status == "success" && resp.message == "Approved") {
+          await this.verifyPaystackPayment()
+            .then((data) => {
+              if (data.status && data.message == "Verification successful") {
+                this.$LIPS(true);
+                this.authorization_code =
+                  data?.data?.authorization.authorization_code;
+                let dataForm = {
+                  order_id: this.order.order_number,
+                  auth_code: this.authorization_code,
+                  account_number: data?.data?.authorization?.last4,
+                  account_name:
+                    data?.data?.authorization?.account_name === null
+                      ? "test_acount"
+                      : data?.data?.authorization?.account_name,
+                  bank_name: data?.data?.authorization?.bank,
+                };
 
-  methods: {
-    async processPaymentPayStackPayment(resp) {
-      this.paystackReference = resp.reference
-      if (resp.status == "success" && resp.message == "Approved") {
-        await this.verifyPaystackPayment()
-          .then(data => {
-            if (data.status && data.message == "Verification successful") {
-
-              this.$LIPS(true)
-              this.authorization_code =
-                data?.data?.authorization.authorization_code
-              let dataForm = {
-                order_id: this.order.order_number,
-                auth_code: this.authorization_code,
-                account_number: data?.data?.authorization?.last4,
-                account_name:
-                  data?.data?.authorization?.account_name === null
-                    ? "test_acount"
-                    : data?.data?.authorization?.account_name,
-                bank_name: data?.data?.authorization?.bank,
+                post(this.paystack_auth_code_url, dataForm)
+                  .then(() => {
+                    this.done("AuthCode set successfully!");
+                  })
+                  .catch((err) => {
+                    Flash.setError(err.response.message);
+                  })
+                  .finally(() => {
+                    this.$LIPS(false);
+                  });
               }
-
-              post(this.paystack_auth_code_url, dataForm)
-                .then(() => {
-                  this.done("AuthCode set successfully!")
-                })
-                .catch(err => {
-                  Flash.setError(err.response.message)
-                })
-                .finally(() => {
-                  this.$LIPS(false)
-                })
-            }
-          })
-          .catch(error => {
-            this.$displayErrorMessage(error)
-          })
-      }
-    },
-
-    closePayStackModal: () => {},
-    async verifyPaystackPayment() {
-      const url = `${this.verifyPaymentUrl}${this.paystackReference}`
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${process.env.VUE_APP_PAYSTACK_SECRET_KEY}`,
-        },
-      })
-      return response.json()
-    },
-    async handleModalToggle({ customer, order }) {
-      await Vue.set(this.$data, "order", order)
-      await Vue.set(this.$data, "customer", customer)
-      this.toggleModal()
-    },
-
-    toggleModal() {
-      $("#PaystackModal").modal("toggle")
-    },
-
-    validateEmail(mail) {
-      {
-        // eslint-disable-next-line no-useless-escape
-        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
-          return true
+            })
+            .catch((error) => {
+              this.$displayErrorMessage(error);
+            });
         }
+      },
 
-        return false
-      }
+      closePayStackModal: () => {},
+      async verifyPaystackPayment() {
+        const url = `${this.verifyPaymentUrl}${this.paystackReference}`;
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${process.env.VUE_APP_PAYSTACK_SECRET_KEY}`,
+          },
+        });
+        return response.json();
+      },
+      async handleModalToggle({ customer, order }) {
+        await Vue.set(this.$data, "order", order);
+        await Vue.set(this.$data, "customer", customer);
+        this.toggleModal();
+      },
+
+      toggleModal() {
+        $("#PaystackModal").modal("toggle");
+      },
+
+      validateEmail(mail) {
+        {
+          // eslint-disable-next-line no-useless-escape
+          if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+            return true;
+          }
+
+          return false;
+        }
+      },
+
+      done(message) {
+        EventBus.$emit("reloadUser", {
+          order: this.order.id,
+          auth_code: this.authorization_code,
+        });
+        Flash.setSuccess(message);
+        this.$scrollToTop();
+        this.toggleModal();
+        this.$LIPS(false);
+        this.message = null;
+      },
     },
 
-    done(message) {
-      EventBus.$emit("reloadUser", {
-        order: this.order.id,
-        auth_code: this.authorization_code,
-      })
-      Flash.setSuccess(message)
-      this.$scrollToTop()
-      this.toggleModal()
-      this.$LIPS(false)
-      this.message = null
+    watch: {
+      messageType: function () {
+        //do stuff for generating sms
+      },
     },
-  },
 
-  watch: {
-    messageType: function() {
-      //do stuff for generating sms
+    created() {
+      EventBus.$on("ShowPaystack", this.handleModalToggle);
     },
-  },
-
-  created() {
-    EventBus.$on("ShowPaystack", this.handleModalToggle)
-  },
-}
+  };
 </script>
 <style scoped>
-.my-modal {
-  font-size: 1.5em;
-}
+  .my-modal {
+    font-size: 1.5em;
+  }
 </style>

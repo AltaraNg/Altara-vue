@@ -1,10 +1,10 @@
 <template>
   <div class="searchBar-x">
-    <div class="row form-group my-5 mx-5">      
+    <div class="row form-group my-5 mx-5">
       <slot :searchQuery="searchQuery"></slot>
       <div class="col-md" v-if="showBranch === true">
         <div>
-        <label for="branch" class="form-control-label">Branch</label>
+          <label for="branch" class="form-control-label">Branch</label>
         </div>
         <select
           name="branch"
@@ -45,12 +45,12 @@
       <!-- check boxes -->
 
       <button
-        class="btn btn-primary bg-default  float-right my-2"
+        class="btn btn-primary bg-default float-right my-2"
         @click="searchEvent"
       >
         <i class="fa fa-search" aria-hidden="true"></i>
       </button>
-       <button
+      <button
         class="btn btn-primary bg-default float-right my-2"
         @click="clearQuery"
       >
@@ -61,115 +61,111 @@
 </template>
 
 <script>
-import DatePicker from "vue2-datepicker";
-import { mapGetters } from "vuex";
-import "vue2-datepicker/index.css";
-import Flash from "../utilities/flash";
-import { get } from "../utilities/api";
-import queryParam from "../utilities/queryParam";
+  import DatePicker from "vue2-datepicker";
+  import { mapGetters } from "vuex";
+  import "vue2-datepicker/index.css";
+  import Flash from "../utilities/flash";
+  import { get } from "../utilities/api";
+  import queryParam from "../utilities/queryParam";
 
-export default {
-  components: {
-    DatePicker,
-  },
-  data() {
-    return {
-      searchQuery: {        
+  export default {
+    components: {
+      DatePicker,
+    },
+    data() {
+      return {
+        searchQuery: {},
+        searchFilter: {},
+        elements: [],
+      };
+    },
+    props: {
+      url: {
+        type: String,
+        required: true,
       },
-      searchFilter: {},
-      elements: [],
-    };
-  },
-  props: {
-    url: {
-      type: String,
-      required: true
+      showBranch: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      showDate: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      defaultBranch: {
+        type: String,
+        required: false,
+        default: "",
+      },
     },
-    showBranch: {
-      type: Boolean,
-      required: false,
-      default: true
+    computed: {
+      ...mapGetters(["getBranches"]),
     },
-     showDate: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    defaultBranch: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    
-    
-  },
-  computed: {   
-    ...mapGetters(["getBranches"]),
-  },
 
-  methods: {
-    addElement: function () {
-      this.elements.push({
-        value: "",
-      });
-    },
-    async searchEvent() {
-      if (this.url === '/api/new_order?renewalList=true'){
-        this.searchQuery.renewalList = 'true';
-        this.url = this.url.slice(0, 14);
-      }
-      if (this.url === '/api/new_order?bnplOrders=true'){
-        this.searchQuery.bnplOrders = 'true';
-        this.url = this.url.slice(0, 14);
-      }
-      this.$LIPS(true);
-      if(this.searchQuery.branch === 'all'){
-        this.searchQuery.branch = '';
-      }
-      if(this.defaultBranch !== ''){
-        this.searchQuery.branch = this.defaultBranch;
-      }
-      let currentRoute = this.$route.path;
-      this.$router.push({path: `${currentRoute}` , query: this.searchQuery})
-     
-      get(this.url + queryParam(this.searchQuery)).then(response => {
-        if(this.searchQuery.days !== undefined){
-          this.$emit("childToParent", {
-            data: response.data.data,
-            days: this.searchQuery.days,
-            queryParams: this.searchQuery
-          });
-          
+    methods: {
+      addElement: function () {
+        this.elements.push({
+          value: "",
+        });
+      },
+      async searchEvent() {
+        if (this.url === "/api/new_order?renewalList=true") {
+          this.searchQuery.renewalList = "true";
+          this.url = this.url.slice(0, 14);
         }
-        else{
-          this.$emit("childToParent", {data : response,
-          queryParams: this.searchQuery
-          });        
-        }    
-        
-        }).catch(() => {
-          Flash.setError('Unable to fetch');
-        }).finally(() => {
-          this.$LIPS(false);
-        })
-      
-      
+        if (this.url === "/api/new_order?bnplOrders=true") {
+          this.searchQuery.bnplOrders = "true";
+          this.url = this.url.slice(0, 14);
+        }
+        this.$LIPS(true);
+        if (this.searchQuery.branch === "all") {
+          this.searchQuery.branch = "";
+        }
+        if (this.defaultBranch !== "") {
+          this.searchQuery.branch = this.defaultBranch;
+        }
+        let currentRoute = this.$route.path;
+        this.$router.push({ path: `${currentRoute}`, query: this.searchQuery });
+
+        get(this.url + queryParam(this.searchQuery))
+          .then((response) => {
+            if (this.searchQuery.days !== undefined) {
+              this.$emit("childToParent", {
+                data: response.data.data,
+                days: this.searchQuery.days,
+                queryParams: this.searchQuery,
+              });
+            } else {
+              this.$emit("childToParent", {
+                data: response,
+                queryParams: this.searchQuery,
+              });
+            }
+          })
+          .catch(() => {
+            Flash.setError("Unable to fetch");
+          })
+          .finally(() => {
+            this.$LIPS(false);
+          });
+      },
+      clearQuery() {
+        this.searchQuery = {};
+        this.searchEvent();
+      },
     },
-    clearQuery(){
-      this.searchQuery = {};
-      this.searchEvent();
-    }
-  },
-  created() {
-    this.$prepareBranches();
-  },
-};
+    created() {
+      this.$prepareBranches();
+    },
+  };
 </script>
 
 <style lang="scss" scoped>
-.searchBar-x {
-  background-color: #fff;
-  border-radius: 7px;
-  padding: 1px;
-}
+  .searchBar-x {
+    background-color: #fff;
+    border-radius: 7px;
+    padding: 1px;
+  }
 </style>

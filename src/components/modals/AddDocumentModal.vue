@@ -1,9 +1,7 @@
 <template>
   <div>
     <div class="modal-header">
-      <h3 class=" my-1" id="exampleModalLongTitle">
-        Upload Document
-      </h3>
+      <h3 class="my-1" id="exampleModalLongTitle">Upload Document</h3>
       <div slot="top-right">
         <span
           type="button"
@@ -20,7 +18,11 @@
       <form>
         <div class="form-group my-3 w-50">
           <label>Document Name</label>
-          <input type="text" class="custom-select d-block w-100" v-model="fileName" />
+          <input
+            type="text"
+            class="custom-select d-block w-100"
+            v-model="fileName"
+          />
         </div>
 
         <div>
@@ -41,86 +43,89 @@
           >
             Close
           </button>
-          <button type="button" class="btn px-4 bg-default my-5 font-weight-bolder" @click="save">
+          <button
+            type="button"
+            class="btn px-4 bg-default my-5 font-weight-bolder"
+            @click="save"
+          >
             Upload Image
           </button>
         </div>
       </form>
     </div>
-   
   </div>
 </template>
 
 <script>
-import { post } from "../../utilities/api"
-import { toMulipartedForm } from "../../utilities/form"
+  import { post } from "../../utilities/api";
+  import { toMulipartedForm } from "../../utilities/form";
 
-export default {
-  props: {
-    customer: {
-      required: true,
-      default: {},
+  export default {
+    props: {
+      customer: {
+        required: true,
+        default: {},
+      },
     },
-  },
-  data() {
-    return {
-      verifiedOptions: ["Home", "Business", "Office", "Other"],
-      fileName: null,
-      verificationData: {},
-      file: null,
-      imgSrc: null,
-    }
-  },
+    data() {
+      return {
+        verifiedOptions: ["Home", "Business", "Office", "Other"],
+        fileName: null,
+        verificationData: {},
+        file: null,
+        imgSrc: null,
+      };
+    },
 
-  methods: {
-    async save() {
-      this.$validator.validateAll().then(async result => {
-        if (result) {
-          try {
-            this.$LIPS(true)
-            this.verificationData = {
+    methods: {
+      async save() {
+        this.$validator.validateAll().then(async (result) => {
+          if (result) {
+            try {
+              this.$LIPS(true);
+              this.verificationData = {
                 customer_id: this.customer.id,
                 document: this.file,
-                name: this.fileName
-            }
-            let form = toMulipartedForm(this.verificationData);
+                name: this.fileName,
+              };
+              let form = toMulipartedForm(this.verificationData);
 
-            let res = await post("/api/new_document", form)
-            if (res.status === 200) {
+              let res = await post("/api/new_document", form);
+              if (res.status === 200) {
+                this.$swal({
+                  icon: "success",
+                  title: `Uploaded successfully`,
+                });
+                this.verificationData = {};
+
+                this.$modal.hide("addDocumentModal");
+              }
+            } catch (err) {
               this.$swal({
-                icon: "success",
-                title: `Uploaded successfully`,
-              })
-              this.verificationData = {}
-
-              this.$modal.hide("addDocumentModal")
+                icon: "error",
+                title: `Unable to complete`,
+              });
+            } finally {
+              this.$LIPS(false);
             }
-          } catch (err) {
-            this.$swal({
-              icon: "error",
-              title: `Unable to complete`,
-            })
-          } finally {
-            this.$LIPS(false)
           }
-        }
-      })
-    },
+        });
+      },
 
-    fileUpload() {
-      this.file = this.$refs.file.files[0]
-      this.imgSrc = URL.createObjectURL(this.file)
+      fileUpload() {
+        this.file = this.$refs.file.files[0];
+        this.imgSrc = URL.createObjectURL(this.file);
+      },
     },
-  },
-}
+  };
 </script>
 
 <style lang="scss" scoped>
-.modal-dialog {
-  overflow-y: initial !important;
-}
-.modal-body {
-//   height: 75vh;
-  overflow-y: auto;
-}
+  .modal-dialog {
+    overflow-y: initial !important;
+  }
+  .modal-body {
+    //   height: 75vh;
+    overflow-y: auto;
+  }
 </style>

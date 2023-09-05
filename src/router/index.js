@@ -1,112 +1,115 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-import Flash from '../utilities/flash';
-import { store } from '../store/store';
-import { routerHistory, writeHistory } from 'vue-router-back-button';
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Flash from "../utilities/flash";
+import { store } from "../store/store";
+import { routerHistory, writeHistory } from "vue-router-back-button";
 
-const Home = () => import('../views/HomePage.vue');
-const Login = () => import('../views/auth/Login.vue');
-const ResetPassword = () => import('../views/auth/ResetPassword.vue');
-const ForgotPassword = () => import('../views/auth/ForgotPassword.vue');
-const NotFound = () => import('../views/NotFound.vue');
-const DSA = () => import('../views/DSA/Index.vue');
-const DSAHome = () => import('../views/DSA/HomePage.vue');
-const DSAReport = () => import('../views/DSA/report/report.vue');
-const CustomerForm = () => import('../views/shared/customerForm.vue');
+const Home = () => import("../views/HomePage.vue");
+const Login = () => import("../views/auth/Login.vue");
+const ResetPassword = () => import("../views/auth/ResetPassword.vue");
+const ForgotPassword = () => import("../views/auth/ForgotPassword.vue");
+const NotFound = () => import("../views/NotFound.vue");
+const DSA = () => import("../views/DSA/Index.vue");
+const DSAHome = () => import("../views/DSA/HomePage.vue");
+const DSAReport = () => import("../views/DSA/report/report.vue");
+const CustomerForm = () => import("../views/shared/customerForm.vue");
 const updateCustomer = () => import("../views/shared/updateCustomer.vue");
-const DVA = () => import('../views/DVA/Index.vue');
-const DVAHome = () => import('../views/DVA/HomePage.vue');
-const DVAMessage = () => import('../views/DVA/messaging/message.vue');
+const DVA = () => import("../views/DVA/Index.vue");
+const DVAHome = () => import("../views/DVA/HomePage.vue");
+const DVAMessage = () => import("../views/DVA/messaging/message.vue");
 const DVAVerification = () =>
-	import('../views/DVA/verification/verification.vue');
+  import("../views/DVA/verification/verification.vue");
 const DVAVerificationNew = () =>
-	import('../views/DVA/verification/verificationNew.vue');
-const CAG = () => import('../views/CAG/index.vue');
-const CAGHome = () => import('../views/CAG/HomePage.vue');
-const OrderList = () => import('../views/DVA/AllOrderList.vue');
-const AllOverdue = () => import('../views/DVA/AllOverduePayment');
-const ReminderList = () => import('../views/DVA/ReminderList.vue');
+  import("../views/DVA/verification/verificationNew.vue");
+const CAG = () => import("../views/CAG/index.vue");
+const CAGHome = () => import("../views/CAG/HomePage.vue");
+const OrderList = () => import("../views/DVA/AllOrderList.vue");
+const AllOverdue = () => import("../views/DVA/AllOverduePayment");
+const ReminderList = () => import("../views/DVA/ReminderList.vue");
 
-const Reminder = () => import('../views/DVA/reminder/reminder.vue');
+const Reminder = () => import("../views/DVA/reminder/reminder.vue");
 
-const Profile = () => import('../views/profile/Index.vue');
-const ProfileEdit = () => import('../views/profile/Edit.vue');
-const ProfileHome = () => import('../views/profile/HomePage.vue');
-const HRM = () => import('../views/HRM/index.vue');
-const HRMHome = () => import('../views/HRM/HomePage.vue');
-const DataViewer = () => import('../components/DataViewer.vue');
-const EmployeeForm = () => import('../views/HRM/employee/employeeForm.vue');
-const AltaraPay = () => import('../views/AltaraPay/index.vue');
-const AltaraPayHome = () => import('../views/AltaraPay/HomePage.vue');
+const Profile = () => import("../views/profile/Index.vue");
+const ProfileEdit = () => import("../views/profile/Edit.vue");
+const ProfileHome = () => import("../views/profile/HomePage.vue");
+const HRM = () => import("../views/HRM/index.vue");
+const HRMHome = () => import("../views/HRM/HomePage.vue");
+const DataViewer = () => import("../components/DataViewer.vue");
+const EmployeeForm = () => import("../views/HRM/employee/employeeForm.vue");
+const AltaraPay = () => import("../views/AltaraPay/index.vue");
+const AltaraPayHome = () => import("../views/AltaraPay/HomePage.vue");
 const DirectDebitSales = () =>
-	import('../views/AltaraPay/sales/DirectDebitSales.vue');
-const Caution = () => import('../views/HRM/caution/index.vue');
-const CautionForm = () => import('../views/HRM/caution/form.vue');
-const FSL = () => import('../views/FSL/index.vue');
-const FSLHome = () => import('../views/FSL/HomePage.vue');
-const BranchForm = () => import('../views/FSL/branch/form.vue');
+  import("../views/AltaraPay/sales/DirectDebitSales.vue");
+const Caution = () => import("../views/HRM/caution/index.vue");
+const CautionForm = () => import("../views/HRM/caution/form.vue");
+const FSL = () => import("../views/FSL/index.vue");
+const FSLHome = () => import("../views/FSL/HomePage.vue");
+const BranchForm = () => import("../views/FSL/branch/form.vue");
 
-const CustomerLookup = () => import('../views/FSL/lookup/lookup.vue');
-const Attendance = () => import('../views/FSL/attendance/index.vue');
-const AttendanceForm = () => import('../views/FSL/attendance/form.vue');
-const LOG = () => import('../views/LOG/index.vue');
-const LOGHome = () => import('../views/LOG/HomePage.vue');
-const Inventory = () => import('../views/LOG/inventory/inventory.vue');
+const CustomerLookup = () => import("../views/FSL/lookup/lookup.vue");
+const Attendance = () => import("../views/FSL/attendance/index.vue");
+const AttendanceForm = () => import("../views/FSL/attendance/form.vue");
+const LOG = () => import("../views/LOG/index.vue");
+const LOGHome = () => import("../views/LOG/HomePage.vue");
+const Inventory = () => import("../views/LOG/inventory/inventory.vue");
 const InventoryDashboard = () =>
-	import('../views/LOG/inventory/inventoryDashboard.vue');
+  import("../views/LOG/inventory/inventoryDashboard.vue");
 const InventoryCreate = () =>
-	import('../views/LOG/inventory/createInventory.vue');
-const SuppliersForm = () => import('../views/LOG/supplier/form.vue');
-const SupplierList = () => import('../views/LOG/supplier/suppliers.vue');
-const BrandForm = () => import('../views/LOG/brand/form.vue');
-const BrandList = () => import('../views/LOG/brand/brands.vue');
-const CategoryForm = () => import('../views/LOG/category/form.vue');
-const CategoryList = () => import('../views/LOG/category/categories.vue');
-const ProductForm = () => import('../views/LOG/product/form.vue');
-const ProductList = () => import('../views/LOG/product/products.vue');
-const Renewal = () => import('../views/FSL/renewal/renewal.vue');
-const RenewalNew = () => import('../views/FSL/renewal/renewalRevamped.vue');
-const DSAStats = () => import('../views/FSL/renewal/dsaStats.vue');
-const CollectionsNew = () => import('../views/DVA/collectionsRevamped.vue');
-const CashLogger = () => import('../views/FSL/cash_logger/cash_logger.vue');
+  import("../views/LOG/inventory/createInventory.vue");
+const SuppliersForm = () => import("../views/LOG/supplier/form.vue");
+const SupplierList = () => import("../views/LOG/supplier/suppliers.vue");
+const BrandForm = () => import("../views/LOG/brand/form.vue");
+const BrandList = () => import("../views/LOG/brand/brands.vue");
+const CategoryForm = () => import("../views/LOG/category/form.vue");
+const CategoryList = () => import("../views/LOG/category/categories.vue");
+const ProductForm = () => import("../views/LOG/product/form.vue");
+const ProductList = () => import("../views/LOG/product/products.vue");
+const Renewal = () => import("../views/FSL/renewal/renewal.vue");
+const RenewalNew = () => import("../views/FSL/renewal/renewalRevamped.vue");
+const DSAStats = () => import("../views/FSL/renewal/dsaStats.vue");
+const CollectionsNew = () => import("../views/DVA/collectionsRevamped.vue");
+const CashLogger = () => import("../views/FSL/cash_logger/cash_logger.vue");
 const PaymentLogger = () =>
-	import('../views/FSL/payment_logger/payment_logger.vue');
-const ACC = () => import('../views/ACC/index.vue');
-const ACCHome = () => import('../views/ACC/HomePage.vue');
-const Reconcile = () => import('../views/ACC/reconcile/reconcile.vue');
-const ShowRoomDashboard = () => import('../views/FSL/dashboard/Dashboard.vue');
-const GenUtils = () => import('../views/GEN/index.vue');
-const GenUtilsHome = () => import('../views/GEN/HomePage.vue');
-const WebsiteProduct = () => import('../views/GEN/website-product/WebsiteProduct.vue');
-const WebsiteProductForm = () => import('../views/GEN/website-product/form.vue');
-
+  import("../views/FSL/payment_logger/payment_logger.vue");
+const ACC = () => import("../views/ACC/index.vue");
+const ACCHome = () => import("../views/ACC/HomePage.vue");
+const Reconcile = () => import("../views/ACC/reconcile/reconcile.vue");
+const ShowRoomDashboard = () => import("../views/FSL/dashboard/Dashboard.vue");
+const GenUtils = () => import("../views/GEN/index.vue");
+const GenUtilsHome = () => import("../views/GEN/HomePage.vue");
+const WebsiteProduct = () =>
+  import("../views/GEN/website-product/WebsiteProduct.vue");
+const WebsiteProductForm = () =>
+  import("../views/GEN/website-product/form.vue");
 
 const CreditWorthy = () =>
-	import('../views/AltaraLoan/credit_worthy/credit_worthy.vue');
+  import("../views/AltaraLoan/credit_worthy/credit_worthy.vue");
 
 const PlanAdvisor = () =>
-	import('../views/AltaraLoan/plan_advisor/plan_advisor.vue');
-	const RecommenderInformal = () =>
-	import('../views/AltaraLoan/plan_advisor/recommender_informal.vue');
-const AltaraLoan = () => import('../views/AltaraLoan/index.vue');
-const AltaraLoanHome = () => import('../views/AltaraLoan/HomePage.vue');
-const Admin = () => import('../views/Admin/Index.vue');
-const AdminHome = () => import('../views/Admin/HomePage.vue');
-const ReportingTool = () => import('../views/Admin/ReportingTool.vue');
-const RepaymentSchedule = () => import('../views/Admin/RepaymentSchedule.vue');
-const ReminderReportingTool = () => import('../views/Admin/ReminderCollectionData.vue');
-const BNPL_Vendors = () => import('../views/BNPL/Vendors.vue');
-const BNPL_Dashboard = () => import('../views/BNPL/BNPL_Dashboard.vue');
-const BNPL_Orders = () => import('../views/BNPL/Orders.vue');
-const BNPLHome = () => import('../views/BNPL/HomePage.vue');
-const BNPL = () => import('../views/BNPL/index.vue')
-const OrderRequest = () => import('../views/FSL/order_request/orderRequest.vue');
-const RaffleCodeGenerator = () =>import("../views/Admin/raffle_code_generator/raffle_code_generator.vue");
-const CreditCheck = () => import('../views/CreditCheck/index.vue');
-const CreditCheckHome = () => import('../views/CreditCheck/HomePage.vue');
-const AllCreditChecks = () => import('../views/CreditCheck/AllCreditChecks.vue');
-
-
+  import("../views/AltaraLoan/plan_advisor/plan_advisor.vue");
+const RecommenderInformal = () =>
+  import("../views/AltaraLoan/plan_advisor/recommender_informal.vue");
+const AltaraLoan = () => import("../views/AltaraLoan/index.vue");
+const AltaraLoanHome = () => import("../views/AltaraLoan/HomePage.vue");
+const Admin = () => import("../views/Admin/Index.vue");
+const AdminHome = () => import("../views/Admin/HomePage.vue");
+const ReportingTool = () => import("../views/Admin/ReportingTool.vue");
+const RepaymentSchedule = () => import("../views/Admin/RepaymentSchedule.vue");
+const ReminderReportingTool = () =>
+  import("../views/Admin/ReminderCollectionData.vue");
+const BNPL_Vendors = () => import("../views/BNPL/Vendors.vue");
+const BNPL_Dashboard = () => import("../views/BNPL/BNPL_Dashboard.vue");
+const BNPL_Orders = () => import("../views/BNPL/Orders.vue");
+const BNPLHome = () => import("../views/BNPL/HomePage.vue");
+const BNPL = () => import("../views/BNPL/index.vue");
+const OrderRequest = () =>
+  import("../views/FSL/order_request/orderRequest.vue");
+const RaffleCodeGenerator = () =>
+  import("../views/Admin/raffle_code_generator/raffle_code_generator.vue");
+const CreditCheck = () => import("../views/CreditCheck/index.vue");
+const CreditCheckHome = () => import("../views/CreditCheck/HomePage.vue");
+const AllCreditChecks = () =>
+  import("../views/CreditCheck/AllCreditChecks.vue");
 
 Vue.use(VueRouter);
 Vue.use(routerHistory);
@@ -617,7 +620,7 @@ const router = new VueRouter({
           component: CashLogger,
           name: "payment-logger",
           meta: { mode: "create" },
-          props: route => ({ query: route.query }),
+          props: (route) => ({ query: route.query }),
         },
         {
           path: "sales-logger",
@@ -789,31 +792,28 @@ const router = new VueRouter({
     },
     { path: "*", component: NotFound, meta: { requiresAuth: true } },
   ],
-})
+});
 
-router.mode = 'html5';
+router.mode = "html5";
 router.afterEach(writeHistory);
 router.afterEach(() => (store.state.loader = false));
 router.beforeEach((to, from, next) => {
-	const home = to.path
-		.split('/')
-		.filter(Boolean)[0]
-		.toUpperCase();
-	const token = localStorage.getItem('api_token');
-	const reRoute = (path) => {
-		Flash.setError('You do not have access to that page!');
-		return next({ name: path });
-	};
+  const home = to.path.split("/").filter(Boolean)[0].toUpperCase();
+  const token = localStorage.getItem("api_token");
+  const reRoute = (path) => {
+    Flash.setError("You do not have access to that page!");
+    return next({ name: path });
+  };
 
-	home === 'PASSWORD' && token ? reRoute('home') : next();
+  home === "PASSWORD" && token ? reRoute("home") : next();
 
-	if (to.matched.some((route) => route.meta.requiresAuth)) {
-		token ? next() : reRoute('login');
-	}
+  if (to.matched.some((route) => route.meta.requiresAuth)) {
+    token ? next() : reRoute("login");
+  }
 
-	if (to.matched.some((m) => m.meta[home])) {
-		store.getters.auth(home + 'Access') ? next() : reRoute('home');
-	}
-	next();
+  if (to.matched.some((m) => m.meta[home])) {
+    store.getters.auth(home + "Access") ? next() : reRoute("home");
+  }
+  next();
 });
 export default router;

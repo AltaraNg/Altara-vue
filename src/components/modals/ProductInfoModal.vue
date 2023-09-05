@@ -48,11 +48,21 @@
             </tr>
             <tr>
               <th>Verification Status</th>
-              <td :class="[modalItem.status === 'passed' ? 'text-success' : modalItem.status === 'pending' ? 'text-warning' : 'text-danger' ]">{{ modalItem.status }}</td>
+              <td
+                :class="[
+                  modalItem.status === 'passed'
+                    ? 'text-success'
+                    : modalItem.status === 'pending'
+                    ? 'text-warning'
+                    : 'text-danger',
+                ]"
+              >
+                {{ modalItem.status }}
+              </td>
             </tr>
             <tr>
               <th>Reason</th>
-              <td>{{ modalItem.reason || 'N/A' }}</td>
+              <td>{{ modalItem.reason || "N/A" }}</td>
             </tr>
             <tr>
               <th>Date Created</th>
@@ -67,45 +77,45 @@
 </template>
 
 <script>
-export default {
-  props: {
-    modalItem: {
-      required: true,
+  export default {
+    props: {
+      modalItem: {
+        required: true,
+      },
+      repaymentDuration: {
+        required: true,
+      },
+      downPaymentRates: {
+        required: true,
+      },
+      repaymentCyclesopt: {
+        required: true,
+      },
     },
-    repaymentDuration: {
-      required: true,
-    },
-    downPaymentRates: {
-      required: true,
-    },
-    repaymentCyclesopt: {
-      required: true,
-    },
-  },
 
-  methods: {
-    closeModal() {
-      this.$emit("close")
+    methods: {
+      closeModal() {
+        this.$emit("close");
+      },
     },
-  },
-  computed: {
-    repDur() {
-      return this.repaymentDuration.find(item => {
-        return item.id === this.modalItem.repayment_duration_id
-      }).value
+    computed: {
+      repDur() {
+        return this.repaymentDuration.find((item) => {
+          return item.id === this.modalItem.repayment_duration_id;
+        }).value;
+      },
+      repCyc() {
+        return this.repaymentCyclesopt.find((item) => {
+          return item.id === this.modalItem.repayment_cycle_id;
+        }).name;
+      },
+      downPay() {
+        return this.downPaymentRates.find((item) => {
+          return item.id === this.modalItem.down_payment_rate_id;
+        }).percent;
+      },
     },
-    repCyc() {
-      return this.repaymentCyclesopt.find(item => {
-        return item.id === this.modalItem.repayment_cycle_id
-      }).name
-    },
-    downPay() {
-      return this.downPaymentRates.find(item => {
-        return item.id === this.modalItem.down_payment_rate_id
-      }).percent
-    },
-  },
-}
+  };
 </script>
 
 <style lang="scss" scoped></style>

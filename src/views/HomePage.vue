@@ -35,46 +35,50 @@
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex"
-import Auth from "../utilities/auth"
+  import { mapGetters } from "vuex";
+  import Auth from "../utilities/auth";
 
-export default {
-  data() {
-    return {
-      cards: [
-        { name: "DSA", url: "dsa/home", icon: "fa-id-card" },
-        { name: "DVA", url: "dva/home", icon: "fa-file-signature" },
-        { name: "HRM", url: "hrm/home", icon: "fa-user" },
-        { name: "FSL", url: "fsl/home", icon: "fa-box" },
-        { name: "LOG", url: "log/home", icon: "fa-truck" },
-        { name: "CAG", url: "CAG/home", icon: "fa-id-card" },
-        { name: "ACC", url: "acc/home", icon: "fa-coins" },
-        { name: "CASHLOAN", url: "cashloan/home", icon: "fa-id-card" },
-        { name: "ALTARAPAY", url: "altarapay/home", icon: "fa-money-bill-alt" },
-        { name: "Admin", url: "admin/home", icon: "fa-user-shield" },
-        { name: "General", url: "gen-utils/home", icon: "fa-user-shield" },
-        {
-          name: "CreditCheck",
-          url: "credit-check/home",
-          icon: "fa-user-shield",
-        },
-        {
-          name: "BNPL",
-          url: "bnpl/home",
-          icon: "fa-money-bill-alt",
-        },
-      ],
-    }
-  },
+  export default {
+    data() {
+      return {
+        cards: [
+          { name: "DSA", url: "dsa/home", icon: "fa-id-card" },
+          { name: "DVA", url: "dva/home", icon: "fa-file-signature" },
+          { name: "HRM", url: "hrm/home", icon: "fa-user" },
+          { name: "FSL", url: "fsl/home", icon: "fa-box" },
+          { name: "LOG", url: "log/home", icon: "fa-truck" },
+          { name: "CAG", url: "CAG/home", icon: "fa-id-card" },
+          { name: "ACC", url: "acc/home", icon: "fa-coins" },
+          { name: "CASHLOAN", url: "cashloan/home", icon: "fa-id-card" },
+          {
+            name: "ALTARAPAY",
+            url: "altarapay/home",
+            icon: "fa-money-bill-alt",
+          },
+          { name: "Admin", url: "admin/home", icon: "fa-user-shield" },
+          { name: "General", url: "gen-utils/home", icon: "fa-user-shield" },
+          {
+            name: "CreditCheck",
+            url: "credit-check/home",
+            icon: "fa-user-shield",
+          },
+          {
+            name: "BNPL",
+            url: "bnpl/home",
+            icon: "fa-money-bill-alt",
+          },
+        ],
+      };
+    },
 
-  computed: {
-    ...mapGetters(["auth"]),
-  },
+    computed: {
+      ...mapGetters(["auth"]),
+    },
 
-  beforeCreate() {
-    Auth.initialize()
-    if (!this.$store.state.api_token && !this.$store.state.authRole)
-      this.$store.dispatch("mutateAuth")
-  },
-}
+    beforeCreate() {
+      Auth.initialize();
+      if (!this.$store.state.api_token && !this.$store.state.authRole)
+        this.$store.dispatch("mutateAuth");
+    },
+  };
 </script>

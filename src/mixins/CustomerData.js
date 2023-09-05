@@ -355,6 +355,6 @@ export default {
       isActive: false,
       isOther: false,
       identity: 0,
-    }
+    };
   },
 };

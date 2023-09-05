@@ -1,9 +1,7 @@
 <template>
   <div>
     <div class="modal-header">
-      <h3 class=" my-1" id="exampleModalLongTitle">
-        Credit Report
-      </h3>
+      <h3 class="my-1" id="exampleModalLongTitle">Credit Report</h3>
       <div slot="top-right">
         <span
           type="button"
@@ -92,34 +90,34 @@
 </template>
 
 <script>
-export default {
-  props: {
-    creditReport: {
-      required: true,
-      default: {},
+  export default {
+    props: {
+      creditReport: {
+        required: true,
+        default: {},
+      },
     },
-  },
-  data() {
-    return {}
-  },
+    data() {
+      return {};
+    },
 
-  methods: {},
-  created() {},
-}
+    methods: {},
+    created() {},
+  };
 </script>
 
 <style lang="scss" scoped>
-.modal-dialog {
-  overflow-y: initial !important;
-}
-.modal-body {
-  height: 55vh;
-  overflow-y: auto;
-}
-.display-text {
-  color: black;
-  font-size: 1.5em;
-  font-weight: 500;
-  text-transform: capitalize;
-}
+  .modal-dialog {
+    overflow-y: initial !important;
+  }
+  .modal-body {
+    height: 55vh;
+    overflow-y: auto;
+  }
+  .display-text {
+    color: black;
+    font-size: 1.5em;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
 </style>

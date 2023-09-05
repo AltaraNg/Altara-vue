@@ -179,13 +179,7 @@
             </textarea>
           </div>
           <div
-            class="
-              col
-              d-flex
-              align-items-center
-              justify-content-center
-              text-center
-            "
+            class="col d-flex align-items-center justify-content-center text-center"
             @click="updateModal(item)"
             data-hoverable="true"
           >
@@ -342,338 +336,331 @@
 </template>
 
 <script>
-import Vue from "vue";
-import { mapGetters } from "vuex";
-import { get, put } from "../utilities/api";
-import Lookup from "../views/FSL/lookup/lookup";
-import Flash from "../utilities/flash";
-import Vue2Filters from "vue2-filters";
-import ResueableSearch from "../components/ReusableSearch.vue";
+  import Vue from "vue";
+  import { mapGetters } from "vuex";
+  import { get, put } from "../utilities/api";
+  import Lookup from "../views/FSL/lookup/lookup";
+  import Flash from "../utilities/flash";
+  import Vue2Filters from "vue2-filters";
+  import ResueableSearch from "../components/ReusableSearch.vue";
 
-import BasePagination from "../components/Pagination/BasePagination";
-import queryParam from "../utilities/queryParam";
+  import BasePagination from "../components/Pagination/BasePagination";
+  import queryParam from "../utilities/queryParam";
 
-Vue.use(Vue2Filters);
+  Vue.use(Vue2Filters);
 
-export default {
-  components: { Lookup, BasePagination, ResueableSearch },
-  props: {
-    list: { default: null },
-    tab: { default: null },
-    filterBy: { default: null },
-  },
-
-  watch: {
-    tab: function (tab) {
-      if (tab === "View Payments") {
-        this.url = "/api/payment";
-      } else {
-        this.url = "/api/payment-reconcile";
-      }
-      this.fetchList(tab);
+  export default {
+    components: { Lookup, BasePagination, ResueableSearch },
+    props: {
+      list: { default: null },
+      tab: { default: null },
+      filterBy: { default: null },
     },
-    filterBy: function (filterBy) {
-      this.defaultList =
-        this.tab === "View Payments"
-          ? this.paymentList
-          : this.paymentReconciliationList;
-      let newList = [];
-      let n = Object.keys(filterBy)[0];
-      if (n === "branch") {
-        if (filterBy.branch === "all") {
-          newList = this.defaultList;
-        } else {
-          newList = this.defaultList.filter(function (item) {
-            return item.branch === filterBy.branch;
-          });
-        }
-      } else if (n === "type") {
-        if (filterBy.type === "all") {
-          newList = this.defaultList;
-        } else {
-          let cond = this.tab === "View Payments";
-          newList = this.defaultList.filter(function (item) {
-            if (cond) {
-              return item.method === filterBy.type;
-            } else {
-              return item.payment_method === filterBy.type;
-            }
-          });
-        }
-      } else {
-        newList = this.defaultList.filter(function (item) {
-          return item.date.split(" ")[0] === filterBy.date;
-        });
-      }
 
-      Vue.set(this.$data, "renderedList", newList);
-    },
-  },
-
-  data() {
-    return {
-      OId: 0,
-      page: 1,
-      responseData: {},
-      paymentItem: {},
-      url: null,
-      showModalContent: false,
-      paymentList: [],
-      pageParams: {},
-      paymentReconciliationList: [],
-      totalCashAtHand: 0,
-      variance: "",
-      amountInBank: "",
-      branchId: localStorage.getItem("branch_id"),
-      comment: {
-        comment: "",
+    watch: {
+      tab: function (tab) {
+        if (tab === "View Payments") {
+          this.url = "/api/payment";
+        } else {
+          this.url = "/api/payment-reconcile";
+        }
+        this.fetchList(tab);
       },
-      searchQuery: {},
-      renderedList: [],
-      defaultList: [],
-      reconcileForm: {},
-    };
-  },
-
-  computed: {
-      
-    details() {
-      let list = 1;
-      const tabs = ["Log Payment", "View Payments", "Reconcile"];
-      const headings2 = [
-        "index",
-        "Type",
-        "Date",
-        "Cash In Hand",
-        "Total",
-        "Amount Bank",
-        "Variance",
-        "Comment",
-        "Status",
-      ];
-      const headings1 = [
-        "index",
-        "Customer ID",
-        "Date of Payment",
-        "Time of Payment",
-        "Payment Purpose",
-        "Payment Method",
-        "Amount Paid",
-        "Bank",
-        "Comment",
-      ];
-      const headings =
-        this.tab === "View Payments"
-          ? headings1
-          : this.tab === "Reconcile"
-          ? headings2
-          : "";
-      return { tabs, headings, list };
-    },
-    ...mapGetters([
-      "auth",
-      "getAuthUserDetails",
-      "getPaymentMethods",
-      "getBanks",
-    ]),
-  },
-
-  methods: {
-    onUpKey() {
-      this.variance = this.amountInBank - this.totalCashAtHand;
-      this.amountInBank.length === 0 ? (this.variance = 0) : this.variance;
-    },
-
-    fetchList(list) {
-      this.$LIPS(true);
-      list === "View Payments"
-        ? this.getPaymentList()
-        : list === "Reconcile"
-        ? this.getPaymentReconciliationList()
-        : this.$LIPS(false);
-    },
-    prepareList(response) {
-      let {
-        current_page,
-        first_page_url,
-        from,
-        last_page,
-        last_page_url,
-        data,
-        per_page,
-        next_page_url,
-        to,
-        total,
-        prev_page_url,
-      } = response.data;
-      this.pageParams = Object.assign({}, this.pageParams, {
-        current_page,
-        first_page_url,
-        from,
-        last_page,
-        last_page_url,
-        per_page,
-        next_page_url,
-        to,
-        total,
-        prev_page_url,
-      });
-      this.renderedList = data;
-      this.OId = from;
-      this.$LIPS(false);
-      this.searchQuery = response.queryParams;
-
-    },
-
-    async getPaymentList() {
-         this.$LIPS(true);
-      try {
-       
-        let param = {
-          page: this.pageParams.page ? this.pageParams.page : "",
-          limit: this.pageParams.limit ? this.pageParams.limit : "",
-          branch: localStorage.getItem("branch_id"),
-          ...this.searchQuery,
-        };
-        if(this.$route.query){
-          param = {...param, ...this.$route.query};
-        }
-        const fetchPaymentList = await get(this.url + queryParam(param));
-        this.prepareList(fetchPaymentList.data);
-
-        
-
-      } catch (err) {
-        this.$displayErrorMessage(err);
-      }
-      finally {
-        this.$LIPS(false);
-      }
-    },
-
-    async getPaymentReconciliationList() {
-      this.branchId = localStorage.getItem("branch_id");
-      let yesterday = new Date(Date.now() - 864e5).toISOString();
-      let previous = new Date("feb 1, 2019").toISOString(); // ** used an arbitrary date needed by the api
-      let from = previous.slice(0, 10);
-      let to = yesterday.slice(0, 10);
-
-      try {
-          let param = {
-          page: this.pageParams.page ? this.pageParams.page : "",
-          limit: this.pageParams.limit ? this.pageParams.limit : "",
-          branch: localStorage.getItem("branch_id"),
-          to: to,
-          from: from,
-          ...this.searchQuery,
-        };
-        if(this.$route.query){
-          param = {...param, ...this.$route.query};
-        }
-        const fetchPaymentReconciliation = await get(
-         this.url + queryParam(param)
-        );
-        this.prepareList(fetchPaymentReconciliation.data);
-        this.totalCashAtHand = this.renderedList
-          .map((item) => item.total)
-          .reduce((a, b) => a + b);
-        this.$LIPS(false);
-      } catch (err) {
-        this.$displayErrorMessage(err);
-      }
-    },
-
-    async updateReconciledPayment(item) {
-      if (!item.deposited) {
-        return this.errHandler("Please enter all required values.");
-      }
-      const data = {
-        cash_at_hand: item.cash_at_hand,
-        deposited: item.deposited,
-        comment: item.comment,
-      };
-      this.$LIPS(true);
-      try {
-        const reconcilePayment = await put(
-          `/api/payment-reconcile/${item.id}`,
-          data
-        );
-        if (reconcilePayment) {
-          this.$swal({
-            icon: "success",
-            title: "Reconciliation done successfully",
+      filterBy: function (filterBy) {
+        this.defaultList =
+          this.tab === "View Payments"
+            ? this.paymentList
+            : this.paymentReconciliationList;
+        let newList = [];
+        let n = Object.keys(filterBy)[0];
+        if (n === "branch") {
+          if (filterBy.branch === "all") {
+            newList = this.defaultList;
+          } else {
+            newList = this.defaultList.filter(function (item) {
+              return item.branch === filterBy.branch;
+            });
+          }
+        } else if (n === "type") {
+          if (filterBy.type === "all") {
+            newList = this.defaultList;
+          } else {
+            let cond = this.tab === "View Payments";
+            newList = this.defaultList.filter(function (item) {
+              if (cond) {
+                return item.method === filterBy.type;
+              } else {
+                return item.payment_method === filterBy.type;
+              }
+            });
+          }
+        } else {
+          newList = this.defaultList.filter(function (item) {
+            return item.date.split(" ")[0] === filterBy.date;
           });
-          this.getPaymentReconciliationList();
         }
 
+        Vue.set(this.$data, "renderedList", newList);
+      },
+    },
+
+    data() {
+      return {
+        OId: 0,
+        page: 1,
+        responseData: {},
+        paymentItem: {},
+        url: null,
+        showModalContent: false,
+        paymentList: [],
+        pageParams: {},
+        paymentReconciliationList: [],
+        totalCashAtHand: 0,
+        variance: "",
+        amountInBank: "",
+        branchId: localStorage.getItem("branch_id"),
+        comment: {
+          comment: "",
+        },
+        searchQuery: {},
+        renderedList: [],
+        defaultList: [],
+        reconcileForm: {},
+      };
+    },
+
+    computed: {
+      details() {
+        let list = 1;
+        const tabs = ["Log Payment", "View Payments", "Reconcile"];
+        const headings2 = [
+          "index",
+          "Type",
+          "Date",
+          "Cash In Hand",
+          "Total",
+          "Amount Bank",
+          "Variance",
+          "Comment",
+          "Status",
+        ];
+        const headings1 = [
+          "index",
+          "Customer ID",
+          "Date of Payment",
+          "Time of Payment",
+          "Payment Purpose",
+          "Payment Method",
+          "Amount Paid",
+          "Bank",
+          "Comment",
+        ];
+        const headings =
+          this.tab === "View Payments"
+            ? headings1
+            : this.tab === "Reconcile"
+            ? headings2
+            : "";
+        return { tabs, headings, list };
+      },
+      ...mapGetters([
+        "auth",
+        "getAuthUserDetails",
+        "getPaymentMethods",
+        "getBanks",
+      ]),
+    },
+
+    methods: {
+      onUpKey() {
+        this.variance = this.amountInBank - this.totalCashAtHand;
+        this.amountInBank.length === 0 ? (this.variance = 0) : this.variance;
+      },
+
+      fetchList(list) {
+        this.$LIPS(true);
+        list === "View Payments"
+          ? this.getPaymentList()
+          : list === "Reconcile"
+          ? this.getPaymentReconciliationList()
+          : this.$LIPS(false);
+      },
+      prepareList(response) {
+        let {
+          current_page,
+          first_page_url,
+          from,
+          last_page,
+          last_page_url,
+          data,
+          per_page,
+          next_page_url,
+          to,
+          total,
+          prev_page_url,
+        } = response.data;
+        this.pageParams = Object.assign({}, this.pageParams, {
+          current_page,
+          first_page_url,
+          from,
+          last_page,
+          last_page_url,
+          per_page,
+          next_page_url,
+          to,
+          total,
+          prev_page_url,
+        });
+        this.renderedList = data;
+        this.OId = from;
         this.$LIPS(false);
-      } catch (err) {
-        this.$LIPS(false);
-        this.$displayErrorMessage(err);
-      }
+        this.searchQuery = response.queryParams;
+      },
+
+      async getPaymentList() {
+        this.$LIPS(true);
+        try {
+          let param = {
+            page: this.pageParams.page ? this.pageParams.page : "",
+            limit: this.pageParams.limit ? this.pageParams.limit : "",
+            branch: localStorage.getItem("branch_id"),
+            ...this.searchQuery,
+          };
+          if (this.$route.query) {
+            param = { ...param, ...this.$route.query };
+          }
+          const fetchPaymentList = await get(this.url + queryParam(param));
+          this.prepareList(fetchPaymentList.data);
+        } catch (err) {
+          this.$displayErrorMessage(err);
+        } finally {
+          this.$LIPS(false);
+        }
+      },
+
+      async getPaymentReconciliationList() {
+        this.branchId = localStorage.getItem("branch_id");
+        let yesterday = new Date(Date.now() - 864e5).toISOString();
+        let previous = new Date("feb 1, 2019").toISOString(); // ** used an arbitrary date needed by the api
+        let from = previous.slice(0, 10);
+        let to = yesterday.slice(0, 10);
+
+        try {
+          let param = {
+            page: this.pageParams.page ? this.pageParams.page : "",
+            limit: this.pageParams.limit ? this.pageParams.limit : "",
+            branch: localStorage.getItem("branch_id"),
+            to: to,
+            from: from,
+            ...this.searchQuery,
+          };
+          if (this.$route.query) {
+            param = { ...param, ...this.$route.query };
+          }
+          const fetchPaymentReconciliation = await get(
+            this.url + queryParam(param)
+          );
+          this.prepareList(fetchPaymentReconciliation.data);
+          this.totalCashAtHand = this.renderedList
+            .map((item) => item.total)
+            .reduce((a, b) => a + b);
+          this.$LIPS(false);
+        } catch (err) {
+          this.$displayErrorMessage(err);
+        }
+      },
+
+      async updateReconciledPayment(item) {
+        if (!item.deposited) {
+          return this.errHandler("Please enter all required values.");
+        }
+        const data = {
+          cash_at_hand: item.cash_at_hand,
+          deposited: item.deposited,
+          comment: item.comment,
+        };
+        this.$LIPS(true);
+        try {
+          const reconcilePayment = await put(
+            `/api/payment-reconcile/${item.id}`,
+            data
+          );
+          if (reconcilePayment) {
+            this.$swal({
+              icon: "success",
+              title: "Reconciliation done successfully",
+            });
+            this.getPaymentReconciliationList();
+          }
+
+          this.$LIPS(false);
+        } catch (err) {
+          this.$LIPS(false);
+          this.$displayErrorMessage(err);
+        }
+      },
+
+      errHandler(param) {
+        return Flash.setError(param);
+      },
+
+      updateModal(data) {
+        this.showModalContent = true;
+        this.paymentItem = data;
+        return $(`#updatePayment`).modal("toggle");
+      },
+
+      next(firstPage = null) {
+        if (this.responseData.next_page_url) {
+          this.page = firstPage ? firstPage : parseInt(this.page) + 1;
+          this.fetchList(this.list);
+        }
+      },
+
+      prev(lastPage = null) {
+        if (this.responseData.prev_page_url) {
+          this.page = lastPage ? lastPage : parseInt(this.page) - 1;
+          this.fetchList(this.list);
+        }
+      },
     },
 
-    errHandler(param) {
-      return Flash.setError(param);
+    mounted() {
+      this.fetchList(this.list);
     },
 
-    updateModal(data) {
-      this.showModalContent = true;
-      this.paymentItem = data;
-      return $(`#updatePayment`).modal("toggle");
+    created() {
+      this.$prepareBanks();
+      this.$prepareBranches();
+      this.$preparePaymentMethods();
     },
-
-    next(firstPage = null) {
-      if (this.responseData.next_page_url) {
-        this.page = firstPage ? firstPage : parseInt(this.page) + 1;
-        this.fetchList(this.list);
-      }
-    },
-
-    prev(lastPage = null) {
-      if (this.responseData.prev_page_url) {
-        this.page = lastPage ? lastPage : parseInt(this.page) - 1;
-        this.fetchList(this.list);
-      }
-    },
-  },
-
-  mounted() {
-    this.fetchList(this.list);
-  },
-
-  created() {
-    this.$prepareBanks();
-    this.$prepareBranches();
-    this.$preparePaymentMethods();
-  },
-};
+  };
 </script>
 
 <style scoped type="scss">
-.table-separator {
-  border-top: 2px solid #dee1e4;
-}
-.overflow {
-  width: 80px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.green {
-  color: #00a368;
-}
-.red {
-  color: #e30000;
-}
-.blue {
-  background-color: #2975a5;
-}
-.Current {
-  background: #edeef2;
-}
-.Successful {
-  background-color: rgba(0, 163, 104, 0.09);
-  color: #00a368;
-}
+  .table-separator {
+    border-top: 2px solid #dee1e4;
+  }
+  .overflow {
+    width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .green {
+    color: #00a368;
+  }
+  .red {
+    color: #e30000;
+  }
+  .blue {
+    background-color: #2975a5;
+  }
+  .Current {
+    background: #edeef2;
+  }
+  .Successful {
+    background-color: rgba(0, 163, 104, 0.09);
+    color: #00a368;
+  }
 </style>

@@ -3,7 +3,7 @@
     <div id="reminder" class="attendance">
       <custom-header :title="'Vendors List'" />
 
-      <div class="my-2 mt-lg-3 row attendance-head ">
+      <div class="my-2 mt-lg-3 row attendance-head">
         <div class="col row">
           <resueable-search
             @childToParent="prepareListFromSearch"
@@ -58,7 +58,8 @@
           </div>
           <div
             class="col dark-heading font-weight-bolder"
-            v-for="header in headings" :key="header"
+            v-for="header in headings"
+            :key="header"
           >
             {{ header }}
           </div>
@@ -97,12 +98,12 @@
           </div>
           <div class="col d-flex align-items-center justify-content-center">
             <button class="bg-default py-2 px-3" @click="confirmModal(vendor)">
-              {{ vendor.portal_access ? 'Deactivate' : 'Activate' }}
+              {{ vendor.portal_access ? "Deactivate" : "Activate" }}
             </button>
           </div>
         </div>
       </div>
-      <div v-else-if="vendors.length == 0 && !loading" class="mx-2 px-4 ">
+      <div v-else-if="vendors.length == 0 && !loading" class="mx-2 px-4">
         <zero-state
           :title="'No vendors to view'"
           :message="'There are currrently no Vendors'"
@@ -125,8 +126,8 @@
         >
           {{
             selectedOrder.customer.customer.portal_access
-              ? 'You are about to deactivate the selected vendor'
-              : 'You are about to reactivate the selected vendor'
+              ? "You are about to deactivate the selected vendor"
+              : "You are about to reactivate the selected vendor"
           }}
         </confirm-modal>
       </div>
@@ -149,23 +150,23 @@
                   <tbody>
                     <tr>
                       <th>Vendor ID</th>
-                      <td>{{ vendorItem.staff_id || 'Not Available' }}</td>
+                      <td>{{ vendorItem.staff_id || "Not Available" }}</td>
                     </tr>
                     <tr>
                       <th>Address</th>
-                      <td>{{ vendorItem.address || 'Not Available' }}</td>
+                      <td>{{ vendorItem.address || "Not Available" }}</td>
                     </tr>
                     <tr>
                       <th>Email</th>
-                      <td>{{ vendorItem.email || 'Not Available' }}</td>
+                      <td>{{ vendorItem.email || "Not Available" }}</td>
                     </tr>
                     <tr>
                       <th>Gender</th>
-                      <td>{{ vendorItem.gender || 'Not Available' }}</td>
+                      <td>{{ vendorItem.gender || "Not Available" }}</td>
                     </tr>
                     <tr>
                       <th>Phone Number</th>
-                      <td>{{ vendorItem.phone_number || 'Not Available' }}</td>
+                      <td>{{ vendorItem.phone_number || "Not Available" }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -193,289 +194,293 @@
 </template>
 
 <script>
-import { get } from '../../utilities/api'
-import Vue from 'vue'
+  import { get } from "../../utilities/api";
+  import Vue from "vue";
 
-import Flash from '../../utilities/flash'
+  import Flash from "../../utilities/flash";
 
-import { mapGetters, mapActions } from 'vuex'
-import CustomHeader from '../../components/customHeader'
-import ZeroState from '../../components/ZeroState.vue'
+  import { mapGetters, mapActions } from "vuex";
+  import CustomHeader from "../../components/customHeader";
+  import ZeroState from "../../components/ZeroState.vue";
 
-import BasePagination from '../../components/Pagination/BasePagination'
-import ResueableSearch from '../../components/ReusableSearch.vue'
-import AddVendorsModal from '../../components/modals/AddVendorsModal.vue'
-import EditVendorsModal from '../../components/modals/EditVendorsModal.vue'
-import ConfirmModal from '../../components/modals/ConfirmModal.vue'
-import { EventBus } from '../../utilities/event-bus'
+  import BasePagination from "../../components/Pagination/BasePagination";
+  import ResueableSearch from "../../components/ReusableSearch.vue";
+  import AddVendorsModal from "../../components/modals/AddVendorsModal.vue";
+  import EditVendorsModal from "../../components/modals/EditVendorsModal.vue";
+  import ConfirmModal from "../../components/modals/ConfirmModal.vue";
+  import { EventBus } from "../../utilities/event-bus";
 
-export default {
-  props: {
-    //TODO::verify if its necessary to make this a prop
-    withBranchFilter: { default: true },
-    urlToFetchOrders: { default: '/api/brand' },
-  },
-
-  components: {
-    CustomHeader,
-    BasePagination,
-    ResueableSearch,
-    ZeroState,
-    ConfirmModal,
-  },
-
-  computed: { ...mapGetters(['getBranches']) },
-
-  data() {
-    return {
-      apiUrlDeactivate: `${process.env.VUE_APP_BNPL_URL}/api/deactivate/vendor`,
-      apiUrlReactivate: `${process.env.VUE_APP_BNPL_URL}/api/reactivate/vendor`,
-      loading: false,
-
-      apiUrl: `${process.env.VUE_APP_BNPL_URL}/api/all/vendors`,
-      branch_id: '',
-      showCat: false,
-      OId: null,
-      viewCategory: false,
-      showModalContent: false,
-      pageParams: {},
-      showModal: false,
-      page_size: 10,
-      date_from: null,
-      date_to: null,
-      selectedOrder: null,
-      page: 1,
-      filters: [
-        { name: 'date from', model: 'date_from' },
-        { name: 'date to', model: 'date_to' },
-      ],
-      vendors: [],
-
-      vendorItem: null,
-      response: {},
-      show: false,
-      headings: ['Name', 'Vendor ID', 'Email', 'Date Joined', 'Action'],
-      searchColumns: [{ title: 'Name', column: 'name' }],
-    }
-  },
-
-  methods: {
-    async fetchData() {
-      this.loading = true
-      this.$scrollToTop()
-      this.$LIPS(true)
-      get(
-        `${this.apiUrl}${
-          this.pageParams.page ? `?page=${this.pageParams.page}` : ''
-        }` +
-          `${this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ''}`
-      )
-        .then(({ data }) => this.prepareList(data))
-        .catch(() => Flash.setError('Error Fetching Vendors'))
-        .finally(() => {
-          this.$LIPS(false)
-          this.loading = false
-        })
+  export default {
+    props: {
+      //TODO::verify if its necessary to make this a prop
+      withBranchFilter: { default: true },
+      urlToFetchOrders: { default: "/api/brand" },
     },
 
-    prepareList(response) {
-      let {
-        current_page,
-        first_page_url,
-        from,
-        last_page,
-        last_page_url,
-        data,
-        per_page,
-        next_page_url,
-        to,
-        total,
-        prev_page_url,
-      } = response.result.vendors
-      this.pageParams = Object.assign({}, this.pageParams, {
-        current_page,
-        first_page_url,
-        from,
-        last_page,
-        last_page_url,
-        per_page,
-        next_page_url,
-        to,
-        total,
-        prev_page_url,
-      })
-      this.vendors = data
-      this.OId = from
-      this.$LIPS(false)
+    components: {
+      CustomHeader,
+      BasePagination,
+      ResueableSearch,
+      ZeroState,
+      ConfirmModal,
     },
 
-    prepareListFromSearch(response) {
-      let {
-        current_page,
-        first_page_url,
-        from,
-        last_page,
-        last_page_url,
-        data,
-        per_page,
-        next_page_url,
-        to,
-        total,
-        prev_page_url,
-      } = response.data?.data?.result?.vendors
-      this.pageParams = Object.assign({}, this.pageParams, {
-        current_page,
-        first_page_url,
-        from,
-        last_page,
-        last_page_url,
-        per_page,
-        next_page_url,
-        to,
-        total,
-        prev_page_url,
-      })
-      this.vendors = data
-      this.OId = from
-      this.$LIPS(false)
+    computed: { ...mapGetters(["getBranches"]) },
+
+    data() {
+      return {
+        apiUrlDeactivate: `${process.env.VUE_APP_BNPL_URL}/api/deactivate/vendor`,
+        apiUrlReactivate: `${process.env.VUE_APP_BNPL_URL}/api/reactivate/vendor`,
+        loading: false,
+
+        apiUrl: `${process.env.VUE_APP_BNPL_URL}/api/all/vendors`,
+        branch_id: "",
+        showCat: false,
+        OId: null,
+        viewCategory: false,
+        showModalContent: false,
+        pageParams: {},
+        showModal: false,
+        page_size: 10,
+        date_from: null,
+        date_to: null,
+        selectedOrder: null,
+        page: 1,
+        filters: [
+          { name: "date from", model: "date_from" },
+          { name: "date to", model: "date_to" },
+        ],
+        vendors: [],
+
+        vendorItem: null,
+        response: {},
+        show: false,
+        headings: ["Name", "Vendor ID", "Email", "Date Joined", "Action"],
+        searchColumns: [{ title: "Name", column: "name" }],
+      };
     },
 
-    next(firstPage = null) {
-      if (this.pageParams.next_page_url) {
-        this.page = firstPage ? firstPage : parseInt(this.page) + 1
-        this.fetchData()
-      }
-    },
+    methods: {
+      async fetchData() {
+        this.loading = true;
+        this.$scrollToTop();
+        this.$LIPS(true);
+        get(
+          `${this.apiUrl}${
+            this.pageParams.page ? `?page=${this.pageParams.page}` : ""
+          }` +
+            `${this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
+        )
+          .then(({ data }) => this.prepareList(data))
+          .catch(() => Flash.setError("Error Fetching Vendors"))
+          .finally(() => {
+            this.$LIPS(false);
+            this.loading = false;
+          });
+      },
 
-    prev(lastPage = null) {
-      if (this.pageParams.prev_page_url) {
-        this.page = lastPage ? lastPage : parseInt(this.page) - 1
-        this.fetchData()
-      }
-    },
+      prepareList(response) {
+        let {
+          current_page,
+          first_page_url,
+          from,
+          last_page,
+          last_page_url,
+          data,
+          per_page,
+          next_page_url,
+          to,
+          total,
+          prev_page_url,
+        } = response.result.vendors;
+        this.pageParams = Object.assign({}, this.pageParams, {
+          current_page,
+          first_page_url,
+          from,
+          last_page,
+          last_page_url,
+          per_page,
+          next_page_url,
+          to,
+          total,
+          prev_page_url,
+        });
+        this.vendors = data;
+        this.OId = from;
+        this.$LIPS(false);
+      },
 
-    toggleCat() {
-      Vue.set(this.$data, 'showCat', !this.showCat)
-    },
+      prepareListFromSearch(response) {
+        let {
+          current_page,
+          first_page_url,
+          from,
+          last_page,
+          last_page_url,
+          data,
+          per_page,
+          next_page_url,
+          to,
+          total,
+          prev_page_url,
+        } = response.data?.data?.result?.vendors;
+        this.pageParams = Object.assign({}, this.pageParams, {
+          current_page,
+          first_page_url,
+          from,
+          last_page,
+          last_page_url,
+          per_page,
+          next_page_url,
+          to,
+          total,
+          prev_page_url,
+        });
+        this.vendors = data;
+        this.OId = from;
+        this.$LIPS(false);
+      },
 
-    createVendor() {
-      this.$modal.show(
-        AddVendorsModal,
-        {},
-        {
-          draggable: false,
-          height: 'auto',
-          clickToClose: false,
-        },
-        {
-          closed: this.fetchData,
+      next(firstPage = null) {
+        if (this.pageParams.next_page_url) {
+          this.page = firstPage ? firstPage : parseInt(this.page) + 1;
+          this.fetchData();
         }
-      )
-    },
-    confirmModal(order) {
-      this.showModal = !this.showModal
-      this.selectedOrder = order
-    },
+      },
 
-    viewVendor(vendor) {
-      this.showModalContent = true
-      this.vendorItem = vendor
-      return $(`#viewBrand`).modal('toggle')
-    },
-    edit() {
-      this.showModalContent = false
-      $(`#viewBrand`).modal('toggle')
-      this.$modal.show(
-        EditVendorsModal,
-        { vendor: this.vendorItem },
-        {
-          draggable: false,
-          height: 'auto',
-          clickToClose: false,
-        },
-        {
-          closed: this.fetchData,
+      prev(lastPage = null) {
+        if (this.pageParams.prev_page_url) {
+          this.page = lastPage ? lastPage : parseInt(this.page) - 1;
+          this.fetchData();
         }
-      )
-    },
-    async deactivateVendor(item) {
-      if (item) {
-        try {
-          this.$LIPS(true)
+      },
 
-          get(this.apiUrlDeactivate + `/${this.selectedOrder.id}`).then(() => {
-            this.fetchData()
-          })
+      toggleCat() {
+        Vue.set(this.$data, "showCat", !this.showCat);
+      },
 
-          this.$swal({
-            icon: 'success',
-            title: 'Vendor deactivated Successfully',
-          })
+      createVendor() {
+        this.$modal.show(
+          AddVendorsModal,
+          {},
+          {
+            draggable: false,
+            height: "auto",
+            clickToClose: false,
+          },
+          {
+            closed: this.fetchData,
+          }
+        );
+      },
+      confirmModal(order) {
+        this.showModal = !this.showModal;
+        this.selectedOrder = order;
+      },
 
-          this.showModal = false
-        } catch (e) {
-          console.error(e)
-        } finally {
-          this.$LIPS(false)
+      viewVendor(vendor) {
+        this.showModalContent = true;
+        this.vendorItem = vendor;
+        return $(`#viewBrand`).modal("toggle");
+      },
+      edit() {
+        this.showModalContent = false;
+        $(`#viewBrand`).modal("toggle");
+        this.$modal.show(
+          EditVendorsModal,
+          { vendor: this.vendorItem },
+          {
+            draggable: false,
+            height: "auto",
+            clickToClose: false,
+          },
+          {
+            closed: this.fetchData,
+          }
+        );
+      },
+      async deactivateVendor(item) {
+        if (item) {
+          try {
+            this.$LIPS(true);
+
+            get(this.apiUrlDeactivate + `/${this.selectedOrder.id}`).then(
+              () => {
+                this.fetchData();
+              }
+            );
+
+            this.$swal({
+              icon: "success",
+              title: "Vendor deactivated Successfully",
+            });
+
+            this.showModal = false;
+          } catch (e) {
+            console.error(e);
+          } finally {
+            this.$LIPS(false);
+          }
         }
-      }
-      this.showModal = false
-    },
+        this.showModal = false;
+      },
 
-    async reactivateVendor(item) {
-      if (item) {
-        try {
-          this.$LIPS(true)
+      async reactivateVendor(item) {
+        if (item) {
+          try {
+            this.$LIPS(true);
 
-          get(this.apiUrlReactivate + `/${this.selectedOrder.id}`).then(() => {
-            this.fetchData()
-          })
+            get(this.apiUrlReactivate + `/${this.selectedOrder.id}`).then(
+              () => {
+                this.fetchData();
+              }
+            );
 
-          this.$swal({
-            icon: 'success',
-            title: 'Vendor Reactivated Successfully',
-          })
+            this.$swal({
+              icon: "success",
+              title: "Vendor Reactivated Successfully",
+            });
 
-          this.showModal = false
-        } catch (e) {
-          // Lets handle this catch
-        } finally {
-          this.$LIPS(false)
+            this.showModal = false;
+          } catch (e) {
+            // Lets handle this catch
+          } finally {
+            this.$LIPS(false);
+          }
         }
-      }
-      this.showModal = false
+        this.showModal = false;
+      },
+
+      searchEvent(data) {
+        get(this.apiUrl + data)
+          .then(({ data }) => this.prepareList(data))
+          .catch(() => Flash.setError("Error Preparing form"));
+      },
+
+      ...mapActions("ModalAccess", [
+        "addCustomerOptionsModalsToDom",
+        "removeCustomerOptionsModalsFromDom",
+      ]),
     },
 
-    searchEvent(data) {
-      get(this.apiUrl + data)
-        .then(({ data }) => this.prepareList(data))
-        .catch(() => Flash.setError('Error Preparing form'))
+    async mounted() {
+      this.$props.withBranchFilter &&
+        this.filters.unshift({ name: "branch", model: "branch_id" });
+      this.addCustomerOptionsModalsToDom();
+      await this.$prepareBranches();
+      await this.fetchData();
+      EventBus.$on("fetchVendors", this.fetchData());
     },
 
-    ...mapActions('ModalAccess', [
-      'addCustomerOptionsModalsToDom',
-      'removeCustomerOptionsModalsFromDom',
-    ]),
-  },
-
-  async mounted() {
-    this.$props.withBranchFilter &&
-      this.filters.unshift({ name: 'branch', model: 'branch_id' })
-    this.addCustomerOptionsModalsToDom()
-    await this.$prepareBranches()
-    await this.fetchData()
-    EventBus.$on('fetchVendors', this.fetchData())
-  },
-
-  unmounted() {
-    this.removeCustomerOptionsModalsFromDom()
-  },
-  filters: {
-    status: function(value) {
-      return value === 1 ? 'Active' : 'Inactive'
+    unmounted() {
+      this.removeCustomerOptionsModalsFromDom();
     },
-  },
-}
+    filters: {
+      status: function (value) {
+        return value === 1 ? "Active" : "Inactive";
+      },
+    },
+  };
 </script>
 
 <style lang="scss" scoped></style>

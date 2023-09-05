@@ -3,7 +3,7 @@
     <div id="reminder" class="attendance">
       <custom-header :title="'Orders List'" />
 
-      <div class="my-2 my-lg-3 row attendance-head ">
+      <div class="my-2 my-lg-3 row attendance-head">
         <div class="col row">
           <resueable-search
             @childToParent="prepareSearch"
@@ -63,7 +63,8 @@
             </div>
             <div
               class="col dark-heading font-weight-bolder"
-              v-for="header in headings" :key="header"
+              v-for="header in headings"
+              :key="header"
             >
               {{ header }}
             </div>
@@ -127,228 +128,226 @@
 </template>
 
 <script>
-import { get } from "../../utilities/api"
-import Flash from "../../utilities/flash"
-import { mapGetters, mapActions } from "vuex"
-import CustomHeader from "../../components/customHeader"
-import ZeroState from "../../components/ZeroState.vue"
+  import { get } from "../../utilities/api";
+  import Flash from "../../utilities/flash";
+  import { mapGetters, mapActions } from "vuex";
+  import CustomHeader from "../../components/customHeader";
+  import ZeroState from "../../components/ZeroState.vue";
 
-import BasePagination from "../../components/Pagination/BasePagination"
-import ResueableSearch from "../../components/ReusableSearch.vue"
-import EditVendorsModal from "../../components/modals/EditVendorsModal.vue"
-import NewOrderAmortization from "../../components/NewOrderAmortization.vue"
-import VendorInfoModal from "../../components/modals/VendorInfoModal.vue"
-import CustomerInfoModal from "../../components/modals/CustomerInfoModal.vue"
+  import BasePagination from "../../components/Pagination/BasePagination";
+  import ResueableSearch from "../../components/ReusableSearch.vue";
+  import EditVendorsModal from "../../components/modals/EditVendorsModal.vue";
+  import NewOrderAmortization from "../../components/NewOrderAmortization.vue";
+  import VendorInfoModal from "../../components/modals/VendorInfoModal.vue";
+  import CustomerInfoModal from "../../components/modals/CustomerInfoModal.vue";
 
-export default {
-  props: {
-    //TODO::verify if its necessary to make this a prop
-    withBranchFilter: { default: true },
-    urlToFetchOrders: { default: "/api/new_order?bnplOrders=true" },
-  },
-
-  components: { CustomHeader, BasePagination, ResueableSearch, ZeroState },
-
-  computed: { ...mapGetters(["getBranches"]) },
-
-  data() {
-    return {
-      apiUrl: "/api/new_order?bnplOrders=true",
-      loading: true,
-      branch_id: "",
-      showCat: false,
-      OId: null,
-      viewCategory: false,
-      showModalContent: false,
-      pageParams: {},
-      page_size: 10,
-      date_from: null,
-      date_to: null,
-      page: 1,
-      filters: [
-        { name: "date from", model: "date_from" },
-        { name: "date to", model: "date_to" },
-      ],
-      vendors: [],
-      orderStatus: [
-        "Active", "Pending", "Completed"
-      ],
-
-      vendorItem: null,
-      response: {},
-      show: false,
-      headings: [
-        "Order ID",
-        "Merchant",
-        "Product",
-        "Customer Name",
-        "Order Status",
-        "Date Created",
-      ],
-      searchColumns: [{ title: "Name", column: "name" }],
-    }
-  },
-
-  methods: {
-    fetchData() {
-      this.$scrollToTop()
-      this.$LIPS(true)
-      this.loading = true
-      get(
-        `${this.apiUrl}${
-          this.pageParams.page ? `&page=${this.pageParams.page}` : ""
-        }` +
-          `${this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
-      )
-        .then(({ data }) => this.prepareList(data))
-        .catch(() => Flash.setError("Error Preparing form"))
+  export default {
+    props: {
+      //TODO::verify if its necessary to make this a prop
+      withBranchFilter: { default: true },
+      urlToFetchOrders: { default: "/api/new_order?bnplOrders=true" },
     },
 
-    prepareList(response) {
-      console.log(response)
-      let {
-        current_page,
-        first_page_url,
-        from,
-        last_page,
-        last_page_url,
-        data,
-        per_page,
-        next_page_url,
-        to,
-        total,
-        prev_page_url,
-      } = response.data
-      this.pageParams = Object.assign({}, this.pageParams, {
-        current_page,
-        first_page_url,
-        from,
-        last_page,
-        last_page_url,
-        per_page,
-        next_page_url,
-        to,
-        total,
-        prev_page_url,
-      })
-      this.vendors = data
-      this.OId = from
-      this.$LIPS(false)
-      this.loading = false
-    },
-    prepareSearch(item) {
-      this.prepareList(item.data.data)
+    components: { CustomHeader, BasePagination, ResueableSearch, ZeroState },
+
+    computed: { ...mapGetters(["getBranches"]) },
+
+    data() {
+      return {
+        apiUrl: "/api/new_order?bnplOrders=true",
+        loading: true,
+        branch_id: "",
+        showCat: false,
+        OId: null,
+        viewCategory: false,
+        showModalContent: false,
+        pageParams: {},
+        page_size: 10,
+        date_from: null,
+        date_to: null,
+        page: 1,
+        filters: [
+          { name: "date from", model: "date_from" },
+          { name: "date to", model: "date_to" },
+        ],
+        vendors: [],
+        orderStatus: ["Active", "Pending", "Completed"],
+
+        vendorItem: null,
+        response: {},
+        show: false,
+        headings: [
+          "Order ID",
+          "Merchant",
+          "Product",
+          "Customer Name",
+          "Order Status",
+          "Date Created",
+        ],
+        searchColumns: [{ title: "Name", column: "name" }],
+      };
     },
 
-    next(firstPage = null) {
-      if (this.pageParams.next_page_url) {
-        this.page = firstPage ? firstPage : parseInt(this.page) + 1
-        this.fetchData()
-      }
-    },
+    methods: {
+      fetchData() {
+        this.$scrollToTop();
+        this.$LIPS(true);
+        this.loading = true;
+        get(
+          `${this.apiUrl}${
+            this.pageParams.page ? `&page=${this.pageParams.page}` : ""
+          }` +
+            `${this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
+        )
+          .then(({ data }) => this.prepareList(data))
+          .catch(() => Flash.setError("Error Preparing form"));
+      },
 
-    prev(lastPage = null) {
-      if (this.pageParams.prev_page_url) {
-        this.page = lastPage ? lastPage : parseInt(this.page) - 1
-        this.fetchData()
-      }
-    },
+      prepareList(response) {
+        console.log(response);
+        let {
+          current_page,
+          first_page_url,
+          from,
+          last_page,
+          last_page_url,
+          data,
+          per_page,
+          next_page_url,
+          to,
+          total,
+          prev_page_url,
+        } = response.data;
+        this.pageParams = Object.assign({}, this.pageParams, {
+          current_page,
+          first_page_url,
+          from,
+          last_page,
+          last_page_url,
+          per_page,
+          next_page_url,
+          to,
+          total,
+          prev_page_url,
+        });
+        this.vendors = data;
+        this.OId = from;
+        this.$LIPS(false);
+        this.loading = false;
+      },
+      prepareSearch(item) {
+        this.prepareList(item.data.data);
+      },
 
-    viewOrder(order) {
-      this.$modal.show(
-        NewOrderAmortization,
-        {
-          order: order,
-          customer: order.customer,
-          standAlone: true,
-          isBNPL: true,
-          lateFEES: [],
-          paymentForm: {},
-        },
-        {
-          name: "orderInfo",
-          adaptive: true,
-          resizable: true,
-          height: "auto",
-          width: "75%",
-          clickToClose: true,
+      next(firstPage = null) {
+        if (this.pageParams.next_page_url) {
+          this.page = firstPage ? firstPage : parseInt(this.page) + 1;
+          this.fetchData();
         }
-      )
-    },
+      },
 
-    displayVendor(vendor) {
-      this.$modal.show(
-        VendorInfoModal,
-        { modalItem: vendor },
-        {
-          name: "orderInfo",
-          classes: ["w-50", "overflow-auto"],
-          adaptive: true,
-          resizable: true,
-          height: "auto",
-          width: "50%",
-          clickToClose: true,
+      prev(lastPage = null) {
+        if (this.pageParams.prev_page_url) {
+          this.page = lastPage ? lastPage : parseInt(this.page) - 1;
+          this.fetchData();
         }
-      )
-    },
-    displayCustomer(customer) {
-      this.$modal.show(
-        CustomerInfoModal,
-        { modalItem: customer },
-        {
-          name: "orderInfo",
-          classes: ["w-50", "overflow-auto"],
-          adaptive: true,
-          resizable: true,
-          height: "auto",
-          width: "50%",
-          clickToClose: true,
-        }
-      )
-    },
-    edit() {
-      this.showModalContent = false
-      $(`#viewBrand`).modal("toggle")
-      this.$modal.show(
-        EditVendorsModal,
-        { vendor: this.vendorItem },
-        {
-          draggable: false,
-          height: "auto",
-          clickToClose: false,
-        }
-      )
+      },
+
+      viewOrder(order) {
+        this.$modal.show(
+          NewOrderAmortization,
+          {
+            order: order,
+            customer: order.customer,
+            standAlone: true,
+            isBNPL: true,
+            lateFEES: [],
+            paymentForm: {},
+          },
+          {
+            name: "orderInfo",
+            adaptive: true,
+            resizable: true,
+            height: "auto",
+            width: "75%",
+            clickToClose: true,
+          }
+        );
+      },
+
+      displayVendor(vendor) {
+        this.$modal.show(
+          VendorInfoModal,
+          { modalItem: vendor },
+          {
+            name: "orderInfo",
+            classes: ["w-50", "overflow-auto"],
+            adaptive: true,
+            resizable: true,
+            height: "auto",
+            width: "50%",
+            clickToClose: true,
+          }
+        );
+      },
+      displayCustomer(customer) {
+        this.$modal.show(
+          CustomerInfoModal,
+          { modalItem: customer },
+          {
+            name: "orderInfo",
+            classes: ["w-50", "overflow-auto"],
+            adaptive: true,
+            resizable: true,
+            height: "auto",
+            width: "50%",
+            clickToClose: true,
+          }
+        );
+      },
+      edit() {
+        this.showModalContent = false;
+        $(`#viewBrand`).modal("toggle");
+        this.$modal.show(
+          EditVendorsModal,
+          { vendor: this.vendorItem },
+          {
+            draggable: false,
+            height: "auto",
+            clickToClose: false,
+          }
+        );
+      },
+
+      searchEvent(data) {
+        get(this.urlToFetchOrders + data)
+          .then(({ data }) => this.prepareList(data))
+          .catch(() => Flash.setError("Error Preparing form"));
+      },
+
+      ...mapActions("ModalAccess", [
+        "addCustomerOptionsModalsToDom",
+        "removeCustomerOptionsModalsFromDom",
+      ]),
     },
 
-    searchEvent(data) {
-      get(this.urlToFetchOrders + data)
-        .then(({ data }) => this.prepareList(data))
-        .catch(() => Flash.setError("Error Preparing form"))
+    created() {
+      this.$props.withBranchFilter &&
+        this.filters.unshift({ name: "branch", model: "branch_id" });
+      this.addCustomerOptionsModalsToDom();
+      this.$prepareBranches();
+      this.fetchData();
     },
 
-    ...mapActions("ModalAccess", [
-      "addCustomerOptionsModalsToDom",
-      "removeCustomerOptionsModalsFromDom",
-    ]),
-  },
-
-  created() {
-    this.$props.withBranchFilter &&
-      this.filters.unshift({ name: "branch", model: "branch_id" })
-    this.addCustomerOptionsModalsToDom()
-    this.$prepareBranches()
-    this.fetchData()
-  },
-
-  unmounted() {
-    this.removeCustomerOptionsModalsFromDom()
-  },
-  filters: {
-    status: function(value) {
-      return value === 1 ? "Active" : "Inactive"
+    unmounted() {
+      this.removeCustomerOptionsModalsFromDom();
     },
-  },
-}
+    filters: {
+      status: function (value) {
+        return value === 1 ? "Active" : "Inactive";
+      },
+    },
+  };
 </script>
 
 <style lang="scss" scoped></style>

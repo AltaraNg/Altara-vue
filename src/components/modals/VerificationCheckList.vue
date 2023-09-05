@@ -1,9 +1,7 @@
 <template>
   <div>
     <div class="modal-header">
-      <h3 class=" my-1" id="exampleModalLongTitle">
-        Verification Checklists
-      </h3>
+      <h3 class="my-1" id="exampleModalLongTitle">Verification Checklists</h3>
       <div slot="top-right">
         <span
           type="button"
@@ -24,13 +22,14 @@
           ><br />
           <div
             class="form-check form-check-radio form-check-inline"
-            v-for="option in verifiedOptions" :key="option"
+            v-for="option in verifiedOptions"
+            :key="option"
           >
             <label class="form-check-label">
               <input
                 v-model="verificationData.location"
                 type="radio"
-                class="form-check-input "
+                class="form-check-input"
                 :value="option"
                 name="checklist1"
                 v-validate="'required'"
@@ -44,7 +43,7 @@
           <label for="checklist">If other, Specify</label>
           <textarea
             cols="2"
-            class="form-control "
+            class="form-control"
             v-model="verificationData.otherOption"
           ></textarea>
         </div>
@@ -60,7 +59,7 @@
               <input
                 v-model="verificationData.addressMatch"
                 type="radio"
-                class="form-check-input "
+                class="form-check-input"
                 value="yes"
                 name="checklist2"
                 v-validate="'required'"
@@ -74,7 +73,7 @@
               <input
                 v-model="verificationData.addressMatch"
                 type="radio"
-                class="form-check-input "
+                class="form-check-input"
                 value="no"
                 name="checklist2"
                 v-validate="'required'"
@@ -96,7 +95,7 @@
               <input
                 v-model="verificationData.homeVisited"
                 type="radio"
-                class="form-check-input "
+                class="form-check-input"
                 value="yes"
                 name="checklist6"
                 v-validate="'required'"
@@ -110,7 +109,7 @@
               <input
                 v-model="verificationData.homeVisited"
                 type="radio"
-                class="form-check-input "
+                class="form-check-input"
                 value="no"
                 name="checklist6"
                 v-validate="'required'"
@@ -132,7 +131,7 @@
               <input
                 v-model="verificationData.guarantorHomeVisited"
                 type="radio"
-                class="form-check-input "
+                class="form-check-input"
                 value="yes"
                 name="checklist7"
                 v-validate="'required'"
@@ -146,7 +145,7 @@
               <input
                 v-model="verificationData.guarantorHomeVisited"
                 type="radio"
-                class="form-check-input "
+                class="form-check-input"
                 value="no"
                 name="checklist7"
                 v-validate="'required'"
@@ -168,7 +167,7 @@
               <input
                 v-model="verificationData.addressMatchBank"
                 type="radio"
-                class="form-check-input "
+                class="form-check-input"
                 value="yes"
                 name="checklist3"
                 v-validate="'required'"
@@ -182,7 +181,7 @@
               <input
                 v-model="verificationData.addressMatchBank"
                 type="radio"
-                class="form-check-input "
+                class="form-check-input"
                 value="no"
                 name="checklist3"
                 v-validate="'required'"
@@ -216,7 +215,7 @@
               <input
                 v-model="verificationData.awareOfPenalty"
                 type="radio"
-                class="form-check-input "
+                class="form-check-input"
                 value="yes"
                 name="checklist4"
                 v-validate="'required'"
@@ -230,7 +229,7 @@
               <input
                 v-model="verificationData.awareOfPenalty"
                 type="radio"
-                class="form-check-input "
+                class="form-check-input"
                 value="no"
                 name="checklist4"
                 v-validate="'required'"
@@ -252,7 +251,7 @@
               <input
                 v-model="verificationData.locationDoubleChecked"
                 type="radio"
-                class="form-check-input "
+                class="form-check-input"
                 value="yes"
                 name="checklist5"
                 v-validate="'required'"
@@ -266,7 +265,7 @@
               <input
                 v-model="verificationData.locationDoubleChecked"
                 type="radio"
-                class="form-check-input "
+                class="form-check-input"
                 value="no"
                 name="checklist5"
                 v-validate="'required'"
@@ -348,65 +347,68 @@
 </template>
 
 <script>
-import { post } from "../../utilities/api"
-import { EventBus } from '../../utilities/event-bus'
+  import { post } from "../../utilities/api";
+  import { EventBus } from "../../utilities/event-bus";
 
-export default {
-  props: {
-    customer: {
-      required: true,
-      default: {},
+  export default {
+    props: {
+      customer: {
+        required: true,
+        default: {},
+      },
     },
-  },
-  data() {
-    return {
-      verifiedOptions: ["Home", "Business", "Office", "Other"],
-      vAgents: null,
-      verificationData: {},
-    }
-  },
+    data() {
+      return {
+        verifiedOptions: ["Home", "Business", "Office", "Other"],
+        vAgents: null,
+        verificationData: {},
+      };
+    },
 
-  methods: {
-    async save() {
-      this.$validator.validateAll().then(async result => {
-        if (result) {
-          try {
-            this.$LIPS(true)
-            this.verificationData.customer_id = this.customer.id
-            this.verificationData.type = "verification"
+    methods: {
+      async save() {
+        this.$validator.validateAll().then(async (result) => {
+          if (result) {
+            try {
+              this.$LIPS(true);
+              this.verificationData.customer_id = this.customer.id;
+              this.verificationData.type = "verification";
 
-            let res = await post("/api/recommendation", this.verificationData)
-            if (res.status === 200) {
+              let res = await post(
+                "/api/recommendation",
+                this.verificationData
+              );
+              if (res.status === 200) {
+                this.$swal({
+                  icon: "success",
+                  title: `verification saved successfully`,
+                });
+                this.verificationData = {};
+                EventBus.$emit("updateUser", this.customer.id);
+
+                this.$modal.hide("verificationForm");
+              }
+            } catch (err) {
               this.$swal({
-                icon: "success",
-                title: `verification saved successfully`,
-              })
-              this.verificationData = {}
-              EventBus.$emit("updateUser", this.customer.id)
-
-              this.$modal.hide("verificationForm")
+                icon: "error",
+                title: `Unable to complete`,
+              });
+            } finally {
+              this.$LIPS(false);
             }
-          } catch (err) {
-            this.$swal({
-              icon: "error",
-              title: `Unable to complete`,
-            })
-          } finally {
-            this.$LIPS(false)
           }
-        }
-      })
+        });
+      },
     },
-  },
-}
+  };
 </script>
 
 <style lang="scss" scoped>
-.modal-dialog {
-  overflow-y: initial !important;
-}
-.modal-body {
-  height: 75vh;
-  overflow-y: auto;
-}
+  .modal-dialog {
+    overflow-y: initial !important;
+  }
+  .modal-body {
+    height: 75vh;
+    overflow-y: auto;
+  }
 </style>

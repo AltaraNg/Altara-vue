@@ -164,79 +164,78 @@
 </template>
 
 <script>
-export default {
-  props: {
-    modalItem: {
-      required: false,
+  export default {
+    props: {
+      modalItem: {
+        required: false,
+      },
+      verificationCollectionData: Object,
+      proof_of_credits: Array,
+      address_visited: Array,
+      guarantor_signed: Array,
+      credit_report_status: Array,
+      credit_point_status: Array,
     },
-    verificationCollectionData: Object,
-    proof_of_credits: Array,
-    address_visited: Array,
-    guarantor_signed: Array,
-    credit_report_status: Array,
-    credit_point_status: Array,
-  },
-  data() {
-    return {
-      formErrors: [],
-    };
-  },
-  methods: {
-    closeModal() {
-      this.$emit("close");
+    data() {
+      return {
+        formErrors: [],
+      };
     },
-    sendCollectionVerificationData(e) {
-      if (this.checkForm(e)) {
-        this.$emit(
-          "verificationCollectionDataPassed",
+    methods: {
+      closeModal() {
+        this.$emit("close");
+      },
+      sendCollectionVerificationData(e) {
+        if (this.checkForm(e)) {
+          this.$emit(
+            "verificationCollectionDataPassed",
+            this.verificationCollectionData
+          );
+        }
+      },
+      checkForm(e) {
+        const formIsValid = Object.values(
           this.verificationCollectionData
-        );
-      }
+        ).every((element) => !!element);
+        if (formIsValid) {
+          return true;
+        }
+        this.formErrors = [];
+        if (!this.verificationCollectionData.salary_day_1) {
+          this.formErrors.push("Salary Day 1 field is required.");
+        }
+        if (!this.verificationCollectionData.salary_day_2) {
+          this.formErrors.push("Salary Day 2 field is required.");
+        }
+        if (!this.verificationCollectionData.salary_day_3) {
+          this.formErrors.push("Salary Day 3 field is required.");
+        }
+        if (!this.verificationCollectionData.proof_of_credit) {
+          this.formErrors.push("Please select the proof of credit");
+        }
+        if (!this.verificationCollectionData.guarantor_signed) {
+          this.formErrors.push("Please indicate if guarantor signed");
+        }
+        if (!this.verificationCollectionData.address_visited) {
+          this.formErrors.push("Please indicate if the address was visited");
+        }
+        if (!this.verificationCollectionData.credit_report_status) {
+          this.formErrors.push("Please select the credit report status");
+        }
+        if (!this.verificationCollectionData.credit_point_status) {
+          this.formErrors.push("Please select the credit point status");
+        }
 
+        e.preventDefault();
+        return false;
+      },
     },
-    checkForm(e) {
-      const formIsValid = Object.values(this.verificationCollectionData).every(
-        (element) => !!element
-      );
-      if (formIsValid) {
-        return true;
-      }
-      this.formErrors = [];
-      if (!this.verificationCollectionData.salary_day_1) {
-        this.formErrors.push("Salary Day 1 field is required.");
-      }
-      if (!this.verificationCollectionData.salary_day_2) {
-        this.formErrors.push("Salary Day 2 field is required.");
-      }
-      if (!this.verificationCollectionData.salary_day_3) {
-        this.formErrors.push("Salary Day 3 field is required.");
-      }
-      if (!this.verificationCollectionData.proof_of_credit) {
-        this.formErrors.push("Please select the proof of credit");
-      }
-      if (!this.verificationCollectionData.guarantor_signed) {
-        this.formErrors.push("Please indicate if guarantor signed");
-      }
-      if (!this.verificationCollectionData.address_visited) {
-        this.formErrors.push("Please indicate if the address was visited");
-      }
-      if (!this.verificationCollectionData.credit_report_status) {
-        this.formErrors.push("Please select the credit report status");
-      }
-      if (!this.verificationCollectionData.credit_point_status) {
-        this.formErrors.push("Please select the credit point status");
-      }
-
-      e.preventDefault();
-      return false;
-    },
-  },
-};
+  };
 </script>
 
 <style lang="scss" scoped>
-.adjusted {
-  //   height: 70vh;
-  overflow-y: auto;
-}
+  .adjusted {
+    //   height: 70vh;
+    overflow-y: auto;
+  }
 </style>

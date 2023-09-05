@@ -85,84 +85,87 @@
 </template>
 
 <script>
-import Vue from "vue";
-import { mapGetters } from "vuex";
-import { post } from "../../utilities/api";
-import Flash from "../../utilities/flash";
-import { EventBus } from "../../utilities/event-bus";
+  import Vue from "vue";
+  import { mapGetters } from "vuex";
+  import { post } from "../../utilities/api";
+  import Flash from "../../utilities/flash";
+  import { EventBus } from "../../utilities/event-bus";
 
-export default {
-  data() {
-    return {
-      value: null,
-      message: null,
-      subject: "Altara Update",
-      customer: null,
-    };
-  },
-
-  computed: {
-    telephone() {
-      if (this.customer != null) return this.customer.telephone;
-      return null;
+  export default {
+    data() {
+      return {
+        value: null,
+        message: null,
+        subject: "Altara Update",
+        customer: null,
+      };
     },
 
-    customerName() {
-      let customer;
-      if (this.customer != null) customer = this.customer;
-      return this.$getCustomerFullName(customer);
+    computed: {
+      telephone() {
+        if (this.customer != null) return this.customer.telephone;
+        return null;
+      },
+
+      customerName() {
+        let customer;
+        if (this.customer != null) customer = this.customer;
+        return this.$getCustomerFullName(customer);
+      },
+
+      ...mapGetters(["getAuthUserDetails"]),
     },
 
-    ...mapGetters(["getAuthUserDetails"]),
-  },
-
-  methods: {
-    async handleModalToggle({ customer }) {
-      await Vue.set(this.$data, "customer", customer);
-      this.toggleModal();
-    },
-    toggleModal() {
-      $("#mobileMessageModal").modal("toggle");
-    },
-    async sendNotification() {
-      this.$validator.validateAll().then(async (result) => {
-        if (result) {
-          if (this.$network()) {
-            this.$LIPS(true);
-            const data = await post("/api/send/customer/mobile/notification", {
-              customer_id: this.customer.id,
-              message: this.message,
-              subject: this.subject,
-            })
-              .then((response) => {
-                return response.data;
-              })
-              .catch(() =>
-                this.$displayErrorMessage(
-                  "Error Sending customer mobile notification!"
-                )
-              );
-            if (data.status =='success') {
-             this.done(data.message);
+    methods: {
+      async handleModalToggle({ customer }) {
+        await Vue.set(this.$data, "customer", customer);
+        this.toggleModal();
+      },
+      toggleModal() {
+        $("#mobileMessageModal").modal("toggle");
+      },
+      async sendNotification() {
+        this.$validator.validateAll().then(async (result) => {
+          if (result) {
+            if (this.$network()) {
+              this.$LIPS(true);
+              const data = await post(
+                "/api/send/customer/mobile/notification",
+                {
+                  customer_id: this.customer.id,
+                  message: this.message,
+                  subject: this.subject,
+                }
+              )
+                .then((response) => {
+                  return response.data;
+                })
+                .catch(() =>
+                  this.$displayErrorMessage(
+                    "Error Sending customer mobile notification!"
+                  )
+                );
+              if (data.status == "success") {
+                this.done(data.message);
+              }
+            } else {
+              this.$networkErr();
             }
           } else {
-            this.$networkErr();
+            this.$networkErr("form");
           }
-        } else {
-          this.$networkErr("form");
-        }
-      });
+        });
+      },
+      done(message) {
+        Flash.setSuccess(message);
+        this.$scrollToTop();
+        this.toggleModal();
+        this.$LIPS(false);
+        this.message = null;
+      },
     },
-    done(message) {
-      Flash.setSuccess(message);
-      this.$scrollToTop();
-      this.toggleModal();
-      this.$LIPS(false);
-      this.message = null;
+    created() {
+      EventBus.$on("mobileMessageModal", this.handleModalToggle);
     },
-  },
-  created() {
-    EventBus.$on("mobileMessageModal", this.handleModalToggle);
-  },
-};
+  };
 </script>

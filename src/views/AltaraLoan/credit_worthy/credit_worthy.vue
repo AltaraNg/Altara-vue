@@ -1,25 +1,25 @@
 <template>
-    <transition name="fade">
-        <div>
-            <credit-worthy> </credit-worthy>
-        </div>
-    </transition>
+  <transition name="fade">
+    <div>
+      <credit-worthy> </credit-worthy>
+    </div>
+  </transition>
 </template>
 
 <script>
-import CreditWorthy from "../../../components/CreditWorthy";
-export default {
-    components: {CreditWorthy },
+  import CreditWorthy from "../../../components/CreditWorthy";
+  export default {
+    components: { CreditWorthy },
     data() {
-        return {};
+      return {};
     },
     methods: {},
-    computed: {}
-};
+    computed: {},
+  };
 </script>
 
 <style scoped type="scss">
-.attendance-head .light-heading:nth-child(1) {
+  .attendance-head .light-heading:nth-child(1) {
     max-width: 120px;
-}
+  }
 </style>

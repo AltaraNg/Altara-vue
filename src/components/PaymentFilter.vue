@@ -10,7 +10,11 @@
         class="text-capitalize font-weight-bold h5"
       >
         <option value="all" selected="selected">All</option>
-        <option :value="branch.name" v-for="branch in getBranches" :key="branch.name">
+        <option
+          :value="branch.name"
+          v-for="branch in getBranches"
+          :key="branch.name"
+        >
           {{ branch.name }}
         </option>
       </select>
@@ -35,7 +39,11 @@
         class="w-75 text-capitalize font-weight-bold h5"
       >
         <option value="all" selected="selected">All</option>
-        <option :value="payment.type" v-for="payment in paymentType" :key="payment.type">
+        <option
+          :value="payment.type"
+          v-for="payment in paymentType"
+          :key="payment.type"
+        >
           {{ payment.type }}
         </option>
       </select>
@@ -47,52 +55,52 @@
 </template>
 
 <script>
-import DatePicker from "vue2-datepicker";
-import { mapGetters } from "vuex";
-import "vue2-datepicker/index.css";
-export default {
-  components: {
-    DatePicker,
-  },
-  data() {
-    return {
-      paymentType: [
-        { id: 1, type: "cash" },
-        { id: 2, type: "transfer" },
-        { id: 3, type: "pos" },
-        { id: 4, type: "direct-debit" },
-        { id: 5, type: "cheque" },
-      ],
-      branch: null,
-      date: null,
-      type: null,
-    };
-  },
-  props: {
-    listToOrder: {
-      type: String,
-      required: true,
+  import DatePicker from "vue2-datepicker";
+  import { mapGetters } from "vuex";
+  import "vue2-datepicker/index.css";
+  export default {
+    components: {
+      DatePicker,
     },
-    disabled: {
-      type: Boolean,
-      required: false,
+    data() {
+      return {
+        paymentType: [
+          { id: 1, type: "cash" },
+          { id: 2, type: "transfer" },
+          { id: 3, type: "pos" },
+          { id: 4, type: "direct-debit" },
+          { id: 5, type: "cheque" },
+        ],
+        branch: null,
+        date: null,
+        type: null,
+      };
     },
-  },
-  computed: {
-    ...mapGetters(["auth", "getAuthUserDetails", "getBranches"]),
-  },
+    props: {
+      listToOrder: {
+        type: String,
+        required: true,
+      },
+      disabled: {
+        type: Boolean,
+        required: false,
+      },
+    },
+    computed: {
+      ...mapGetters(["auth", "getAuthUserDetails", "getBranches"]),
+    },
 
-  methods: {
-    filterList(data) {
-      this.$emit("filter", data);
+    methods: {
+      filterList(data) {
+        this.$emit("filter", data);
+      },
     },
-  },
-};
+  };
 </script>
 
 <style lang="scss" scoped>
-select {
-  width: 187px;
-  height: 34px;
-}
+  select {
+    width: 187px;
+    height: 34px;
+  }
 </style>

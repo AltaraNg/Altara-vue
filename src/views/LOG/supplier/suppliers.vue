@@ -2,7 +2,6 @@
   <transition name="fade">
     <div id="reminder" class="attendance">
       <custom-header :title="'Suppliers List'" />
-      
 
       <div class="mt-2 mt-lg-3 row attendance-head">
         <div class="col-md-8">
@@ -11,18 +10,22 @@
             :searchColumns="searchColumns"
           /> -->
           <resueable-search
-             @childToParent="prepareList"
+            @childToParent="prepareList"
             :url="urlToFetchOrders"
             :showBranch="false"
             :showDate="false"
           >
-          <template #default= "{ searchQuery }">
-                <div class="col-md">
-                    <div>
-                    <label class="form-control-label">Name:  </label>
-                    </div>
-                    <input type="text" v-model="searchQuery.name" class="form-control">
-                </div>                
+            <template #default="{ searchQuery }">
+              <div class="col-md">
+                <div>
+                  <label class="form-control-label">Name: </label>
+                </div>
+                <input
+                  type="text"
+                  v-model="searchQuery.name"
+                  class="form-control"
+                />
+              </div>
             </template>
           </resueable-search>
           <!-- <payment-filter  :disabled="false"></payment-filter> -->
@@ -35,14 +38,17 @@
             </button>
           </router-link>
         </div>
-        
       </div>
 
       <div class="mt-5 mb-3 attendance-head">
         <div class="w-100 my-5 mx-0 hr"></div>
         <div class="row px-4 pt-3 pb-4 text-center">
           <div class="col light-heading" style="max-width: 120px">S/N</div>
-          <div class="col light-heading" v-for="header in headings" :key="header">
+          <div
+            class="col light-heading"
+            v-for="header in headings"
+            :key="header"
+          >
             {{ header }}
           </div>
         </div>
@@ -193,165 +199,168 @@
   </transition>
 </template>
 <script>
-import { get } from "../../../utilities/api";
-import Flash from "../../../utilities/flash";
+  import { get } from "../../../utilities/api";
+  import Flash from "../../../utilities/flash";
 
-import { mapGetters, mapActions } from "vuex";
-import CustomHeader from "../../../components/customHeader";
-import BasePagination from "../../../components/Pagination/BasePagination";
-import ResueableSearch from "../../../components/ReusableSearch";
+  import { mapGetters, mapActions } from "vuex";
+  import CustomHeader from "../../../components/customHeader";
+  import BasePagination from "../../../components/Pagination/BasePagination";
+  import ResueableSearch from "../../../components/ReusableSearch";
 
-export default {
-  props: {
-    //TODO::verify if its necessary to make this a prop
-    withBranchFilter: { default: true },
-    urlToFetchOrders: { default: "/api/supplier" },
-  },
-
-  components: {
-    CustomHeader,
-    BasePagination,
-    ResueableSearch,
-  },
-
-  computed: { ...mapGetters(["getStates"]) },
-
-  data() {
-    return {
-      branch_id: "",
-      OId: null,
-      showModalContent: false,
-      pageParams: null,
-      page_size: 10,
-      date_from: null,
-      date_to: null,
-      page: 1,
-      filters: [],
-      suppliers: null,
-      supplierItem: null,
-      response: {},
-      show: false,
-      headings: ["Name", "SKU", "Email", "Phone Number", "Contact Person"],
-      searchColumns: [
-        { title: "Phone Number", checked: false, column: "phoneNumber" },
-        { title: "Name", checked: false, column: "name" },
-      ],
-    };
-  },
-
-  methods: {
-    fetchData() {
-      this.$scrollToTop();
-      this.$LIPS(true);
-      let { page, page_size } = this.$data;
-      get(
-        this.urlToFetchOrders +
-          `${page ? `?page=${page}` : ""}` +
-          `${page_size ? `&pageSize=${page_size}` : ""}`
-      )
-        .then(({ data }) => this.prepareList(data))
-        .catch(() => Flash.setError("Error Preparing form"));
+  export default {
+    props: {
+      //TODO::verify if its necessary to make this a prop
+      withBranchFilter: { default: true },
+      urlToFetchOrders: { default: "/api/supplier" },
     },
 
-    prepareList(response) {
-      let {
-        current_page,
-        first_page_url,
-        from,
-        last_page,
-        last_page_url,
-        data,
-        per_page,
-        next_page_url,
-        to,
-        total,
-        prev_page_url,
-      } = response.data;
-      this.pageParams = Object.assign({}, this.pageParams, {
-        current_page,
-        first_page_url,
-        from,
-        last_page,
-        last_page_url,
-        per_page,
-        next_page_url,
-        to,
-        total,
-        prev_page_url,
-      });
-      this.suppliers = data;
-      this.OId = from;
-      this.$LIPS(false);
+    components: {
+      CustomHeader,
+      BasePagination,
+      ResueableSearch,
     },
 
-    next(firstPage = null) {
-      if (this.pageParams.next_page_url) {
-        this.page = firstPage ? firstPage : parseInt(this.page) + 1;
-        this.fetchData();
-      }
+    computed: { ...mapGetters(["getStates"]) },
+
+    data() {
+      return {
+        branch_id: "",
+        OId: null,
+        showModalContent: false,
+        pageParams: null,
+        page_size: 10,
+        date_from: null,
+        date_to: null,
+        page: 1,
+        filters: [],
+        suppliers: null,
+        supplierItem: null,
+        response: {},
+        show: false,
+        headings: ["Name", "SKU", "Email", "Phone Number", "Contact Person"],
+        searchColumns: [
+          { title: "Phone Number", checked: false, column: "phoneNumber" },
+          { title: "Name", checked: false, column: "name" },
+        ],
+      };
     },
 
-    prev(lastPage = null) {
-      if (this.pageParams.prev_page_url) {
-        this.page = lastPage ? lastPage : parseInt(this.page) - 1;
-        this.fetchData();
-      }
+    methods: {
+      fetchData() {
+        this.$scrollToTop();
+        this.$LIPS(true);
+        let { page, page_size } = this.$data;
+        get(
+          this.urlToFetchOrders +
+            `${page ? `?page=${page}` : ""}` +
+            `${page_size ? `&pageSize=${page_size}` : ""}`
+        )
+          .then(({ data }) => this.prepareList(data))
+          .catch(() => Flash.setError("Error Preparing form"));
+      },
+
+      prepareList(response) {
+        let {
+          current_page,
+          first_page_url,
+          from,
+          last_page,
+          last_page_url,
+          data,
+          per_page,
+          next_page_url,
+          to,
+          total,
+          prev_page_url,
+        } = response.data;
+        this.pageParams = Object.assign({}, this.pageParams, {
+          current_page,
+          first_page_url,
+          from,
+          last_page,
+          last_page_url,
+          per_page,
+          next_page_url,
+          to,
+          total,
+          prev_page_url,
+        });
+        this.suppliers = data;
+        this.OId = from;
+        this.$LIPS(false);
+      },
+
+      next(firstPage = null) {
+        if (this.pageParams.next_page_url) {
+          this.page = firstPage ? firstPage : parseInt(this.page) + 1;
+          this.fetchData();
+        }
+      },
+
+      prev(lastPage = null) {
+        if (this.pageParams.prev_page_url) {
+          this.page = lastPage ? lastPage : parseInt(this.page) - 1;
+          this.fetchData();
+        }
+      },
+
+      viewSupplier(supplier) {
+        this.showModalContent = true;
+        this.supplierItem = supplier;
+        return $(`#viewSupplier`).modal("toggle");
+      },
+      edit(item) {
+        this.showModalContent = false;
+        $(`#viewSupplier`).modal("toggle");
+
+        return this.$router.push({
+          name: "suppliersEdit",
+          params: { id: item },
+        });
+      },
+
+      searchEvent(data) {
+        get(this.urlToFetchOrders + data)
+          .then(({ data }) => this.prepareList(data))
+          .catch(() => Flash.setError("Error Preparing form"));
+      },
+
+      ...mapActions("ModalAccess", [
+        "addCustomerOptionsModalsToDom",
+        "removeCustomerOptionsModalsFromDom",
+      ]),
     },
 
-    viewSupplier(supplier) {
-      this.showModalContent = true;
-      this.supplierItem = supplier;
-      return $(`#viewSupplier`).modal("toggle");
-    },
-    edit(item) {
-      this.showModalContent = false;
-      $(`#viewSupplier`).modal("toggle");
+    created() {
+      this.$props.withBranchFilter &&
+        this.filters.unshift({ name: "state", model: "state_id" });
+      this.addCustomerOptionsModalsToDom();
 
-      return this.$router.push({ name: "suppliersEdit", params: { id: item } });
+      this.$prepareStates();
+      this.fetchData();
     },
 
-    searchEvent(data) {
-      get(this.urlToFetchOrders + data)
-        .then(({ data }) => this.prepareList(data))
-        .catch(() => Flash.setError("Error Preparing form"));
+    filters: {
+      status: function (value) {
+        if (value === 1) {
+          return "Active";
+        } else return "Inactive";
+      },
     },
-
-    ...mapActions("ModalAccess", [
-      "addCustomerOptionsModalsToDom",
-      "removeCustomerOptionsModalsFromDom",
-    ]),
-  },
-
-  created() {
-    this.$props.withBranchFilter &&
-      this.filters.unshift({ name: "state", model: "state_id" });
-    this.addCustomerOptionsModalsToDom();
-
-    this.$prepareStates();
-    this.fetchData();
-  },
-
-  filters: {
-    status: function (value) {
-      if (value === 1) {
-        return "Active";
-      } else return "Inactive";
-    },
-  },
-};
+  };
 </script>
 
 <style scoped>
-.flex-row-bottom {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  justify-content: flex-end;
-}
-.green {
-  color: green;
-}
-.red {
-  color: red;
-}
+  .flex-row-bottom {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
+  }
+  .green {
+    color: green;
+  }
+  .red {
+    color: red;
+  }
 </style>

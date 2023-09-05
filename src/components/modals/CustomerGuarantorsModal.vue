@@ -82,118 +82,118 @@
 </template>
 
 <script>
-import paystack from 'vue-paystack'
-import { post } from '../../utilities/api'
-import { EventBus } from '../../utilities/event-bus'
-import flash from '../../utilities/flash'
+  import paystack from "vue-paystack";
+  import { post } from "../../utilities/api";
+  import { EventBus } from "../../utilities/event-bus";
+  import flash from "../../utilities/flash";
 
-export default {
-  components: {
-    paystack,
-  },
-  props: {
-    modalItem: {
-      required: true,
+  export default {
+    components: {
+      paystack,
     },
-    customer: {
-      required: true,
+    props: {
+      modalItem: {
+        required: true,
+      },
+      customer: {
+        required: true,
+      },
     },
-  },
-  data() {
-    return {
-      verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
-      guarantor_paystack: '/api/guarantor_paystack',
-      paystackkey: process.env.VUE_APP_PAYSTACK_KEY || '',
-      paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || '',
-      authorization_code: null,
-      paystackReference: null,
-    }
-  },
-
-  methods: {
-    closeModal() {
-      this.$emit('close')
+    data() {
+      return {
+        verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
+        guarantor_paystack: "/api/guarantor_paystack",
+        paystackkey: process.env.VUE_APP_PAYSTACK_KEY || "",
+        paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || "",
+        authorization_code: null,
+        paystackReference: null,
+      };
     },
-    async processPaymentPayStackPayment(resp) {
-      this.paystackReference = resp.reference
-      if (resp.status == 'success' && resp.message == 'Approved') {
-        await this.verifyPaystackPayment()
-          .then(data => {
-            if (data.status && data.message == 'Verification successful') {
-              this.$LIPS(true)
-              let guarantorName = `${data.data.customer.first_name} ${data.data.customer.last_name}`
 
-              this.authorization_code =
-                data.data.authorization.authorization_code
+    methods: {
+      closeModal() {
+        this.$emit("close");
+      },
+      async processPaymentPayStackPayment(resp) {
+        this.paystackReference = resp.reference;
+        if (resp.status == "success" && resp.message == "Approved") {
+          await this.verifyPaystackPayment()
+            .then((data) => {
+              if (data.status && data.message == "Verification successful") {
+                this.$LIPS(true);
+                let guarantorName = `${data.data.customer.first_name} ${data.data.customer.last_name}`;
 
-              post(this.guarantor_paystack, {
-                customer_id: this.customer.id,
-                auth_code: this.authorization_code,
-                guarantor_email: data.data.customer.email,
-                guarantor_name:
-                  guarantorName === ' ' ? 'test user' : guarantorName,
-              })
-                .then(() => {
-                  this.done('AuthCode set successfully!')
+                this.authorization_code =
+                  data.data.authorization.authorization_code;
+
+                post(this.guarantor_paystack, {
+                  customer_id: this.customer.id,
+                  auth_code: this.authorization_code,
+                  guarantor_email: data.data.customer.email,
+                  guarantor_name:
+                    guarantorName === " " ? "test user" : guarantorName,
                 })
-                .catch(err => {
-                  flash.setError(err.message)
-                })
-                .finally(() => {})
-            }
-          })
-          .catch(error => {
-            this.$displayErrorMessage(error)
-          })
-      }
-    },
-
-    async verifyPaystackPayment() {
-      const url = `${this.verifyPaymentUrl}${this.paystackReference}`
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${process.env.VUE_APP_PAYSTACK_SECRET_KEY}`,
-        },
-      })
-      return response.json()
-    },
-    validateEmail(mail) {
-      {
-        // eslint-disable-next-line no-useless-escape
-        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
-          return true
+                  .then(() => {
+                    this.done("AuthCode set successfully!");
+                  })
+                  .catch((err) => {
+                    flash.setError(err.message);
+                  })
+                  .finally(() => {});
+              }
+            })
+            .catch((error) => {
+              this.$displayErrorMessage(error);
+            });
         }
+      },
 
-        return false
-      }
-    },
-    closePayStackModal: () => {},
-    done(message) {
-      flash.setSuccess(message)
-      this.$scrollToTop()
-      this.message = null
-      EventBus.$emit('updateUser', this.customer.id)
-    },
-  },
+      async verifyPaystackPayment() {
+        const url = `${this.verifyPaymentUrl}${this.paystackReference}`;
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${process.env.VUE_APP_PAYSTACK_SECRET_KEY}`,
+          },
+        });
+        return response.json();
+      },
+      validateEmail(mail) {
+        {
+          // eslint-disable-next-line no-useless-escape
+          if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+            return true;
+          }
 
-  computed: {
-    reference() {
-      let text = ''
-      let possible =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-
-      for (let i = 0; i < 10; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length))
-      return text
+          return false;
+        }
+      },
+      closePayStackModal: () => {},
+      done(message) {
+        flash.setSuccess(message);
+        this.$scrollToTop();
+        this.message = null;
+        EventBus.$emit("updateUser", this.customer.id);
+      },
     },
-  },
-}
+
+    computed: {
+      reference() {
+        let text = "";
+        let possible =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for (let i = 0; i < 10; i++)
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+        return text;
+      },
+    },
+  };
 </script>
 
 <style lang="scss" scoped>
-.adjusted {
-  height: 70vh;
-  overflow-y: auto;
-}
+  .adjusted {
+    height: 70vh;
+    overflow-y: auto;
+  }
 </style>

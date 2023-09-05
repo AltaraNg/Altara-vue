@@ -41,17 +41,19 @@
                   v-model="account"
                 >
                   <option :value="0">Self</option>
-                  <template v-if="
+                  <template
+                    v-if="
                       customer !== null &&
-                        customer.guarantor_paystack.length > 0
-                    ">
-                    <option
-                    
-                    v-for="guarantor in customer.guarantor_paystack"
-                    :value="guarantor.id"
-                    :key="guarantor.id"
-                    >{{ guarantor.guarantor_name }}</option
+                      customer.guarantor_paystack.length > 0
+                    "
                   >
+                    <option
+                      v-for="guarantor in customer.guarantor_paystack"
+                      :value="guarantor.id"
+                      :key="guarantor.id"
+                    >
+                      {{ guarantor.guarantor_name }}
+                    </option>
                   </template>
                 </select>
               </div>
@@ -92,95 +94,95 @@
 </template>
 
 <script>
-import Vue from 'vue'
+  import Vue from "vue";
 
-import { post } from '../../utilities/api'
-import Flash from '../../utilities/flash'
-import { EventBus } from '../../utilities/event-bus'
-import CurrencyInput from '../CurrencyInput.vue'
+  import { post } from "../../utilities/api";
+  import Flash from "../../utilities/flash";
+  import { EventBus } from "../../utilities/event-bus";
+  import CurrencyInput from "../CurrencyInput.vue";
 
-export default {
-  components: {
-    CurrencyInput,
-  },
-  data() {
-    return {
-      order: null,
-      amount: null,
-      customer: null,
-      account: 0,
-      inputOptions: {
-        currency: 'NGN',
-        currencyDisplay: 'symbol',
-        hideCurrencySymbolOnFocus: false,
-        hideGroupingSeparatorOnFocus: false,
-        hideNegligibleDecimalDigitsOnFocus: true,
-        autoDecimalDigits: false,
-        useGrouping: true,
-        accountingSign: false,
+  export default {
+    components: {
+      CurrencyInput,
+    },
+    data() {
+      return {
+        order: null,
+        amount: null,
+        customer: null,
+        account: 0,
+        inputOptions: {
+          currency: "NGN",
+          currencyDisplay: "symbol",
+          hideCurrencySymbolOnFocus: false,
+          hideGroupingSeparatorOnFocus: false,
+          hideNegligibleDecimalDigitsOnFocus: true,
+          autoDecimalDigits: false,
+          useGrouping: true,
+          accountingSign: false,
+        },
+      };
+    },
+    methods: {
+      closePayStackModal: () => {},
+      async chargeCustomerWithCustomDirectDebit() {
+        this.$LIPS(true);
+        try {
+          const response = await post("api/charge/customer", {
+            order_id: this.order.id,
+            amount: this.amount,
+            account: this.account,
+          });
+          if (response.data.status == "success") {
+            this.$swal({
+              icon: "success",
+              title: response.data.message,
+            });
+            this.done(response.data.message);
+          } else {
+            Flash.setError(response.data.message);
+          }
+        } catch (error) {
+          this.$LIPS(false);
+          if (error.response) {
+            this.$displayErrorMessage(error.response.data.message);
+          } else {
+            this.$displayErrorMessage("Something went wrong");
+          }
+          this.toggleModal();
+        }
+        return;
       },
-    }
-  },
-  methods: {
-    closePayStackModal: () => {},
-    async chargeCustomerWithCustomDirectDebit() {
-      this.$LIPS(true)
-      try {
-        const response = await post('api/charge/customer', {
-          order_id: this.order.id,
-          amount: this.amount,
-          account: this.account,
-        })
-        if (response.data.status == 'success') {
-          this.$swal({
-            icon: 'success',
-            title: response.data.message,
-          })
-          this.done(response.data.message)
-        } else {
-          Flash.setError(response.data.message)
-        }
-      } catch (error) {
-        this.$LIPS(false)
-        if (error.response) {
-          this.$displayErrorMessage(error.response.data.message)
-        } else {
-          this.$displayErrorMessage('Something went wrong')
-        }
-        this.toggleModal()
-      }
-      return
-    },
-    async handleModalToggle({ amount, order, customer }) {
-      await Vue.set(this.$data, 'order', order)
-      await Vue.set(this.$data, 'amount', amount)
-      await Vue.set(this.$data, 'customer', customer)
+      async handleModalToggle({ amount, order, customer }) {
+        await Vue.set(this.$data, "order", order);
+        await Vue.set(this.$data, "amount", amount);
+        await Vue.set(this.$data, "customer", customer);
 
-      this.toggleModal()
+        this.toggleModal();
+      },
+      toggleModal() {
+        $("#CustomDirectDebitModal").modal("toggle");
+      },
+      resetValues() {
+        this.account = 0;
+        this.amount = null;
+      },
+      done(message) {
+        this.resetValues();
+        Flash.setSuccess(message);
+        this.$scrollToTop();
+        EventBus.$emit("updateUser", this.order.customer_id);
+        this.toggleModal();
+        this.message = null;
+      },
     },
-    toggleModal() {
-      $('#CustomDirectDebitModal').modal('toggle')
+    mounted() {
+      EventBus.$on("CustomDirectDebitModal", this.handleModalToggle);
     },
-    resetValues() {
-      this.account = 0
-      this.amount = null
-    },
-    done(message) {
-      this.resetValues()
-      Flash.setSuccess(message)
-      this.$scrollToTop()
-      EventBus.$emit('updateUser', this.order.customer_id)
-      this.toggleModal()
-      this.message = null
-    },
-  },
-  mounted() {
-    EventBus.$on('CustomDirectDebitModal', this.handleModalToggle)
-  },
-}
+  };
 </script>
 <style scoped>
-.my-modal {
-  font-size: 1.5em;
-}
+  .my-modal {
+    font-size: 1.5em;
+  }
 </style>

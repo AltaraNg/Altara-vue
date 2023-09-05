@@ -9,10 +9,13 @@
       <transition name="fade">
         <div v-if="customer && show">
           <!--                    <div class="attendance-hea TODO:: cleanup d">-->
-          <customer-profile :view-customer="customer" :verification-list="verificationList" />
+          <customer-profile
+            :view-customer="customer"
+            :verification-list="verificationList"
+          />
           <!--             // TODO:: cleanup       </div>-->
-          
-          <div style="display: flex; ">
+
+          <div style="display: flex">
             <custom-header
               :title="'All order(s)'"
               @click.native="selectType('order')"
@@ -30,7 +33,7 @@
                   ? 'opacity: 0.2; cursor:pointer;'
                   : 'cursor:pointer; '
               "
-              style="margin-left:-10px"
+              style="margin-left: -10px"
             />
             <custom-header
               :title="'Verifications'"
@@ -41,7 +44,7 @@
                   ? 'opacity: 0.2; cursor:pointer;'
                   : 'cursor:pointer; '
               "
-              style="margin-left:-10px"
+              style="margin-left: -10px"
             />
 
             <custom-header
@@ -53,7 +56,7 @@
                   ? 'opacity: 0.2; cursor:pointer;'
                   : 'cursor:pointer; '
               "
-              style="margin-left:-10px"
+              style="margin-left: -10px"
             />
           </div>
           <hr />
@@ -77,7 +80,7 @@
                 class="tab-pane active text-center"
                 v-if="
                   (show && customer.orders.length > 0) ||
-                    customer.new_orders.length > 0
+                  customer.new_orders.length > 0
                 "
               >
                 <div
@@ -86,11 +89,7 @@
                   :key="order.index"
                 >
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
                   >
                     <span class="user mx-auto">{{ index + 1 }}</span>
                     <span v-if="$route.meta.customSMS">
@@ -102,75 +101,38 @@
                     </span>
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    user-name
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
                   >
                     {{ formatDate(order.order.order_date) }}
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    user-name
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
                   >
                     {{ order.order.id }}
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-3 col-md col-lg
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
                   >
                     {{ order.order.store_product.product_name }}
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
                   >
                     {{ $formatCurrency(order.order.product_price) }}
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
                   >
                     {{ order.order.sales_category.name }}
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
                   >
                     {{ customer.employment_status }}
                   </div>
 
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
                   >
                     <button
                       :class="
@@ -201,11 +163,7 @@
                   :key="index"
                 >
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
                     style="max-width: 100px"
                   >
                     <span
@@ -230,28 +188,17 @@
                   </div>
 
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
                   >
                     {{ formatDate(order.order_date) }}
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    user-name
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
                   >
                     <span
                       v-if="
                         order.order_type === 'Altara Pay' &&
-                          order.payment_gateway === 'Paystack'
+                        order.payment_gateway === 'Paystack'
                       "
                     >
                       <PaystackModal
@@ -265,50 +212,44 @@
                       ></PaystackModal>
                     </span>
                     <div>
-                    <span
-                      v-if="showDirectDebit(order)"
-                    >
-                      <CustomDirectDebitModalButton 
-                        :order="order"
-                        :key="order.id"
-                        :customer="customer"
-                      ></CustomDirectDebitModalButton>
-                    </span>
-                  
+                      <span v-if="showDirectDebit(order)">
+                        <CustomDirectDebitModalButton
+                          :order="order"
+                          :key="order.id"
+                          :customer="customer"
+                        ></CustomDirectDebitModalButton>
+                      </span>
                     </div>
                     {{ order.order_number }}
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-3 col-md col-lg
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center"
                   >
-                  
-                    {{ order.financed_by === 'altara-bnpl'? order.bnpl_vendor_product.name : order.product.name | truncate(50) }}
-                    <span v-if="order.missMatchedPayments.length > 0" data-toggle="tooltip" data-placement="top" title="The debit account does not correspond to the account recorded on the bank statement." class="badge badge-secondary pointer">
-                    <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>      
-                  </span>
+                    {{
+                      order.financed_by === "altara-bnpl"
+                        ? order.bnpl_vendor_product.name
+                        : order.product.name | truncate(50)
+                    }}
+                    <span
+                      v-if="order.missMatchedPayments.length > 0"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="The debit account does not correspond to the account recorded on the bank statement."
+                      class="badge badge-secondary pointer"
+                    >
+                      <i
+                        class="fa fa-exclamation-circle text-danger"
+                        aria-hidden="true"
+                      ></i>
+                    </span>
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
                   >
                     {{ $formatCurrency(order.product_price) }}
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
                   >
                     {{ order.sales_type.name }}
                     <discount
@@ -317,43 +258,31 @@
                       :percent="percentage(order)"
                     />
                   </div>
-                  
 
-<div
-    class="
-        col-12 col-xs-2 col-md col-lg
-        d-flex
-        align-items-center
-        justify-content-center"
->
-    <button
-        :disabled="order.business_type === 'Cash n Carry'"
-        :class="statusOrder(order.status)"
-        @click="displayAmortization(order)"
-        class="btn status my-sm-2"
-    >
-        View Plan
-        <i
-            :class="statusOrderIcon(order.status)"
-            class="fas ml-3"
-            style="font-size: 1.4rem"
-        ></i>
-    </button>
-</div>
-
+                  <div
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center justify-content-center"
+                  >
+                    <button
+                      :disabled="order.business_type === 'Cash n Carry'"
+                      :class="statusOrder(order.status)"
+                      @click="displayAmortization(order)"
+                      class="btn status my-sm-2"
+                    >
+                      View Plan
+                      <i
+                        :class="statusOrderIcon(order.status)"
+                        class="fas ml-3"
+                        style="font-size: 1.4rem"
+                      ></i>
+                    </button>
+                  </div>
                 </div>
               </div>
 
               <div class="tab-pane active text-center" v-else>
                 <div class="mb-3 row attendance-item">
                   <div
-                    class="
-                    col
-                    d-flex
-                    light-heading
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col d-flex light-heading align-items-center justify-content-center"
                   >
                     No records found!
                   </div>
@@ -381,62 +310,38 @@
                   class="col light-heading"
                   v-for="(header, index) in recommendationHeaders"
                   :key="index"
-                  style="text-align: left; "
+                  style="text-align: left"
                 >
                   {{ header }}
                 </div>
               </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
-              <div
-                class="tab-pane active "
-                v-if="recommendationList.length > 0"
-              >
+              <div class="tab-pane active" v-if="recommendationList.length > 0">
                 <div
                   class="mb-3 row attendance-item"
                   v-for="(recommendation, index) in recommendationList"
                   :key="index"
                 >
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-
-                  "
-                    style="max-width: 150px; margin-left: -15px;"
+                    class="col-12 col-xs-2 col-md col-lg d-flex"
+                    style="max-width: 150px; margin-left: -15px"
                   >
                     <span class="user mx-auto">{{ index + 1 }}</span>
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    user-name
-                    align-items-center
-
-                  "
-                    style="padding-left:30px"
+                    class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center"
+                    style="padding-left: 30px"
                   >
                     {{ formatDate(recommendation.created_at) }}
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    user-name
-                    align-items-center
-
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center"
                   >
                     {{ recommendation.type }}
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-3 col-md col-lg
-                    d-flex
-                    align-items-center
-
-                  "
+                    class="col-12 col-xs-3 col-md col-lg d-flex align-items-center"
                   >
                     {{
                       $formatCurrency(
@@ -445,33 +350,18 @@
                     }}
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
                   >
                     {{ JSON.parse(recommendation.input_data).duration }}
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
                   >
                     {{ computeDownpayment(recommendation) }}
                   </div>
 
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
                   >
                     <button
                       @click="displayActiveRecommendation(recommendation)"
@@ -495,13 +385,7 @@
               >
                 <div class="mb-3 row attendance-item">
                   <div
-                    class="
-                    col
-                    d-flex
-                    light-heading
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col d-flex light-heading align-items-center justify-content-center"
                   >
                     No records found!
                   </div>
@@ -520,70 +404,45 @@
                   class="col light-heading"
                   v-for="(header, index) in verificationHeaders"
                   :key="index"
-                  style="text-align: left; "
+                  style="text-align: left"
                 >
                   {{ header }}
                 </div>
               </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
-              <div class="tab-pane active " v-if="verificationList.length > 0">
+              <div class="tab-pane active" v-if="verificationList.length > 0">
                 <div
                   class="mb-3 row attendance-item text-center"
                   v-for="(verification, index) in verificationList"
                   :key="index"
                 >
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-
-                  "
-                    style="max-width: 150px; margin-left: -15px;"
+                    class="col-12 col-xs-2 col-md col-lg d-flex"
+                    style="max-width: 150px; margin-left: -15px"
                   >
                     <span class="user mx-auto">{{ index + 1 }}</span>
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    user-name
-                    align-items-center
-
-                  "
-                    style="padding-left:30px"
+                    class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center"
+                    style="padding-left: 30px"
                   >
                     {{ formatDate(verification.created_at) }}
                   </div>
 
                   <div
-                    class="
-                    col-12 col-xs-3 col-md col-lg
-                    d-flex
-                    align-items-center
-
-                  "
+                    class="col-12 col-xs-3 col-md col-lg d-flex align-items-center"
                   >
                     {{ JSON.parse(verification.input_data).verifiedBy }}
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-3 col-md col-lg
-                    d-flex
-                    align-items-center
-
-                  "
+                    class="col-12 col-xs-3 col-md col-lg d-flex align-items-center"
                   >
                     {{ JSON.parse(verification.input_data).status }}
                   </div>
 
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
                   >
                     <button
                       @click="displayActiveVerification(verification)"
@@ -601,13 +460,7 @@
               >
                 <div class="mb-3 row attendance-item">
                   <div
-                    class="
-                    col
-                    d-flex
-                    light-heading
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col d-flex light-heading align-items-center justify-content-center"
                   >
                     No records found!
                   </div>
@@ -615,7 +468,6 @@
               </div>
             </div>
           </div>
-
 
           <div v-if="states.credit_report" class="mb-5">
             <div class="mt-5 mb-3 attendance-head">
@@ -627,82 +479,61 @@
                   class="col light-heading"
                   v-for="(header, index) in creditReportHeaders"
                   :key="index"
-                  style="text-align: left; "
+                  style="text-align: left"
                 >
                   {{ header }}
                 </div>
               </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
-              <div class="tab-pane active " v-if="creditReportList.length > 0">
+              <div class="tab-pane active" v-if="creditReportList.length > 0">
                 <div
                   class="mb-3 row attendance-item text-center"
                   v-for="(creditReport, index) in creditReportList"
                   :key="index"
                 >
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-
-                  "
-                    style="max-width: 150px; margin-left: -15px;"
+                    class="col-12 col-xs-2 col-md col-lg d-flex"
+                    style="max-width: 150px; margin-left: -15px"
                   >
-                    <span class="user mx-auto text-white" :class="[JSON.parse(creditReport.input_data).status === 'declined' ? 'bg-danger' : 'bg-success']">{{ index + 1 }}</span>
+                    <span
+                      class="user mx-auto text-white"
+                      :class="[
+                        JSON.parse(creditReport.input_data).status ===
+                        'declined'
+                          ? 'bg-danger'
+                          : 'bg-success',
+                      ]"
+                      >{{ index + 1 }}</span
+                    >
                   </div>
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    user-name
-                    align-items-center
-
-                  "
-                    style="padding-left:30px"
+                    class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center"
+                    style="padding-left: 30px"
                   >
                     {{ formatDate(creditReport.created_at) }}
                   </div>
 
                   <div
-                    class="
-                    col-12 col-xs-3 col-md col-lg
-                    d-flex
-                    align-items-center
-
-                  "
+                    class="col-12 col-xs-3 col-md col-lg d-flex align-items-center"
                   >
                     {{ JSON.parse(creditReport.input_data).verifiedBy }}
                   </div>
 
                   <div
-                    class="
-                    col-12 col-xs-3 col-md col-lg
-                    d-flex
-                    align-items-center
-
-                  "
+                    class="col-12 col-xs-3 col-md col-lg d-flex align-items-center"
                   >
                     {{ JSON.parse(creditReport.input_data).customer_type }}
                   </div>
 
                   <div
-                    class="
-                    col-12 col-xs-3 col-md col-lg
-                    d-flex
-                    align-items-center
-
-                  "
+                    class="col-12 col-xs-3 col-md col-lg d-flex align-items-center"
                   >
-                    {{ JSON.parse(creditReport.input_data).status || 'upper' }}
+                    {{ JSON.parse(creditReport.input_data).status || "upper" }}
                   </div>
 
                   <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-
-                  "
+                    class="col-12 col-xs-2 col-md col-lg d-flex align-items-center"
                   >
                     <button
                       @click="displayActiveCreditReport(creditReport)"
@@ -720,13 +551,7 @@
               >
                 <div class="mb-3 row attendance-item">
                   <div
-                    class="
-                    col
-                    d-flex
-                    light-heading
-                    align-items-center
-                    justify-content-center
-                  "
+                    class="col d-flex light-heading align-items-center justify-content-center"
                   >
                     No records found!
                   </div>
@@ -881,8 +706,9 @@
                         <tr>
                           <th>Repayment</th>
                           <td
-                            v-for="(caption,
-                            index) in activeOrder.repaymentCaptions"
+                            v-for="(
+                              caption, index
+                            ) in activeOrder.repaymentCaptions"
                             v-html="caption"
                             :key="index"
                           ></td>
@@ -909,8 +735,9 @@
                           <th>Status</th>
                           <td
                             :class="status.class"
-                            v-for="(status,
-                            index) in activeOrder.paymentStatusClasses"
+                            v-for="(
+                              status, index
+                            ) in activeOrder.paymentStatusClasses"
                             :key="index"
                           >
                             <i :class="status.icon" class="fas"></i>
@@ -919,8 +746,9 @@
                         <tr class="table-separator">
                           <th>Repayment Amount</th>
                           <td
-                            v-for="(payment,
-                            index) in activeOrder.amountsToBePaid"
+                            v-for="(
+                              payment, index
+                            ) in activeOrder.amountsToBePaid"
                             :key="index"
                           >
                             {{ $formatCurrency(payment) }}
@@ -929,8 +757,9 @@
                         <tr>
                           <th>Actual Amount Paid</th>
                           <td
-                            v-for="(payment,
-                            index) in activeOrder.actualAmountsPaid"
+                            v-for="(
+                              payment, index
+                            ) in activeOrder.actualAmountsPaid"
                             :key="index"
                             @click="updateAmmo(armo)"
                           >
@@ -941,8 +770,9 @@
                           <th>Payment Method</th>
                           <td
                             class="text-capitalize"
-                            v-for="(repaymentMethod,
-                            index) in activeOrder.paymentMethods"
+                            v-for="(
+                              repaymentMethod, index
+                            ) in activeOrder.paymentMethods"
                             :key="index"
                           >
                             {{
@@ -957,8 +787,9 @@
                           <th>Bank</th>
                           <td
                             class="text-capitalize"
-                            v-for="(repaymentBank,
-                            key) in activeOrder.paymentBanks"
+                            v-for="(
+                              repaymentBank, key
+                            ) in activeOrder.paymentBanks"
                             :key="key"
                           >
                             {{ Order.convertToName(repaymentBank, "banks") }}
@@ -1128,13 +959,7 @@
                           <th>
                             <button
                               @click="deletePayment(index)"
-                              class="
-                                ml-2
-                                btn
-                                status status-sm
-                                my-sm-2
-                                not-approved
-                              "
+                              class="ml-2 btn status status-sm my-sm-2 not-approved"
                             >
                               <i class="fas fa-times"></i>
                             </button>
@@ -1175,9 +1000,9 @@
             </div>
             <div v-else>
               <new-order-amortization
-              :key="bootx_out"
-              @close="destroyModal"
-              :status="order.status"
+                :key="bootx_out"
+                @close="destroyModal"
+                :status="order.status"
                 :lateFEES="lateFEES"
                 :order="order"
                 :customer="customer"
@@ -1226,13 +1051,11 @@
         <div
           class="modal-dialog modal-md"
           role="document"
-          style="margin-top: 10%;"
+          style="margin-top: 10%"
         >
           <div class="modal-content" v-if="displayMore">
             <div class="modal-header py-2">
-              <h6 class="modal-title py-1">
-                Input Details
-              </h6>
+              <h6 class="modal-title py-1">Input Details</h6>
               <a aria-label="Close" class="close py-1" data-dismiss="modal">
                 <span aria-hidden="true" class="modal-close text-danger">
                   <i class="fas fa-times"></i>
@@ -1242,37 +1065,55 @@
 
             <div class="modal-body">
               <div v-if="activeRecommendation.type !== 'formal'">
-                <h6 class="modal-title py-1">
-                  Account Balance
-                </h6>
+                <h6 class="modal-title py-1">Account Balance</h6>
                 <table
                   class="styled-table"
-                  style="margin-bottom: 25px; width:100%"
+                  style="margin-bottom: 25px; width: 100%"
                 >
                   <thead>
-                    <tr style="width:100%">
+                    <tr style="width: 100%">
                       <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                        style="
+                          width: 20%;
+                          border: 1px lightgray solid;
+                          text-align: center;
+                        "
                       >
                         Month
                       </th>
                       <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                        style="
+                          width: 20%;
+                          border: 1px lightgray solid;
+                          text-align: center;
+                        "
                       >
                         First Week
                       </th>
                       <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                        style="
+                          width: 20%;
+                          border: 1px lightgray solid;
+                          text-align: center;
+                        "
                       >
                         Second Week
                       </th>
                       <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                        style="
+                          width: 20%;
+                          border: 1px lightgray solid;
+                          text-align: center;
+                        "
                       >
                         Third Week
                       </th>
                       <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                        style="
+                          width: 20%;
+                          border: 1px lightgray solid;
+                          text-align: center;
+                        "
                       >
                         Fourth Week
                       </th>
@@ -1281,12 +1122,12 @@
                   <tbody>
                     <tr>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         Month 1
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           $formatCurrency(
@@ -1296,7 +1137,7 @@
                         }}
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           $formatCurrency(
@@ -1306,7 +1147,7 @@
                         }}
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           $formatCurrency(
@@ -1316,7 +1157,7 @@
                         }}
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           $formatCurrency(
@@ -1328,12 +1169,12 @@
                     </tr>
                     <tr>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         Month 2
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           $formatCurrency(
@@ -1343,7 +1184,7 @@
                         }}
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           $formatCurrency(
@@ -1353,7 +1194,7 @@
                         }}
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           $formatCurrency(
@@ -1363,7 +1204,7 @@
                         }}
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           $formatCurrency(
@@ -1375,12 +1216,12 @@
                     </tr>
                     <tr>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         Month 3
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           $formatCurrency(
@@ -1390,7 +1231,7 @@
                         }}
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           $formatCurrency(
@@ -1400,7 +1241,7 @@
                         }}
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           $formatCurrency(
@@ -1410,7 +1251,7 @@
                         }}
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           $formatCurrency(
@@ -1425,9 +1266,9 @@
                   </tbody>
                 </table>
               </div>
-              <div v-else style="display:flex; align-items: center;">
+              <div v-else style="display: flex; align-items: center">
                 <h6 class="modal-title py-1 pr-4">Salary:</h6>
-                <div style="font-size: 16px;">
+                <div style="font-size: 16px">
                   {{
                     $formatCurrency(
                       JSON.parse(activeRecommendation.input_data).salary
@@ -1442,32 +1283,46 @@
                     : 'margin-top:25px'
                 "
               >
-                <h6 class="modal-title py-1">
-                  Preferred Plan
-                </h6>
+                <h6 class="modal-title py-1">Preferred Plan</h6>
                 <table
                   class="styled-table"
-                  style="margin-bottom: 15px; width:100%"
+                  style="margin-bottom: 15px; width: 100%"
                 >
                   <thead>
-                    <tr style="width:100%">
+                    <tr style="width: 100%">
                       <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                        style="
+                          width: 20%;
+                          border: 1px lightgray solid;
+                          text-align: center;
+                        "
                       >
                         Total Price
                       </th>
                       <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                        style="
+                          width: 20%;
+                          border: 1px lightgray solid;
+                          text-align: center;
+                        "
                       >
                         Plan
                       </th>
                       <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                        style="
+                          width: 20%;
+                          border: 1px lightgray solid;
+                          text-align: center;
+                        "
                       >
                         Duration
                       </th>
                       <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
+                        style="
+                          width: 20%;
+                          border: 1px lightgray solid;
+                          text-align: center;
+                        "
                       >
                         Cycle
                       </th>
@@ -1476,7 +1331,7 @@
                   <tbody>
                     <tr>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           $formatCurrency(
@@ -1486,19 +1341,19 @@
                         }}
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{ JSON.parse(activeRecommendation.input_data).plan }}
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{
                           JSON.parse(activeRecommendation.input_data).duration
                         }}
                       </td>
                       <td
-                        style=" border:1px lightgray solid; text-align: center;"
+                        style="border: 1px lightgray solid; text-align: center"
                       >
                         {{ JSON.parse(activeRecommendation.input_data).cycle }}
                       </td>
@@ -1508,8 +1363,8 @@
                   </tbody>
                 </table>
               </div>
-              <div style="display:flex; align-items: center;  ">
-                <h6 class="modal-title  pr-4">Recommended Plan:</h6>
+              <div style="display: flex; align-items: center">
+                <h6 class="modal-title pr-4">Recommended Plan:</h6>
                 <div
                   :style="
                     computeDownpayment(activeRecommendation) ==
@@ -1517,18 +1372,25 @@
                       ? 'color:red'
                       : 'color:green'
                   "
-                  style="font-size: 16px;"
+                  style="font-size: 16px"
                 >
                   {{ computeDownpayment(activeRecommendation) }}
                 </div>
               </div>
             </div>
-            <div class="px-5 pb-4" style="display:flex; justify-content:end">
+            <div class="px-5 pb-4" style="display: flex; justify-content: end">
               <button
-                class=" mt-3 px-5 py-3"
+                class="mt-3 px-5 py-3"
                 data-dismiss="modal"
                 href="javascript:"
-                style="text-align: right; border:none; border-radius: 3px; background-color: #074A74; color: white; font-weight: 700;"
+                style="
+                  text-align: right;
+                  border: none;
+                  border-radius: 3px;
+                  background-color: #074a74;
+                  color: white;
+                  font-weight: 700;
+                "
               >
                 Cancel
               </button>
@@ -1568,693 +1430,703 @@
   </transition>
 </template>
 <script>
-import { mapGetters } from "vuex"
-import Vue from "vue"
-import { log } from "../../../utilities/log"
-import Auth from "../../../utilities/auth"
-import Flash from "../../../utilities/flash"
-import { get, post, put } from "../../../utilities/api"
-import CustomHeader from "../../../components/customHeader"
-import AutoComplete from "../../../components/AutoComplete"
-import NewOrderAmortization from "../../../components/NewOrderAmortization"
-import CustomerProfile from "../../../components/CustomerProfile"
-import { Order, OrderWithPromiseCall } from "../../../utilities/Amortization"
-import CustomSMSButton from "../../../components/CustomSMSButton/CustomSMSButton"
-import AutocompleteSearch from "../../../components/AutocompleteSearch/AutocompleteSearch"
-import {
-  getOrderStatus,
-  getOrderStatusClass,
-} from "../../../components/order/orderStatusCssClass"
-import ViewVerificationCheckList from "../../../components/modals/ViewVerificationCheckList.vue"
-import ViewCreditReportModal from "../../../components/modals/ViewCreditReportModal.vue"
-import PaymentLog from "../../../components/PaymentLog"
-import DatePicker from "vue2-datepicker"
-import "vue2-datepicker/index.css"
-import Discount from "../../../components/discount.vue"
-import PaystackModal from "../../../components/Paystack/PaystackModal"
-import CustomDirectDebitModalButton from "../../../components/Paystack/CustomDirectDebitModalButton.vue"
-import { EventBus } from "../../../utilities/event-bus"
-import Roles from "../../../utilities/roles"
-import { selectType } from "../../../utilities/log.js"
-export default {
-  components: {
-    CustomHeader,
-    CustomerProfile,
-    CustomSMSButton,
-    AutoComplete,
-    AutocompleteSearch,
-    PaymentLog,
-    NewOrderAmortization,
-    DatePicker,
-    Discount,
-    PaystackModal,
-    CustomDirectDebitModalButton,
-  },
-  props: { logger: null },
-
-  data() {
-    return {
-      displayMore: false,
-      activeRecommendation: null,
-      recommendationList: null,
-      verificationList: null,
-      creditReportList: null,
-      states: {
-        order: true,
-        recommendation: false,
-        verification: false,
-        credit_report: false
-      },
-      editOrder: {},
-      Order: Order,
-      newOrder: false,
-      customer: null,
-      order: {},
-      customer_id: "",
-      user: {
-        name: Auth.state.user_name,
-        id: Auth.state.user_id,
-      },
-      show: false,
-      selectedProduct: {},
-      showModal: false,
-      showModalContent: false,
-      ammo_item: {},
-      actual_amount: null,
-      activeOrder: null,
-      authorization_code: null,
-      headers: [
-        "Date",
-        "Order No.",
-        "Product Name",
-        "Total Product Price",
-        "Type",
-        "Repayment Plans",
-      ],
-      recommendationHeaders: [
-        "Date",
-        "Type",
-        "Product Price",
-        "Duration",
-        "Recommended Plans",
-        "Input Data",
-      ],
-      verificationHeaders: ["Date", "Verified By", "Status", "More Information"],
-      creditReportHeaders: ["Date", "Compiled By", "Report Type", "Status", "More Information"],
-      products: [],
-      paymentForm: { payments: [] },
-      paymentFormType: "add",
-      showOrdermodal: false,
-      currentOrder: {},
-      apiURL: {
-        product: `/api/product`,
-      },
-      roles: Roles,
-      clickedOrder: null,
-      paymentMeths: [],
-      lateFEES: null,
-      showPaystack: false,
-      ShowCustomDirectDebitModal: false,
-      verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
-      paystack_auth_code_url: "/api/pay_stack_auth_code",
-      paystackkey: process.env.VUE_APP_PAYSTACK_KEY || "",
-      paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || "",
-      role: "",
-
-      paystackReference: null,
-      bootx_out: '001'
-    }
-  },
-
-  methods: {
-    destroyModal(){
-      this.showModalContent = false
-      this.bootx_out += '1'
-
-      return $(`#amortization`).modal("toggle")
+  import { mapGetters } from "vuex";
+  import Vue from "vue";
+  import { log } from "../../../utilities/log";
+  import Auth from "../../../utilities/auth";
+  import Flash from "../../../utilities/flash";
+  import { get, post, put } from "../../../utilities/api";
+  import CustomHeader from "../../../components/customHeader";
+  import AutoComplete from "../../../components/AutoComplete";
+  import NewOrderAmortization from "../../../components/NewOrderAmortization";
+  import CustomerProfile from "../../../components/CustomerProfile";
+  import { Order, OrderWithPromiseCall } from "../../../utilities/Amortization";
+  import CustomSMSButton from "../../../components/CustomSMSButton/CustomSMSButton";
+  import AutocompleteSearch from "../../../components/AutocompleteSearch/AutocompleteSearch";
+  import {
+    getOrderStatus,
+    getOrderStatusClass,
+  } from "../../../components/order/orderStatusCssClass";
+  import ViewVerificationCheckList from "../../../components/modals/ViewVerificationCheckList.vue";
+  import ViewCreditReportModal from "../../../components/modals/ViewCreditReportModal.vue";
+  import PaymentLog from "../../../components/PaymentLog";
+  import DatePicker from "vue2-datepicker";
+  import "vue2-datepicker/index.css";
+  import Discount from "../../../components/discount.vue";
+  import PaystackModal from "../../../components/Paystack/PaystackModal";
+  import CustomDirectDebitModalButton from "../../../components/Paystack/CustomDirectDebitModalButton.vue";
+  import { EventBus } from "../../../utilities/event-bus";
+  import Roles from "../../../utilities/roles";
+  import { selectType } from "../../../utilities/log.js";
+  export default {
+    components: {
+      CustomHeader,
+      CustomerProfile,
+      CustomSMSButton,
+      AutoComplete,
+      AutocompleteSearch,
+      PaymentLog,
+      NewOrderAmortization,
+      DatePicker,
+      Discount,
+      PaystackModal,
+      CustomDirectDebitModalButton,
     },
+    props: { logger: null },
 
-    selectType(type) {
-      selectType(type, this.states)
-    },
-    getClickedOrder(order) {
-      this.clickedOrder = order
-      
-    },
-
-    statusOrder (status) {
-      if (status === 'Completed' || status === 'Closed') {
-        return 'approved'
-      } else if (status === 'Active' || status === 'Pending') {
-        return 'pending'
-      } else {
-        return 'not-approved'
-      }
-       
-    },
-
-    statusOrderIcon (status)  {
-      if (status === 'Completed' || status === 'Closed') {
-        return 'fa-check-circle'
-      } else if (status === 'Active' || status === 'Pending') {
-        return 'fa-hourglass-half'
-      } else {
-        return 'fa-arrows-alt'
-      }
-    },
-
-    async submitForm() {
-      const updateData = {
-        product_id: this.selectedProduct.id,
-        repayment: this.currentOrder.repayment,
-        down_payment: this.currentOrder.down_payment,
-        product_price: this.currentOrder.product_price,
-        order_date: this.currentOrder.order_date,
-      }
-      this.$LIPS(true)
-      put(`/api/new_order/${this.currentOrder.id}`, updateData)
-        .then(res => {
-          this.$LIPS(false)
-
-          this.$swal({
-            icon: "success",
-            title: "Order Successfully Updated",
-          })
-
-          let x = this.customer.new_orders.findIndex(elem => {
-            return elem.id === this.currentOrder.id
-          })
-          Vue.set(this.customer.new_orders, x, res.data.data)
-          this.currentOrder = {}
-          return $(`#updateOrderModal`).modal("toggle")
-        })
-        .catch(() => {
-          this.$LIPS(false)
-          Flash.setError("Error submitting form")
-        })
-    },
-    updateOrder(order) {
-      if (this.canEditPayment) {
-        this.showOrdermodal = true
-        this.currentOrder = order
-        return $(`#updateOrderModal`).modal("toggle")
-      }
-    },
-    async updateView(data) {
-      let { customer, user } = data
-      if (customer.length) {
-        customer = customer[0]
-        !customer.document &&
-          (customer.document = { id_card_url: "", passport_url: "" })
-        this.user.branch = user.branch_id
-        this.customer = customer
-        this.customer.orders = customer.orders
-          ? customer.orders.map(order => {
-              let orderWithCustomer = order
-              orderWithCustomer.customer = this.customer
-              return new OrderWithPromiseCall(
-                orderWithCustomer,
-                this.getAuthUserDetails.userId
-              )
-            })
-          : []
-        this.show = true
-      } else Flash.setError("Customer not found.", 5000)
-      this.$LIPS(false)
-    },
-    async getLateFee(order) {
-      try {
-        const fetchLateFee = await get(`api/late_fee?order=${order?.id}`)
-        this.lateFEES = fetchLateFee.data.data.data
-      } catch (err) {
-        this.$displayErrorMessage(err)
-      }
-    },
-    done() {
-      this.show = false
-    },
-    getRecommendationList(id) {
-      get(`/api/customer-recommendation/${id}`)
-        .then(res => {
-          this.recommendationList = res.data.data
-          this.verificationList = this.recommendationList.filter(item => {
-            return item.type === "verification"
-          })
-          this.verificationList.reverse()
-
-          this.creditReportList = this.recommendationList.filter(item => {
-            return item.type === "credit_report"
-          })
-          this.creditReportList.reverse()
-          this.recommendationList = this.recommendationList.filter(item => {
-            return item.type == "formal" || item.type == "informal"
-          })
-          this.recommendationList.reverse()
-        })
-        .catch(() => {
-          this.$LIPS(false)
-          Flash.setError("Error Fetching customer detail")
-        })
-    },
-    async processForm(id) {
-      this.show = false
-      this.$LIPS(true)
-
-      await get(`/api/customer/lookup/${id}`)
-        .then(res => {
-          this.updateView(res.data)
-          this.getRecommendationList(id)
-          this.show = true
-        })
-        .catch(() => {
-          this.$LIPS(false)
-          Flash.setError("Error Fetching customer detail")
-        })
-      this.$LIPS(false)
-    },
-
-    calcDebt(amortization) {
-      // * Assumed equal distribution of amortization
-      if (amortization[0] !== undefined) {
-        let res = amortization.filter(amor => {
-          return amor.actual_amount === 0
-        })
-        return res.length * amortization[0].expected_amount
-      }
-    },
-    displayActiveRecommendation(recommendation) {
-      this.activeRecommendation = recommendation
-      this.displayMore = true
-      return $(`#recommendation`).modal("toggle")
-    },
-
-    displayActiveVerification(verification) {
-      this.$modal.show(
-        ViewVerificationCheckList,
-        { verification: JSON.parse(verification.input_data) },
-        {
-          name: "verificationView",
-          classes: ["w-50", "overflow-auto"],
-          adaptive: true,
-          resizable: true,
-          height: "auto",
-          width: "50%",
-          clickToClose: true,
+    data() {
+      return {
+        displayMore: false,
+        activeRecommendation: null,
+        recommendationList: null,
+        verificationList: null,
+        creditReportList: null,
+        states: {
+          order: true,
+          recommendation: false,
+          verification: false,
+          credit_report: false,
         },
-      )
+        editOrder: {},
+        Order: Order,
+        newOrder: false,
+        customer: null,
+        order: {},
+        customer_id: "",
+        user: {
+          name: Auth.state.user_name,
+          id: Auth.state.user_id,
+        },
+        show: false,
+        selectedProduct: {},
+        showModal: false,
+        showModalContent: false,
+        ammo_item: {},
+        actual_amount: null,
+        activeOrder: null,
+        authorization_code: null,
+        headers: [
+          "Date",
+          "Order No.",
+          "Product Name",
+          "Total Product Price",
+          "Type",
+          "Repayment Plans",
+        ],
+        recommendationHeaders: [
+          "Date",
+          "Type",
+          "Product Price",
+          "Duration",
+          "Recommended Plans",
+          "Input Data",
+        ],
+        verificationHeaders: [
+          "Date",
+          "Verified By",
+          "Status",
+          "More Information",
+        ],
+        creditReportHeaders: [
+          "Date",
+          "Compiled By",
+          "Report Type",
+          "Status",
+          "More Information",
+        ],
+        products: [],
+        paymentForm: { payments: [] },
+        paymentFormType: "add",
+        showOrdermodal: false,
+        currentOrder: {},
+        apiURL: {
+          product: `/api/product`,
+        },
+        roles: Roles,
+        clickedOrder: null,
+        paymentMeths: [],
+        lateFEES: null,
+        showPaystack: false,
+        ShowCustomDirectDebitModal: false,
+        verifyPaymentUrl: `https://api.paystack.co/transaction/verify/`,
+        paystack_auth_code_url: "/api/pay_stack_auth_code",
+        paystackkey: process.env.VUE_APP_PAYSTACK_KEY || "",
+        paystack_secret_key: process.env.VUE_APP_PAYSTACK_SECRET_KEY || "",
+        role: "",
+
+        paystackReference: null,
+        bootx_out: "001",
+      };
     },
-    displayActiveCreditReport(creditReport){
-      this.$modal.show(
-        ViewCreditReportModal,
-        { creditReport: JSON.parse(creditReport.input_data) },
-        {
-          name: "creditReportView",
-          classes: ["w-50", "overflow-auto"],
-          adaptive: true,
-          resizable: true,
-          height: "80%",
-          width: "50%",
-          clickToClose: true,
+
+    methods: {
+      destroyModal() {
+        this.showModalContent = false;
+        this.bootx_out += "1";
+
+        return $(`#amortization`).modal("toggle");
+      },
+
+      selectType(type) {
+        selectType(type, this.states);
+      },
+      getClickedOrder(order) {
+        this.clickedOrder = order;
+      },
+
+      statusOrder(status) {
+        if (status === "Completed" || status === "Closed") {
+          return "approved";
+        } else if (status === "Active" || status === "Pending") {
+          return "pending";
+        } else {
+          return "not-approved";
         }
-      )
-    },
+      },
 
-    async displayAmortization(order) {
-      //   await this.chargeCustomerWithCustomDirectDebit(order);
-      await this.getLateFee(order)
-      if (order.status) {
-        this.newOrder = true
-        this.order = order
-        if (order.amortization.length === 0) {
-          alert("No amortization to view")
-          return
+      statusOrderIcon(status) {
+        if (status === "Completed" || status === "Closed") {
+          return "fa-check-circle";
+        } else if (status === "Active" || status === "Pending") {
+          return "fa-hourglass-half";
+        } else {
+          return "fa-arrows-alt";
         }
-      } else {
-        this.newOrder = false
-        this.activeOrder = order
-        this.paymentForm = { payments: [] }
-      }
+      },
 
-      this.showModalContent = true
-      return $(`#amortization`).modal("toggle")
-    },
+      async submitForm() {
+        const updateData = {
+          product_id: this.selectedProduct.id,
+          repayment: this.currentOrder.repayment,
+          down_payment: this.currentOrder.down_payment,
+          product_price: this.currentOrder.product_price,
+          order_date: this.currentOrder.order_date,
+        };
+        this.$LIPS(true);
+        put(`/api/new_order/${this.currentOrder.id}`, updateData)
+          .then((res) => {
+            this.$LIPS(false);
 
-    addPaymentForm(type) {
-      if (this.newOrder) {
-        let initLevel = 0
+            this.$swal({
+              icon: "success",
+              title: "Order Successfully Updated",
+            });
 
-        this.order.amortization.every((item, index) => {
-          if (item.actual_payment_date === null) {
-            initLevel = index
-            return false
-          }
-          return true
-        })
-
-        let nextRepayment = parseInt(
-          initLevel + this.paymentForm.payments.length + 1
-        )
-
-        if (type !== this.paymentFormType) this.paymentForm.payments = []
-
-        if (
-          type === "edit" &&
-          (initLevel < 1 || this.paymentForm.payments.length >= initLevel)
-        )
-          return
-        if (initLevel === this.order.amortization.length) return
-        if (nextRepayment > this.order.amortization.length) return
-
-        this.paymentFormType = type
-        let newPaymentData = {
-          _pay: this.order.amortization[initLevel].expected_amount,
-          _date: this.$getDate(),
-          _col: "",
-          column: "",
-        }
-
-        if (type === "add") {
-          newPaymentData._payment_bank = ""
-          newPaymentData._payment_method = ""
-        }
-
-        this.paymentForm.payments.push(newPaymentData)
-      } else {
-        this.paymentMeths = this.getPaymentMethods.filter(item => {
-          return item.name !== "direct-debit"
-        })
-
-        const level = this.activeOrder.repaymentLevel
-        const nextRepayment = parseInt(
-          level + this.paymentForm.payments.length + 1
-        )
-
-        if (type !== this.paymentFormType) this.paymentForm.payments = []
-        if (
-          type === "edit" &&
-          (level < 1 || this.paymentForm.payments.length >= level)
-        )
-          return
-        if (level === this.activeOrder._count) return
-        if (nextRepayment > this.activeOrder._count) return
-
-        this.paymentFormType = type
-
-        let newPaymentData = {
-          _pay: this.activeOrder.amountsToBePaid[0],
-          _date: this.$getDate(),
-          _col: "",
-          column: "",
-        }
-
-        if (type === "add") {
-          newPaymentData._payment_bank = ""
-          newPaymentData._payment_method = ""
-        }
-
-        this.paymentForm.payments.push(newPaymentData)
-
-        this.reNumber()
-      }
-    },
-
-    deletePayment(index) {
-      this.paymentForm.payments.splice(index, 1)
-      this.reNumber()
-    },
-
-    selectedItem(value) {
-      this.selectedProduct = value
-    },
-    formatDate(date) {
-      if (date !== null) {
-        let d = new Date(date)
-        return d.toDateString()
-      }
-    },
-
-    reNumber() {
-      this.paymentForm.payments.forEach((payment, index) => {
-        /*this line below mean if the repayment level is 3 i.e the customer has made 3 repayment
-         * u want to display on the ui "4th repayment"
-         * so repaymentLevel(3) + index(0 - length of the added payments) + 1*/
-        let next = this.activeOrder.repaymentLevel + index + 1
-        this.paymentForm.payments[index]._col = next
-        this.paymentForm.payments[index].column =
-          this.$getColumn(next) + " Repayment"
-      })
-    },
-
-    preparePayments(index = 0) {
-      if (!this.canAddPayment) return
-      let payments = {}
-      this.paymentForm.payments.forEach(payment => {
-        let obj = {},
-          col = this.$getColumn(payment._col)
-        obj[`${col}_pay`] = payment._pay
-        obj[`${col}_date`] = payment._date
-        if (this.paymentFormType === "add") {
-          obj[`${col}_payment_bank`] = payment._payment_bank
-          obj[`${col}_payment_method`] = payment._payment_method
-        }
-        payments = { ...payments, ...obj }
-      })
-      this.activeOrder.payments = payments
-      !$.isEmptyObject(payments)
-        ? this.savePayments(index)
-        : Flash.setError("You have not added any payment.")
-    },
-    updateAmmo(armo) {
-      this.showModal = true
-      this.ammo_item = armo
-      return $(`#viewEdit`).modal("toggle")
-    },
-    save() {
-      this.$LIPS(true)
-      let data = {
-        actual_amount: this.actual_amount,
-      }
-
-      put(`/api/amortization/${this.ammo_item.id}`, data)
-        .then(() => {
-          this.$swal({
-            icon: "success",
-            title: "Payment Updated Successfully",
+            let x = this.customer.new_orders.findIndex((elem) => {
+              return elem.id === this.currentOrder.id;
+            });
+            Vue.set(this.customer.new_orders, x, res.data.data);
+            this.currentOrder = {};
+            return $(`#updateOrderModal`).modal("toggle");
           })
+          .catch(() => {
+            this.$LIPS(false);
+            Flash.setError("Error submitting form");
+          });
+      },
+      updateOrder(order) {
+        if (this.canEditPayment) {
+          this.showOrdermodal = true;
+          this.currentOrder = order;
+          return $(`#updateOrderModal`).modal("toggle");
+        }
+      },
+      async updateView(data) {
+        let { customer, user } = data;
+        if (customer.length) {
+          customer = customer[0];
+          !customer.document &&
+            (customer.document = { id_card_url: "", passport_url: "" });
+          this.user.branch = user.branch_id;
+          this.customer = customer;
+          this.customer.orders = customer.orders
+            ? customer.orders.map((order) => {
+                let orderWithCustomer = order;
+                orderWithCustomer.customer = this.customer;
+                return new OrderWithPromiseCall(
+                  orderWithCustomer,
+                  this.getAuthUserDetails.userId
+                );
+              })
+            : [];
+          this.show = true;
+        } else Flash.setError("Customer not found.", 5000);
+        this.$LIPS(false);
+      },
+      async getLateFee(order) {
+        try {
+          const fetchLateFee = await get(`api/late_fee?order=${order?.id}`);
+          this.lateFEES = fetchLateFee.data.data.data;
+        } catch (err) {
+          this.$displayErrorMessage(err);
+        }
+      },
+      done() {
+        this.show = false;
+      },
+      getRecommendationList(id) {
+        get(`/api/customer-recommendation/${id}`)
+          .then((res) => {
+            this.recommendationList = res.data.data;
+            this.verificationList = this.recommendationList.filter((item) => {
+              return item.type === "verification";
+            });
+            this.verificationList.reverse();
 
-          this.$LIPS(false)
-        })
-        .catch(() => {
-          Flash.setError("Unable to update payment")
-        })
-        .finally(() => {
-          return $(`#viewEdit`).modal("toggle")
-        })
-    },
+            this.creditReportList = this.recommendationList.filter((item) => {
+              return item.type === "credit_report";
+            });
+            this.creditReportList.reverse();
+            this.recommendationList = this.recommendationList.filter((item) => {
+              return item.type == "formal" || item.type == "informal";
+            });
+            this.recommendationList.reverse();
+          })
+          .catch(() => {
+            this.$LIPS(false);
+            Flash.setError("Error Fetching customer detail");
+          });
+      },
+      async processForm(id) {
+        this.show = false;
+        this.$LIPS(true);
 
-    savePayments(index) {
-      if (!this.canAddPayment) return
-      this.$LIPS(true)
-      let type, data, order, orderIndex
-      if (this.activeOrder.count === 6) type = "formal"
-      if (this.activeOrder.count === 12) type = "informal"
-      data = {
-        payments: this.activeOrder.payments,
-        type,
-        repayment_id: this.activeOrder.order.id,
-        order_id: this.activeOrder.order.id,
-        amount: this.paymentForm.payments[0]._pay,
-        payment_method_id: this.paymentForm.payments[index]._payment_method,
-      }
-      post(`/api/repayment`, data)
-        .then(async res => {
-          if (res.data.saved) {
-            order = this.customer.orders.find((order, index) => {
-              let found = order.order.id === data.repayment_id
-              if (found) orderIndex = index
-              return found
-            }).order
+        await get(`/api/customer/lookup/${id}`)
+          .then((res) => {
+            this.updateView(res.data);
+            this.getRecommendationList(id);
+            this.show = true;
+          })
+          .catch(() => {
+            this.$LIPS(false);
+            Flash.setError("Error Fetching customer detail");
+          });
+        this.$LIPS(false);
+      },
 
-            order[`repayment_${type}`] = res.data.amortization
-            this.activeOrder = await new Order(order, this.customer)
-            this.customer.orders[orderIndex] = this.activeOrder
-            await this.logAddedPayment(data)
-            if (this.activeOrder.repaymentLevel === this.activeOrder.count)
-              this.sendPaymentCompleteSMS()
-            this.paymentForm = { payments: [] }
-            this.$scrollToTop()
-            this.$LIPS(false)
+      calcDebt(amortization) {
+        // * Assumed equal distribution of amortization
+        if (amortization[0] !== undefined) {
+          let res = amortization.filter((amor) => {
+            return amor.actual_amount === 0;
+          });
+          return res.length * amortization[0].expected_amount;
+        }
+      },
+      displayActiveRecommendation(recommendation) {
+        this.activeRecommendation = recommendation;
+        this.displayMore = true;
+        return $(`#recommendation`).modal("toggle");
+      },
+
+      displayActiveVerification(verification) {
+        this.$modal.show(
+          ViewVerificationCheckList,
+          { verification: JSON.parse(verification.input_data) },
+          {
+            name: "verificationView",
+            classes: ["w-50", "overflow-auto"],
+            adaptive: true,
+            resizable: true,
+            height: "auto",
+            width: "50%",
+            clickToClose: true,
           }
-        })
-        .catch(() =>
-          Flash.setError("Error adding payment! Please try again later.")
-        )
-    },
+        );
+      },
+      displayActiveCreditReport(creditReport) {
+        this.$modal.show(
+          ViewCreditReportModal,
+          { creditReport: JSON.parse(creditReport.input_data) },
+          {
+            name: "creditReportView",
+            classes: ["w-50", "overflow-auto"],
+            adaptive: true,
+            resizable: true,
+            height: "80%",
+            width: "50%",
+            clickToClose: true,
+          }
+        );
+      },
 
-    sendPaymentCompleteSMS() {
-      return null //TODO: i was asked to disable the sms sent when a customer has completed payments.
-      /*let messageBody = `Dear ${this.activeOrder.customerName}, you have successfully completed ` +
+      async displayAmortization(order) {
+        //   await this.chargeCustomerWithCustomDirectDebit(order);
+        await this.getLateFee(order);
+        if (order.status) {
+          this.newOrder = true;
+          this.order = order;
+          if (order.amortization.length === 0) {
+            alert("No amortization to view");
+            return;
+          }
+        } else {
+          this.newOrder = false;
+          this.activeOrder = order;
+          this.paymentForm = { payments: [] };
+        }
+
+        this.showModalContent = true;
+        return $(`#amortization`).modal("toggle");
+      },
+
+      addPaymentForm(type) {
+        if (this.newOrder) {
+          let initLevel = 0;
+
+          this.order.amortization.every((item, index) => {
+            if (item.actual_payment_date === null) {
+              initLevel = index;
+              return false;
+            }
+            return true;
+          });
+
+          let nextRepayment = parseInt(
+            initLevel + this.paymentForm.payments.length + 1
+          );
+
+          if (type !== this.paymentFormType) this.paymentForm.payments = [];
+
+          if (
+            type === "edit" &&
+            (initLevel < 1 || this.paymentForm.payments.length >= initLevel)
+          )
+            return;
+          if (initLevel === this.order.amortization.length) return;
+          if (nextRepayment > this.order.amortization.length) return;
+
+          this.paymentFormType = type;
+          let newPaymentData = {
+            _pay: this.order.amortization[initLevel].expected_amount,
+            _date: this.$getDate(),
+            _col: "",
+            column: "",
+          };
+
+          if (type === "add") {
+            newPaymentData._payment_bank = "";
+            newPaymentData._payment_method = "";
+          }
+
+          this.paymentForm.payments.push(newPaymentData);
+        } else {
+          this.paymentMeths = this.getPaymentMethods.filter((item) => {
+            return item.name !== "direct-debit";
+          });
+
+          const level = this.activeOrder.repaymentLevel;
+          const nextRepayment = parseInt(
+            level + this.paymentForm.payments.length + 1
+          );
+
+          if (type !== this.paymentFormType) this.paymentForm.payments = [];
+          if (
+            type === "edit" &&
+            (level < 1 || this.paymentForm.payments.length >= level)
+          )
+            return;
+          if (level === this.activeOrder._count) return;
+          if (nextRepayment > this.activeOrder._count) return;
+
+          this.paymentFormType = type;
+
+          let newPaymentData = {
+            _pay: this.activeOrder.amountsToBePaid[0],
+            _date: this.$getDate(),
+            _col: "",
+            column: "",
+          };
+
+          if (type === "add") {
+            newPaymentData._payment_bank = "";
+            newPaymentData._payment_method = "";
+          }
+
+          this.paymentForm.payments.push(newPaymentData);
+
+          this.reNumber();
+        }
+      },
+
+      deletePayment(index) {
+        this.paymentForm.payments.splice(index, 1);
+        this.reNumber();
+      },
+
+      selectedItem(value) {
+        this.selectedProduct = value;
+      },
+      formatDate(date) {
+        if (date !== null) {
+          let d = new Date(date);
+          return d.toDateString();
+        }
+      },
+
+      reNumber() {
+        this.paymentForm.payments.forEach((payment, index) => {
+          /*this line below mean if the repayment level is 3 i.e the customer has made 3 repayment
+           * u want to display on the ui "4th repayment"
+           * so repaymentLevel(3) + index(0 - length of the added payments) + 1*/
+          let next = this.activeOrder.repaymentLevel + index + 1;
+          this.paymentForm.payments[index]._col = next;
+          this.paymentForm.payments[index].column =
+            this.$getColumn(next) + " Repayment";
+        });
+      },
+
+      preparePayments(index = 0) {
+        if (!this.canAddPayment) return;
+        let payments = {};
+        this.paymentForm.payments.forEach((payment) => {
+          let obj = {},
+            col = this.$getColumn(payment._col);
+          obj[`${col}_pay`] = payment._pay;
+          obj[`${col}_date`] = payment._date;
+          if (this.paymentFormType === "add") {
+            obj[`${col}_payment_bank`] = payment._payment_bank;
+            obj[`${col}_payment_method`] = payment._payment_method;
+          }
+          payments = { ...payments, ...obj };
+        });
+        this.activeOrder.payments = payments;
+        !$.isEmptyObject(payments)
+          ? this.savePayments(index)
+          : Flash.setError("You have not added any payment.");
+      },
+      updateAmmo(armo) {
+        this.showModal = true;
+        this.ammo_item = armo;
+        return $(`#viewEdit`).modal("toggle");
+      },
+      save() {
+        this.$LIPS(true);
+        let data = {
+          actual_amount: this.actual_amount,
+        };
+
+        put(`/api/amortization/${this.ammo_item.id}`, data)
+          .then(() => {
+            this.$swal({
+              icon: "success",
+              title: "Payment Updated Successfully",
+            });
+
+            this.$LIPS(false);
+          })
+          .catch(() => {
+            Flash.setError("Unable to update payment");
+          })
+          .finally(() => {
+            return $(`#viewEdit`).modal("toggle");
+          });
+      },
+
+      savePayments(index) {
+        if (!this.canAddPayment) return;
+        this.$LIPS(true);
+        let type, data, order, orderIndex;
+        if (this.activeOrder.count === 6) type = "formal";
+        if (this.activeOrder.count === 12) type = "informal";
+        data = {
+          payments: this.activeOrder.payments,
+          type,
+          repayment_id: this.activeOrder.order.id,
+          order_id: this.activeOrder.order.id,
+          amount: this.paymentForm.payments[0]._pay,
+          payment_method_id: this.paymentForm.payments[index]._payment_method,
+        };
+        post(`/api/repayment`, data)
+          .then(async (res) => {
+            if (res.data.saved) {
+              order = this.customer.orders.find((order, index) => {
+                let found = order.order.id === data.repayment_id;
+                if (found) orderIndex = index;
+                return found;
+              }).order;
+
+              order[`repayment_${type}`] = res.data.amortization;
+              this.activeOrder = await new Order(order, this.customer);
+              this.customer.orders[orderIndex] = this.activeOrder;
+              await this.logAddedPayment(data);
+              if (this.activeOrder.repaymentLevel === this.activeOrder.count)
+                this.sendPaymentCompleteSMS();
+              this.paymentForm = { payments: [] };
+              this.$scrollToTop();
+              this.$LIPS(false);
+            }
+          })
+          .catch(() =>
+            Flash.setError("Error adding payment! Please try again later.")
+          );
+      },
+
+      sendPaymentCompleteSMS() {
+        return null; //TODO: i was asked to disable the sms sent when a customer has completed payments.
+        /*let messageBody = `Dear ${this.activeOrder.customerName}, you have successfully completed ` +
                     `your payment for ${this.activeOrder.order.store_product.product_name}. ` +
                     `Thanks for patronizing us.`,
                     message = new Message(messageBody, this.activeOrder.customer.telephone);
                 message.send(r => r.status === 200 && Flash.setSuccess('Repayments Completed. SMS sent.'));*/
+      },
+
+      logAddedPayment(data) {
+        let paymentsMade = this.paymentForm.payments
+            .map((pmt) => pmt.column.replace(/ /g, "_"))
+            .join(" "),
+          desc = `${paymentsMade}. Order: ID: ${data.repayment_id}. Customer ID: ${this.customer_id}`;
+        return log(`Payment(s) added`, desc);
+      },
+
+      getOrderStatus: (activeOrder) => getOrderStatus(activeOrder),
+
+      getOrderStatusClass: (orderStatus) => getOrderStatusClass(orderStatus),
+      newOrderItem(value) {
+        this.updateView(value);
+      },
+      showDiscount(order) {
+        if (
+          order.order_discount &&
+          order?.order_discount?.slug !== "0_discount"
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      percentage(order) {
+        return order?.order_discount?.percentage_discount;
+      },
+      updateCustomerData(data) {
+        let element = this.customer.new_orders.find((item) => {
+          return item.id === data.order;
+        });
+
+        element.paystack_auth_code = data.auth_code;
+        let index = this.customer.new_orders.indexOf(element);
+        Vue.set(this.$data.customer.new_orders, index, element);
+      },
+      handleUpdateOrderStatus(updatedStatus) {
+        // Find the index of the updated status in orderStatusData array
+        const index = this.order.status.findIndex(
+          (status) => status.id === updatedStatus.id
+        );
+
+        if (index !== -1) {
+          // Update the order status at the specified index
+          this.orderStatusData[index] = updatedStatus;
+        }
+      },
+      computeDownpayment(result) {
+        return typeof JSON.parse(result.result).ans == "object" &&
+          JSON.parse(result.result).ans[1] == 0
+          ? `${JSON.parse(result.result).ans[0]}% downpayment`
+          : typeof JSON.parse(result.result).ans == "string"
+          ? JSON.parse(result.result).ans
+          : `${JSON.parse(result.result).ans[0]}% downpayment and ${
+              JSON.parse(result.result).ans[1]
+            } repayment`;
+      },
+      showDirectDebit(order) {
+        return (
+          order.payment_gateway === "Paystack" &&
+          order.paystack_auth_code != null &&
+          this.canLogDD &&
+          this.manualDD &&
+          (order.status === "Active" || order.status === "Approved")
+        );
+      },
     },
 
-    logAddedPayment(data) {
-      let paymentsMade = this.paymentForm.payments
-          .map(pmt => pmt.column.replace(/ /g, "_"))
-          .join(" "),
-        desc = `${paymentsMade}. Order: ID: ${data.repayment_id}. Customer ID: ${this.customer_id}`
-      return log(`Payment(s) added`, desc)
+    computed: {
+      ...mapGetters([
+        "getBanks",
+        "getPaymentMethods",
+        "auth",
+        "getAuthUserDetails",
+      ]),
+
+      check() {
+        return !(!this.$isProcessing && !!this.customer_id);
+      },
+
+      isReadOnly() {
+        return this.$route.meta.readOnly;
+      },
+
+      canAddPayment() {
+        if (this.auth("FSLLead")) return true;
+        return (
+          this.auth("supervisor") &&
+          this.user.branch === this.activeOrder.branch.id
+        );
+      },
+
+      canEditPayment() {
+        return this.auth("EditPayment");
+      },
+      canLogDD() {
+        return this.auth("LogDirectDebit");
+      },
+
+      manualDD() {
+        return process.env.VUE_APP_MANUAL_DD === "true";
+      },
+      forDVA() {
+        return this.auth("DVAAccess");
+      },
+      forCreditChecker() {
+        return this.auth("CreditChecker");
+      },
     },
 
-    getOrderStatus: activeOrder => getOrderStatus(activeOrder),
-
-    getOrderStatusClass: orderStatus => getOrderStatusClass(orderStatus),
-    newOrderItem(value) {
-      this.updateView(value)
-    },
-    showDiscount(order) {
-      if (
-        order.order_discount &&
-        order?.order_discount?.slug !== "0_discount"
-      ) {
-        return true
-      } else {
-        return false
-      }
-    },
-    percentage(order) {
-      return order?.order_discount?.percentage_discount
-    },
-    updateCustomerData(data) {
-      let element = this.customer.new_orders.find(item => {
-        return item.id === data.order
-      })
-      
-      element.paystack_auth_code = data.auth_code
-      let index = this.customer.new_orders.indexOf(element)
-      Vue.set(this.$data.customer.new_orders, index, element)
-    },
-    handleUpdateOrderStatus(updatedStatus) {
-      // Find the index of the updated status in orderStatusData array
-      const index = this.order.status.findIndex(status => status.id === updatedStatus.id);
-
-      if (index !== -1) {
-        // Update the order status at the specified index
-        this.orderStatusData[index] = updatedStatus;
-      }
-    },
-    computeDownpayment(result) {
-      return typeof JSON.parse(result.result).ans == "object" &&
-        JSON.parse(result.result).ans[1] == 0
-        ? `${JSON.parse(result.result).ans[0]}% downpayment`
-        : typeof JSON.parse(result.result).ans == "string"
-        ? JSON.parse(result.result).ans
-        : `${JSON.parse(result.result).ans[0]}% downpayment and ${
-            JSON.parse(result.result).ans[1]
-          } repayment`
-    },
-    showDirectDebit(order) {
-      
-      return order.payment_gateway === 'Paystack' &&
-                          order.paystack_auth_code != null &&
-                          this.canLogDD && this.manualDD && (order.status === 'Active' ||
-    order.status === 'Approved')
-    }
-  },
-
-
-  computed: {
-    ...mapGetters([
-      "getBanks",
-      "getPaymentMethods",
-      "auth",
-      "getAuthUserDetails",
-    ]),
-
-    check() {
-      return !(!this.$isProcessing && !!this.customer_id)
+    async created() {
+      this.$LIPS(true);
+      EventBus.$on("reloadUser", this.updateCustomerData);
+      EventBus.$on("updateUser", this.processForm);
+      EventBus.$on("statusOrder", this.handleUpdateOrderStatus);
+      this.$LIPS(false);
     },
 
-    isReadOnly() {
-      return this.$route.meta.readOnly
+    async mounted() {
+      this.$prepareBanks();
+      this.$prepareBranches();
+      this.$preparePaymentMethods();
+      this.role = parseInt(localStorage.getItem("role"));
     },
-
-    canAddPayment() {
-      if (this.auth("FSLLead")) return true
-      return (
-        this.auth("supervisor") &&
-        this.user.branch === this.activeOrder.branch.id
-      )
-    },
-
-    canEditPayment() {
-      return this.auth("EditPayment")
-    },
-    canLogDD() {
-      return this.auth("LogDirectDebit")
-    },
-
-    manualDD(){
-      
-        return process.env.VUE_APP_MANUAL_DD === 'true';
-      
-    },
-    forDVA() {
-      return this.auth("DVAAccess")
-    },
-    forCreditChecker() {
-      return this.auth("CreditChecker")
-    },
-  },
-
-  async created() {
-    this.$LIPS(true)
-    EventBus.$on("reloadUser", this.updateCustomerData)
-    EventBus.$on("updateUser", this.processForm)
-    EventBus.$on("statusOrder", this.handleUpdateOrderStatus)
-    this.$LIPS(false);
-  },
-
-  async mounted() {
-    this.$prepareBanks()
-    this.$prepareBranches()
-    this.$preparePaymentMethods()
-    this.role = parseInt(localStorage.getItem("role"))
-  },
-}
+  };
 </script>
 
 <style scoped>
-.attendance-item {
-  cursor: auto;
-}
-.amor-table {
-  width: 1092px;
-  overflow: scroll;
-}
-.pointer {
-  cursor: pointer;
-}
-.discount_badge {
-  margin-left: 10px;
-}
-.col2 {
-  -ms-flex-preferred-size: 0;
-  flex-basis: 0;
-  -ms-flex-positive: 1;
-  flex-grow: 1;
-  max-width: 100%;
-}
+  .attendance-item {
+    cursor: auto;
+  }
+  .amor-table {
+    width: 1092px;
+    overflow: scroll;
+  }
+  .pointer {
+    cursor: pointer;
+  }
+  .discount_badge {
+    margin-left: 10px;
+  }
+  .col2 {
+    -ms-flex-preferred-size: 0;
+    flex-basis: 0;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    max-width: 100%;
+  }
 
-/* For green background */
-.green-background {
-  background-color: green;
-}
+  /* For green background */
+  .green-background {
+    background-color: green;
+  }
 
-/* For red background */
-.red-background {
-  background-color: red;
-}
+  /* For red background */
+  .red-background {
+    background-color: red;
+  }
 </style>

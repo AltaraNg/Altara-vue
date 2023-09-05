@@ -40,17 +40,23 @@
           </div>
           <div class="col-10 px-4">
             <h3 class="my-2 font-weight-bold">Attention!</h3>
-            <p class="text-left text-capitalize h5 font-weight-light ">
+            <p class="text-left text-capitalize h5 font-weight-light">
               <slot :customer="{ customer }"></slot>
             </p>
             <div class="d-flex justify-content-end mt-4 mx-4">
-              <div class="form-group  mx-2">
-                <button class="btn bg-danger rounded-1 my-0 h2 font-weight-light" data-dismiss="modal">
+              <div class="form-group mx-2">
+                <button
+                  class="btn bg-danger rounded-1 my-0 h2 font-weight-light"
+                  data-dismiss="modal"
+                >
                   Cancel
                 </button>
               </div>
-              <div class="form-group  mx-2">
-                <button class="btn bg-default my-0 h2 font-weight-light" @click="$emit('touched', true)">
+              <div class="form-group mx-2">
+                <button
+                  class="btn bg-default my-0 h2 font-weight-light"
+                  @click="$emit('touched', true)"
+                >
                   Proceed
                 </button>
               </div>
@@ -63,29 +69,29 @@
 </template>
 
 <script>
-export default {
-  props: {
-    show: {
-      type: Boolean,
-      default: false,
-      required: false,
+  export default {
+    props: {
+      show: {
+        type: Boolean,
+        default: false,
+        required: false,
+      },
+      customer: {
+        required: false,
+      },
     },
-    customer: {
-      required: false,
-    },
-  },
 
-  methods: {
-    handleModalToggle() {
-      $('#confirmModal').modal('toggle')
+    methods: {
+      handleModalToggle() {
+        $("#confirmModal").modal("toggle");
+      },
     },
-  },
-  watch: {
-    show() {
-      this.handleModalToggle()
+    watch: {
+      show() {
+        this.handleModalToggle();
+      },
     },
-  },
-}
+  };
 </script>
 
 <style scoped></style>

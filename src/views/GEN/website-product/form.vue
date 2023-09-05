@@ -25,7 +25,7 @@
               />
               <i v-show="errors.has('name')" class="fa fa-warning"></i>
               <small v-if="errors.has('name')">{{
-                errors.first('name')
+                errors.first("name")
               }}</small>
             </div>
             <div class="form-group col-md-6 col-12 float-left px-0 px-md-3">
@@ -39,7 +39,7 @@
                 v-validate="'required|max:50'"
               />
               <small v-if="errors.first('description')">{{
-                errors.first('description')
+                errors.first("description")
               }}</small>
             </div>
             <div class="spaceBetween mb-md-2 mb-0"></div>
@@ -56,7 +56,7 @@
                 v-validate="'required|numeric'"
               ></currency-input>
               <small v-if="errors.first('price')">{{
-                errors.first('price')
+                errors.first("price")
               }}</small>
             </div>
             <div class="form-group col-md-6 col-12 float-left px-0 px-md-3">
@@ -69,16 +69,11 @@
                 @getChange="onFileChange"
               />
               <small v-if="errors.first('image')">{{
-                errors.first('image')
+                errors.first("image")
               }}</small>
 
               <div id="preview">
-                <img
-                  v-if="image"
-                  :src="imageUrl"
-                  width="150"
-                  height="100"
-                />
+                <img v-if="image" :src="imageUrl" width="150" height="100" />
                 <img
                   v-if="mode === 'edit' && preloaded_image && !image"
                   :src="preloaded_image"
@@ -103,7 +98,7 @@
                 class="btn bg-default"
                 type="submit"
               >
-                {{ 'Save' | capitalize }} Product
+                {{ "Save" | capitalize }} Product
                 <i class="far fa-paper-plane ml-1"></i>
               </button>
             </div>
@@ -114,155 +109,154 @@
   </transition>
 </template>
 <script>
-import Vue from 'vue'
-import ImageUpload from '../../../components/ImageUpload'
+  import Vue from "vue";
+  import ImageUpload from "../../../components/ImageUpload";
 
-import Flash from '../../../utilities/flash'
-import { post, get } from '../../../utilities/api'
-import CustomHeader from '../../../components/customHeader'
-import CurrencyInput from '../../../components/CurrencyInput.vue'
-import { toMulipartedForm } from '../../../utilities/form'
+  import Flash from "../../../utilities/flash";
+  import { post, get } from "../../../utilities/api";
+  import CustomHeader from "../../../components/customHeader";
+  import CurrencyInput from "../../../components/CurrencyInput.vue";
+  import { toMulipartedForm } from "../../../utilities/form";
 
-// function initialize(to) {
-//   let urls = {
-//     create: `/api/product/create`,
-//     edit: `/api/website-product/${to.params.id}/edit`,
-//   }
-//   return urls[to.meta.mode]
-// }
+  // function initialize(to) {
+  //   let urls = {
+  //     create: `/api/product/create`,
+  //     edit: `/api/website-product/${to.params.id}/edit`,
+  //   }
+  //   return urls[to.meta.mode]
+  // }
 
-export default {
-  components: { CustomHeader, CurrencyInput, ImageUpload },
-  props: {},
-  data() {
-    return {
-      inputOptions: {
-        currency: 'NGN',
-        currencyDisplay: 'symbol',
-        hideCurrencySymbolOnFocus: false,
-        hideGroupingSeparatorOnFocus: false,
-        hideNegligibleDecimalDigitsOnFocus: true,
-        autoDecimalDigits: false,
-        useGrouping: true,
-        accountingSign: false,
-      },
-      preloaded_image: null,
-      name: '',
-      description: '',
-      price: null,
-      url: null,
-      image: null,
-      form: {},
-      product_types: [],
-      mode: null,
-      error: {},
-      show: false,
-      store: '/api/website-product',
-      method: 'POST',
-    }
-  },
-  beforeRouteEnter(to, from, next) {
-    if (to.meta.mode === 'edit') {
-      get(`/api/website-product/${to.params.id}`)
-        .then(data => {
-          next(vm => {
-            vm.prepareForm(data.data.data)
+  export default {
+    components: { CustomHeader, CurrencyInput, ImageUpload },
+    props: {},
+    data() {
+      return {
+        inputOptions: {
+          currency: "NGN",
+          currencyDisplay: "symbol",
+          hideCurrencySymbolOnFocus: false,
+          hideGroupingSeparatorOnFocus: false,
+          hideNegligibleDecimalDigitsOnFocus: true,
+          autoDecimalDigits: false,
+          useGrouping: true,
+          accountingSign: false,
+        },
+        preloaded_image: null,
+        name: "",
+        description: "",
+        price: null,
+        url: null,
+        image: null,
+        form: {},
+        product_types: [],
+        mode: null,
+        error: {},
+        show: false,
+        store: "/api/website-product",
+        method: "POST",
+      };
+    },
+    beforeRouteEnter(to, from, next) {
+      if (to.meta.mode === "edit") {
+        get(`/api/website-product/${to.params.id}`)
+          .then((data) => {
+            next((vm) => {
+              vm.prepareForm(data.data.data);
+            });
           })
-        })
-        .catch(() => next(() => Flash.setError('Error Preparing form')))
-    } else {
-      let form = {}
-      next(vm => {
-        vm.prepareForm(form)
-      })
-    }
-  },
-  methods: {
-    onFileChange(e) {
-      const file = e.target.files[0]
-      this.url = URL.createObjectURL(file)
-    },
-    async prepareForm(data) {
-      this.$LIPS(true)
-      Vue.set(this.$data, 'mode', this.$route.meta.mode)
-
-      if (this.mode === 'edit') {
-        this.store = `/api/website-product/${this.$route.params.id}`
-        this.method = 'PUT'
-        this.name = data.name
-        this.description = data.description
-        this.price = data.price
-        this.preloaded_image = `${process.env.VUE_APP_S3_URL}/${data.image_url}`
+          .catch(() => next(() => Flash.setError("Error Preparing form")));
       } else {
-        Vue.set(this.$data, 'form', data)
+        let form = {};
+        next((vm) => {
+          vm.prepareForm(form);
+        });
       }
-      this.$LIPS(false)
-      this.show = true
     },
-    getParent(name, array) {
-      return array.find(item => {
-        return item.name === name
-      })
-    },
+    methods: {
+      onFileChange(e) {
+        const file = e.target.files[0];
+        this.url = URL.createObjectURL(file);
+      },
+      async prepareForm(data) {
+        this.$LIPS(true);
+        Vue.set(this.$data, "mode", this.$route.meta.mode);
 
-    onSave() {
-      console.log(this.form);
-      this.form = {
-        name: this.name,
-        price: this.price,
-        description: this.description,
-        image: this.image
-      }
-      let form = toMulipartedForm(this.form);
-      this.mode === 'edit' ? form.append('_method', 'PUT') : ''
-      this.$validator.validateAll().then(result => {
-        if (result) {
-          if (this.$network()) {
-            this.$LIPS(true)
-            ;post(this.store, form)
-              .then(({ data }) => {
-                if (data.status === 'success') {
-                  Vue.set(this.$data, 'form', {})
-                  this.$swal({
-                    icon: 'success',
-                    title:
-                      this.mode === 'edit'
-                        ? 'Product Updated Successfully'
-                        : 'Product added Successfully',
-                  })
-                  return this.$router.push({
-                    path: '/gen-utils/website-product',
-                  })
-                }
-              })
-              .catch(({ response: r }) => {
-                let { data, status } = r
-                if (status === 422) {
-                  this.error = data.errors ? data.errors : data
-                  let errors = this.error.data.errors;
-                  for(const key in errors){
-                    this.$networkErr('',30000, errors[key][0]);
+        if (this.mode === "edit") {
+          this.store = `/api/website-product/${this.$route.params.id}`;
+          this.method = "PUT";
+          this.name = data.name;
+          this.description = data.description;
+          this.price = data.price;
+          this.preloaded_image = `${process.env.VUE_APP_S3_URL}/${data.image_url}`;
+        } else {
+          Vue.set(this.$data, "form", data);
+        }
+        this.$LIPS(false);
+        this.show = true;
+      },
+      getParent(name, array) {
+        return array.find((item) => {
+          return item.name === name;
+        });
+      },
+
+      onSave() {
+        console.log(this.form);
+        this.form = {
+          name: this.name,
+          price: this.price,
+          description: this.description,
+          image: this.image,
+        };
+        let form = toMulipartedForm(this.form);
+        this.mode === "edit" ? form.append("_method", "PUT") : "";
+        this.$validator.validateAll().then((result) => {
+          if (result) {
+            if (this.$network()) {
+              this.$LIPS(true);
+              post(this.store, form)
+                .then(({ data }) => {
+                  if (data.status === "success") {
+                    Vue.set(this.$data, "form", {});
+                    this.$swal({
+                      icon: "success",
+                      title:
+                        this.mode === "edit"
+                          ? "Product Updated Successfully"
+                          : "Product added Successfully",
+                    });
+                    return this.$router.push({
+                      path: "/gen-utils/website-product",
+                    });
                   }
-                  
-                }
-              })
-              .finally(() => {
-                this.$scrollToTop()
-                this.$LIPS(false)
-              })
-          } else this.$networkErr()
-        } else this.$networkErr('form')
-      })
+                })
+                .catch(({ response: r }) => {
+                  let { data, status } = r;
+                  if (status === 422) {
+                    this.error = data.errors ? data.errors : data;
+                    let errors = this.error.data.errors;
+                    for (const key in errors) {
+                      this.$networkErr("", 30000, errors[key][0]);
+                    }
+                  }
+                })
+                .finally(() => {
+                  this.$scrollToTop();
+                  this.$LIPS(false);
+                });
+            } else this.$networkErr();
+          } else this.$networkErr("form");
+        });
+      },
     },
-  },
-  watch: {},
-  computed: {
-    imageUrl() {
-      return URL.createObjectURL(this.image)
+    watch: {},
+    computed: {
+      imageUrl() {
+        return URL.createObjectURL(this.image);
+      },
+      showPrice() {
+        return this.form.price;
+      },
     },
-    showPrice() {
-      return this.form.price
-    },
-  },
-}
+  };
 </script>

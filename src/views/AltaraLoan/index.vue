@@ -10,9 +10,9 @@
   </div>
 </template>
 <script>
-import AppNavigation from "../../components/AppNavigation";
+  import AppNavigation from "../../components/AppNavigation";
 
-export default {
-  components: { AppNavigation },
-};
+  export default {
+    components: { AppNavigation },
+  };
 </script>

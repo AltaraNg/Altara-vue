@@ -105,7 +105,7 @@ import ChangeCustomerManagerModal from "./components/modals/ChangeCustomerManage
 import _ from "lodash";
 import axios from "axios";
 import ShowPaystack from "./components/Paystack/ShowPaystack.vue";
-import CustomDirectDebitModal from "./components/Paystack/CustomDirectDebitModal.vue";
+import CustomDirectDebitModal from './components/Paystack/CustomDirectDebitModal.vue';
 
 export default {
   components: {

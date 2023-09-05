@@ -1,208 +1,209 @@
 <template>
-    <div style="body">
-        <div class="mt-5 mb-5 ml-5 pointer w-100" style="display: flex; align-items: center; color: #958A8A;"
-            @click="$emit('close')">
-            <i class="far  fa-arrow-alt-circle-left float-left " style="font-size: 1.5em;"></i><span class="ml-2"
-                style="font-size: small;">Back</span>
-        </div>
-        <div class="   box bg-default text-white  mb-5 ">
-            <p class="pb-5" style="font-size: 16px; font-weight: 700; ">Bank_statement.PDF</p>
-            <div class="pb-2 alignCenterJustifyBetween" style=" font-size: 13px;">
-                <p>Customer ID : <span style="font-weight: 700;">{{ BankStatement.customer_id }}</span></p>
-                <p>Status : <span style="font-weight: 700;">Processed</span></p>
-            </div>
-            <div class="pb-2 alignCenterJustifyBetween" style=" font-size: 13px;">
-                <p>Account Number : <span style="font-weight: 700;">{{ BankStatement.account_number }}</span></p>
-                <p>Account Name : <span style="font-weight: 700;">{{ BankStatement.account_name }}</span></p>
-            </div>
-            <div class="pb-2 alignCenterJustifyBetween" style=" font-size: 13px;">
-                <p>Statement Period : <span style="font-weight: 700;">{{ BankStatement.start_date }} - {{
-                    BankStatement.end_date }} </span></p>
-            </div>
-        </div>
-        <div>
-            <div class="mb-4" style="display: flex; align-items: center;">
-                <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
-                    <img src="../assets/bankStatementIcons/opening_balance.png" style="width:25%; " />
-                    <div>
-                        <p style="font-size: 13px;">Opening Balance</p>
-                        <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
-                            $formatCurrency(BankStatement.opening_balance) }}</p>
-
-                    </div>
+   <transition name="slide" mode="out-in">
+    <div class="mt-5 pt-5">
+         <!-- <div class="mt-5 mb-5 ml-5 pointer" style="display: flex; align-items: center; color: #958A8A;"
+                @click="$emit('close')">
+                <i class="far  fa-arrow-alt-circle-left float-left " style="font-size: 1.5em;"></i><span class="ml-2"
+                    style="font-size: small;">Back</span>
+            </div> -->
+            <div class="   box bg-default text-white  mb-5 ">
+                <p class="pb-5" style="font-size: 16px; font-weight: 700; ">Bank_statement.PDF</p>
+                <div class="pb-2 alignCenterJustifyBetween" style=" font-size: 13px;">
+                    <p>Customer ID : <span style="font-weight: 700;">{{ BankStatement.customer_id }}</span></p>
+                    <p>Status : <span style="font-weight: 700;">Processed</span></p>
                 </div>
-                <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
-                    <img src="../assets/bankStatementIcons/closing_balance.png" style="width:25%; " />
-                    <div>
-                        <p style="font-size: 13px;">Closing Balance</p>
-                        <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
-                            $formatCurrency(BankStatement.closing_balance) }}</p>
-                    </div>
-
+                <div class="pb-2 alignCenterJustifyBetween" style=" font-size: 13px;">
+                    <p>Account Number : <span style="font-weight: 700;">{{ BankStatement.account_number }}</span></p>
+                    <p>Account Name : <span style="font-weight: 700;">{{ BankStatement.account_name }}</span></p>
                 </div>
-                <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
-                    <img src="../assets/bankStatementIcons/average_monthly_balance.png" style="width:25%; " />
-                    <div>
-                        <p style="font-size: 13px;">Average Monthly Balance</p>
-                        <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
-                            $formatCurrency(BankStatement.average_monthly_balance) || 'N/A' }}</p>
-                    </div>
-
+                <div class="pb-2 alignCenterJustifyBetween" style=" font-size: 13px;">
+                    <p>Statement Period : <span style="font-weight: 700;">{{ BankStatement.start_date }} - {{
+                        BankStatement.end_date }} </span></p>
                 </div>
             </div>
-            <div class="mb-4" style="display: flex; align-items: center; ">
-                <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
-                    <img src="../assets/bankStatementIcons/turnover_credits.png" style="width:25%; " />
-                    <div>
-                        <p style="font-size: 13px;">Total Turnover Credits</p>
-                        <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
-                            $formatCurrency(BankStatement.total_deposit) }}</p>
-                    </div>
-
-                </div>
-                <div class="box text-center"
-                    style="width:30%; display: flex; align-items: center; justify-content: space-around;">
-                    <img src="../assets/bankStatementIcons/total_debits.png" style="width:25%; " />
-                    <div>
-                        <p style="font-size: 13px;">Total Turnover Debits</p>
-                        <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
-                            $formatCurrency(BankStatement.total_withdrawal) }}</p>
-
-                    </div>
-                </div>
-                <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
-                    <img src="../assets/bankStatementIcons/predicted_salary.png" style="width:25%; " />
-                    <div>
-                        <p style="font-size: 13px;"> Predicted Salary Income</p>
-                        <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
-                            $formatCurrency(BankStatement.predicted_average_salary) || 'N/A' }}</p>
-                    </div>
-
-                </div>
-            </div>
-            <div class="relative " style="display:flex; justify-content: space-between; margin-top: 50px; margin-bottom: 40px;">
-                <div class="box relative " style="width:40%; height: fit-content;">
-
-                    <div style="display: flex; justify-content: end;">
-                        <div style="width:60%; margin-right: 2%; position: relative;" class="form-group ">
-                            <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
-                            <input type="number" name="repayment_amount" v-model="repayment_amount"
-                                class="custom-select flex-1 w-100" />
-                            <button
-                                style="position: absolute; bottom: 2px; padding:6px 20px; right:3px; text-align: center; border-radius: 5px;"
-                                class="  bg-default" @click="getRepaymentCapability">
-                                Check
-                                <i class="far fa-paper-plane ml-1"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <p class="pb-5" style="font-size: 16px; font-weight: 800; color: #074A74;">Repayment Capability Table.
-                    </p>
-                    <div class="p-2 alignCenterJustifyBetween" style=" font-size: 18px; font-weight: 800;">
-                        <p>Month</p>
-                        <p>No of Days</p>
-                    </div>
-                    <div v-for="(repayment, index) in repaymentCapability" :key="index">
-                        <div class="p-2 mb-2 alignCenterJustifyBetween"
-                            style=" font-size: 18px; background-color: #F7F7FF;">
-                            <p>{{ repayment.month_name || 0 }}</p>
-                            <p style="font-weight: 700;">{{ repayment.count || 0 }}</p>
-                        </div>
-                    </div>
-                    <div v-if="!repaymentCapability.length">
-                        <p style="font-size: 15px; font-weight: 800; color: #074A74;" class="text-center mt-5">This Bank
-                            Statement does not have the available funds to repay this repayment amount. </p>
-                    </div>
-                </div>
-                 <div class="box" style="background-color: transparent; padding: 0 ">
-                    <div class="attendance-head">
-                        <div class="row mt-5 px-4 pt-3 pb-4 text-left">
-
-                            <div class="col light-heading" v-for="(header, index) in headings" :key="index">
-                                {{ header }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-1 attendance-body text-left" key="table"
-                        v-if="BankStatementTransactions.length > 0 && this.BankStatementTransactions">
-                        <div class="mb-3 row d-flex bg-white table-hover" :key="index"
-                            v-for="(BankStatementTransaction, index) in BankStatementTransactions">
-                            <!-- {{ creditCheck }} -->
-                            <div class="col-12 col-xs-3 col-md col-lg  align-items-start  ">
-                                <span class="user mx-auto text-white bg-default">{{ index + 1 }}</span>
-                            </div>
-
-                            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
-                              {{ BankStatementTransaction.description }}
-                            </div>
-                            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
-                                 {{ new Date(BankStatementTransaction.created_at).toISOString().split('T')[0] }}
-
-
-                            </div>
-                            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
-                                {{ BankStatementTransaction.balance }}
-
-
-                            </div>
+            <div>
+                <div class="mb-4" style="display: flex; align-items: center;">
+                    <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
+                        <img src="../assets/bankStatementIcons/opening_balance.png" style="width:25%; " />
+                        <div>
+                            <p style="font-size: 13px;">Opening Balance</p>
+                            <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
+                                $formatCurrency(BankStatement.opening_balance) }}</p>
 
                         </div>
                     </div>
-                    <div v-else class="h4 text-center">No Data</div>
-                    <div v-if="pageParams">
-                        <base-pagination :page-param="pageParams" @fetchData="fetchData">
-                        </base-pagination>
+                    <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
+                        <img src="../assets/bankStatementIcons/closing_balance.png" style="width:25%; " />
+                        <div>
+                            <p style="font-size: 13px;">Closing Balance</p>
+                            <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
+                                $formatCurrency(BankStatement.closing_balance) }}</p>
+                        </div>
+
                     </div>
+                    <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
+                        <img src="../assets/bankStatementIcons/average_monthly_balance.png" style="width:25%; " />
+                        <div>
+                            <p style="font-size: 13px;">Average Monthly Balance</p>
+                            <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
+                                $formatCurrency(BankStatement.average_monthly_balance) || 'N/A' }}</p>
+                        </div>
 
-
+                    </div>
                 </div>
-            </div>
+                <div class="mb-4" style="display: flex; align-items: center; ">
+                    <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
+                        <img src="../assets/bankStatementIcons/turnover_credits.png" style="width:25%; " />
+                        <div>
+                            <p style="font-size: 13px;">Total Turnover Credits</p>
+                            <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
+                                $formatCurrency(BankStatement.total_deposit) }}</p>
+                        </div>
 
+                    </div>
+                    <div class="box text-center"
+                        style="width:30%; display: flex; align-items: center; justify-content: space-around;">
+                        <img src="../assets/bankStatementIcons/total_debits.png" style="width:25%; " />
+                        <div>
+                            <p style="font-size: 13px;">Total Turnover Debits</p>
+                            <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
+                                $formatCurrency(BankStatement.total_withdrawal) }}</p>
+
+                        </div>
+                    </div>
+                    <div class="box " style="width:30%; display: flex; align-items: center; justify-content: space-around;">
+                        <img src="../assets/bankStatementIcons/predicted_salary.png" style="width:25%; " />
+                        <div>
+                            <p style="font-size: 13px;"> Predicted Salary Income</p>
+                            <p style="font-size: 22px; font-weight: 800; color: #074A74;">{{
+                                $formatCurrency(BankStatement.predicted_average_salary) || 'N/A' }}</p>
+                        </div>
+
+                    </div>
+                </div> 
+                     <div class="box " style="background-color: transparent;  ">
+                          <div style="display: flex; justify-content: end;">
+                                    <div style="width:30%; margin-right: 2%; position: relative;" class="form-group pt-4">
+                                        <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
+                                        <input type="number" name="repayment_amount" v-model="repayment_amount"
+                                            class="custom-select flex-1 w-100" />
+                                        <button
+                                            style="position: absolute; bottom: 2px; padding:6px 20px; right:3px; text-align: center; border-radius: 5px;"
+                                            class="  bg-default" @click="getRepaymentCapability">
+                                            Check
+                                            <i class="far fa-paper-plane ml-1"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                        <p class="pb-5 pl-5 " style="font-size: 26px; font-weight: 800; color: #074A74;">Transactions Table. </p>
+                        <div class="attendance-head">
+                            <div class="row mt-5 px-4 pt-3 pb-4 text-left">
+
+                                <div class="col light-heading" v-for="(header, index) in headings" :key="index">
+                                    {{ header }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-1 attendance-body text-left" key="table"
+                            v-if="BankStatementTransactions.length > 0 && this.BankStatementTransactions">
+                            <div class="mb-3 row d-flex bg-white table-hover" :key="index"
+                                v-for="(BankStatementTransaction, index) in BankStatementTransactions">
+                                <!-- {{ creditCheck }} -->
+                                <div class="col-12 col-xs-3 col-md col-lg  align-items-start  ">
+                                    <span class="user mx-auto text-white bg-default">{{ index + 1 }}</span>
+                                </div>
+
+                                <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
+                                  {{ BankStatementTransaction.description }}
+                                </div>
+                                <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
+                                     {{ new Date(BankStatementTransaction.created_at).toISOString().split('T')[0] }}
+
+
+                                </div>
+                                <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
+                                    {{ $formatCurrency(BankStatementTransaction.balance) }}
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div v-else class="h4 text-center">No Data</div>
+                        <div v-if="pageParams">
+                            <base-pagination :page-param="pageParams" @fetchData="getAllTransations">
+                            </base-pagination>
+                        </div>
+
+
+                    </div>
+           
+                    <div class="box relative " style="width:40%; height: fit-content;">
+
+                            <div style="display: flex; justify-content: end;">
+                                <div style="width:60%; margin-right: 2%; position: relative;" class="form-group ">
+                                    <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
+                                    <input type="number" name="repayment_amount" v-model="repayment_amount"
+                                        class="custom-select flex-1 w-100" />
+                                    <button
+                                        style="position: absolute; bottom: 2px; padding:6px 20px; right:3px; text-align: center; border-radius: 5px;"
+                                        class="  bg-default" @click="getRepaymentCapability">
+                                        Check
+                                        <i class="far fa-paper-plane ml-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="pb-5" style="font-size: 16px; font-weight: 800; color: #074A74;">Repayment Capability Table.
+                            </p>
+                            <div class="p-2 alignCenterJustifyBetween" style=" font-size: 18px; font-weight: 800;">
+                                <p>Month</p>
+                                <p>No of Days</p>
+                            </div>
+                            <div v-for="(repayment, index) in repaymentCapability" :key="index">
+                                <div class="p-2 mb-2 alignCenterJustifyBetween"
+                                    style=" font-size: 18px; background-color: #F7F7FF;">
+                                    <p>{{ repayment.month_name || 0 }}</p>
+                                    <p style="font-weight: 700;">{{ repayment.count || 0 }}</p>
+                                </div>
+                            </div>
+                            <div v-if="!repaymentCapability.length">
+                                <p style="font-size: 15px; font-weight: 800; color: #074A74;" class="text-center mt-5">This Bank
+                                    Statement does not have the available funds to repay this repayment amount. </p>
+                            </div>
+                        </div>
            
 
 
-        </div>
-        <!-- <div v-if="BankStatement.status == 'pending'" style="display: flex; justify-content: center;">
-            <img src="../assets/Spinner-1s-200px.gif"/>
-        </div> -->
-        <!-- <div v-if="BankStatement.status == 'failed'">
-                <div class="box p-5">
-                    <div style="display: flex; align-items: start;">
-                        <warning />
-                        <p class="text-danger pl-5" style="font-size: 30px; font-weight: 700;">Upload Failed</p>
-                    </div>
-                    <p class="mt-5" style="font-size: 16px;">There was an error during file processing. please try again later.</p>
-                </div>
-            </div> -->
-
+            </div>
     </div>
+
+  </transition>
 </template>
 <script>
 import back from '../assets/back.vue';
 import warning from '../assets/warning.vue';
 import excel from '../assets/excel.vue';
+import BasePagination from "../components/Pagination/BankStatementPagination.vue"
 import { get, post, put } from "../utilities/api"
-import BankStatementPagination from './Pagination/BankStatementPagination.vue';
+
 export default {
     components: {
         back,
         warning,
         excel,
-        BankStatementPagination
+        BasePagination
     },
-    props: {
-        BankStatement: {
-            type: Object
-        }
-    },
+    
     computed: {
         repaymentCapabilityUrl() {
-            return `https://fast-alt-7790f3f68854.herokuapp.com/bank-statements/${this.BankStatement.id}/repayment/capability/${this.repayment_amount}`;
+            return `https://fast-alt-7790f3f68854.herokuapp.com/bank-statements/${ this.$route.params.id}/repayment/capability/${this.repayment_amount}`;
         }
     },
     data() {
         return {
-            statementDetails: `https://fast-alt-7790f3f68854.herokuapp.com/bank-statements/${this.BankStatement.id}`,
+            BankStatement:{},
+            transaction_details: `https://fast-alt-7790f3f68854.herokuapp.com/bank-statements/${ this.$route.params.id}/transactions`,
+            statement_details: `https://fast-alt-7790f3f68854.herokuapp.com/bank-statements/${ this.$route.params.id}`,
             repayment_amount: '',
             repaymentCapability: [
                 {
@@ -210,13 +211,14 @@ export default {
                     count: 0
                 }
             ],
-            BankStatementTransactions: null,
+            BankStatementTransactions: [],
             headings: [
                 "S/N",
                 "Description",
                 "Date",
                 "Balance",
             ],
+            pageParams: {page: 1, size: 10,}
         }
     },
     methods: {
@@ -232,25 +234,84 @@ export default {
                 this.$LIPS(false)
             }
         },
-        async getBankStatementDetails() {
+        async getAllTransations(params = {}) {
             this.$LIPS(true)
             try {
-                const fetchBankStatementDetails = await get(this.statementDetails);
-                this.BankStatementTransactions = fetchBankStatementDetails.data.data.bankStatementDayEndTransactions
-                console.log(this.BankStatementTransactions, 'this.BankStatementTransactions');
+                const fetchBankStatementDetails = await get(this.transaction_details, { ...params, ...this.pageParams, });
+                 this.BankStatementTransactions = fetchBankStatementDetails.data.items
+                console.log(fetchBankStatementDetails, 'this.BankStatementTransactions');
+                this.setPagination(fetchBankStatementDetails.data)
+              this.pageParams.page !==1 ?  this.$router.push({
+                    query: { page: this.pageParams.page },
+                }): null
             } catch (err) {
                 this.$displayErrorMessage(err);
             } finally {
                 this.$LIPS(false)
             }
         },
+        async getBankStatementDetails() {
+            this.$LIPS(true)
+            try {
+                const fetchBankStatementDetails = await get(this.statement_details);
+                this.BankStatement = fetchBankStatementDetails.data.data
+                console.log(this.BankStatement, 'this.BankStatementTransactions');
+            } catch (err) {
+                this.$displayErrorMessage(err);
+            } finally {
+                this.$LIPS(false)
+            }
+        },
+        setPagination(response) {
+            const {
+                page,
+                first_page_url,
+                from,
+                pages,
+                last_page_url,
+                data,
+                size,
+                next_page_url,
+                to,
+                total,
+                prev_page_url,
+            } = response
+
+            this.pageParams = Object.assign({}, this.pageParams, {
+                page,
+                first_page_url,
+                from,
+                pages,
+                last_page_url,
+                size,
+                next_page_url,
+                to,
+                total,
+                prev_page_url,
+            })
+            this.OId = page == 1 ? page : (page - 1) * size + 1;
+            if (response.queryParams !== undefined) {
+                this.pageParams = response.queryParams
+            }
+        },
     },
-    mounted() {
-        this.getBankStatementDetails()
+    async mounted() {
+        
+       await this.getBankStatementDetails()
+         await this.getAllTransations()
     },
 }
 </script>
 <style scoped>
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.4s;
+}
+
+.slide-enter,
+.slide-leave-to {
+  transform: translateX(100%);
+}
 .box {
     border-radius: 5px;
     box-shadow: 2px 2px 10px 1px rgba(1, 1, 1, 0.3);

@@ -1,12 +1,5 @@
 <template>
-  <div style="position:relative;  ">
-    <transition name="slide" mode="out-in">
-      <div class="details" v-if="seeDetails">
-        <BankStatementDetails @close="seeDetails = false" :BankStatement="BankStatement" />
-      </div>
-    </transition>
-
-    <div v-if="!seeDetails">
+    <div >
       <div>
         <div style="display: flex; ">
           <custom-header :title="'Existing Customer'" @click.native="selectType('existingCustomer')" :style="!formMode.existingCustomer
@@ -212,7 +205,7 @@
       </div>
     </div>
 
-  </div>
+
 </template>
 <script>
 import AutocompleteSearch from "../../components/AutocompleteSearch/AutocompleteSearch.vue"
@@ -222,15 +215,14 @@ import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
 import pdf from '../../assets/pdf.vue'
 import BasePagination from "../../components/Pagination/BankStatementPagination.vue"
-import BankStatementDetails from "../../components/BankStatementDetails.vue"
 import upload from "../../assets/upload.vue"
 import { toMulipartedForm } from '../../utilities/form'
 import Flash from "../../utilities/flash";
 import { selectType } from "../../utilities/log.js"
+import router from "../../router"
 export default {
   components: {
     AutocompleteSearch,
-    BankStatementDetails,
     upload,
     BasePagination,
     pdf,
@@ -355,11 +347,17 @@ export default {
     },
 
     seeMore(bankStatement) {
-      setTimeout(() => {
-        this.seeDetails = true
-      }, 1000);
+      router.push({
+        name:'BankStatementDetails',
+        params:{
+          id: bankStatement.id
+        }
+      })
+      // setTimeout(() => {
+      //   this.seeDetails = true
+      // }, 1000);
 
-      this.BankStatement = bankStatement
+      // this.BankStatement = bankStatement
 
 
     },
@@ -370,9 +368,9 @@ export default {
         .then((response) => {
           this.bankStatements = response.data.items;
           this.setPagination(response.data)
-          this.$router.push({
-            query: { page: this.pageParams.page },
-          })
+          // this.$router.push({
+          //   query: { page: this.pageParams.page },
+          // })
         })
         .catch((err) => {
           Flash.setError("Error occurred fetching Bank Statements")
@@ -380,7 +378,6 @@ export default {
       this.$LIPS(false)
     },
     setPagination(response) {
-      console.log(response, 'inpagination')
       const {
         page,
         first_page_url,
@@ -481,14 +478,6 @@ export default {
   /* Hide the track */
 }
 
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.4s;
-}
 
-.slide-enter,
-.slide-leave-to {
-  transform: translateX(100%);
-}
 </style>
 

@@ -149,19 +149,19 @@ export default {
          await this.$prepareUncontacted();
       }
       axios.interceptors.request.use(
-         config => {
+         (config) => {
             this.debouncer();
             return config;
          },
-         error => {
+         (error) => {
             return Promise.reject(error);
          },
       ),
          axios.interceptors.response.use(
-            config => {
+            (config) => {
                return config;
             },
-            error => {
+            (error) => {
                if (error.response.data.error_message === "Unauthenticated.") {
                   this.bounceUser();
                }
@@ -173,7 +173,7 @@ export default {
       Auth.initialize();
    },
    created() {
-      interceptors(err => {
+      interceptors((err) => {
          if (err.response.status === 401) {
             Auth.remove();
             this.$router.push("/login");
@@ -206,7 +206,7 @@ export default {
             ? "/cashloan/renewal?fromDate=&tab=nc&unContactedRenewalPrompters=true"
             : "/dsa/renewal?fromDate=&tab=nc&unContactedRenewalPrompters=true";
       },
-      canView: function() {
+      canView: function () {
          return [roles.dsa_captain, roles.dsa, roles.cash_loan_agent, roles.rent_agent].includes(
             this.authState.role,
          );
@@ -237,9 +237,12 @@ export default {
          Auth.remove();
          this.$router.push("/login");
       },
-      debouncer: _.debounce(function() {
-         this.bounceUser();
-      }, 30 * 60 * 1000),
+      debouncer: _.debounce(
+         function () {
+            this.bounceUser();
+         },
+         30 * 60 * 1000,
+      ),
    },
 };
 </script>

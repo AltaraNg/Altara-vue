@@ -344,7 +344,7 @@
 <script>
 import Vue from "vue";
 import { mapGetters } from "vuex";
-import { get, post, put } from "../utilities/api";
+import { get, put } from "../utilities/api";
 import Lookup from "../views/FSL/lookup/lookup";
 import Flash from "../utilities/flash";
 import Vue2Filters from "vue2-filters";

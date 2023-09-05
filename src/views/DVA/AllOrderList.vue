@@ -6,7 +6,7 @@
             <!-- <switch-component :options="options" @selected="handleSwitch"/> -->
             <div v-if="mode === 'old'">
             <div class="mt-2 mt-lg-3 row attendance-head attendance-view">
-                <div class="col-4 col-lg" v-for="{name:filter,model} in filters">
+                <div class="col-4 col-lg" v-for="{name:filter,model} in filters" :key="model">
                     <div class="row">
 
                         <div class="light-heading mb-1">
@@ -18,7 +18,7 @@
                             <select class="custom-select" v-model="$data[model]"
                                     @keyup.enter="fetchData()">
                                 <option disabled selected value="">{{filter | capitalize}}</option>
-                                <option :value="id" v-for="{name,id} in getBranches">
+                                <option :value="id" v-for="{name,id} in getBranches" :key="id">
                                     {{name | capitalize}}
                                 </option>
                             </select>
@@ -39,7 +39,7 @@
                 <div class="w-100 my-5 mx-0 hr"></div>
                 <div class="row px-4 pt-3 pb-4 text-center">
                     <div class="col light-heading" style="max-width: 120px">S/N</div>
-                    <div class="col light-heading" v-for="header in headings">{{header}}</div>
+                    <div class="col light-heading" v-for="header in headings" :key="header">{{header}}</div>
                 </div>
             </div>
 
@@ -106,7 +106,6 @@
     import Flash from "../../utilities/flash";
     import Order from "../../components/Orders";
     import NewOrders from "../../components/NewOrders"
-    import SwitchComponent from '../../components/SwitchComponent';
     import {mapGetters, mapActions} from "vuex";
     import CustomHeader from '../../components/customHeader';
 
@@ -117,7 +116,7 @@
             urlToFetchOrders: {default: '/api/reminder/create'}
         },
 
-        components: {CustomHeader, Order, NewOrders, SwitchComponent},
+        components: {CustomHeader, Order, NewOrders},
 
         computed: {...mapGetters(['getBranches'])},
 
@@ -157,11 +156,11 @@
                 this.$LIPS(true);
                 let {page, page_size, date_from, date_to, branch_id} = this.$data;
                 get(this.urlToFetchOrders +
-                    `${!!page ? `?page=${page}` : ''}` +
-                    `${!!date_to ? `&dateTo=${date_to}` : ''}` + 
-                     `${!!page_size ? `&pageSize=${page_size}` : ''}` +                  
-                    `${!!branch_id ? `&branchId=${branch_id}` : ''}` +
-                    `${!!date_from ? `&dateFrom=${date_from}` : ''}`)
+                    `${page ? `?page=${page}` : ''}` +
+                    `${date_to ? `&dateTo=${date_to}` : ''}` + 
+                     `${page_size ? `&pageSize=${page_size}` : ''}` +                  
+                    `${branch_id ? `&branchId=${branch_id}` : ''}` +
+                    `${date_from ? `&dateFrom=${date_from}` : ''}`)
                     .then(({data}) => this.prepareForm(data))
                     .catch(() => Flash.setError('Error Preparing form')).finally(()=>{
                 this.$LIPS(false);
@@ -215,7 +214,7 @@
             this.mode = 'new';
         },
 
-        destroyed() {
+        unmounted() {
             this.removeCustomerOptionsModalsFromDom();
         }
     }

@@ -29,7 +29,7 @@ export default {
                 .then(() => {
                     Flash.setSuccess(`${this.item} has been copied to clipboard!`);
                 })
-                .catch((error) => {
+                .catch(() => {
                     Flash.setError("Copy failed. Please try again.")
                 });
         },

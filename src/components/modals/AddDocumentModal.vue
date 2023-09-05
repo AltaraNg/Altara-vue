@@ -52,8 +52,7 @@
 </template>
 
 <script>
-import { get, post } from "../../utilities/api"
-import { EventBus } from "../../utilities/event-bus"
+import { post } from "../../utilities/api"
 import { toMulipartedForm } from "../../utilities/form"
 
 export default {

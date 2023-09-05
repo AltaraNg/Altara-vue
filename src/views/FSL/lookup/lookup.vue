@@ -1587,12 +1587,10 @@ import {
 } from "../../../components/order/orderStatusCssClass"
 import ViewVerificationCheckList from "../../../components/modals/ViewVerificationCheckList.vue"
 import ViewCreditReportModal from "../../../components/modals/ViewCreditReportModal.vue"
-import LogForm from "../../../components/LogForm"
 import PaymentLog from "../../../components/PaymentLog"
 import DatePicker from "vue2-datepicker"
 import "vue2-datepicker/index.css"
 import Discount from "../../../components/discount.vue"
-import paystack from "vue-paystack"
 import PaystackModal from "../../../components/Paystack/PaystackModal"
 import CustomDirectDebitModalButton from "../../../components/Paystack/CustomDirectDebitModalButton.vue"
 import { EventBus } from "../../../utilities/event-bus"
@@ -1605,12 +1603,10 @@ export default {
     CustomSMSButton,
     AutoComplete,
     AutocompleteSearch,
-    LogForm,
     PaymentLog,
     NewOrderAmortization,
     DatePicker,
     Discount,
-    paystack,
     PaystackModal,
     CustomDirectDebitModalButton,
   },
@@ -1766,7 +1762,7 @@ export default {
     },
     async updateView(data) {
       let { customer, user } = data
-      if (!!customer.length) {
+      if (customer.length) {
         customer = customer[0]
         !customer.document &&
           (customer.document = { id_card_url: "", passport_url: "" })
@@ -1815,7 +1811,7 @@ export default {
           })
           this.recommendationList.reverse()
         })
-        .catch(e => {
+        .catch(() => {
           this.$LIPS(false)
           Flash.setError("Error Fetching customer detail")
         })
@@ -1830,7 +1826,7 @@ export default {
           this.getRecommendationList(id)
           this.show = true
         })
-        .catch(e => {
+        .catch(() => {
           this.$LIPS(false)
           Flash.setError("Error Fetching customer detail")
         })
@@ -2040,7 +2036,7 @@ export default {
       }
 
       put(`/api/amortization/${this.ammo_item.id}`, data)
-        .then(res => {
+        .then(() => {
           this.$swal({
             icon: "success",
             title: "Payment Updated Successfully",
@@ -2048,7 +2044,7 @@ export default {
 
           this.$LIPS(false)
         })
-        .catch(err => {
+        .catch(() => {
           Flash.setError("Unable to update payment")
         })
         .finally(() => {
@@ -2194,10 +2190,10 @@ export default {
     },
 
     canEditPayment() {
-      if (this.auth("EditPayment")) return true
+      return this.auth("EditPayment")
     },
     canLogDD() {
-      if (this.auth("LogDirectDebit")) return true
+      return this.auth("LogDirectDebit")
     },
 
     manualDD(){

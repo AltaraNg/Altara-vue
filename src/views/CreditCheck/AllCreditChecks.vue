@@ -245,7 +245,6 @@
 import { get, patch } from "../../utilities/api"
 import { debounce } from "../../utilities/globalFunctions"
 import flash from "../../utilities/flash"
-import DatePicker from "vue2-datepicker"
 import CustomHeader from "../../components/customHeader"
 import BasePagination from "../../components/Pagination/BasePagination.vue"
 import CustomerInfoModal from "../../components/modals/CustomerInfoModal.vue"
@@ -256,7 +255,7 @@ import ProductInfoModal from "../../components/modals/ProductInfoModal.vue"
 export default {
   props: {},
 
-  components: { CustomHeader, DatePicker, BasePagination },
+  components: { CustomHeader, BasePagination },
 
   data() {
     return {
@@ -293,7 +292,7 @@ export default {
 
   computed: {},
   watch: {
-    "searchQuery.status": function (newVal, oldVal) {
+    "searchQuery.status": function () {
       this.$router.push({
         query: Object.assign({}, this.$route.query, {
           ...this.searchQuery,
@@ -301,7 +300,7 @@ export default {
       })
       this.fetchData({ ...this.searchQuery })
     },
-    "searchQuery.searchTerm": function (newVal) {
+    "searchQuery.searchTerm": function () {
       this.$router.push({
         query: Object.assign({}, this.$route.query, {
           ...this.searchQuery,
@@ -327,7 +326,7 @@ export default {
             response.data?.data?.creditCheckerVerifications?.data
           this.setPagination(response)
         })
-        .catch((err) => {
+        .catch(() => {
           flash.setError("Error occurred fetching credit checks")
         })
       this.$LIPS(false)
@@ -339,7 +338,6 @@ export default {
         from,
         last_page,
         last_page_url,
-        data,
         per_page,
         next_page_url,
         to,
@@ -391,7 +389,7 @@ export default {
             return item.status == this.selectedStatus
           })
         })
-        .catch((err) => {
+        .catch(() => {
           flash.setError(
             "An error ocurred while updating the credit check status"
           )
@@ -487,7 +485,7 @@ export default {
   },
   mounted() {},
 
-  destroyed() {
+  unmounted() {
     // this.removeCustomerOptionsModalsFromDom();
   },
 }

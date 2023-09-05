@@ -177,8 +177,7 @@
 </template>
 
 <script>
-import { get, post } from "../utilities/api";
-import { mapGetters } from "vuex";
+import { post } from "../utilities/api";
 import { FormWizard, TabContent } from "vue-form-wizard";
 import "vue-form-wizard/dist/vue-form-wizard.min.css";
 //component code
@@ -257,8 +256,8 @@ export default {
             });
         },
         onComplete: function() {
-            const _balances = [this.form1, this.form2, this.form3];
-            alert("Yay. Done!");
+            // const _balances = [this.form1, this.form2, this.form3];
+            // alert("Yay. Done!");
         },
         beforeTabSwitch1: function() {
             this.isDisable1();
@@ -302,7 +301,7 @@ export default {
                         })
                         .catch(() => {
                             this.$LIPS(false);
-                            Flash.setError("Error submitting form");
+                            // Flash.setError("Error submitting form");
                         });
                 } else this.$networkErr("form");
             });

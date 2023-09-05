@@ -1,7 +1,7 @@
 <template>
     <transition name="fade">
         <div>
-            <div v-for="portal in portals">
+            <div v-for="portal in portals" :key="portal.title">
                 <portal-card :url="portal.url" :title="portal.title" :url_c="portal.url_c" :desc="portal.desc" :aces="portal.aces"/>
             </div>
         </div>

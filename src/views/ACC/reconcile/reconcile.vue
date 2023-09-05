@@ -53,12 +53,9 @@
 <script>
 import { mapGetters } from "vuex";
 import Finance from "../../../components/Finance";
-import Flash from "../../../utilities/flash";
-import Typeahead from "../../../components/Typeahead";
-import PaymentFilter from "../../../components/PaymentFilter";
 
 export default {
-  components: { Finance, Typeahead, PaymentFilter },
+  components: { Finance },
   data() {
     return {
       listToOrder: "Showroom Payment",

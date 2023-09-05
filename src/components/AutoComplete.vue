@@ -29,7 +29,7 @@
 
 <script>
 import queryParam from "../utilities/queryParam";
-import { get, post } from "../utilities/api";
+import { get } from "../utilities/api";
 
 export default {
     name: "AutoComplete",

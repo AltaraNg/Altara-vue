@@ -37,7 +37,7 @@ Date.prototype.addDays = function (days) {
 /**NB functions her can be accessed anywhere on the project(vue components)
  * by using this.$functionName the argument c stands for customer
  * I used c just to reduce file size**/
-Vue.prototype.$getCustomerFullName = (c, withMiddleName = false) =>
+Vue.prototype.$getCustomerFullName = (c) =>
     c ? `${c.first_name + (c.middle_name ? " " + c.middle_name + " " : " ") + c.last_name}` : null;
  Vue.prototype.$getUserDetails = async function(userId){
      try {
@@ -73,7 +73,7 @@ Vue.prototype.$getCustomerOfficeAddress = c =>
 
 /**the customer.verification is what is passed as v**/
 Vue.prototype.$getCustomerApprovalStatus = v =>
-    !!v ? (v.address && v.id_card && v.passport && v.processing_fee && v.work_guarantor && v.personal_guarantor) : false;
+    v ? (v.address && v.id_card && v.passport && v.processing_fee && v.work_guarantor && v.personal_guarantor) : false;
 
 
 /**used in any form to avoid submitting forms more than
@@ -115,7 +115,7 @@ Vue.prototype.$network = () => process.env.NODE_ENV === 'development' ? true : w
 /**currency formatter**/
 const formatter = (new Intl.NumberFormat('en-NG',
     {style: 'currency', currency: 'NGN', minimumFractionDigits: 2}));
-Vue.prototype.$formatCurrency = price => !!price ? formatter.format(price) : price;
+Vue.prototype.$formatCurrency = price => price ? formatter.format(price) : price;
 
 Vue.prototype.$formatMoney = money => parseFloat(Number(money).toFixed(2));
 

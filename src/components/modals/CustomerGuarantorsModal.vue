@@ -23,7 +23,7 @@
               <th>Name</th>
               <th>Date Added</th>
             </tr>
-            <tr v-for="(item, index) in modalItem">
+            <tr v-for="(item, index) in modalItem" :key="index">
               <td>{{ index + 1 }}</td>
               <td>{{ item.guarantor_email }}</td>
               <td>{{ item.guarantor_name }}</td>
@@ -133,7 +133,7 @@ export default {
                 guarantor_name:
                   guarantorName === ' ' ? 'test user' : guarantorName,
               })
-                .then(res => {
+                .then(() => {
                   this.done('AuthCode set successfully!')
                 })
                 .catch(err => {
@@ -160,6 +160,7 @@ export default {
     },
     validateEmail(mail) {
       {
+        // eslint-disable-next-line no-useless-escape
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
           return true
         }

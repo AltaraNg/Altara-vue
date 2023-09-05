@@ -47,13 +47,13 @@
 			>
 				<thead>
 					<tr>
-						<th v-for="header in headers">
+						<th v-for="header in headers" :key="header">
 							{{ header }}
 						</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(agent, index) in agents">
+					<tr v-for="(agent, index) in agents" :key="index">
 						<td>{{ index + 1 }}</td>
 
 						<td>{{ agent.agent_name }}</td>

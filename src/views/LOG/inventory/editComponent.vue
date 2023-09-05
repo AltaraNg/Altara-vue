@@ -17,13 +17,8 @@
       </div>
       <div class="col d-flex align-items-center justify-content-center">
         <b v-show="inEditMode">
-          <input
-            id="price"
-            type="number"
-            v-model="inventory.price"
-            name="price"
-            class="custom-select w-100"
-          />
+          <!-- eslint-disable-next-line vue/no-mutating-props -->
+          <input id="price" type="number" v-model="inventory.price" name="price" class="custom-select w-100"/>
         </b>
         <b v-show="!inEditMode">
           {{ inventory.price | currency("₦") }}
@@ -114,7 +109,7 @@
                   <h4 v-if="transferHistory.length < 1" class="text-center">
                     No history available.
                   </h4>
-                  <tr v-for="transfer in transferHistory">
+                  <tr v-for="transfer in transferHistory" :key="transfer">
                     <td>{{ transfer.from || "Not Available" }}</td>
                     <td>{{ transfer.to || "Not Available" }}</td>
                     <td>
@@ -141,24 +136,15 @@
 </template>
 <script>
 import Vue from "vue";
-import { get, post } from "../../../utilities/api";
+import { get } from "../../../utilities/api";
 import Flash from "../../../utilities/flash";
-import ResueableSearch from "../../../components/ReusableSearch";
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import Vue2Filters from "vue2-filters";
-import CustomHeader from "../../../components/customHeader";
-import BasePagination from "../../../components/Pagination/BasePagination";
-import InventorySearch from "../../../components/InventorySearch";
-import renewalVue from "../../FSL/renewal/renewal.vue";
 Vue.use(Vue2Filters);
 export default {
   props: ["inventory", "index"],
 
   components: {
-    CustomHeader,
-    BasePagination,
-    InventorySearch,
-    ResueableSearch,
   },
 
   computed: { ...mapGetters(["getAuthUserDetails", "getBranches"]) },
@@ -183,7 +169,7 @@ export default {
         return item.id === id;
       });}
     },
-    edit(item) {
+    edit() {
       this.inEditMode = !this.inEditMode;
       if (!this.inEditMode) {
         this.$emit("childToParent", {

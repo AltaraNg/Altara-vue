@@ -17,7 +17,7 @@
 			<div class="w-25 mx-1">
 				<select name="status" id="status" class="custom-select w-100" v-model="status">
 					<option value="" selected>--status--</option>
-					<option :value="status.value" v-for="status in statuses">
+					<option :value="status.value" v-for="status in statuses" :key="status.value">
 						{{ status.value }}
 					</option>
 				</select>

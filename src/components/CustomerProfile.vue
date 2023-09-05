@@ -294,22 +294,13 @@
 </template>
 <script>
 import Vue from 'vue'
-import Auth from '../utilities/auth'
 import { mapActions, mapGetters } from 'vuex'
 import { EventBus } from '../utilities/event-bus'
 import AppNavigation from '../components/AppNavigation'
 import ApprovalStatusButton from '../components/ApprovalStatusButton'
-import CustomSMSButton from '../components/CustomSMSButton/CustomSMSButton'
 import CustomerMobileButton from '../components/customerMobileSms/customerMobileButton.vue'
-import paystack from 'vue-paystack'
-import CustomerGuarantorsModal from '../components/modals/CustomerGuarantorsModal.vue'
-import VerificationCheckList from '../components/modals/VerificationCheckList.vue'
 import CreditReportModal from '../components/modals/CreditReportModal.vue'
 import FormalQuestions from './modals/FormalQuestions.vue'
-import Lookup from '../views/FSL/lookup/lookup.vue'
-
-import { post } from '../utilities/api'
-import { relative } from 'path'
 
 export default {
   props: {
@@ -325,14 +316,12 @@ export default {
   },
 
   components: {
+    // eslint-disable-next-line vue/no-unused-components
     CreditReportModal,
-    VerificationCheckList,
     ApprovalStatusButton,
     AppNavigation,
-    CustomSMSButton,
     CustomerMobileButton,
-    paystack,
-    CustomerGuarantorsModal,
+    // eslint-disable-next-line vue/no-unused-components
     FormalQuestions
   },
 
@@ -411,25 +400,7 @@ export default {
           maxHeight: 200,
         },
         {
-          closed: event => {},
-        }
-      )
-    },
-    creditReportModal() {
-      this.$modal.show(
-        CreditReportModal,
-        { customer: this.customer },
-        {
-          name: "creditReportForm",
-          classes: ["w-50", "overflow-hidden"],
-          adaptive: true,
-          resizable: true,
-          height: 'auto',
-          width: '50%',
-          clickToClose: true,
-        },
-        {
-          closed: event => {},
+          closed: () => {},
         }
       )
     },
@@ -447,7 +418,7 @@ export default {
           clickToClose: true,
         },
         {
-          closed: event => {
+          closed: () => {
           }
         }
       )
@@ -459,7 +430,7 @@ export default {
     ]),
   },
 
-  destroyed() {
+  unmounted() {
     this.removeCustomerOptionsModalsFromDom()
   },
 }

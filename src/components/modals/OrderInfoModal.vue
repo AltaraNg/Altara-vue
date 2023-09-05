@@ -61,7 +61,7 @@
 									v-model="agent_id"
 								>
 									<option value="" disabled selected>--select dsa--</option>
-									<option value="" v-for="agent in dsas" :value="agent.id">
+									<option v-for="agent in dsas" :value="agent.id" :key="agent.id">
 										{{ agent.full_name }}
 									</option>
 								</select>
@@ -84,7 +84,7 @@
 
 <script>
 	import moment from 'moment';
-	import { get, put } from '../../utilities/api';
+	import { put } from '../../utilities/api';
 	import flash from '../../utilities/flash';
 	import Roles from '../../utilities/roles';
 	export default {

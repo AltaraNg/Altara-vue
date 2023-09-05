@@ -1,5 +1,3 @@
-import { param } from "jquery"
-
 const calculate = (productPrice, data, params, percentage_discount) => {
   const count = repaymentCount(data.repayment_duration_id.value, 14)
   const marketPrice = Math.floor(productPrice * (1 + params.margin))
@@ -18,11 +16,12 @@ const calculate = (productPrice, data, params, percentage_discount) => {
   const tempActualRepayment = +(total - downpayment).toFixed(2)
   var biMonthlyRepayment = Math.round(tempActualRepayment / count / 100) * 100
   const actualRepayment = biMonthlyRepayment * count
+  var rePayment = 0
   if (percentage_discount > 0) {
-    var rePayment =
+    rePayment =
       actualRepayment - (actualRepayment * percentage_discount) / 100
   } else {
-    var rePayment = actualRepayment
+    rePayment = actualRepayment
   }
   total = actualRepayment + actualDownpayment
 
@@ -53,12 +52,12 @@ const cashLoan = (productPrice, data, params, percentage_discount) => {
   var biMonthlyRepayment = Math.round(tempActualRepayment / count / 100) * 100
   const actualRepayment = biMonthlyRepayment * count
   let total = Math.ceil((actualDownpayment + actualRepayment) / 100) * 100
+  var rePayment = 0;
   if (percentage_discount > 0) {
-    var rePayment =
-      actualRepayment - (actualRepayment * percentage_discount) / 100
+    rePayment = actualRepayment - (actualRepayment * percentage_discount) / 100
   } else {
-    var rePayment = actualRepayment
-  }
+    rePayment = actualRepayment
+  } 
   total = actualRepayment + actualDownpayment
   return { total, actualDownpayment, rePayment }
 }
@@ -133,7 +132,7 @@ const populateDecliningRepaymentAmounts = (
   interestOnNormalSingleInstallment
 ) => {
   const repayments = []
-  percentages.forEach(function(percentage, index, arr) {
+  percentages.forEach(function(percentage) {
     let amount = computeDecliningRepaymentAmount(
       percentage,
       residual,

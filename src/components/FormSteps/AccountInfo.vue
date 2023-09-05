@@ -351,7 +351,7 @@
                   type="registration_channel"
                   :class="memberHasError('newCustomer.registration_channel') ? 'is-invalid' : ''" >
                   <option value="Website" selected>Website</option>
-                <option :value="channel" v-for="channel in channels">{{channel}}
+                <option :value="channel" v-for="channel in channels" :key="channel">{{channel}}
                 </option>
               </select>
                 <div v-if="memberHasError('newCustomer.registration_channel')" class="invalid-feedback">
@@ -439,7 +439,7 @@
 </template>
 <script>
 import { validationMixin } from 'vuelidate'
-import { get, post } from "../../utilities/api";
+import { get } from "../../utilities/api";
 import flash from "../../utilities/flash";
 import { mapGetters } from "vuex";
 export default{
@@ -502,13 +502,13 @@ export default{
             10000
           );
 
-          e = e.response;
+          let e = e.response;
             if (e.status === 422)
                 this.error = e.data.errors ? e.data.errors : e.data;
-            Flash.setError(
-                e.status === 422 ? this.$displayErrorText(this.error.data.errors) : e.message,
-                10000
-            );
+            // Flash.setError(
+            //     e.status === 422 ? this.$displayErrorText(this.error.data.errors) : e.message,
+            //     10000
+            // );
 
           const field = this.$validator.fields.find({ name: "cc_reg_id" });
           field.setFlags({ invalid: true });

@@ -24,7 +24,7 @@
           ><br />
           <div
             class="form-check form-check-radio form-check-inline"
-            v-for="option in verifiedOptions"
+            v-for="option in verifiedOptions" :key="option"
           >
             <label class="form-check-label">
               <input
@@ -348,7 +348,7 @@
 </template>
 
 <script>
-import { get, post } from "../../utilities/api"
+import { post } from "../../utilities/api"
 import { EventBus } from '../../utilities/event-bus'
 
 export default {

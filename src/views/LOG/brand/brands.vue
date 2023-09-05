@@ -37,7 +37,7 @@
                 <div class="w-100 my-5 mx-0 hr"></div>
                 <div class="row px-4 pt-3 pb-4 text-center">
                     <div class="col light-heading" style="max-width: 120px">S/N</div>
-                    <div class="col light-heading" v-for="header in headings">{{header}}</div>
+                    <div class="col light-heading" v-for="header in headings" :key="header">{{header}}</div>
                 </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
@@ -98,13 +98,13 @@
                             </div>
 
                             <div v-else class="categories">
-                                <div v-for="item in brandItem.categories" class="brand-cat">
+                                <div v-for="item in brandItem.categories" :key="item.name" class="brand-cat">
                                     <span >{{ item.name }}</span><span class="modal-close text-danger" @click="removeCat(item)"><i class="fas fa-times"></i></span>
                                 </div>
 
                                 <div class="new-cat" @click="toggleCat"><i class="fa fa-plus-circle" aria-hidden="true"></i>Add</div>
                                 <div v-if="showCat === true" class="categories">
-                                    <span v-for="cat in categories" @click="addCat(brandItem, cat)">{{cat.name}}</span>
+                                    <span v-for="cat in categories" :key="cat.id" @click="addCat(brandItem, cat)">{{cat.name}}</span>
                                 </div>
                             </div>
 
@@ -143,7 +143,6 @@
     import {mapGetters, mapActions} from "vuex";
     import CustomHeader from '../../../components/customHeader';
     import BasePagination from '../../../components/Pagination/BasePagination'
-    import InventorySearch from "../../../components/InventorySearch";
     import ResueableSearch from '../../../components/ReusableSearch.vue';
 
     export default {
@@ -191,9 +190,8 @@
 
                 this.$scrollToTop();
                 this.$LIPS(true);
-                let {page, page_size} = this.$data;
-                get(`${this.urlToFetchOrders}${!!this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
-          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
+                get(`${this.urlToFetchOrders}${this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
+          `${this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
                 )
                     .then(({data}) => this.prepareList(data))
                     .catch(() => Flash.setError('Error Preparing form'));
@@ -263,7 +261,7 @@
                 }
                 else{
                      brand.categories.push(category);
-                     this.categories = this.categories.filter(function(item, index, arr){
+                     this.categories = this.categories.filter(function(item){
                     return category.id !== item.id;
                 })
 
@@ -274,7 +272,7 @@
             getCategories(){
                 get('/api/category?isActive=true').then(res => {
                     Vue.set(this.$data, 'categories', res.data.data.data)
-                }).catch(err => {
+                }).catch(() => {
                 })
             },
             toggleCat(){
@@ -302,7 +300,7 @@
             },
 
             removeCat(cat){
-                this.brandItem.categories = this.brandItem.categories.filter(function(item, index, arr){
+                this.brandItem.categories = this.brandItem.categories.filter(function(item){
                     return item.id !== cat.id;
                 });
                 if(!this.categories.some(catItem => catItem.id === cat.id)){
@@ -331,7 +329,7 @@
             this.fetchData();
         },
 
-        destroyed() {
+        unmounted() {
             this.removeCustomerOptionsModalsFromDom();
         },
         filters: {

@@ -32,17 +32,14 @@
 </template>
 
 <script>
-    import Lookup from "../lookup/lookup";
     import Payment from "../../../components/Payment";
     // import DatePicker from 'vue2-datepicker';
     // import 'vue2-datepicker/index.css';
-    import Flash from '../../../utilities/flash';
-    import PaymentFilter from "../../../components/PaymentFilter";
  
 
 
     export default {
-        components: {Lookup,Payment, PaymentFilter},
+        components: {Payment},
         data() {
             return {
                 listToOrder: 'Log Payment',

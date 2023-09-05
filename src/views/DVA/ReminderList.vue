@@ -16,7 +16,7 @@
                     </div>
                     <select name="option" v-model="searchQuery.days"  class="custom-select">
                         <option disabled>--select--</option>
-                        <option :value="option.value" v-for="option in message">{{option.name}}</option>                       
+                        <option :value="option.value" v-for="option in message" :key="option.value">{{option.name}}</option>                       
                     </select>
                 </div>
                 <div class="col-md">
@@ -25,7 +25,7 @@
                     </div>
                     <select name="option" v-model="searchQuery.businessType"  class="custom-select">
                         <option disabled>--select--</option>
-                        <option :value="option.id" v-for="option in businessTypes">{{option.name}}</option>                       
+                        <option :value="option.id" v-for="option in businessTypes" :key="option.id">{{option.name}}</option>                       
                     </select>
                 </div>
                 </template>
@@ -37,7 +37,7 @@
                 
                 <div class="row px-4 pt-3 pb-4 text-center">
                     <div class="col light-heading" style="max-width: 120px">S/N</div>
-                    <div class="col light-heading" v-for="header in headings">{{header}}</div>
+                    <div class="col light-heading" v-for="header in headings" :key="header">{{header}}</div>
                      <div class="col light-heading" v-if="evalMode==='collection' || evalMode === 'recovery'">Visited?</div>
                     <div class="col light-heading" v-if="evalMode==='call' || evalMode === 'collection' || evalMode === 'recovery'">Feedback</div>
                     <div class="col light-heading" v-if="evalMode==='call'">Promise Date</div>
@@ -202,7 +202,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(object, index) in modalItem">
+                                        <tr v-for="(object, index) in modalItem" :key="index">
                                             <td>{{index+1}}</td>
                                             <td>{{convertDate(object.created_at)}}</td>
                                             <td>{{object.data.type}}</td>
@@ -297,13 +297,11 @@
     import Vue from 'vue';
     import {get, post, patch} from '../../utilities/api';
     import Flash from "../../utilities/flash";
-    import {mapGetters, mapActions} from "vuex";
+    import {mapGetters} from "vuex";
     import CustomHeader from '../../components/customHeader';
-    import confirmModal from '../../components/modals/ConfirmModal';
     import BasePagination from '../../components/Pagination/BasePagination';
     import Vue2Filters from 'vue2-filters';
-    import NewOrderAmortization from "../../components/NewOrderAmortization"
-    import OrderWithPromiseCall from '../../utilities/reminder';
+    import NewOrderAmortization from "../../components/NewOrderAmortization";
     import ResueableSearch from '../../components/ReusableSearch.vue';
 import ConfirmModal from '../../components/modals/ConfirmModal.vue';
 import queryParam from '../../utilities/queryParam';
@@ -470,7 +468,7 @@ import queryParam from '../../utilities/queryParam';
                      
                      this.$validator.validate().then(valid => {
                          if(valid){
-                             
+                            //why is this empty?
                          }
                      })
                  this.$LIPS(true);
@@ -552,7 +550,7 @@ import queryParam from '../../utilities/queryParam';
                 if(elem) {
                     //send the request
                     this.$LIPS(true);
-                    patch(`/api/new-order/${this.selectedOrder.id}/repossess`).then((res) => {
+                    patch(`/api/new-order/${this.selectedOrder.id}/repossess`).then(() => {
                         
                         this.fetchData();
                          this.$swal({

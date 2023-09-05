@@ -21,7 +21,7 @@
 
                             <div class="form-group">
                                 <span class="radio mr-5"
-                                      v-for="type in ['custom', 'auto-generate']">
+                                      v-for="type in ['custom', 'auto-generate']" :key="type">
                                     <input :id="type" :value="type" type="radio" v-model="messageType">
                                     <label :for="type">{{type | capitalize}} Message</label>
                                 </span>
@@ -137,7 +137,7 @@
         },
 
         watch: {
-            'messageType': function (newValue) {
+            'messageType': function () {
                 //do stuff for generating sms
             }
         },

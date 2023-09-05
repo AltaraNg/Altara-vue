@@ -215,18 +215,14 @@ import { FormWizard, TabContent, ValidationHelper } from "mulltistep-checker"
 import CustomHeader from "../../components/customHeader"
 import check from "../../assets/css/svgs/check.vue"
 import "../../assets/css/vue-step-wizard.css"
-import { Message } from "../../utilities/sms"
 import { log } from "../../utilities/log"
 import Flash from "../../utilities/flash"
 import { get, post } from "../../utilities/api"
-import Verification from "../DVA/verification/verification"
-import flash from "../../utilities/flash"
 import CustomerData from "../../mixins/CustomerData"
 import { selectType } from "../../utilities/log.js"
 
 export default {
   components: {
-    Verification,
     FormWizard,
     TabContent,
     check,
@@ -326,11 +322,7 @@ export default {
             )
               .then(({ data }) => {
                 let {
-                  first_name: FN,
-                  last_name: LN,
                   id,
-                  branch,
-                  telephone: tel,
                 } = data.customer
                 this.identity = id
                 this.registered = true
@@ -469,7 +461,7 @@ export default {
   },
   watch: {
     "formData.newCustomer": {
-      handler(newData, oldData) {
+      handler(newData) {
         localStorage.data = JSON.stringify(newData)
       },
       deep: true,

@@ -31,7 +31,7 @@
                     </div>-->
                     <!--<div class="col light-heading" v-else>Action</div>-->
                     <div class="col light-heading">Action</div>
-                    <div class="col light-heading" v-for="header in details.headings">{{header}}</div>
+                    <div class="col light-heading" v-for="header in details.headings" :key="header">{{header}}</div>
                 </div>
             </div>
 
@@ -93,8 +93,10 @@
                 }
 
                 if (this.mode('call')) {
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     this.listToOrder = 8;
                 } else {
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
                     if (!this.listToOrder) this.listToOrder = list;
                 }
 

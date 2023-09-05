@@ -22,7 +22,7 @@
 
 							
 						</tr>
-						<tr v-for="(item, index) in modalItem.general_feedbacks">
+						<tr v-for="(item, index) in modalItem.general_feedbacks" :key="index">
                             <td>{{index+1}}</td>
                             <td>{{item.created_by}}</td>
                             <td>{{item.reason}}</td>

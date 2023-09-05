@@ -8,7 +8,7 @@
                     :button-title="'click here to send caution a staff!'"/>
 
             <div class="mt-5 row attendance-head mb-4" v-if="show">
-                <div :class="`col-${col}`" v-for="{name,col} in columns">
+                <div :class="`col-${col}`" v-for="{name,col} in columns" :key="col">
                     <div class="row">
                         <div class="light-heading"><span class="d-none d-sm-inline"></span> {{name}}</div>
                     </div>
@@ -19,6 +19,7 @@
                 <div v-if="show">
                     <div class="mb-3 px-0 row align-items-center attendance-item"
                          v-for="(caution,index) in cautions.data"
+                         :key="index"
                          @click="displayInfo(caution)" data-toggle="tooltip" data-placement="top"
                          title="click on here to view full details!">
                         <div class="col-12 col-xs-4 col-md-4 col-lg-4">
@@ -196,7 +197,7 @@
                 }
                 this.$LIPS(false);
             },
-            handleErr(e) {
+            handleErr() {
                 Flash.setError('Error Fetching Cautions');
             },
             displayInfo(caution) {

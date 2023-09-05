@@ -44,9 +44,9 @@
 </template>
 
 <script>
-import ImageUpload from "../ImageUpload.vue"
+// import ImageUpload from "../ImageUpload.vue"
 export default {
-  components: { ImageUpload },
+  components: { },
   props: {
     document: {
       required: true,

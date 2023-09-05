@@ -173,7 +173,7 @@
 
 <script>
 import Axios from "axios"
-import { get, post } from "../../utilities/api"
+import { post } from "../../utilities/api"
 import { EventBus } from "../../utilities/event-bus"
 import ToggleButton from "../ToggleButton.vue"
 
@@ -281,7 +281,7 @@ export default {
         .then(res => {
           this.bankList = res?.data?.data
         })
-        .catch(err => {})
+        .catch(() => {})
     },
 
     filteredList() {

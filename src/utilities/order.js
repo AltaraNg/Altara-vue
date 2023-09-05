@@ -150,10 +150,10 @@ class Order {
 
         /*(total)amount paid = down payment + total repayments  + discount(if any)*/
         let amountPaid = 0, totalRepayments = 0;
-        if (!!this.repaymentData) {
+        if (this.repaymentData) {
             for (let i = 0; i < this.count + 1; i++) {
                 let repayment = parseInt(this.actualAmountsPaid[i]);
-                totalRepayments += !!repayment ? vue.$roundDownAmt(repayment) : 0
+                totalRepayments += repayment ? vue.$roundDownAmt(repayment) : 0
             }
             amountPaid = vue.$roundDownAmt(parseInt(down_payment)) + totalRepayments + discountAmount;
         }
@@ -328,7 +328,7 @@ class Order {
     }
 
     static renderMessage(reminder) {
-        return !!reminder['sms'] ? reminder.sms.message.replace(/%0a/g, '</br>') : reminder.feedback;
+        return reminder['sms'] ? reminder.sms.message.replace(/%0a/g, '</br>') : reminder.feedback;
     }
 
     static convertToName(id, type) {

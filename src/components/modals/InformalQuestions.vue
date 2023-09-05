@@ -864,7 +864,7 @@
   </template>
   
   <script>
-  import { get, post } from "../../utilities/api"
+  import { post } from "../../utilities/api"
   import { EventBus } from '../../utilities/event-bus'
   import Vue from 'vue'
   import FormalQuestions from './FormalQuestions.vue';
@@ -895,7 +895,9 @@
     },
 
     components: {
+    // eslint-disable-next-line vue/no-unused-components
     FormalQuestions,
+    // eslint-disable-next-line vue/no-unused-components
     GuarantorQuestions
   },
   computed: {
@@ -935,7 +937,7 @@
                 maxHeight: 200,
                 },
                 {
-                closed: event => {},
+                closed: () => {},
                 }
         )
     },
@@ -954,7 +956,7 @@
                 maxHeight: 200,
                 },
                 {
-                closed: event => {},
+                closed: () => {},
                 }
         )
     },

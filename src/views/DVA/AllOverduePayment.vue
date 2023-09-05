@@ -5,7 +5,7 @@
             <custom-header :title="'All overdue(s) payments'"/>
 
             <div class="mt-5 row attendance-head">
-                <div class="col-4 col-sm" v-for="{name} in filters">
+                <div class="col-4 col-sm" v-for="{name} in filters" :key="name">
                     <div class="row">
                         <div class="light-heading">
                             <span class="d-none d-sm-inline">Select</span> {{name | capitalize}}
@@ -16,14 +16,14 @@
             </div>
 
             <div class="mt-2 mt-lg-3 row attendance-head attendance-view">
-                <div class="col-4 col-sm" v-for="{name:filter,model} in filters">
+                <div class="col-4 col-sm" v-for="{name:filter,model} in filters" :key="model">
                     <div class="row">
                         <select class="custom-select"
                                 v-model="$data[model]"
                                 v-if="filter === 'branch'"
                                 @keyup.enter="fetchData()">
                             <option disabled selected value="">{{filter | capitalize}}</option>
-                            <option :value="id" v-for="{name,id} in $store.getters.getBranches">
+                            <option :value="id" v-for="{name,id} in $store.getters.getBranches" :key="id">
                                 {{name | capitalize}}
                             </option>
                         </select>
@@ -46,7 +46,7 @@
                 <div class="w-100 my-5 mx-0 hr"></div>
                 <div class="row px-4 pt-3 pb-4 text-center">
                     <div class="col light-heading" style="max-width: 120px">S/N</div>
-                    <div class="col light-heading" v-for="header in headings">{{header}}</div>
+                    <div class="col light-heading" v-for="header in headings" :key="header">{{header}}</div>
                 </div>
             </div>
 
@@ -94,9 +94,9 @@
                 let {branch_id, overdue_days} = this.$data;
                 const mode = this.$route.meta.mode;
                 get(`/api/reminder/create?list=overdue` +
-                    `${!!mode ? `&direct-debit=direct-debit` : ''}` +
-                    `${!!overdue_days ? `&overdueDays=${overdue_days}` : ''}` +
-                    `${!!branch_id ? `&branchId=${branch_id}` : ''}`)
+                    `${mode ? `&direct-debit=direct-debit` : ''}` +
+                    `${overdue_days ? `&overdueDays=${overdue_days}` : ''}` +
+                    `${branch_id ? `&branchId=${branch_id}` : ''}`)
                     .then(({data}) => this.prepareForm(data))
                     .catch(() => Flash.setError('Error Preparing form'));
             },

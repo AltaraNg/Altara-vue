@@ -56,7 +56,7 @@
                                         name="status"
                                         v-model="form.status" v-validate="'required'">
                                     <option selected value="">select status</option>
-                                    <option :value="status" v-for="status in statuses">
+                                    <option :value="status" v-for="status in statuses" :key="status">
                                         {{status | capitalize}}
                                     </option>
                                 </select>
@@ -72,7 +72,7 @@
                                         name="nationality"
                                         v-model="form.nationality" v-validate="'required'">
                                     <option selected value="">select nationality</option>
-                                    <option :value="country" v-for="country in countries">
+                                    <option :value="country" v-for="country in countries" :key="country">
                                         {{country | capitalize}}
                                     </option>
                                 </select>
@@ -124,7 +124,7 @@
                                         name="role" v-model="form.role_id"
                                         v-validate="'required'" :disabled="mode === 'edit' ? !transfer : false">
                                     <option selected value="">select role</option>
-                                    <option :value="id" v-for="{name, id} in roles">
+                                    <option :value="id" v-for="{name, id} in roles" :key="id">
                                         {{name | capitalize}}
                                     </option>
                                 </select>
@@ -142,7 +142,7 @@
                                         name="qualification" v-model="form.category"
                                         v-validate="'required'" :disabled="mode === 'edit' ? !transfer : false">
                                     <option selected value="">select category</option>
-                                    <option :value="name" v-for="{name} in categories">
+                                    <option :value="name" v-for="{name} in categories" :key="name">
                                         {{name | capitalize}}
                                     </option>
                                 </select>
@@ -162,7 +162,7 @@
                                         name="branch" v-model="form.branch_id"
                                         v-validate="'required'">
                                     <option selected value="">select branch</option>
-                                    <option :value="id" v-for="{name, id} in branches">
+                                    <option :value="id" v-for="{name, id} in branches" :key="id">
                                         {{name | capitalize}}
                                     </option>
                                 </select>
@@ -200,7 +200,7 @@
                                         name="qualification" v-model="form.highest_qualification"
                                         v-validate="'required'">
                                     <option selected value="">select qualification</option>
-                                    <option :value="qualification" v-for="qualification in qualifications">
+                                    <option :value="qualification" v-for="qualification in qualifications" :key="qualification">
                                         {{qualification | capitalize}}
                                     </option>
                                 </select>
@@ -214,7 +214,7 @@
 
                             <div class="form-group col-md-6 col-12 float-left px-0 px-md-3">
                                 <label class="w-100 float-left pl-1">Gender</label>
-                                <div class="radio p-0 col-md-6 col-6 float-left" v-for="sex in gender">
+                                <div class="radio p-0 col-md-6 col-6 float-left" v-for="sex in gender" :key="sex">
                                     <input :id="sex"
                                            :value="sex"
                                            name="gender"
@@ -607,7 +607,7 @@
                             this.form.transfer = this.transfer;
                             byMethod(this.method, this.store, this.form)
                                 .then(({data}) => {
-                                    if (!!this.imgForm.cv) this.onSaveCV();
+                                    if (this.imgForm.cv) this.onSaveCV();
                                     let {staff_id, password, message, success, transfer} = data, mode = this.mode;
                                     if (success || transfer) {
                                         let text = success ? `Welcome to Altara credit. Please secure your login

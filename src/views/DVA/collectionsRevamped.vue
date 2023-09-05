@@ -285,10 +285,6 @@
 	import StatCard from '../../components/StatCard.vue';
 	import RenewalTable from '../../components/tables/RenewalTable.vue';
 	import { mapGetters } from 'vuex';
-	import Total from '../../assets/css/svgs/total.vue';
-	import People from '../../assets/css/svgs/people.vue';
-	import Purchased from '../../assets/css/svgs/purchased.vue';
-	import Interested from '../../assets/css/svgs/interested.vue';
 	import DatePicker from 'vue2-datepicker';
 	import 'vue2-datepicker/index.css';
 	import { get } from '../../utilities/api';
@@ -301,11 +297,7 @@
 	export default {
 		components: {
 			StatCard,
-			Total,
 			RenewalTable,
-			People,
-			Purchased,
-			Interested,
 			DatePicker,
 			ZeroState,
 			BasePagination,
@@ -377,7 +369,6 @@
 				},
 				meta: {},
 				renewal: true,
-				statuses: '',
 				OId: 1,
 				businessTypes: [],
 				salesCategories: [],
@@ -516,8 +507,7 @@
 					let agents = await get(this.apiUrl.dsas);
 					this.dsas = agents.data?.data?.data;
 				} catch (error) {
-					flash.setError(error);
-				} finally {
+					Flash.setError(error);
 				}
 			},
 
@@ -599,16 +589,6 @@
 				this.switchTab(tabObject);
 			},
 
-			async getRenewalStatuses() {
-				this.$LIPS(true);
-				let statuses = await get(this.apiUrl.statuses);
-				this.statuses = statuses.data?.data?.prompter_statuses;
-
-				this.statuses = this.statuses.filter((item) => {
-					return item.name !== 'not contacted';
-				});
-			},
-
 			async generateList() {
 				this.$LIPS(true);
 				let result = await get(this.apiUrl.generateList);
@@ -655,6 +635,7 @@
 
 			prepareList(response) {
 				response.data.meta ? (this.meta = response.data.meta) : '';
+				// eslint-disabled-next-line no-unsafe-optional-chaining
 				let {
 					current_page,
 					first_page_url,
@@ -667,7 +648,7 @@
 					to,
 					total,
 					prev_page_url,
-				} = response?.data[0];
+				} = response?.data?.[0];
 				this.pageParams = Object.assign({}, this.pageParams, {
 					current_page,
 					first_page_url,

@@ -1,7 +1,7 @@
 <template>
     <div class="position-relative d-flex align-items-stretch">
-        <router-link
-                :tag="link ? 'a' : 'span'"
+        <!-- eslint-disable-next-line vue/no-deprecated-router-link-tag-prop -->
+        <router-link :tag="link ? 'a' : 'span'"
                 :class="buttonClass + ' text-uppercase'"
                 :to="getLink" data-function="display">
             {{status.split('-').join(' ')}}

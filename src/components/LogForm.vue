@@ -131,7 +131,7 @@ export default {
         if (result) {
           this.$LIPS(true)
           post(this.apiUrls.payment, this.cashLogForm)
-            .then(res => {
+            .then(() => {
               this.paymentId = ''
               this.$LIPS(false)
               this.$swal({
@@ -142,7 +142,7 @@ export default {
             })
             .catch(() => {
               this.$LIPS(false)
-              Flash.setError('Error submitting form')
+              // Flash.setError('Error submitting form')
             })
         } else this.$networkErr('form')
       })

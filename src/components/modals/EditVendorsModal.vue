@@ -17,7 +17,7 @@
     </div>
     <div class="px-4 mx-3 py-2 mt-5">
       <div class="mx-4">
-        <small v-for="item in err" class="text-danger d-block h6 text-center">{{
+        <small v-for="item in err" :key="item" class="text-danger d-block h6 text-center">{{
           item[0]
         }}</small>
       </div>
@@ -177,14 +177,12 @@
 </template>
 
 <script>
-import { get, patch } from '../../utilities/api'
-import DatePicker from 'vue2-datepicker'
+import { patch } from '../../utilities/api'
 import 'vue2-datepicker/index.css'
 import {EventBus} from '../../utilities/event-bus'
 
 export default {
   components: {
-    DatePicker,
   },
   props: {
     vendor: {
@@ -225,7 +223,7 @@ export default {
             }
             this.$LIPS(true)
 
-            const response = await patch(this.apiUrl, data)
+            await patch(this.apiUrl, data)
 
             this.$swal({
               icon: 'success',

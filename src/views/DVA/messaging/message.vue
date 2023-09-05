@@ -85,7 +85,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr v-for="type in dataMessages">
+                                    <tr v-for="type in dataMessages" :key="type.to">
                                         
                                         <td>{{type.to}}</td>
                                         <td>{{type.status.groupName}}</td>
@@ -107,7 +107,6 @@
 </template>
 <script>
 import { Message } from "../../../utilities/sms";
-import Flash from "../../../utilities/flash";
 
 export default {
     data() {
@@ -129,7 +128,6 @@ export default {
                         new Message(this.message, this.contacts).send(r => {
                             
                             r.status === 200;
-                            const success = [1,3];
                             const data = r.data.messages;
                             this.dataMessages=data;
                              this.done();

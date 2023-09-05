@@ -137,7 +137,7 @@ export default {
               .then((response) => {
                 return response.data;
               })
-              .catch((error) =>
+              .catch(() =>
                 this.$displayErrorMessage(
                   "Error Sending customer mobile notification!"
                 )

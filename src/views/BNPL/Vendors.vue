@@ -58,7 +58,7 @@
           </div>
           <div
             class="col dark-heading font-weight-bolder"
-            v-for="header in headings"
+            v-for="header in headings" :key="header"
           >
             {{ header }}
           </div>
@@ -193,7 +193,7 @@
 </template>
 
 <script>
-import { get, patch } from '../../utilities/api'
+import { get } from '../../utilities/api'
 import Vue from 'vue'
 
 import Flash from '../../utilities/flash'
@@ -264,12 +264,11 @@ export default {
       this.loading = true
       this.$scrollToTop()
       this.$LIPS(true)
-      let { page, page_size } = this.$data
       get(
         `${this.apiUrl}${
-          !!this.pageParams.page ? `?page=${this.pageParams.page}` : ''
+          this.pageParams.page ? `?page=${this.pageParams.page}` : ''
         }` +
-          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ''}`
+          `${this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ''}`
       )
         .then(({ data }) => this.prepareList(data))
         .catch(() => Flash.setError('Error Fetching Vendors'))
@@ -383,7 +382,7 @@ export default {
       this.vendorItem = vendor
       return $(`#viewBrand`).modal('toggle')
     },
-    edit(item) {
+    edit() {
       this.showModalContent = false
       $(`#viewBrand`).modal('toggle')
       this.$modal.show(
@@ -404,7 +403,7 @@ export default {
         try {
           this.$LIPS(true)
 
-          get(this.apiUrlDeactivate + `/${this.selectedOrder.id}`).then(res => {
+          get(this.apiUrlDeactivate + `/${this.selectedOrder.id}`).then(() => {
             this.fetchData()
           })
 
@@ -415,6 +414,7 @@ export default {
 
           this.showModal = false
         } catch (e) {
+          console.error(e)
         } finally {
           this.$LIPS(false)
         }
@@ -427,7 +427,7 @@ export default {
         try {
           this.$LIPS(true)
 
-          get(this.apiUrlReactivate + `/${this.selectedOrder.id}`).then(res => {
+          get(this.apiUrlReactivate + `/${this.selectedOrder.id}`).then(() => {
             this.fetchData()
           })
 
@@ -438,6 +438,7 @@ export default {
 
           this.showModal = false
         } catch (e) {
+          // Lets handle this catch
         } finally {
           this.$LIPS(false)
         }
@@ -466,7 +467,7 @@ export default {
     EventBus.$on('fetchVendors', this.fetchData())
   },
 
-  destroyed() {
+  unmounted() {
     this.removeCustomerOptionsModalsFromDom()
   },
   filters: {

@@ -42,7 +42,7 @@
                   class="custom-select w-100"
                   v-model="searchQuery.orderStatus"
                 >
-                  <option :value="type" v-for="type in orderStatus">
+                  <option :value="type" v-for="type in orderStatus" :key="type">
                     {{ type }}
                   </option>
                 </select>
@@ -63,7 +63,7 @@
             </div>
             <div
               class="col dark-heading font-weight-bolder"
-              v-for="header in headings"
+              v-for="header in headings" :key="header"
             >
               {{ header }}
             </div>
@@ -127,11 +127,8 @@
 </template>
 
 <script>
-import { get, patch } from "../../utilities/api"
-import Vue from "vue"
-
+import { get } from "../../utilities/api"
 import Flash from "../../utilities/flash"
-
 import { mapGetters, mapActions } from "vuex"
 import CustomHeader from "../../components/customHeader"
 import ZeroState from "../../components/ZeroState.vue"
@@ -197,12 +194,11 @@ export default {
       this.$scrollToTop()
       this.$LIPS(true)
       this.loading = true
-      let { page, page_size } = this.$data
       get(
         `${this.apiUrl}${
-          !!this.pageParams.page ? `&page=${this.pageParams.page}` : ""
+          this.pageParams.page ? `&page=${this.pageParams.page}` : ""
         }` +
-          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
+          `${this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
       )
         .then(({ data }) => this.prepareList(data))
         .catch(() => Flash.setError("Error Preparing form"))
@@ -310,7 +306,7 @@ export default {
         }
       )
     },
-    edit(item) {
+    edit() {
       this.showModalContent = false
       $(`#viewBrand`).modal("toggle")
       this.$modal.show(
@@ -344,7 +340,7 @@ export default {
     this.fetchData()
   },
 
-  destroyed() {
+  unmounted() {
     this.removeCustomerOptionsModalsFromDom()
   },
   filters: {

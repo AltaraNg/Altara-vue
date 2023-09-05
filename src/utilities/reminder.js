@@ -76,6 +76,7 @@ class OrderWithPromiseCall extends Order {
             'repayment_level': this.repaymentLevel + "/" + this.count
         };
         if (type === 'sms') this._reminder.contacts = this.customer.telephone;
+        // eslint-disable-next-line no-constant-condition
         if (type === 'sms' || 'custom-sms') this._reminder.sms_id = SMSId;
     }
 

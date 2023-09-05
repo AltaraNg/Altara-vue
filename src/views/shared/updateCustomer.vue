@@ -648,14 +648,15 @@
 
                             <hr class="my-4">
 
-                            <span
-                                    v-if="isClick"
+                            <template v-if="isClick">
+                                <span
                                     @click="setOccupation(name)"
                                     v-for="(name, index) in occName"
                                     :key="index"
                                     class="badge badge-default occupation-option"
                                     :data-name="name"
                             >{{name}}</span>
+                            </template>
                             &nbsp;
                             <div class="form-group col-md-3 col-12 px-md-3 px-1 mt-2 float-left">
                                 <label> Occupation</label>
@@ -791,7 +792,7 @@
 
                                 <div class="form-group col-md-9 px-md-3 px-1 float-left">
                                     <label class="w-100 float-left">Days of Work</label>
-                                    <div class="checkbox float-left pr-3" v-for="(day, index) in weekdays" key="index">
+                                    <div class="checkbox float-left pr-3" v-for="(day, index) in weekdays" :key="index">
                                         <input
                                                 :id="day"
                                                 :value="day"
@@ -1962,7 +1963,6 @@
                                     </div>
 </template>
 <script>
-import { Message } from "../../utilities/sms";
 import { log } from "../../utilities/log";
 import Flash from "../../utilities/flash";
 import { get, post } from "../../utilities/api";
@@ -2012,11 +2012,7 @@ export default {
                         )
                             .then(({ data }) => {
                                 let {
-                                    first_name: FN,
-                                    last_name: LN,
                                     id,
-                                    branch,
-                                    telephone: tel
                                 } = data.customer;
                                 Flash.setSuccess(
                                     `Customer ${this.mode}d successful! Customer ID is: ${id}`,

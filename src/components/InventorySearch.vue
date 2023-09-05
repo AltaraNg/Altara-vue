@@ -71,7 +71,6 @@ export default {
   methods: {
     searchEvent() {
       let filters = {};
-      let currentBranch = localStorage.getItem("branch_id");
 
       filters[this.searchFilter] = this.searchQ;
       const filterParam = queryParam({

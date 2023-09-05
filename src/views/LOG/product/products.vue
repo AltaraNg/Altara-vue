@@ -24,7 +24,7 @@
                     <label class="form-control-label">Brand:  </label>
                     </div>
                     <select name="brand" id="brand" class="custom-select" v-model="searchQuery.brand">
-                        <option :value="brand.name" v-for="brand in brands">
+                        <option :value="brand.name" v-for="brand in brands" :key="brand.name">
                             {{brand.name}}
                         </option>
                     </select>
@@ -34,7 +34,7 @@
                     <label class="form-control-label">Category:  </label>
                     </div>
                    <select name="category" id="category" class="custom-select" v-model="searchQuery.category">
-                        <option :value="category.name" v-for="category in categories">
+                        <option :value="category.name" v-for="category in categories" :key="category.name">
                             {{category.name}}
                         </option>
                     </select>
@@ -55,7 +55,7 @@
                 <div class="w-100 my-5 mx-0 hr"></div>
                 <div class="row px-4 pt-3 pb-4 text-center">
                     <div class="col light-heading" style="max-width: 120px">S/N</div>
-                    <div class="col light-heading" v-for="header in headings">{{header}}</div>
+                    <div class="col light-heading" v-for="header in headings" :key="header">{{header}}</div>
                 </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
@@ -168,7 +168,6 @@
     import {mapGetters, mapActions} from "vuex";
     import CustomHeader from '../../../components/customHeader';
     import BasePagination from '../../../components/Pagination/BasePagination'
-    import InventorySearch from "../../../components/InventorySearch";
     import ResueableSearch from '../../../components/ReusableSearch.vue';
     Vue.use(Vue2Filters);
     export default {
@@ -217,15 +216,14 @@
 
                 
                 this.$LIPS(true);
-                let {page, page_size} = this.$data;
                 await get('/api/brand?limit=100').then((res) => {
                     Vue.set(this.$data, 'brands', res.data.data.data);
                 }).catch(() => Flash.setError('Error Preparing form'));
                 await get('/api/category?limit=100').then((res) => {
                     Vue.set(this.$data, 'categories', res.data.data.data);
                 }).catch(() => Flash.setError('Error Preparing form'));
-                get(`${this.urlToFetchOrders}`+`${!!this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
-          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
+                get(`${this.urlToFetchOrders}`+`${this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
+          `${this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
                 )
                     .then(({data}) => this.prepareList(data))
                     .catch(() => Flash.setError('Error Preparing form'))
@@ -292,7 +290,7 @@
             this.fetchData();
         },
 
-        destroyed() {
+        unmounted() {
             this.removeCustomerOptionsModalsFromDom();
         },
         filters: {

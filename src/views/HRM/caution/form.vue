@@ -33,7 +33,7 @@
                                     :disabled="!autoReason"
                                     v-validate="'required'">
                                 <option disabled selected value="">&#45;&#45; select reason &#45;&#45;</option>
-                                <option :value="reason" v-for="{reason} in cautions">
+                                <option :value="reason" v-for="{reason} in cautions" :key="reason">
                                     {{reason | capitalize}}
                                 </option>
                             </select>

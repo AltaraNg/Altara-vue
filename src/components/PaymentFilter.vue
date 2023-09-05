@@ -10,7 +10,7 @@
         class="text-capitalize font-weight-bold h5"
       >
         <option value="all" selected="selected">All</option>
-        <option :value="branch.name" v-for="branch in getBranches">
+        <option :value="branch.name" v-for="branch in getBranches" :key="branch.name">
           {{ branch.name }}
         </option>
       </select>
@@ -35,7 +35,7 @@
         class="w-75 text-capitalize font-weight-bold h5"
       >
         <option value="all" selected="selected">All</option>
-        <option :value="payment.type" v-for="payment in paymentType">
+        <option :value="payment.type" v-for="payment in paymentType" :key="payment.type">
           {{ payment.type }}
         </option>
       </select>
@@ -50,7 +50,6 @@
 import DatePicker from "vue2-datepicker";
 import { mapGetters } from "vuex";
 import "vue2-datepicker/index.css";
-import { get, post, put } from "../utilities/api";
 export default {
   components: {
     DatePicker,

@@ -94,7 +94,7 @@
                 }
 
                 await put('/api/password/reset',data)
-                .then(({data}) => {
+                .then(() => {
                     this.$LIPS(false);  
                     this.$swal({
                         icon: 'success',

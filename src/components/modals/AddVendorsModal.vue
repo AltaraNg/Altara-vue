@@ -17,7 +17,7 @@
     </div>
     <div class="px-4 mx-3 py-2 mt-5">
       <div class="mx-4">
-        <small v-for="item in err" class="text-danger d-block h6 text-center">{{
+        <small v-for="item in err" :key="item[0]" class="text-danger d-block h6 text-center">{{
           item[0]
         }}</small>
       </div>
@@ -184,7 +184,7 @@
 </template>
 
 <script>
-import { get, post } from "../../utilities/api"
+import { post } from "../../utilities/api"
 import DatePicker from "vue2-datepicker"
 import "vue2-datepicker/index.css"
 
@@ -231,7 +231,7 @@ export default {
             }
             this.$LIPS(true)
 
-            const response = await post(this.apiUrl, data)
+            await post(this.apiUrl, data)
 
             this.$swal({
               icon: "success",

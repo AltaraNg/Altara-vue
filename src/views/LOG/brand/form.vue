@@ -20,7 +20,7 @@
 
                         <div class="form-group col-md-6 col-12 float-left px-0 px-md-3" v-if="mode === 'edit'">
                             <label class="w-100 float-left">Status</label>
-                            <div class="radio p-0 col-md-6 col-6 float-left" v-for="{name,value} in statuses">
+                            <div class="radio p-0 col-md-6 col-6 float-left" v-for="{name,value} in statuses" :key="value">
                                 <input :id="name" :value="value" name="status" type="radio" v-model="form.is_active"
                                        v-validate="'required'">
                                 <label :for="name">{{name}}</label>
@@ -51,15 +51,14 @@
 </template>
 <script>
     import Vue from 'vue';
-    import {log} from "../../../utilities/log";
     import Flash from "../../../utilities/flash";
     import {get, post,put, patch} from "../../../utilities/api";
     import CustomHeader from '../../../components/customHeader';
 
-    function initialize(to) {
-        let urls = {create: `/api/brand/create`, edit: `/api/brand/${to.params.id}/edit`};
-        return urls[to.meta.mode];
-    }
+    // function initialize(to) {
+    //     let urls = {create: `/api/brand/create`, edit: `/api/brand/${to.params.id}/edit`};
+    //     return urls[to.meta.mode];
+    // }
 
     export default {
 
@@ -113,7 +112,7 @@
                 this.show = true;
             },
 
-            addCategory(brand){
+            addCategory(){
                 this.showModalContent = true;
                 return $(`#addCategory`).modal('toggle');
             },

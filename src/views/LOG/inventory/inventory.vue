@@ -53,7 +53,7 @@
         <div class="w-100 my-5 mx-0 hr"></div>
         <div class="row px-4 pt-3 pb-4 text-center">
           <div class="col light-heading" style="max-width: 120px">S/N</div>
-          <div class="col light-heading" v-for="header in headings">
+          <div class="col light-heading" v-for="header in headings" :key="header">
             {{ header }}
           </div>
         </div>
@@ -268,7 +268,7 @@
                     <h4 v-if="transferHistory.length < 1" class="text-center">
                       No history available.
                     </h4>
-                    <tr v-for="transfer in transferHistory">
+                    <tr v-for="transfer in transferHistory" :key="transfer">
                       <td>{{ transfer.from || "Not Available" }}</td>
                       <td>{{ transfer.to || "Not Available" }}</td>
                       <td>
@@ -315,7 +315,6 @@ import Vue2Filters from "vue2-filters";
 import CustomHeader from "../../../components/customHeader";
 import DisplayEmpty from "../../../components/DisplayEmpty";
 import BasePagination from "../../../components/Pagination/BasePagination";
-import InventorySearch from "../../../components/InventorySearch";
 import ResueableSearch from '../../../components/ReusableSearch.vue';
 Vue.use(Vue2Filters);
 export default {
@@ -325,7 +324,7 @@ export default {
     urlToFetchOrders: { default: "/api/inventory" },
   },
 
-  components: { CustomHeader, BasePagination, InventorySearch, ResueableSearch, DisplayEmpty },
+  components: { CustomHeader, BasePagination, ResueableSearch, DisplayEmpty },
 
   computed: { ...mapGetters(["getAuthUserDetails", "getBranches"]) },
 
@@ -375,7 +374,7 @@ export default {
       this.$LIPS(true);
 
       post("/api/product_transfer", { to_id: to, inventory_id: id })
-        .then((res) => {
+        .then(() => {
           this.$LIPS(false);
           this.$swal({
             icon: "success",

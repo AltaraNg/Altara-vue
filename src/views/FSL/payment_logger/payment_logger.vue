@@ -8,7 +8,6 @@
 
 <script>
     import Lookup from "../lookup/lookup";
-    import Flash from '../../../utilities/flash';
    
     export default {
         components: {Lookup},

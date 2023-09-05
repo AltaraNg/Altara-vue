@@ -614,7 +614,7 @@
     </template>
     
     <script>
-    import { get, post } from "../../utilities/api"
+    import { post } from "../../utilities/api"
     import { EventBus } from '../../utilities/event-bus'
     import Vue from 'vue'
     import InformalQuestions from './InformalQuestions.vue';
@@ -647,6 +647,7 @@
         }
       },
       components: {
+        // eslint-disable-next-line vue/no-unused-components
       InformalQuestions,
     },
     computed: {
@@ -686,7 +687,7 @@
                   maxHeight: 200,
                   },
                   {
-                  closed: event => {},
+                  closed: () => {},
                   }
           )
       },

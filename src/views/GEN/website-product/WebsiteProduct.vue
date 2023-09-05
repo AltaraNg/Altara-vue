@@ -42,7 +42,7 @@
         <div class="w-100 my-5 mx-0 hr"></div>
         <div class="row px-4 pt-3 pb-4 text-center">
           <div class="col light-heading" style="max-width: 120px">S/N</div>
-          <div class="col light-heading" v-for="header in headings">
+          <div class="col light-heading" v-for="header in headings" :key="header">
             {{ header }}
           </div>
         </div>
@@ -160,11 +160,10 @@ import Vue from 'vue'
 import Flash from '../../../utilities/flash'
 import Vue2Filters from 'vue2-filters'
 
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import CustomHeader from '../../../components/customHeader'
 import BasePagination from '../../../components/Pagination/BasePagination'
 import ResueableSearch from '../../../components/ReusableSearch.vue'
-import { truncate } from 'fs';
 import ZeroState from '../../../components/ZeroState.vue';
 import ConfirmModal from '../../../components/modals/ConfirmModal.vue'
 Vue.use(Vue2Filters)
@@ -211,11 +210,10 @@ export default {
   methods: {
     async fetchData() {
       this.$LIPS(true)
-      let { page, page_size } = this.$data
       get(
         `${this.urlToFetchOrders}` +
-          `${!!this.pageParams.page ? `?page=${this.pageParams.page}` : ''}` +
-          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ''}`
+          `${this.pageParams.page ? `?page=${this.pageParams.page}` : ''}` +
+          `${this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ''}`
       )
         .then(({ data }) => this.prepareList(data))
         .catch(() => Flash.setError('Error Preparing form'))
@@ -274,14 +272,14 @@ export default {
       if($event){
         this.$LIPS(true)
       del(`${this.urlToFetchOrders}/${this.productItem.id}`)
-        .then(res => {
+        .then(() => {
           this.$swal({
                     icon: 'success',
                     title: 'Product deleted successfully'              
                   })
           this.fetchData()
         })
-        .catch(err => {})
+        .catch(() => {})
         .finally(() => {
           this.$LIPS(false)
         });
@@ -325,7 +323,7 @@ export default {
     this.fetchData()
   },
 
-  destroyed() {
+  unmounted() {
     this.removeCustomerOptionsModalsFromDom()
   },
   filters: {

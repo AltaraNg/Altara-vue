@@ -694,7 +694,6 @@
 </template>
 
 <script>
-import { get, post } from '../../utilities/api'
 export default {
   props: {
     verification: {

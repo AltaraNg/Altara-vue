@@ -23,7 +23,7 @@
                             <th>Status</th>
 							
 						</tr>
-						<tr v-for="(item, index) in modalItem">
+						<tr v-for="(item, index) in modalItem" :key="index">
                             <td>{{index+1}}</td>
                             <td>{{item.attributes.creator}}</td>
                             <td>{{item.attributes.feedback}}</td>

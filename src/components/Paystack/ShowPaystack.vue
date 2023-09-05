@@ -83,7 +83,6 @@ import Vue from "vue"
 import { mapGetters } from "vuex"
 import { post } from "../../utilities/api"
 import Flash from "../../utilities/flash"
-import { Message } from "../../utilities/sms"
 import { EventBus } from "../../utilities/event-bus"
 import paystack from "vue-paystack"
 
@@ -165,7 +164,7 @@ export default {
               }
 
               post(this.paystack_auth_code_url, dataForm)
-                .then(res => {
+                .then(() => {
                   this.done("AuthCode set successfully!")
                 })
                 .catch(err => {
@@ -205,6 +204,7 @@ export default {
 
     validateEmail(mail) {
       {
+        // eslint-disable-next-line no-useless-escape
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
           return true
         }
@@ -227,7 +227,7 @@ export default {
   },
 
   watch: {
-    messageType: function(newValue) {
+    messageType: function() {
       //do stuff for generating sms
     },
   },

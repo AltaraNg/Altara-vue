@@ -226,40 +226,40 @@
                                 <tbody class="text-center">
                                 <tr>
                                     <th>Repayment</th>
-                                    <td v-for="caption in activeOrder.repaymentCaptions" v-html="caption"></td>
+                                    <td v-for="caption in activeOrder.repaymentCaptions" :key="caption" v-html="caption"></td>
                                 </tr>
                                 <tr class="table-separator">
                                     <th>Due Date</th>
-                                    <td v-for="date in activeOrder.dueDates">{{date}}</td>
+                                    <td v-for="date in activeOrder.dueDates" :key="date">{{date}}</td>
                                 </tr>
                                 <tr>
                                     <th>Actual Pay Day</th>
-                                    <td v-for="date in activeOrder.actualPayDates">{{date}}</td>
+                                    <td v-for="date in activeOrder.actualPayDates" :key="date">{{date}}</td>
                                 </tr>
                                 <tr class="table-separator">
                                     <th>Status</th>
-                                    <td :class="status.class" v-for="status in activeOrder.paymentStatusClasses">
+                                    <td :class="status.class" v-for="status in activeOrder.paymentStatusClasses" :key="status">
                                         <i class="fas" :class="status.icon"></i>
                                     </td>
                                 </tr>
                                 <tr class="table-separator">
                                     <th>Repayment Amount</th>
-                                    <td v-for="payment in activeOrder.amountsToBePaid">{{$formatCurrency(payment)}}</td>
+                                    <td v-for="payment in activeOrder.amountsToBePaid" :key="payment">{{$formatCurrency(payment)}}</td>
                                 </tr>
                                 <tr>
                                     <th>Actual Amount Paid</th>
-                                    <td v-for="payment in activeOrder.actualAmountsPaid">{{$formatCurrency(payment)}}
+                                    <td v-for="payment in activeOrder.actualAmountsPaid" :key="payment">{{$formatCurrency(payment)}}
                                     </td>
                                 </tr>
                                 <tr class="table-separator">
                                     <th>Payment Method</th>
-                                    <td class="text-capitalize" v-for="repaymentMethod in activeOrder.paymentMethods">
+                                    <td class="text-capitalize" v-for="repaymentMethod in activeOrder.paymentMethods" :key="repaymentMethod">
                                         {{Order.convertToName(repaymentMethod, 'paymentMethods')}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Bank</th>
-                                    <td class="text-capitalize" v-for="repaymentBank in activeOrder.paymentBanks">
+                                    <td class="text-capitalize" v-for="repaymentBank in activeOrder.paymentBanks" :key="repaymentBank">
                                         {{Order.convertToName(repaymentBank, 'banks')}}
                                     </td>
                                 </tr>
@@ -326,7 +326,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr v-for="(reminder, index) in activeOrder.order.reminders">
+                                <tr v-for="(reminder, index) in activeOrder.order.reminders" :key="index">
                                     <th>{{index+1}}</th>
                                     <td>{{$dateTimeConvert(reminder.date)}}</td>
                                     <td>{{reminder.type}}</td>
@@ -450,7 +450,7 @@
                 get(url({query: {list, filterWithBranch}})).then(({data}) => {
                     if (list === 8) data.orders = data.orders.map(promiseCall => promiseCall.order);
                  this.prepareForm(data);
-                }).catch(err => {
+                }).catch(() => {
 
                 }).finally(() => {
                     this.$LIPS(false);
@@ -516,7 +516,7 @@
                 } else this.$displayErrorMessage('Error logging sent messages!');
             },
 
-            async fetchRenewalList(list) {
+            async fetchRenewalList() {
                 this.$LIPS(true);
                 await this.fetchStatus();
             },

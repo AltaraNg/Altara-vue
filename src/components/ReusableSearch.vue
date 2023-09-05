@@ -65,7 +65,7 @@ import DatePicker from "vue2-datepicker";
 import { mapGetters } from "vuex";
 import "vue2-datepicker/index.css";
 import Flash from "../utilities/flash";
-import { get, post, put } from "../utilities/api";
+import { get } from "../utilities/api";
 import queryParam from "../utilities/queryParam";
 
 export default {
@@ -147,7 +147,7 @@ export default {
           });        
         }    
         
-        }).catch(err => {
+        }).catch(() => {
           Flash.setError('Unable to fetch');
         }).finally(() => {
           this.$LIPS(false);

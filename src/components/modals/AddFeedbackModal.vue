@@ -45,7 +45,7 @@
 						<label class="form-control-label">Reason</label>
 					</div>
 					<select v-model="reason" class="custom-select w-75">
-						<option v-for="item in statuses" :value="item.id">
+						<option v-for="item in statuses" :value="item.id" :key="item.id">
 							{{item.reason}}
 						</option>
 					</select>
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-	import { get, post } from '../../utilities/api';
+	import { post } from '../../utilities/api';
 	import DatePicker from 'vue2-datepicker';
 	import 'vue2-datepicker/index.css';
 
@@ -126,6 +126,7 @@
 
 					
 				} catch (e) {
+					// Handle catch block
 				} finally {
 					this.$LIPS(false);
 

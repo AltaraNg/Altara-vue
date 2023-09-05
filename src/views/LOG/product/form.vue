@@ -28,6 +28,7 @@
                                 <option
                                     :value="brand.id"
                                     v-for="brand of brands"
+                                    :key="brand.id"
                                 >{{ brand.name }}</option
                                 >
                             </select>
@@ -40,6 +41,7 @@
                                 <option
                                     :value="category.id"
                                     v-for="category of categories"
+                                    :key="category"
                                 >{{ category.name }}</option
                                 >
                             </select>
@@ -61,6 +63,7 @@
                                 <option
                                     :value="type.id"
                                     v-for="type of product_types"
+                                    :key="type.id"
                                 >{{ type.name }}</option
                                 >
                             </select>
@@ -86,19 +89,17 @@
 </template>
 <script>
     import Vue from 'vue';
-    import {log} from "../../../utilities/log";
     import Flash from "../../../utilities/flash";
     import {post, get, put} from '../../../utilities/api';
-    import Typeahead from '../../../components/Typeahead';
     import CustomHeader from '../../../components/customHeader';
 
-    function initialize(to) {
-        let urls = {create: `/api/product/create`, edit: `/api/product/${to.params.id}/edit`};
-        return urls[to.meta.mode];
-    }
+    // function initialize(to) {
+    //     let urls = {create: `/api/product/create`, edit: `/api/product/${to.params.id}/edit`};
+    //     return urls[to.meta.mode];
+    // }
 
     export default {
-        components: {Typeahead, CustomHeader},
+        components: {CustomHeader},
         props: {},
         data() {
             return {

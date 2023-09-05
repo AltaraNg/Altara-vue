@@ -92,7 +92,7 @@
 								id="branch"
 							>
 								<option selected value="" disabled>--Select Showroom--</option>
-								<option :value="branch.id" v-for="branch in getBranches">
+								<option :value="branch.id" v-for="branch in getBranches" :key="branch.id">
 									{{ branch.name }}
 								</option>
 							</select>
@@ -262,11 +262,6 @@
 
 	import StatCard from '../../../components/StatCard.vue';
 	import RenewalTable from '../../../components/tables/RenewalTable.vue';
-
-	import Total from '../../../assets/css/svgs/total.vue';
-	import People from '../../../assets/css/svgs/people.vue';
-	import Purchased from '../../../assets/css/svgs/purchased.vue';
-	import Interested from '../../../assets/css/svgs/interested.vue';
 	import DatePicker from 'vue2-datepicker';
 	import 'vue2-datepicker/index.css';
 	import { get } from '../../../utilities/api';
@@ -279,11 +274,7 @@
 	export default {
 		components: {
 			StatCard,
-			Total,
 			RenewalTable,
-			People,
-			Purchased,
-			Interested,
 			DatePicker,
 			ZeroState,
 			BasePagination,
@@ -307,13 +298,11 @@
 					renewalList: '/api/renewal/prompters',
 					statuses: '/api/renewal/prompters/statuses',
 					renewalListExport: '/api/renewal/prompters/customer-list',
-					statuses: '/api/renewal/prompters/statuses',
 					dsas: `/api/get-users?role=18&limit=200`,
 				},
 				meta: {},
 				branch: '',
 				renewal: true,
-				statuses: '',
 				OId: 1,
 				currentTab: 'all',
 				statuses: [],
@@ -352,10 +341,10 @@
 				this.activeTab = 'all';
 				await this.fetchData();
 			}
-			this.$root.$on('feedback', (payload) => {
+			this.$root.$on('feedback', () => {
 				this.fetchData();
 			});
-			this.$root.$on('owner_updated', (payload) => {
+			this.$root.$on('owner_updated', () => {
 				this.fetchData();
 			});
 			await this.getRenewalStatuses();
@@ -494,8 +483,7 @@
 					let agents = await get(this.apiUrl.dsas);
 					this.dsas = agents.data?.data?.data;
 				} catch (error) {
-					flash.setError(error);
-				} finally {
+					Flash.setError(error);
 				}
 			},
 
@@ -564,16 +552,6 @@
 				});
 
 				this.switchTab(tabObject);
-			},
-
-			async getRenewalStatuses() {
-				this.$LIPS(true);
-				let statuses = await get(this.apiUrl.statuses);
-				this.statuses = statuses.data?.data?.prompter_statuses;
-
-				this.statuses = this.statuses.filter((item) => {
-					return item.name !== 'not contacted';
-				});
 			},
 
 			prepareList(response) {

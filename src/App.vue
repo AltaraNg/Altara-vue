@@ -10,34 +10,20 @@
               <router-link class="navbar-brand p-0" to="/home">
                 <img :src="`/images/altara_logo.png`" class="float-left" />
               </router-link>
-              <button
-                aria-controls="navigation-index"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-                class="navbar-toggler navbar-toggler-right"
-                data-target="#navigation"
-                data-toggle="collapse"
-                type="button"
-              >
+              <button aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation"
+                class="navbar-toggler navbar-toggler-right" data-target="#navigation" data-toggle="collapse"
+                type="button">
                 <i class="fas fa-bars"></i>
               </button>
             </div>
-            <div
-              class="collapse navbar-collapse justify-content-end"
-              id="navigation"
-            >
+            <div class="collapse navbar-collapse justify-content-end" id="navigation">
               <ul class="navbar-nav">
                 <li class="nav-item">
-                  <router-link class="nav-link" to="/home"
-                    ><i class="fas fa-home pr-1"></i> Home
+                  <router-link class="nav-link" to="/home"><i class="fas fa-home pr-1"></i> Home
                   </router-link>
                 </li>
-                <li
-                  class="nav-item mt-2 position-relative pl-2"
-                  v-if="
-                    getUncontacted !== null && getUncontacted > 0 && canView
-                  "
-                >
+                <li class="nav-item mt-2 position-relative pl-2" v-if="getUncontacted !== null && getUncontacted > 0 && canView
+                  ">
                   <router-link :to="urlLink">
                     <div class="position-absolute bell-no font-weight-bold">
                       {{ getUncontacted }}
@@ -48,13 +34,8 @@
                   </router-link>
                 </li>
                 <li class="nav-item dropdown" v-if="auth">
-                  <span
-                    aria-expanded="false"
-                    aria-haspopup="true"
-                    class="nav-link dropdown-toggle"
-                    data-toggle="dropdown"
-                    id="menu"
-                  >
+                  <span aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown"
+                    id="menu">
                     <i class="now-ui-icons users_circle-08"></i>
                     {{ authState.user_name | capitalize }}
                   </span>
@@ -75,50 +56,26 @@
           </div>
         </nav>
         <transition name="fade">
-          <div
-            class="alert alert-success mr-4 ml-4"
-            data-anim="animated"
-            v-if="flash.success"
-          >
+          <div class="alert alert-success mr-4 ml-4" data-anim="animated" v-if="flash.success">
             <div class="container">
               <div class="alert-icon"><i class="far fa-thumbs-up"></i></div>
               <strong class="mr-2">Success!</strong>&nbsp;{{ flash.success }}
-              <button
-                @click="clearFlash"
-                aria-label="Close"
-                class="close"
-                type="button"
-              >
+              <button @click="clearFlash" aria-label="Close" class="close" type="button">
                 <span aria-hidden="true">
-                  <i
-                    class="now-ui-icons ui-1_simple-remove ml-4"
-                    style="font-size: 16px"
-                  ></i>
+                  <i class="now-ui-icons ui-1_simple-remove ml-4" style="font-size: 16px"></i>
                 </span>
               </button>
             </div>
           </div>
         </transition>
         <transition name="fade">
-          <div
-            class="alert alert-danger ml-4 mr-4"
-            data-anim="animated"
-            v-if="flash.error"
-          >
+          <div class="alert alert-danger ml-4 mr-4" data-anim="animated" v-if="flash.error">
             <div class="container">
               <div class="alert-icon"><i class="far fa-thumbs-up"></i></div>
               <strong class="mr-2">Oops!</strong>&nbsp;{{ flash.error }}
-              <button
-                @click="clearFlash"
-                aria-label="Close"
-                class="close"
-                type="button"
-              >
+              <button @click="clearFlash" aria-label="Close" class="close" type="button">
                 <span aria-hidden="true">
-                  <i
-                    class="now-ui-icons ui-1_simple-remove ml-4"
-                    style="font-size: 16px"
-                  ></i>
+                  <i class="now-ui-icons ui-1_simple-remove ml-4" style="font-size: 16px"></i>
                 </span>
               </button>
             </div>
@@ -218,7 +175,7 @@ export default {
       "showSMSModal",
       "showMobileMessageModal",
       "showPaystackModal",
-	  "ShowCustomDirectDebitModal"
+      "ShowCustomDirectDebitModal"
     ]),
     auth() {
       return this.authState.api_token && this.authState.user_id;
@@ -278,6 +235,7 @@ export default {
   width: 100%;
   height: 100%;
 }
+
 .bell-no {
   font-size: 10px;
   top: 0px;
@@ -287,6 +245,7 @@ export default {
   animation-duration: 2s;
   animation-iteration-count: infinite;
 }
+
 .bell-style i {
   color: red;
   font-size: 18px;
@@ -296,15 +255,19 @@ export default {
   0% {
     font-size: 5px;
   }
+
   25% {
     font-size: 7px;
   }
+
   50% {
     font-size: 8px;
   }
+
   75% {
     font-size: 10px;
   }
+
   100% {
     font-size: 12px;
   }

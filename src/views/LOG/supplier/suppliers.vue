@@ -42,7 +42,7 @@
         <div class="w-100 my-5 mx-0 hr"></div>
         <div class="row px-4 pt-3 pb-4 text-center">
           <div class="col light-heading" style="max-width: 120px">S/N</div>
-          <div class="col light-heading" v-for="header in headings">
+          <div class="col light-heading" v-for="header in headings" :key="header">
             {{ header }}
           </div>
         </div>
@@ -199,9 +199,7 @@ import Flash from "../../../utilities/flash";
 import { mapGetters, mapActions } from "vuex";
 import CustomHeader from "../../../components/customHeader";
 import BasePagination from "../../../components/Pagination/BasePagination";
-import InventorySearch from "../../../components/InventorySearch";
 import ResueableSearch from "../../../components/ReusableSearch";
-import PaymentFilter from "../../../components/PaymentFilter";
 
 export default {
   props: {
@@ -213,9 +211,7 @@ export default {
   components: {
     CustomHeader,
     BasePagination,
-    InventorySearch,
     ResueableSearch,
-    PaymentFilter,
   },
 
   computed: { ...mapGetters(["getStates"]) },
@@ -250,8 +246,8 @@ export default {
       let { page, page_size } = this.$data;
       get(
         this.urlToFetchOrders +
-          `${!!page ? `?page=${page}` : ""}` +
-          `${!!page_size ? `&pageSize=${page_size}` : ""}`
+          `${page ? `?page=${page}` : ""}` +
+          `${page_size ? `&pageSize=${page_size}` : ""}`
       )
         .then(({ data }) => this.prepareList(data))
         .catch(() => Flash.setError("Error Preparing form"));

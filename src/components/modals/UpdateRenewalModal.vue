@@ -14,14 +14,15 @@
 			</a>
 		</div>
 		<div class="modal-body px-5">
-			<div
-				v-if="err.length > 0"
+			<template v-if="err.length > 0">
+				<div
 				class="small text-danger"
 				style="font-size: 12px;"
-				v-for="item in err"
+				v-for="item in err" :key="item"
 			>
 				{{ item }}
 			</div>
+			</template>
 			<div class="table-responsive">
 				<table class="table table-bordered table-striped">
 					<tbody>
@@ -49,7 +50,7 @@
 									required
 								>
 									<option selected disabled value="">--select status--</option>
-									<option v-for="status in statuses" :value="status">
+									<option v-for="status in statuses" :value="status" :key="status.name">
 										{{ status.name | capitalize }}
 									</option>
 								</select>
@@ -99,7 +100,7 @@
 </template>
 
 <script>
-	import { get, post } from '../../utilities/api';
+	import { post } from '../../utilities/api';
 	import DatePicker from 'vue2-datepicker';
 	import 'vue2-datepicker/index.css';
 
@@ -173,6 +174,7 @@
 					}
 					this.closeModal();
 				} catch (e) {
+					// Handle catch
 				} finally {
 					this.$LIPS(false);
 					this.$prepareUncontacted();

@@ -12,14 +12,14 @@
 				<table class="table table-striped w-100">
 					<thead class="attendance-head bg-default text-white ">
 						<tr class="w-100">
-							<th v-for="header in tableHeaders" class="mx-3  text-center">
+							<th v-for="header in tableHeaders" :key="header" class="mx-3 text-center">
 								{{ header }}
 							</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr
-							v-for="(item, index) in orderRequests"
+							v-for="(item, index) in orderRequests" :key="index"
 							data-hoverable="true"
 							class="  text-center "
 						>
@@ -127,7 +127,7 @@
 						});
 					})
 					.catch((e) => console.log(e.response.data))
-					.finally(() => next((vm) => {}));
+					.finally(() => next(() => {}));
 			} else
 				next((vm) => {
 					vm.fetchOrderRequests();
@@ -167,6 +167,7 @@
 						this.OId = this.pageMeta.from;
 					});
 				} catch (error) {
+					// Handle error
 				} finally {
 					this.$LIPS(false);
 				}
@@ -190,7 +191,7 @@
 				let m = moment(date);
 				return m.fromNow();
 			},
-			viewRequest(item) {
+			viewRequest() {
 			},
 			search(payload) {
 				this.$LIPS(true);
@@ -234,7 +235,7 @@
 						let comment = result.value;
 						let url = `api/order-requests/${req.id}/${text}`;
 						patch(url, { reason: comment })
-							.then((res) => {
+							.then(() => {
 								this.$swal({
 									title: 'Success',
 									icon: 'success',

@@ -28,6 +28,7 @@
                                 <option
                                     :value="branch"
                                     v-for="branch of getBranches"
+                                    :key="branch.id"
                                 >{{ branch.name }}</option>
                             </select>
                         </div>
@@ -39,6 +40,7 @@
                                 <option
                                     :value="supplier"
                                     v-for="supplier of suppliers"
+                                    :key="supplier.id"
                                 >{{ supplier.name }}</option>
                             </select>
                         </div>
@@ -58,10 +60,10 @@
 
                 <div class="row  pt-1 pb-2 text-center">
 
-                    <div class="col light-heading" v-for="header in headings">{{header}}</div>
+                    <div class="col light-heading" v-for="header in headings" :key="header">{{header}}</div>
                 </div>
 
-                <div class="mb-3 row attendance-item text-center" v-for="(item, index) in inventoryList.products">
+                <div class="mb-3 row attendance-item text-center" v-for="(item, index) in inventoryList.products" :key="index">
 
                     <div class="col d-flex align-items-center text-center" style="max-width: 120px">
                         <span class="user mx-auto" >{{index + 1}}</span>
@@ -143,21 +145,19 @@
 </template>
 <script>
     import Vue from 'vue';
-    import {log} from "../../../utilities/log";
     import Flash from "../../../utilities/flash";
     import {post, get, put} from '../../../utilities/api';
-    import Typeahead from '../../../components/Typeahead';
     import CustomHeader from '../../../components/customHeader';
     import {mapGetters} from "vuex";
     import AutoComplete from '../../../components/AutoComplete.vue';
 
-    function initialize(to) {
-        let urls = {create: `/api/product/create`, edit: `/api/product/${to.params.id}/edit`};
-        return urls[to.meta.mode];
-    }
+    // function initialize(to) {
+    //     let urls = {create: `/api/product/create`, edit: `/api/product/${to.params.id}/edit`};
+    //     return urls[to.meta.mode];
+    // }
 
     export default {
-        components: {Typeahead, CustomHeader, AutoComplete},
+        components: {CustomHeader, AutoComplete},
         props: {},
         data() {
             return {
@@ -272,7 +272,7 @@
                     if (result) {
                         if (this.$network()) {
                             this.$LIPS(true);
-                            put(this.store, this.form).then(data => {
+                            put(this.store, this.form).then(() => {
                                 this.$swal({
                                     icon: 'success',
                                     title: 'Inventory Updated Successfully'
@@ -299,7 +299,8 @@
 
 
              async onSave() {
-                let status = '';
+                // eslint-disable-next-line no-unused-vars
+                  let status = '';
                   await this.$validator.validateAll().then(result => {
                     if (result) {
                         if (this.$network()) {
@@ -338,7 +339,7 @@
                 })
             },
             checkAdmin(){
-                let role = this.getAuthUserDetails.roleId;                ;
+                let role = this.getAuthUserDetails.roleId;                
                 return this.admin.includes(role);
             }
         },

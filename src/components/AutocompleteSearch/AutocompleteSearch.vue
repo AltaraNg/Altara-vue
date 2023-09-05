@@ -31,7 +31,7 @@
                             </ul>
                         </div>
                         <div class="col-md-6 col-12 float-left d-flex justify-content-around align-items-center">
-                            <span class="position-relative radio mb-0" v-for="{title,column} in searchColumns">
+                            <span class="position-relative radio mb-0" v-for="{title,column} in searchColumns" :key="column">
                                 <input :id="column" :value="column" type="radio" v-model="searchColumn">
                                 <label :for="column">{{title | capitalize}}</label>
                             </span>
@@ -78,7 +78,7 @@
             },
 
             search: function (newVal) {
-                if (!!newVal.trim()) {
+                if (newVal.trim()) {
                     if (!this.isStringLengthValid(newVal))
                         return Flash.setError("search should not be more than " +
                             (this.searchColumn === 'name' ? " 3 " : " 1 ") + "words");

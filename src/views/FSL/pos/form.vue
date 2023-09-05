@@ -21,7 +21,7 @@
                                 <select class="custom-select w-100" data-vv-validate-on="blur" name="state"
                                         v-model="form.state_id" v-validate="'required'">
                                     <option selected value="">select state</option>
-                                    <option :value="id" v-for="{id,name} in $store.getters.getStates">
+                                    <option :value="id" v-for="{id,name} in $store.getters.getStates" :key="id">
                                         {{name | capitalize}}
                                     </option>
                                 </select>
@@ -75,7 +75,7 @@
                                 <select class="custom-select w-100" data-vv-validate-on="blur" name="category"
                                         v-model="form.category" v-validate="'required'">
                                     <option selected value="">select Category</option>
-                                    <option :value="category" v-for="category in ['lifestyle','appliances','admin']">
+                                    <option :value="category" v-for="category in ['lifestyle','appliances','admin']" :key="category">
                                         {{category | capitalize}}
                                     </option>
                                 </select>
@@ -98,7 +98,7 @@
                                 <select class="custom-select w-100" data-vv-validate-on="blur" name="bank"
                                         v-model="form.bank" v-validate="'required'">
                                     <option selected value="">select bank</option>
-                                    <option :value="id" v-for="{id,name} in banks">{{name | capitalize}}</option>
+                                    <option :value="id" v-for="{id,name} in banks" :key="id">{{name | capitalize}}</option>
                                 </select>
                                 <small v-if="errors.first('bank')">{{errors.first('bank') }}</small>
                             </div>

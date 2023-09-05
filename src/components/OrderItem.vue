@@ -191,7 +191,7 @@
                 const Cdate = this.dateTime.split('T')[0];
                 if (Date.parse(Cdate)-Date.parse(today) < 1 || Date.parse(Cdate) > nWeek){
                     return this.errHandler("Pease enter a valid date.") 
-                };
+                }
                 const renew = this.order.order.renewal ? this.order.order.renewal.id : '';
                 const data0 = {
                     order_id: this.order.order.id,

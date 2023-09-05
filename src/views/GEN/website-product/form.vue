@@ -118,22 +118,21 @@ import Vue from 'vue'
 import ImageUpload from '../../../components/ImageUpload'
 
 import Flash from '../../../utilities/flash'
-import { post, get, put } from '../../../utilities/api'
-import Typeahead from '../../../components/Typeahead'
+import { post, get } from '../../../utilities/api'
 import CustomHeader from '../../../components/customHeader'
 import CurrencyInput from '../../../components/CurrencyInput.vue'
 import { toMulipartedForm } from '../../../utilities/form'
 
-function initialize(to) {
-  let urls = {
-    create: `/api/product/create`,
-    edit: `/api/website-product/${to.params.id}/edit`,
-  }
-  return urls[to.meta.mode]
-}
+// function initialize(to) {
+//   let urls = {
+//     create: `/api/product/create`,
+//     edit: `/api/website-product/${to.params.id}/edit`,
+//   }
+//   return urls[to.meta.mode]
+// }
 
 export default {
-  components: { Typeahead, CustomHeader, CurrencyInput, ImageUpload },
+  components: { CustomHeader, CurrencyInput, ImageUpload },
   props: {},
   data() {
     return {

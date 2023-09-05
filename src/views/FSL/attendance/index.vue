@@ -49,7 +49,7 @@
             </div>
 
             <div class="mt-5 row attendance-head">
-                <div class="col-4 col-sm-3" v-for="capt in ['Branch','Month','Year']">
+                <div class="col-4 col-sm-3" v-for="capt in ['Branch','Month','Year']" :key="capt">
                     <div class="row">
                         <div class="light-heading"><span class="d-none d-sm-inline">Select</span> {{capt}}</div>
                     </div>
@@ -57,7 +57,7 @@
             </div>
 
             <div class="mt-2 mt-lg-3 row attendance-head">
-                <div class="col-4 col-sm-3" v-for="caption in ['branch','month','year']">
+                <div class="col-4 col-sm-3" v-for="caption in ['branch','month','year']" :key="caption">
                     <div class="row">
                         <select :name="caption"
                                 class="custom-select"
@@ -65,21 +65,24 @@
                                 v-model="query[caption]"
                                 v-validate="'required'">
                             <option disabled selected value="">{{caption}}</option>
-                            <option :value="branch.id"
-                                    v-for="branch in $store.getters.getBranches"
-                                    v-if="caption === 'branch'">
-                                {{branch.name | capitalize}}
-                            </option>
-                            <option :value="month.id"
-                                    v-for="month in $store.getters.getMonths"
-                                    v-if="caption === 'month'">
-                                {{month.name}}
-                            </option>
-                            <option :value="year"
-                                    v-for="year in $store.getters.getYears"
-                                    v-if="caption === 'year'">
-                                {{year}}
-                            </option>
+                            <template v-if="caption === 'branch'">
+                                <option :value="branch.id"
+                                    v-for="branch in $store.getters.getBranches" :key="branch.id">
+                                    {{branch.name | capitalize}}
+                                </option>
+                            </template>
+                            <template v-if="caption === 'month'">
+                                <option :value="month.id"
+                                    v-for="month in $store.getters.getMonths" :key="month.id">
+                                    {{month.name}}
+                                </option>
+                            </template>
+                            <template v-if="caption === 'year'">
+                                <option :value="year"
+                                    v-for="year in $store.getters.getYears" :key="year">
+                                    {{year}}
+                                </option>
+                            </template>
                         </select>
                         <small class="text-muted" v-if="errors.first(caption)">{{errors.first(caption) }}</small>
                     </div>
@@ -102,7 +105,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr v-for="user in attendances">
+                                <tr v-for="user in attendances" :key="user">
                                     <td>
                                         <div class="row align-items-center m-0 user-details">
                                             <span class="user mx-auto"><i class="user-icon fas fa-user-alt"></i></span>
@@ -117,7 +120,7 @@
                             <table class="table table-details table-bordered">
                                 <thead>
                                 <tr>
-                                    <th class="text-center" v-for="col in columns">
+                                    <th class="text-center" v-for="col in columns" :key="col.month">
                                         <span>{{`${col.month} ${col.date}`}}</span><br><span class="light-heading day">
                                         {{ `${col.dayString}`}}
                                     </span>
@@ -125,10 +128,10 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr v-for="userAtt in attendances">
+                                <tr v-for="userAtt in attendances" :key="userAtt">
                                     <td :class="checkClass(userAtt, day)"
                                         @click="displayInfo(userAtt, day)"
-                                        v-for="day in columns">
+                                        v-for="day in columns" :key="day">
                                         {{isPresent(userAtt, day)}}
                                     </td>
                                 </tr>
@@ -281,7 +284,7 @@
                 this.$LIPS(false);
             },
 
-            handleErr(e) {
+            handleErr() {
                 Flash.setError('Error Fetching Attendance');
             },
 

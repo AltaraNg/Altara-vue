@@ -49,7 +49,7 @@
                         </div>
                         <div class="form-group col-md-6 " v-if="mode === 'edit'">
                             <label class="w-100 ">Status</label>
-                            <div class="radio p-0 col-md-6 col-6 " v-for="{name,value} in statuses">
+                            <div class="radio p-0 col-md-6 col-6 " v-for="{name,value} in statuses" :key="value">
                                 <input :id="name" :value="value" name="status" type="radio" v-model="form.is_active"
                                        v-validate="'required'">
                                 <label :for="name">{{name}}</label>
@@ -70,7 +70,7 @@
                             <select class="custom-select w-75" data-vv-as="state name"
                                     data-vv-validate-on="blur" name="state" v-model="form.state" v-validate="'required'">
                                 <option disabled value="">-- select state --</option>
-                                <option :value="state.name" v-for="state in getStates">{{state.name}}</option>
+                                <option :value="state.name" v-for="state in getStates" :key="state.name">{{state.name}}</option>
                             </select>
 
                         </div>
@@ -120,16 +120,15 @@
 </template>
 <script>
     import Vue from 'vue';
-    import {log} from "../../../utilities/log";
     import Flash from "../../../utilities/flash";
     import {get, post,put} from "../../../utilities/api";
     import CustomHeader from '../../../components/customHeader';
     import {mapGetters} from "vuex";
 
-    function initialize(to) {
-        let urls = {create: `/api/supplier/create`, edit: `/api/supplier/${to.params.id}/edit`};
-        return urls[to.meta.mode];
-    }
+    // function initialize(to) {
+    //     let urls = {create: `/api/supplier/create`, edit: `/api/supplier/${to.params.id}/edit`};
+    //     return urls[to.meta.mode];
+    // }
 
     export default {
 

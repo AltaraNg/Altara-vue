@@ -73,7 +73,7 @@
       </div>
 
       <div class="mt-2 mt-lg-3 row attendance-head attendance-view">
-        <div class="col-4 col-lg" v-for="{ name: filter, model } in filters">
+        <div class="col-4 col-lg" v-for="{ name: filter, model } in filters" :key="model">
           <div>
             <div class="light-heading mb-1">
               <span class="d-none d-sm-inline">Select</span>
@@ -87,7 +87,7 @@
         <div class="w-100 my-5 mx-0 hr"></div>
         <div class="row px-4 pt-3 pb-4 text-center">
           <div class="col light-heading" style="max-width: 120px">S/N</div>
-          <div class="col light-heading" v-for="header in headings">
+          <div class="col light-heading" v-for="header in headings" :key="header">
             {{ header }}
           </div>
         </div>
@@ -146,7 +146,7 @@
                 >
                   S/N
                 </div>
-                <div class="col light-heading" v-for="header in headings0">
+                <div class="col light-heading" v-for="header in headings0" :key="header">
                   <div class="white-text">{{ header }}</div>
                 </div>
               </div>
@@ -185,9 +185,6 @@ import ResueableSearch from "../../../components/ReusableSearch";
 import { mapActions, mapGetters } from "vuex";
 import Vue2Filters from "vue2-filters";
 import CustomHeader from "../../../components/customHeader";
-import BasePagination from "../../../components/Pagination/BasePagination";
-import InventorySearch from "../../../components/InventorySearch";
-import renewalVue from "../../FSL/renewal/renewal.vue";
 import editComponent from "./editComponent";
 Vue.use(Vue2Filters);
 export default {
@@ -199,8 +196,6 @@ export default {
 
   components: {
     CustomHeader,
-    BasePagination,
-    InventorySearch,
     ResueableSearch,
     editComponent,
   },
@@ -264,7 +259,7 @@ export default {
       this.$LIPS(true);
 
       post("/api/product_transfer", { to_id: to, inventory_id: id })
-        .then((res) => {
+        .then(() => {
           this.$LIPS(false);
           this.$swal({
             icon: "success",
@@ -301,7 +296,6 @@ export default {
     fetchData() {
       this.$scrollToTop();
       this.$LIPS(true);
-      let { page, page_size } = this.$data;
       get(this.urlToFetchOrders)
         .then(({ data }) => this.prepareList(data))
         .catch(() => Flash.setError("Error Preparing form"));
@@ -314,7 +308,6 @@ export default {
         from,
         last_page,
         last_page_url,
-        data,
         per_page,
         next_page_url,
         to,
@@ -375,14 +368,14 @@ export default {
       if (this.$network()) {
         this.$LIPS(true);
         put(`/api/inventory/${item.id}`, { price: item.price })
-          .then((data) => {
+          .then(() => {
             this.$LIPS(false);
             this.$swal({
               icon: "success",
               title: "Inventory Updated Successfully",
             });
           })
-          .catch((e) => {
+          .catch(() => {
             this.$LIPS(false);
             this.$swal({
               icon: "error",

@@ -41,15 +41,18 @@
                   v-model="account"
                 >
                   <option :value="0">Self</option>
-                  <option
-                    v-if="
+                  <template v-if="
                       customer !== null &&
                         customer.guarantor_paystack.length > 0
-                    "
+                    ">
+                    <option
+                    
                     v-for="guarantor in customer.guarantor_paystack"
                     :value="guarantor.id"
+                    :key="guarantor.id"
                     >{{ guarantor.guarantor_name }}</option
                   >
+                  </template>
                 </select>
               </div>
 
@@ -120,7 +123,7 @@ export default {
   },
   methods: {
     closePayStackModal: () => {},
-    async chargeCustomerWithCustomDirectDebit(e) {
+    async chargeCustomerWithCustomDirectDebit() {
       this.$LIPS(true)
       try {
         const response = await post('api/charge/customer', {
@@ -174,7 +177,6 @@ export default {
   mounted() {
     EventBus.$on('CustomDirectDebitModal', this.handleModalToggle)
   },
-  components: { CurrencyInput },
 }
 </script>
 <style scoped>

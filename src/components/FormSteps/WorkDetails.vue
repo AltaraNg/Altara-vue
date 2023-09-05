@@ -38,14 +38,15 @@
                 &nbsp;
                 <hr class="my-4" />
 
-                <span
-                  v-if="isClick"
+                <template v-if="isClick">
+                  <span
                   @click="setOccupation(name)"
                   v-for="(name, index) in occName"
                   :key="'occName' + index"
                   class="badge badge-default occupation-option"
                   :data-name="name"
                 >{{ name }}</span>
+                </template>
                 &nbsp;
                 <div class="form-group col-md-3 col-12 px-md-3 px-1 mt-2 float-left">
                   <label>Occupation</label>

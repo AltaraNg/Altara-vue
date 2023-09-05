@@ -25,14 +25,14 @@
                                 <div class="form-group col-md-2 col-sm-6 px-md-3 px-1 float-left">
                                     <label>Search Column</label>
                                     <select class="custom-select w-100" v-model="query.search_column">
-                                        <option :value="column" v-for="column in columns">{{column | capitalize}}
+                                        <option v-for="column in columns" :value="column" :key="column">{{column | capitalize}}
                                         </option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-2 col-sm-6 px-md-3 px-1 float-left">
                                     <label>Search Operator</label>
                                     <select class="custom-select w-100" v-model="query.search_operator">
-                                        <option :value="key" v-for="(value, key) in operators">{{value}}</option>
+                                        <option v-for="(value, key) in operators" :value="key" :key="key">{{value}}</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6 col-sm-6 px-md-3 px-1 float-left">
@@ -51,7 +51,7 @@
                                 <table class="table m-0 table-bordered table-hover">
                                     <thead class="thead-light">
                                     <tr>
-                                        <th @click="toggleOrder(column)" scope="col" v-for="column in columns">
+                                        <th @click="toggleOrder(column)" scope="col" v-for="column in columns" :key="column">
                                             <span>{{column | capitalize}}</span>
                                             <span class="dv-table-column" v-if="column === query.column">
                                                 <span v-if="query.direction === 'desc'">&uarr;</span>
@@ -62,8 +62,8 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr v-for="model in model.data">
-                                        <td v-for="(value,key) in model">
+                                    <tr v-for="model in model.data" :key="model">
+                                        <td v-for="(value,key) in model" :key="key">
                                             <span v-if="!['verification'].includes(key)">{{value}}</span>
                                             <ApprovalStatusButton
                                                 v-else
@@ -156,7 +156,7 @@
                                                    <strong>Save Changes </strong>!
                                                 </span>
                                                 <div class="radio p-0 col-6 float-left text-center"
-                                                     v-for="{name,value} in portal_access">
+                                                     v-for="{name,value} in portal_access" :key="value">
                                                     <input :id="name" :value="value" name="access"
                                                            type="radio" v-model="form.portal_access">
                                                     <label :for="name">{{name | capitalize}} Access</label>
@@ -233,12 +233,11 @@
     import {byMethod, get} from '../utilities/api';
     import AppNavigation from '../components/AppNavigation';
     import ApprovalStatusButton from '../components/ApprovalStatusButton';
-    import BasePagination from '../components/Pagination/BasePagination'
     import queryParams from '../utilities/queryParam';
 
     export default {
 
-        components: {ApprovalStatusButton, AppNavigation, BasePagination},
+        components: {ApprovalStatusButton, AppNavigation},
 
         data() {
             return {
@@ -280,6 +279,7 @@
         },
 
         async mounted(){
+            // eslint-disable-next-line no-useless-catch
             try {
                 this.$LIPS(true);
                 $('.modal').modal('hide');
@@ -476,7 +476,7 @@
             }
         },
 
-        destroyed() {
+        unmounted() {
             this.removeCustomerOptionsModalsFromDom();
         }
     }

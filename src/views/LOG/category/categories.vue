@@ -33,7 +33,7 @@
                 <div class="w-100 my-5 mx-0 hr"></div>
                 <div class="row px-4 pt-3 pb-4 text-center">
                     <div class="col light-heading" style="max-width: 120px">S/N</div>
-                    <div class="col light-heading" v-for="header in headings">{{header}}</div>
+                    <div class="col light-heading" v-for="header in headings" :key="header">{{header}}</div>
                 </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
@@ -124,7 +124,6 @@
     import {mapGetters, mapActions} from "vuex";
     import CustomHeader from '../../../components/customHeader';
     import BasePagination from '../../../components/Pagination/BasePagination'
-    import InventorySearch from "../../../components/InventorySearch";
     import ResueableSearch from '../../../components/ReusableSearch.vue';
 
     export default {
@@ -134,7 +133,7 @@
             urlToFetchOrders: {default: '/api/category'}
         },
 
-        components: {CustomHeader, BasePagination,InventorySearch, ResueableSearch },
+        components: {CustomHeader, BasePagination, ResueableSearch },
 
         computed: {...mapGetters(['getBranches'])},
 
@@ -168,9 +167,8 @@
             fetchData() {
                 this.$scrollToTop();
                 this.$LIPS(true);
-                let {page, page_size} = this.$data;
-                 get(`${this.urlToFetchOrders}${!!this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
-          `${!!this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
+                 get(`${this.urlToFetchOrders}${this.pageParams.page ? `?page=${this.pageParams.page}` : ""}` +
+          `${this.pageParams.limit ? `&limit=${this.pageParams.limit}` : ""}`
                 )
                     .then(({data}) => this.prepareList(data))
                     .catch(() => Flash.setError('Error Preparing form'));

@@ -32,9 +32,7 @@
 </template>
 <script>
     import Vue from 'vue';
-    import Auth from '../../utilities/auth';
     import {post} from '../../utilities/api';
-    import Flash from '../../utilities/flash';
     import VueSweetalert2 from 'vue-sweetalert2';
 
     Vue.use(VueSweetalert2);
@@ -53,7 +51,7 @@
                 this.$LIPS(true);
                 this.error = {};
                 await post('/api/password/reset', {email:this.email})
-                .then(({data}) => {
+                .then(() => {
                     this.$LIPS(false);  
                    this.$swal({
                         icon: 'success',

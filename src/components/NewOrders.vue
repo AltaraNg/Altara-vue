@@ -18,7 +18,7 @@
 							class="custom-select"
 							v-model="searchQuery.businessType"
 						>
-							<option :value="type.id" v-for="type in businessTypes">
+							<option :value="type.id" v-for="type in businessTypes" :key="type.id">
 								{{ type.name }}
 							</option>
 						</select>
@@ -33,7 +33,7 @@
 							class="custom-select"
 							v-model="searchQuery.status"
 						>
-							<option :value="type.status" v-for="type in renewalStatus">
+							<option :value="type.status" v-for="type in renewalStatus" :key="type.status">
 								{{ type.status }}
 							</option>
 						</select>
@@ -43,7 +43,7 @@
 			<div class="w-100 my-5 mx-0 hr"></div>
 			<div class="row px-4 pt-3 pb-4 text-center">
 				<div class="col light-heading" style="max-width: 120px">S/N</div>
-				<div class="col light-heading" v-for="header in headings">
+				<div class="col light-heading" v-for="header in headings" :key="header">
 					{{ header }}
 				</div>
 				<div class="col light-heading" v-if="renewal === false">
@@ -55,11 +55,11 @@
 			</div>
 		</div>
 		<div class="tab-content mt-1 attendance-body">
+			<template v-if="orders">
 			<div
 				class="mb-3 row attendance-item"
 				:key="index"
 				v-for="(order, index) in orders"
-				v-if="orders"
 			>
 				<div class="col d-flex align-items-center" style="max-width: 120px">
 					<span class="user mx-auto" @click="submitFeedback(order)">{{
@@ -112,7 +112,7 @@
 						name="status"
 						class="custom-select"
 					>
-						<option :value="option.status" v-for="option in renewalStatus">
+						<option :value="option.status" v-for="option in renewalStatus" :key="option.status">
 							{{ option.status }}
 						</option>
 					</select>
@@ -137,6 +137,7 @@
 					<input type="text" v-model="order.feedback" class="form-control" />
 				</div>
 			</div>
+		</template>
 		</div>
 
 		<div class="modal fade repayment" id="viewStuffs">
@@ -221,7 +222,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr v-for="(object, index) in modalItem">
+										<tr v-for="(object, index) in modalItem" :key="index">
 											<td>{{ index + 1 }}</td>
 											<td>{{ convertDate(object.created_at) }}</td>
 											<td>
@@ -307,12 +308,11 @@
 	import Vue from 'vue';
 	import { get, post } from '../utilities/api';
 	import queryParam from '../utilities/queryParam';
-	import { mapGetters, mapActions } from 'vuex';
+	import { mapGetters } from 'vuex';
 	import Vue2Filters from 'vue2-filters';
 	import NewOrderAmortization from './NewOrderAmortization';
 	import ResueableSearch from './ReusableSearch.vue';
 	import BasePagination from './Pagination/BasePagination';
-	import Index from '../views/ACC/index.vue';
 
 	Vue.use(Vue2Filters);
 	export default {
@@ -320,7 +320,6 @@
 			NewOrderAmortization,
 			ResueableSearch,
 			BasePagination,
-			Index,
 		},
 		computed: { ...mapGetters(['getBranches']) },
 		props: {
@@ -368,7 +367,9 @@
 				if (this.renewal === true) {
 					get(this.url + queryParam(param))
 						.then(({ data }) => this.prepareList(data))
-						.catch(() => Flash.setError('Error Preparing form'))
+						.catch(() => {
+							// Flash.setError('Error Preparing form')
+						})
 						.finally(() => {
 							this.$LIPS(false);
 						});
@@ -376,7 +377,10 @@
 					delete param.renewalList;
 					get(this.url + queryParam(param))
 						.then(({ data }) => this.prepareList(data))
-						.catch(() => Flash.setError('Error Preparing form'))
+						.catch(() => {
+							// Handle this
+							// Flash.setError('Error Preparing form')
+						})
 						.finally(() => {
 							this.$LIPS(false);
 						});
@@ -475,7 +479,8 @@
 						order.renewal_status = '';
 						order.renewal_date = '';
 					})
-					.catch((err) => {
+					.catch(() => {
+						// Handle catch block
 					})
 					.finally(() => {
 						this.$LIPS(false);

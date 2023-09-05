@@ -466,7 +466,6 @@ import Flash from "../utilities/flash"
 import discount from "./discount.vue"
 import paystack from "vue-paystack"
 import moment from "moment"
-import roles from "../utilities/roles"
 import ToggleButton from "./ToggleButton.vue"
 import CurrencyInput from "./CurrencyInput.vue"
 
@@ -577,7 +576,6 @@ export default {
       rDuration: "",
       cardError: false,
       customDateToggle: false,
-      discounts: null,
       lockRepaymentDuration: false,
       eligible: false,
       serial: false,
@@ -632,11 +630,9 @@ export default {
         amount: 0,
         percentage: null,
       },
-      salesCategories: null,
       showDiscount: null,
       salesCatName: null,
       validatedRaffleCode:null,
-      error:null
     }
   },
   async beforeMount() {
@@ -744,7 +740,7 @@ export default {
       await post(this.apiUrls.raffle_code, {
            "phone_number": this.customer.telephone,
             "code": this.salesLogForm.raffle_code
-        }).then(res=>{
+        }).then(()=>{
            Flash.setSuccess('Raffle Code Validated')
           this.validatedRaffleCode = true
         }).catch(error =>{
@@ -895,7 +891,7 @@ export default {
         this.FixedRepayment = true;
       }
     },
-    customDate(event) {
+    customDate() {
       this.salesLogForm?.repayment_cycle_id?.name === "custom"
         ? (this.customDateToggle = true)
         : (this.customDateToggle = false)
@@ -1315,10 +1311,10 @@ export default {
         const unwrapped = fetchGetCalclations.data.data
         this.calculation = unwrapped
 
-        const filter = this.calculation.filter(obj => {
-          return obj.business_type_id >= 15
-        })
-        const unwrapped0 = JSON.stringify(unwrapped)
+        // const filter = this.calculation.filter(obj => {
+        //   return obj.business_type_id >= 15
+        // })
+        // const unwrapped0 = JSON.stringify(unwrapped)
       } catch (err) {
         this.$displayErrorMessage(err)
       }
@@ -1337,7 +1333,7 @@ export default {
     },
     async getProduct() {
       try {
-        const fetchProduct = await get(this.apiUrls.getProduct + this.product)
+        await get(this.apiUrls.getProduct + this.product)
       } catch (err) {
         this.$displayErrorMessage(err)
       }
@@ -1416,13 +1412,6 @@ export default {
         this.noBSVerbiage =
           "Customer's home address and guarantor's home address has not been verified!!!"
       }
-    },
-    mergeArrays(parent) {
-      let result = []
-      parent.forEach(elem => {
-        result = result.concat(elem.active_users)
-      })
-      return result
     },
     async getBusinessTypes() {
       try {
@@ -1615,6 +1604,7 @@ export default {
     },
     validateEmail(mail) {
       {
+        // eslint-disable-next-line no-useless-escape
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
           return true
         }

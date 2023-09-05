@@ -22,7 +22,6 @@ import Flash from '../../../utilities/flash'
 import { get, post } from '../../../utilities/api'
 import { EventBus } from '../../../utilities/event-bus'
 import { toMulipartedForm } from '../../../utilities/form'
-import ImageUpload from '../../../components/ImageUpload'
 import CustomerProfile from '../../../components/CustomerProfile'
 import AutocompleteSearch from '../../../components/AutocompleteSearch/AutocompleteSearch'
 
@@ -37,7 +36,6 @@ export default {
   },
 
   components: {
-    ImageUpload,
     /*the image upload is used for the customer id and passport upload.
      * its a separate component on its own and can be called
      * anywhere on the application*/
@@ -150,6 +148,7 @@ export default {
       /*$emit update event is used to send data to the parent component where this serves as a child
        * component. eg. dsa utility form. NB: The customer registration component(form)
        * is used as the customer update form for both dsa and dva portal.*/
+      // eslint-disable-next-line no-prototype-builtins
       this.user = data.hasOwnProperty('user') ? data.user : null
       Vue.set(this.$data, 'customer', data.customer)
       this.$emit('update', data.customer)
@@ -175,10 +174,10 @@ export default {
           data?.customer?.document?.proof_of_income_url
         this.veriData.forEach(e => {
           //e is the current array element during the foreach call;
-          this[`${e}Btns`] = !!!data.customer[e]
+          this[`${e}Btns`] = !data.customer[e]
           //eg this.work_guarantorBtns = if (data.customer.work_guarantor) {return true} else {return false}
           //and anything the if return will be inverted.
-          this[e] = !!data.customer[e] ? data.customer[e] : data[`empty_${e}`]
+          this[e] = data.customer[e] ? data.customer[e] : data[`empty_${e}`]
           //eg this.work_guarantor = if(data.customer.work_guarantor){ return data.customer.work_guarantor }
           // else {return data.empty_work_guarantor}
           //the empty_work_guarantor is returned from backend when no work guarantor has been added.

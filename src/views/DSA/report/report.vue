@@ -14,7 +14,7 @@
                                     data-vv-validate-on="blur" name="report_type" v-model="report.type"
                                     v-validate="'required'">
                                 <option value="">select type</option>
-                                <option :value="slug" v-for="{slug,name} in types">{{name | capitalize}}</option>
+                                <option :value="slug" v-for="{slug,name} in types" :key="name">{{name | capitalize}}</option>
                             </select>
                             <small v-if="errors.first('f1.report_type')">{{errors.first('f1.report_type')}}</small>
                         </div>
@@ -26,7 +26,7 @@
                                     v-model="report.branch.id" v-validate="'required'">
                                 <option value="">select branch</option>
                                 <option :value="branch.id"
-                                        v-for="branch in ($store.getters.auth('DSALead') ? $store.state.branches : pageBranch)">
+                                        v-for="branch in ($store.getters.auth('DSALead') ? $store.state.branches : pageBranch)" :key="branch.id">
                                     {{branch.name}}
                                 </option>
                             </select>

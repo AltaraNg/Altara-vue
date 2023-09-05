@@ -2,7 +2,6 @@ module.exports = {
   root: true,
   env: {
     node: true,
-    // Remove this if you're not using jQuery
     jquery: true,
   },
   extends: [

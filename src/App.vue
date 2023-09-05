@@ -121,7 +121,7 @@ export default {
     return {
       flash: Flash.state,
       authState: Auth.state,
-      roles: roles,
+        roles: roles,
     };
   },
 

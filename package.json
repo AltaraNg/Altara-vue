@@ -63,5 +63,11 @@
         "popper.js": "^1.12",
         "sass-loader": "^8.0.2",
         "vue-template-compiler": "^2.6.11"
-    }
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": [
+          "eslint --fix",
+          "prettier --write"
+        ]
+      }
 }

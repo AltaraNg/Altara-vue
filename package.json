@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
+        "postinstall": "husky install",
         "serve": "vue-cli-service serve --host localhost",
         "build": "vue-cli-service build",
         "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",

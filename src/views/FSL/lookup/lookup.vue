@@ -11,7 +11,7 @@
           <!--                    <div class="attendance-hea TODO:: cleanup d">-->
           <customer-profile :view-customer="customer" :verification-list="verificationList" />
           <!--             // TODO:: cleanup       </div>-->
-
+          
           <div style="display: flex; ">
             <custom-header
               :title="'All order(s)'"
@@ -163,6 +163,7 @@
                   >
                     {{ customer.employment_status }}
                   </div>
+
                   <div
                     class="
                     col-12 col-xs-2 col-md col-lg
@@ -263,20 +264,18 @@
                         "
                       ></PaystackModal>
                     </span>
+                    <div>
                     <span
-                      v-if="
-                        order.payment_gateway === 'Paystack' &&
-                          order.paystack_auth_code != null &&
-                          order.status !== 'Completed' &&
-                          canLogDD && manualDD
-                      "
+                      v-if="showDirectDebit(order)"
                     >
-                      <CustomDirectDebitModalButton
+                      <CustomDirectDebitModalButton 
                         :order="order"
                         :key="order.id"
                         :customer="customer"
                       ></CustomDirectDebitModalButton>
                     </span>
+                  
+                    </div>
                     {{ order.order_number }}
                   </div>
                   <div
@@ -318,36 +317,30 @@
                       :percent="percentage(order)"
                     />
                   </div>
-                
-                  <div
-                    class="
-                    col-12 col-xs-2 col-md col-lg
-                    d-flex
-                    align-items-center
-                    justify-content-center
-                  "
-                  >
-                    <button
-                      :disabled="order.business_type === 'Cash n Carry'"
-                      :class="
-                        order.status === 'Completed' ? 'approved' : 'pending'
-                      "
-                      @click="displayAmortization(order)"
-                      class="btn status my-sm-2"
-                    >
-                      View Plan
-                      <i
-                        :class="
-                          order.status === 'Completed'
-                            ? 'fa-check-circle'
-                            : 'fa-hourglass-half'
-                        "
-                        class="fas ml-3"
-                        style="font-size: 1.4rem"
-                      ></i>
-                      <!--                                        // TODO:: cleanup-->
-                    </button>
-                  </div>
+                  
+
+<div
+    class="
+        col-12 col-xs-2 col-md col-lg
+        d-flex
+        align-items-center
+        justify-content-center"
+>
+    <button
+        :disabled="order.business_type === 'Cash n Carry'"
+        :class="statusOrder(order.status)"
+        @click="displayAmortization(order)"
+        class="btn status my-sm-2"
+    >
+        View Plan
+        <i
+            :class="statusOrderIcon(order.status)"
+            class="fas ml-3"
+            style="font-size: 1.4rem"
+        ></i>
+    </button>
+</div>
+
                 </div>
               </div>
 
@@ -830,7 +823,7 @@
           </div>
         </div>
       </div>
-      <div class="modal fade repayment" id="amortization">
+      <div class="modal fade repayment" id="amortization" @click.stop="">
         <div class="modal-dialog modal-xl" role="document">
           <div class="modal-content" v-if="showModalContent">
             <div v-if="!newOrder">
@@ -1182,6 +1175,9 @@
             </div>
             <div v-else>
               <new-order-amortization
+              :key="bootx_out"
+              @close="destroyModal"
+              :status="order.status"
                 :lateFEES="lateFEES"
                 :order="order"
                 :customer="customer"
@@ -1690,15 +1686,45 @@ export default {
       role: "",
 
       paystackReference: null,
+      bootx_out: '001'
     }
   },
 
   methods: {
+    destroyModal(){
+      this.showModalContent = false
+      this.bootx_out += '1'
+
+      return $(`#amortization`).modal("toggle")
+    },
+
     selectType(type) {
       selectType(type, this.states)
     },
     getClickedOrder(order) {
       this.clickedOrder = order
+      
+    },
+
+    statusOrder (status) {
+      if (status === 'Completed' || status === 'Closed') {
+        return 'approved'
+      } else if (status === 'Active' || status === 'Pending') {
+        return 'pending'
+      } else {
+        return 'not-approved'
+      }
+       
+    },
+
+    statusOrderIcon (status)  {
+      if (status === 'Completed' || status === 'Closed') {
+        return 'fa-check-circle'
+      } else if (status === 'Active' || status === 'Pending') {
+        return 'fa-hourglass-half'
+      } else {
+        return 'fa-arrows-alt'
+      }
     },
 
     async submitForm() {
@@ -2109,9 +2135,19 @@ export default {
       let element = this.customer.new_orders.find(item => {
         return item.id === data.order
       })
+      
       element.paystack_auth_code = data.auth_code
       let index = this.customer.new_orders.indexOf(element)
       Vue.set(this.$data.customer.new_orders, index, element)
+    },
+    handleUpdateOrderStatus(updatedStatus) {
+      // Find the index of the updated status in orderStatusData array
+      const index = this.order.status.findIndex(status => status.id === updatedStatus.id);
+
+      if (index !== -1) {
+        // Update the order status at the specified index
+        this.orderStatusData[index] = updatedStatus;
+      }
     },
     computeDownpayment(result) {
       return typeof JSON.parse(result.result).ans == "object" &&
@@ -2123,7 +2159,15 @@ export default {
             JSON.parse(result.result).ans[1]
           } repayment`
     },
+    showDirectDebit(order) {
+      
+      return order.payment_gateway === 'Paystack' &&
+                          order.paystack_auth_code != null &&
+                          this.canLogDD && this.manualDD && (order.status === 'Active' ||
+    order.status === 'Approved')
+    }
   },
+
 
   computed: {
     ...mapGetters([
@@ -2157,7 +2201,9 @@ export default {
     },
 
     manualDD(){
-      return process.env.VUE_APP_MANUAL_DD === 'true';
+      
+        return process.env.VUE_APP_MANUAL_DD === 'true';
+      
     },
     forDVA() {
       return this.auth("DVAAccess")
@@ -2171,6 +2217,7 @@ export default {
     this.$LIPS(true)
     EventBus.$on("reloadUser", this.updateCustomerData)
     EventBus.$on("updateUser", this.processForm)
+    EventBus.$on("statusOrder", this.handleUpdateOrderStatus)
     this.$LIPS(false);
   },
 
@@ -2203,5 +2250,15 @@ export default {
   -ms-flex-positive: 1;
   flex-grow: 1;
   max-width: 100%;
+}
+
+/* For green background */
+.green-background {
+  background-color: green;
+}
+
+/* For red background */
+.red-background {
+  background-color: red;
 }
 </style>

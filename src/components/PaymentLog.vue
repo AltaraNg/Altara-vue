@@ -1430,11 +1430,12 @@ export default {
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes)
         this.biz_type = fetchBusinessTypes?.data?.data?.data
         this.biz_type = this.biz_type.filter(item => {
-          return item.slug !== 'ap_bnpl'
+          return !['ap_bnpl', 'ap_super_loan-new', 'ap_super_loan-renewal'].includes(item.slug)
         })
         this.businessTypes = fetchBusinessTypes?.data?.data?.data
         this.businessTypes = this.businessTypes.filter(item => {
-          return item.slug !== 'ap_bnpl'
+          return !['ap_bnpl', 'ap_super_loan-new', 'ap_super_loan-renewal'].includes(item.slug)
+
         })
         this.businessTypes = this.businessTypes.filter(item => {
           if (this.isAltaraCredit) {

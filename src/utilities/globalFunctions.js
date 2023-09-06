@@ -63,8 +63,10 @@ Vue.prototype.$humanizeDate = (date) => {
 
 
 
-Vue.prototype.$getCustomerAddress = c =>
-    c ? `${c.add_houseno} ${c.add_street} ${c.area_address}, ${c.city}, ${c.state}.` : null;
+Vue.prototype.$getCustomerAddress = c =>{
+   return c ? `${c.add_street}`: null;
+}
+    
 
 Vue.prototype.$getCustomerOfficeAddress = c =>
     c ? `${c.comp_house_no} ${c.comp_street_name} ${c.comp_area}, ${c.company_city}, ${c.company_state}.` : null;

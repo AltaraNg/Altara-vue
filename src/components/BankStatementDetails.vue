@@ -82,7 +82,22 @@
                     </div>
                 </div>
                 <div class="box " style="background-color: transparent;  ">
-                     <p class="pb-5 pl-5 " style="font-size: 26px; font-weight: 800; color: #074A74;">Transactions Table. </p>
+                    <div class="mt-5 pb-5" style="display: flex; align-items: center; justify-content: space-between;">
+                    <p class=" pl-5" style="font-size: 26px; font-weight: 800; color: #074A74;">Transactions Table. </p>
+                 <div style="width:30%; margin-right: 2%; position: relative;" class="form-group ">
+                                    <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
+                                    <input type="number" name="repayment_amount" v-model="repayment_amount"
+                                        class="custom-select flex-1 w-100" />
+                                    <button
+                                        style="position: absolute; bottom: 2px; padding:6px 20px; right:3px; text-align: center; border-radius: 5px;"
+                                        class="  bg-default" @click="getRepaymentCapability">
+                                        Check
+                                        <i class="far fa-paper-plane ml-1"></i>
+                                    </button>
+                                </div>
+                </div>
+                   
+                     
                     <div class="space-between mb-5 pl-5 mt-5 ml-5 px-4">
                         <h3 class="text-capitalize mb-0">Filters</h3>
                     </div>
@@ -173,40 +188,30 @@
 
 
                 </div>
-
-                <!-- <div class="box relative " style="width:40%; height: fit-content;">
-
-                    <div style="display: flex; justify-content: end;">
-                        <div style="width:60%; margin-right: 2%; position: relative;" class="form-group ">
-                            <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
-                            <input type="number" name="repayment_amount" v-model="repayment_amount"
-                                class="custom-select flex-1 w-100" />
-                            <button
-                                style="position: absolute; bottom: 2px; padding:6px 20px; right:3px; text-align: center; border-radius: 5px;"
-                                class="  bg-default" @click="getRepaymentCapability">
-                                Check
-                                <i class="far fa-paper-plane ml-1"></i>
-                            </button>
+                <modal name="repayment-capability" :clickToClose="true">
+                     <div class=" relative p-5 " style=" height: fit-content; display: flex; flex-direction: column;">
+                        <div class="pb-5"  style="display:flex; align-items: center; justify-content: space-between;">
+                             <p class="" style="font-size: 20px; font-weight: 800; color: #074A74;">Repayment Capability Table.</p>
+                                <i class="fas fa-times text-danger" style="font-size:15px; cursor:pointer;" @click="hide('repayment-capability')"></i>
+                        </div>
+                        <div class="p-2 alignCenterJustifyBetween" style=" font-size: 18px; font-weight: 800;">
+                            <p>Month</p>
+                            <p>No of Days</p>
+                        </div>
+                        <div v-for="(repayment, index) in repaymentCapability" :key="index">
+                            <div class="p-2 mb-2 alignCenterJustifyBetween"
+                                style=" font-size: 18px; background-color: #F7F7FF;">
+                                <p>{{ repayment.month_name || 0 }}</p>
+                                <p style="font-weight: 700;">{{ repayment.count || 0 }}</p>
+                            </div>
+                        </div>
+                        <div v-if="!repaymentCapability.length">
+                            <p style="font-size: 15px; font-weight: 800; color: #074A74;" class="text-center mt-5">This Bank
+                                Statement does not have the available funds to repay this repayment amount. </p>
                         </div>
                     </div>
-                    <p class="pb-5" style="font-size: 16px; font-weight: 800; color: #074A74;">Repayment Capability Table.
-                    </p>
-                    <div class="p-2 alignCenterJustifyBetween" style=" font-size: 18px; font-weight: 800;">
-                        <p>Month</p>
-                        <p>No of Days</p>
-                    </div>
-                    <div v-for="(repayment, index) in repaymentCapability" :key="index">
-                        <div class="p-2 mb-2 alignCenterJustifyBetween"
-                            style=" font-size: 18px; background-color: #F7F7FF;">
-                            <p>{{ repayment.month_name || 0 }}</p>
-                            <p style="font-weight: 700;">{{ repayment.count || 0 }}</p>
-                        </div>
-                    </div>
-                    <div v-if="!repaymentCapability.length">
-                        <p style="font-size: 15px; font-weight: 800; color: #074A74;" class="text-center mt-5">This Bank
-                            Statement does not have the available funds to repay this repayment amount. </p>
-                    </div>
-                </div> -->
+                </modal>
+               
 
 
 
@@ -265,15 +270,18 @@ export default {
     },
     methods: {
         async getRepaymentCapability() {
+            console.log(this.repaymentCapabilityUrl)
             this.$LIPS(true)
             try {
                 const fetchRepaymentCapability = await get(this.repaymentCapabilityUrl);
                 this.repaymentCapability = fetchRepaymentCapability.data.data
+                this.$modal.show('repayment-capability')
                 console.log(this.repaymentCapability, 'this.repaymentCapability');
             } catch (err) {
                 this.$displayErrorMessage(err);
             } finally {
                 this.$LIPS(false)
+                this.$modal.show('repayment-capability')
             }
         },
         async getAllTransations(params = {}) {
@@ -303,6 +311,13 @@ export default {
             this.pageParams.page = 1;
             await this.getAllTransations()
         },
+        show(modal) {
+			this.$modal.show(modal);
+		},
+
+		hide(modal) {
+			this.$modal.hide(modal);
+		},
         async getBankStatementDetails() {
             this.$LIPS(true)
             try {

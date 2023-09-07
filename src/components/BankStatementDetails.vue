@@ -270,7 +270,6 @@ export default {
     },
     methods: {
         async getRepaymentCapability() {
-            console.log(this.repaymentCapabilityUrl)
             this.$LIPS(true)
             try {
                 const fetchRepaymentCapability = await get(this.repaymentCapabilityUrl);
@@ -281,7 +280,7 @@ export default {
                 this.$displayErrorMessage(err);
             } finally {
                 this.$LIPS(false)
-                this.$modal.show('repayment-capability')
+                //this.$modal.show('repayment-capability')
             }
         },
         async getAllTransations(params = {}) {

@@ -86,8 +86,7 @@
                     <p class=" pl-5" style="font-size: 26px; font-weight: 800; color: #074A74;">Transactions Table. </p>
                  <div style="width:30%; margin-right: 2%; position: relative;" class="form-group ">
                                     <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
-                                    <input type="number" name="repayment_amount" v-model="repayment_amount"
-                                        class="custom-select flex-1 w-100" />
+                                    <currency-input :options="inputOptions" v-model="repayment_amount" class="form-control w-100" style="border-radius: 5px" />
                                     <button
                                         style="position: absolute; bottom: 2px; padding:6px 20px; right:3px; text-align: center; border-radius: 5px;"
                                         class="  bg-default" @click="getRepaymentCapability">
@@ -173,7 +172,7 @@
                                 {{ BankStatementTransaction.description }}
                             </div>
                             <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
-                                {{ new Date(BankStatementTransaction.created_at).toISOString().split('T')[0] }}
+                                {{ new Date(BankStatementTransaction.transaction_date).toISOString().split('T')[0] }}
 
 
                             </div>
@@ -237,7 +236,8 @@ import warning from '../assets/warning.vue';
 import excel from '../assets/excel.vue';
 import BasePagination from "../components/Pagination/BankStatementPagination.vue"
 import { get, post, put } from "../utilities/api"
-import DatePicker from 'vue2-datepicker'
+import DatePicker from 'vue2-datepicker';
+import CurrencyInput from '../components/CurrencyInput.vue'
 import 'vue2-datepicker/index.css'
 
 
@@ -247,7 +247,8 @@ export default {
         warning,
         excel,
         BasePagination,
-        DatePicker
+        DatePicker,
+        CurrencyInput
     },
 
     computed: {
@@ -262,6 +263,16 @@ export default {
     },
     data() {
         return {
+             inputOptions: {
+                currency: "NGN",
+                currencyDisplay: "symbol",
+                hideCurrencySymbolOnFocus: false,
+                hideGroupingSeparatorOnFocus: false,
+                hideNegligibleDecimalDigitsOnFocus: true,
+                autoDecimalDigits: false,
+                useGrouping: true,
+                accountingSign: false,
+            },
             OId:null,
             dateFormat: "YYYY-MM-DD",
             locale: "en-US",

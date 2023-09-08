@@ -101,7 +101,7 @@
                     <div class="space-between mb-5 pl-5 mt-5 ml-5 px-4">
                         <h3 class="text-capitalize mb-0">Filters</h3>
                     </div>
-                    <div class="center my-2  ml-5 pl-5 " style=" display: flex; align-items: center;">
+                    <div class="center my-2 pb-5  ml-5 pl-5 " style=" display: flex; align-items: center;">
                         <div style="width:70%; display: flex;">
                             <div style="width:20%; margin-right: 2%;">
                                 <label style="color: #074A74; font-weight: 800;">Date</label>
@@ -120,26 +120,28 @@
                                 <label style="color: #074A74; font-weight: 800;">Minimum Withdrawal</label>
                                 <input type="number" name="account_number" class="custom-select flex-1 w-100"
                                     v-model="pageParams.min_withdrawal" />
+                                    <p class="w-100 " v-if="isButtonDisabled" style="color: red; font-size: 9.5px; ">Please enter both minimum and maximum withdrawal together.</p>
                             </div>
-                            <div style="width:20%; margin-right: 2%;">
+                            <div style="width:20%; margin-right: 2%; position: relative; ">
                                 <label style="color: #074A74; font-weight: 800;">Maximum Withdrawal</label>
-                                <input type="number" name="customer_id" class="custom-select flex-1 w-100"
+                                <input type="number" name="customer_id" class="custom-select flex-1 w-100"  
                                     v-model="pageParams.max_withdrawal" />
+                                     
                             </div>
 
 
 
                         </div>
                         <div style="width:30%; display: flex; justify-content: end; padding-right: 43px;">
-                            <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4"
+                            <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4" :disabled="isButtonDisabled"
                                 @click="Search()">
-                                <span class="h5" style="width: 5rem">
+                                <span class="h5" >
                                     Search
                                 </span>
                             </button>
                             <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4"
                                 @click="resetFilter()">
-                                <span class="h5" style="width: 5rem">
+                                <span class="h5" >
                                     Reset
                                 </span>
                             </button>
@@ -151,7 +153,10 @@
                         <div class="row mt-5 px-4 pt-3 pb-4 text-left">
 
                             <div class="col light-heading" v-for="(header, index) in headings" :key="index">
-                                {{ header }}
+                           
+                        
+                            {{ header }}
+                       
                             </div>
                         </div>
                     </div>
@@ -161,7 +166,7 @@
                             v-for="(BankStatementTransaction, index) in BankStatementTransactions">
                             <!-- {{ creditCheck }} -->
                             <div class="col-12 col-xs-3 col-md col-lg  align-items-start  ">
-                                <span class="user mx-auto text-white bg-default">{{ index + 1 }}</span>
+                                <span class="user mx-auto text-white bg-default">{{ index + OId }}</span>
                             </div>
 
                             <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
@@ -177,6 +182,11 @@
 
 
                             </div>
+                            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
+                                    {{ $formatCurrency(BankStatementTransaction.withdrawal ) }}
+
+
+                                </div>
 
                         </div>
                     </div>
@@ -188,13 +198,13 @@
 
 
                 </div>
-                <modal name="repayment-capability" :clickToClose="true">
-                     <div class=" relative p-5 " style=" height: fit-content; display: flex; flex-direction: column;">
+                <modal name="repayment-capability" :clickToClose="true"  :height="'auto'">
+                     <div class=" relative p-5 pb-5 mb-5" style="  display: flex; flex-direction: column;">
                         <div class="pb-5"  style="display:flex; align-items: center; justify-content: space-between;">
                              <p class="" style="font-size: 20px; font-weight: 800; color: #074A74;">Repayment Capability Table.</p>
                                 <i class="fas fa-times text-danger" style="font-size:15px; cursor:pointer;" @click="hide('repayment-capability')"></i>
                         </div>
-                        <div class="p-2 alignCenterJustifyBetween" style=" font-size: 18px; font-weight: 800;">
+                        <div class="p-2 alignCenterJustifyBetween" style=" font-size: 18px; font-weight: 800;" v-if="repaymentCapability.length">
                             <p>Month</p>
                             <p>No of Days</p>
                         </div>
@@ -205,7 +215,8 @@
                                 <p style="font-weight: 700;">{{ repayment.count || 0 }}</p>
                             </div>
                         </div>
-                        <div v-if="!repaymentCapability.length">
+                        <div v-if="!repaymentCapability.length" style="display: flex; flex-direction: column; align-items: center;">
+                           <img src="../assets/bankStatementIcons/icons8-info.gif"/>
                             <p style="font-size: 15px; font-weight: 800; color: #074A74;" class="text-center mt-5">This Bank
                                 Statement does not have the available funds to repay this repayment amount. </p>
                         </div>
@@ -229,6 +240,7 @@ import { get, post, put } from "../utilities/api"
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
 
+
 export default {
     components: {
         back,
@@ -241,10 +253,16 @@ export default {
     computed: {
         repaymentCapabilityUrl() {
             return `https://fast-alt-7790f3f68854.herokuapp.com/bank-statements/${this.$route.params.id}/repayment/capability/${this.repayment_amount}`;
+        },
+         isButtonDisabled: function () {
+            const minEntered = !!this.pageParams.min_withdrawal;
+            const maxEntered = !!this.pageParams.max_withdrawal;
+            return (minEntered && !maxEntered) || (!minEntered && maxEntered);
         }
     },
     data() {
         return {
+            OId:null,
             dateFormat: "YYYY-MM-DD",
             locale: "en-US",
             dateRange: [],
@@ -264,6 +282,7 @@ export default {
                 "Description",
                 "Date",
                 "Balance",
+                "Withdrawal"
             ],
             pageParams: { page: 1, size: 20, max_withdrawal: '', description: '' }
         }
@@ -414,6 +433,9 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+button:disabled{
+    opacity: 0.5;
 }
 
 .body {

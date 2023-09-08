@@ -1,5 +1,5 @@
 <template>
-	<div class="mb-5 w-100 px-0 row align-items-center">
+	<div class="mb-5 w-100 px-0 row align-items-center" v-if="pageParam.pages !== 1">
 		<div class="w-100 mb-4 mt-5 mx-0 hr"></div>
 		<div class="clearfix w-100 mt-4 d-flex bd-highlight">
 			<div class="col d-flex justify-content-start ml-5 align-items-center pl-0">

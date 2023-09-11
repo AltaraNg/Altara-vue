@@ -83,20 +83,21 @@
                 </div>
                 <div class="box " style="background-color: transparent;  ">
                     <div class="mt-5 pb-5" style="display: flex; align-items: center; justify-content: space-between;">
-                    <p class=" pl-5" style="font-size: 26px; font-weight: 800; color: #074A74;">Transactions Table. </p>
-                 <div style="width:30%; margin-right: 2%; position: relative;" class="form-group ">
-                                    <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
-                                    <currency-input :options="inputOptions" v-model="repayment_amount" class="form-control w-100" style="border-radius: 5px" />
-                                    <button
-                                        style="position: absolute; bottom: 2px; padding:6px 20px; right:3px; text-align: center; border-radius: 5px;"
-                                        class="  bg-default" @click="getRepaymentCapability">
-                                        Check
-                                        <i class="far fa-paper-plane ml-1"></i>
-                                    </button>
-                                </div>
-                </div>
-                   
-                     
+                        <p class=" pl-5" style="font-size: 26px; font-weight: 800; color: #074A74;">Transactions Table. </p>
+                        <div style="width:30%; margin-right: 2%; position: relative;" class="form-group ">
+                            <label style="color: #074A74; font-weight: 800;">REPAYMENT AMOUNT</label>
+                            <currency-input :options="inputOptions" v-model="repayment_amount" class="form-control w-100"
+                                style="border-radius: 5px" />
+                            <button
+                                style="position: absolute; bottom: 2px; padding:6px 20px; right:3px; text-align: center; border-radius: 5px;"
+                                class="  bg-default" @click="getRepaymentCapability">
+                                Check
+                                <i class="far fa-paper-plane ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+
                     <div class="space-between mb-5 pl-5 mt-5 ml-5 px-4">
                         <h3 class="text-capitalize mb-0">Filters</h3>
                     </div>
@@ -119,28 +120,29 @@
                                 <label style="color: #074A74; font-weight: 800;">Minimum Withdrawal</label>
                                 <input type="number" name="account_number" class="custom-select flex-1 w-100"
                                     v-model="pageParams.min_withdrawal" />
-                                    <p class="w-100 " v-if="isButtonDisabled" style="color: red; font-size: 9.5px; ">Please enter both minimum and maximum withdrawal together.</p>
+                                <p class="w-100 " v-if="isButtonDisabled" style="color: red; font-size: 9.5px; ">Please
+                                    enter both minimum and maximum withdrawal together.</p>
                             </div>
                             <div style="width:20%; margin-right: 2%; position: relative; ">
                                 <label style="color: #074A74; font-weight: 800;">Maximum Withdrawal</label>
-                                <input type="number" name="customer_id" class="custom-select flex-1 w-100"  
+                                <input type="number" name="customer_id" class="custom-select flex-1 w-100"
                                     v-model="pageParams.max_withdrawal" />
-                                     
+
                             </div>
 
 
 
                         </div>
                         <div style="width:30%; display: flex; justify-content: end; padding-right: 43px;">
-                            <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4" :disabled="isButtonDisabled"
-                                @click="Search()">
-                                <span class="h5" >
+                            <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4"
+                                :disabled="isButtonDisabled" @click="Search()">
+                                <span class="h5">
                                     Search
                                 </span>
                             </button>
                             <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4"
                                 @click="resetFilter()">
-                                <span class="h5" >
+                                <span class="h5">
                                     Reset
                                 </span>
                             </button>
@@ -152,10 +154,10 @@
                         <div class="row mt-5 px-4 pt-3 pb-4 text-left">
 
                             <div class="col light-heading" v-for="(header, index) in headings" :key="index">
-                           
-                        
-                            {{ header }}
-                       
+
+
+                                {{ header }}
+
                             </div>
                         </div>
                     </div>
@@ -182,10 +184,10 @@
 
                             </div>
                             <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
-                                    {{ $formatCurrency(BankStatementTransaction.withdrawal ) }}
+                                {{ $formatCurrency(BankStatementTransaction.withdrawal) }}
 
 
-                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -197,13 +199,16 @@
 
 
                 </div>
-                <modal name="repayment-capability" :clickToClose="true"  :height="'auto'">
-                     <div class=" relative p-5 pb-5 mb-5" style="  display: flex; flex-direction: column;">
-                        <div class="pb-5"  style="display:flex; align-items: center; justify-content: space-between;">
-                             <p class="" style="font-size: 20px; font-weight: 800; color: #074A74;">Repayment Capability Table.</p>
-                                <i class="fas fa-times text-danger" style="font-size:15px; cursor:pointer;" @click="hide('repayment-capability')"></i>
+                <modal name="repayment-capability" :clickToClose="true" :height="'auto'">
+                    <div class=" relative p-5 pb-5 mb-5" style="  display: flex; flex-direction: column;">
+                        <div class="pb-5" style="display:flex; align-items: center; justify-content: space-between;">
+                            <p class="" style="font-size: 20px; font-weight: 800; color: #074A74;">Repayment Capability
+                                Table.</p>
+                            <i class="fas fa-times text-danger" style="font-size:15px; cursor:pointer;"
+                                @click="hide('repayment-capability')"></i>
                         </div>
-                        <div class="p-2 alignCenterJustifyBetween" style=" font-size: 18px; font-weight: 800;" v-if="repaymentCapability.length">
+                        <div class="p-2 alignCenterJustifyBetween" style=" font-size: 18px; font-weight: 800;"
+                            v-if="repaymentCapability.length">
                             <p>Month</p>
                             <p>No of Days</p>
                         </div>
@@ -214,14 +219,15 @@
                                 <p style="font-weight: 700;">{{ repayment.count || 0 }}</p>
                             </div>
                         </div>
-                        <div v-if="!repaymentCapability.length" style="display: flex; flex-direction: column; align-items: center;">
-                           <img src="../assets/bankStatementIcons/icons8-info.gif"/>
+                        <div v-if="!repaymentCapability.length"
+                            style="display: flex; flex-direction: column; align-items: center;">
+                            <img src="../assets/bankStatementIcons/icons8-info.gif" />
                             <p style="font-size: 15px; font-weight: 800; color: #074A74;" class="text-center mt-5">This Bank
                                 Statement does not have the available funds to repay this repayment amount. </p>
                         </div>
                     </div>
                 </modal>
-               
+
 
 
 
@@ -255,7 +261,7 @@ export default {
         repaymentCapabilityUrl() {
             return `https://fast-alt-7790f3f68854.herokuapp.com/bank-statements/${this.$route.params.id}/repayment/capability/${this.repayment_amount}`;
         },
-         isButtonDisabled: function () {
+        isButtonDisabled: function () {
             const minEntered = !!this.pageParams.min_withdrawal;
             const maxEntered = !!this.pageParams.max_withdrawal;
             return (minEntered && !maxEntered) || (!minEntered && maxEntered);
@@ -263,7 +269,7 @@ export default {
     },
     data() {
         return {
-             inputOptions: {
+            inputOptions: {
                 currency: "NGN",
                 currencyDisplay: "symbol",
                 hideCurrencySymbolOnFocus: false,
@@ -273,7 +279,7 @@ export default {
                 useGrouping: true,
                 accountingSign: false,
             },
-            OId:null,
+            OId: null,
             dateFormat: "YYYY-MM-DD",
             locale: "en-US",
             dateRange: [],
@@ -303,7 +309,7 @@ export default {
             this.$LIPS(true)
             try {
                 const fetchRepaymentCapability = await get(this.repaymentCapabilityUrl);
-                this.repaymentCapability = fetchRepaymentCapability.data.data
+                this.repaymentCapability = fetchRepaymentCapability.data.data.sort(this.compareByMonthYear)
                 this.$modal.show('repayment-capability')
                 console.log(this.repaymentCapability, 'this.repaymentCapability');
             } catch (err) {
@@ -311,6 +317,20 @@ export default {
             } finally {
                 this.$LIPS(false)
                 //this.$modal.show('repayment-capability')
+            }
+        },
+        compareByMonthYear(a, b) {
+            // Parse the "month_year" strings into date objects
+            const dateA = new Date(`01-${a.month_year}`);
+            const dateB = new Date(`01-${b.month_year}`);
+
+            // Compare the date objects
+            if (dateA < dateB) {
+                return -1;
+            } else if (dateA > dateB) {
+                return 1;
+            } else {
+                return 0;
             }
         },
         async getAllTransations(params = {}) {
@@ -341,12 +361,12 @@ export default {
             await this.getAllTransations()
         },
         show(modal) {
-			this.$modal.show(modal);
-		},
+            this.$modal.show(modal);
+        },
 
-		hide(modal) {
-			this.$modal.hide(modal);
-		},
+        hide(modal) {
+            this.$modal.hide(modal);
+        },
         async getBankStatementDetails() {
             this.$LIPS(true)
             try {
@@ -445,7 +465,8 @@ export default {
     align-items: center;
     justify-content: space-between;
 }
-button:disabled{
+
+button:disabled {
     opacity: 0.5;
 }
 

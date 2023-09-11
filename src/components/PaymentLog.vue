@@ -73,7 +73,7 @@
                   </option>
                 </select>
               </div>
-                <div class="col form-group" v-if="flag2">
+                <div class="col form-group" >
                   <label for="raffle_code" class="form-control-label">Raffle Code (Optional)</label>
                   <input @input="ResetInput()" v-model="salesLogForm.raffle_code" name="raffle_code" class="custom-select w-100"
                     />
@@ -482,7 +482,6 @@ export default {
   },
   data() {
     return {
-      flag2: localStorage.getItem('flag'),
       dummyDiscount: {
         created_at: "2021-11-02 07:48:42",
         description: "7% discount on renewals",

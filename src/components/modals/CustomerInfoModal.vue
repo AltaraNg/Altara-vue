@@ -37,7 +37,7 @@
 						</tr>
 						<tr>
 							<th>Address</th>
-							<td>{{ `${modalItem.add_street}, ${modalItem.city}` }}</td>
+							<td>{{ `${modalItem.area_address}, ${modalItem.city}, ${modalItem.state}` }}</td>
 						</tr>          
           </tbody>
         </table>

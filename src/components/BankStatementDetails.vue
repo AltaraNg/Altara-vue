@@ -134,7 +134,7 @@
 
                         </div>
                         <div style="width:30%; display: flex; justify-content: end; padding-right: 43px;">
-                            <button style="width:30%; margin-right: 2%;" class="bg-default rounded  py-2 px-4"
+                            <button style="margin-right: 2%;" class="bg-default rounded px-4  py-2"
                                 :disabled="isButtonDisabled" @click="Search()">
                                 <span class="h5">
                                     Search
@@ -166,11 +166,11 @@
                         <div class="mb-3 row d-flex bg-white table-hover" :key="index"
                             v-for="(BankStatementTransaction, index) in BankStatementTransactions">
                             <!-- {{ creditCheck }} -->
-                            <div class="col-12 col-xs-3 col-md col-lg  align-items-start  ">
+                            <div class="  " style="width:10%">
                                 <span class="user mx-auto text-white bg-default">{{ index + OId }}</span>
                             </div>
 
-                            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">
+                            <div class=" d-flex align-items-center justify-content-left" style="width:27%; margin-right: 3%;">
                                 {{ BankStatementTransaction.description }}
                             </div>
                             <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">

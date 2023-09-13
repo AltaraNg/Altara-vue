@@ -1,11 +1,6 @@
 <template>
     <transition name="slide" mode="out-in">
         <div class="mt-5 pt-5">
-            <!-- <div class="mt-5 mb-5 ml-5 pointer" style="display: flex; align-items: center; color: #958A8A;"
-                @click="$emit('close')">
-                <i class="far  fa-arrow-alt-circle-left float-left " style="font-size: 1.5em;"></i><span class="ml-2"
-                    style="font-size: small;">Back</span>
-            </div> -->
             <div class="   box bg-default text-white  mb-5 ">
                 <p class="pb-5" style="font-size: 16px; font-weight: 700; ">Bank_statement.PDF</p>
                 <div class="pb-2 alignCenterJustifyBetween" style=" font-size: 13px;">
@@ -238,7 +233,6 @@
 </template>
 <script>
 import back from '../assets/back.vue';
-import warning from '../assets/warning.vue';
 import excel from '../assets/excel.vue';
 import BasePagination from "../components/Pagination/BankStatementPagination.vue"
 import { get, post, put } from "../utilities/api"
@@ -250,7 +244,6 @@ import 'vue2-datepicker/index.css'
 export default {
     components: {
         back,
-        warning,
         excel,
         BasePagination,
         DatePicker,
@@ -259,7 +252,7 @@ export default {
 
     computed: {
         repaymentCapabilityUrl() {
-            return `https://fast-alt-7790f3f68854.herokuapp.com/bank-statements/${this.$route.params.id}/repayment/capability/${this.repayment_amount}`;
+            return `${process.env.VUE_APP_PYTHON_API}/bank-statements/${this.$route.params.id}/repayment/capability/${this.repayment_amount}`;
         },
         isButtonDisabled: function () {
             const minEntered = !!this.pageParams.min_withdrawal;
@@ -284,8 +277,8 @@ export default {
             locale: "en-US",
             dateRange: [],
             BankStatement: {},
-            transaction_details: `https://fast-alt-7790f3f68854.herokuapp.com/bank-statements/${this.$route.params.id}/transactions`,
-            statement_details: `https://fast-alt-7790f3f68854.herokuapp.com/bank-statements/${this.$route.params.id}`,
+            transaction_details: `${process.env.VUE_APP_PYTHON_API}/bank-statements/${this.$route.params.id}/transactions`,
+            statement_details: `${process.env.VUE_APP_PYTHON_API}/bank-statements/${this.$route.params.id}`,
             repayment_amount: '',
             repaymentCapability: [
                 {
@@ -311,7 +304,6 @@ export default {
                 const fetchRepaymentCapability = await get(this.repaymentCapabilityUrl);
                 this.repaymentCapability = fetchRepaymentCapability.data.data.sort(this.compareByMonthYear)
                 this.$modal.show('repayment-capability')
-                console.log(this.repaymentCapability, 'this.repaymentCapability');
             } catch (err) {
                 this.$displayErrorMessage(err);
             } finally {
@@ -338,7 +330,6 @@ export default {
             try {
                 const fetchBankStatementDetails = await get(this.transaction_details, { ...params, ...this.pageParams, transaction_from_date: this.dateRange[0], transaction_to_date: this.dateRange[1] });
                 this.BankStatementTransactions = fetchBankStatementDetails.data.items
-                console.log(fetchBankStatementDetails, 'this.BankStatementTransactions');
                 this.setPagination(fetchBankStatementDetails.data)
                 this.pageParams.page !== 1 ? this.$router.push({
                     query: { page: this.pageParams.page },
@@ -372,9 +363,7 @@ export default {
             try {
                 const fetchBankStatementDetails = await get(this.statement_details);
                 this.BankStatement = fetchBankStatementDetails.data.data
-                console.log(this.BankStatement, 'this.BankStatementTransactions');
             } catch (err) {
-                console.log(err)
                 this.$displayErrorMessage(err);
             } finally {
                 this.$LIPS(false)

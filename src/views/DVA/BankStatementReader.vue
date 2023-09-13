@@ -82,13 +82,13 @@
             </div> 
             <button :disabled="isButtonDisabled" class="btn bg-default" v-if="formMode.existingCustomer"
               style=" display: flex; align-items: center; justify-content: center; width:21%;" type="submit">
-              <upload class="pr-2" />Upload Document
+              <i class="fas fa-cloud-upload-alt pr-2" style="font-size: large;"></i>Upload Document
             </button>
           </div>
           <div class="mt-4"  style="display: flex; width: 100%; justify-content: center;">
             <button :disabled="isButtonDisabled" class="btn bg-default" v-if="formMode.newCustomer"
                   style=" display: flex; align-items: center; justify-content: center; width:21%;" type="submit">
-                  <upload class="pr-2" />Upload Document
+                  <i class="fas fa-cloud-upload-alt pr-2" style="font-size: large;"></i>Upload Document
                 </button>
           </div>
            
@@ -215,7 +215,6 @@ import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
 import pdf from '../../assets/pdf.vue'
 import BasePagination from "../../components/Pagination/BankStatementPagination.vue"
-import upload from "../../assets/upload.vue"
 import { toMulipartedForm } from '../../utilities/form'
 import Flash from "../../utilities/flash";
 import { selectType } from "../../utilities/log.js"
@@ -223,7 +222,6 @@ import router from "../../router"
 export default {
   components: {
     AutocompleteSearch,
-    upload,
     BasePagination,
     pdf,
     DatePicker,
@@ -275,8 +273,8 @@ export default {
         getReports: '/api/repayment-schedule/report',
         repaymentDurations: '/api/repayment_duration',
         branches: '/api/branches',
-        bank_statements: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statements',
-        statement_choices: 'https://fast-alt-7790f3f68854.herokuapp.com/bank-statement-choices'
+        bank_statements: `${process.env.VUE_APP_PYTHON_API}/bank-statements`,
+        statement_choices: `${process.env.VUE_APP_PYTHON_API}/bank-statement-choices`
       },
       pageParams: { page: 1, size: 10, customer_id: '', account_name: '', account_number: '', bank_statement_choice:'' },
       MonthlyStat: [],

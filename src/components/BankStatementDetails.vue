@@ -170,7 +170,7 @@
                                 <span class="user mx-auto text-white bg-default">{{ index + OId }}</span>
                             </div>
 
-                            <div class=" d-flex align-items-center justify-content-left" style="width:27%; margin-right: 3%;">
+                            <div class=" pt-4" style="width:27%; margin-right: 3%;  word-wrap: break-word;">
                                 {{ BankStatementTransaction.description }}
                             </div>
                             <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-left">

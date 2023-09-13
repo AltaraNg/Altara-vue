@@ -486,7 +486,7 @@
           </div>
         </div>
         <div :id="type + '_modal'" class="modal fade" v-for="(type, index) in newDocView" :key="index">
-          <div class="modal-dialog"  :style="{ pointerEvents:( type == 'passport' || type == 'id_card') ? 'none' : 'auto' }">
+          <div class="modal-dialog"  :style="{ pointerEvents:( type == 'passport' || type == 'id_card' || type == 'utility_bill' || type == 'residence_proof') ? 'none' : 'auto' }">
             <div class="modal-content">
               <div class="modal-header py-2">
                 <h6 class="modal-title py-1">
@@ -1415,6 +1415,11 @@ export default {
       const displayName = filteredWords.join(' ');
 
       return displayName;
+    },
+    updateNewDoc() {
+      if (this.displayActiveDocument) {
+
+      }
     },
 
     addDocument() {

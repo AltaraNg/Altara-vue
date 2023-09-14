@@ -7,7 +7,8 @@
         "build": "vue-cli-service build",
         "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
         "lint:fix": "eslint --ext .js,.vue --ignore-path .gitignore . --fix",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "postinstall": "husky install"
     },
     "dependencies": {
         "@vue/composition-api": "^1.0.5",

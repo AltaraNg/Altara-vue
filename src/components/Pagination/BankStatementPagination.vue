@@ -139,8 +139,8 @@
 		},
 
 		created() {
-			this.pageParam.page = this.pageParam.page ? this.pageParam.page : 1;
-			this.pageParam.size = this.pageParam.size ? this.pageParam.size : 10;
+			  this.pageParam.page = this.pageParam.page || 1;
+				this.pageParam.size = this.pageParam.size || 10;
 
 		},
 		computed: {
@@ -154,4 +154,3 @@
 	},
 	};
 </script>
-<

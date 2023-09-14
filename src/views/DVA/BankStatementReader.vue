@@ -310,7 +310,7 @@ export default {
         // Handle the selected PDF file
         this.bankStatementData.bank_statement_pdf = selectedFile;
       } else {
-        alert('Please select a valid PDF file.');
+        Flash.setError('Please select a valid PDF file.');
       }
     },
     async uploadBankStatement() {
@@ -351,13 +351,6 @@ export default {
           id: bankStatement.id
         }
       })
-      // setTimeout(() => {
-      //   this.seeDetails = true
-      // }, 1000);
-
-      // this.BankStatement = bankStatement
-
-
     },
     async fetchData(params = {}) {
       this.$scrollToTop()
@@ -366,9 +359,6 @@ export default {
         .then((response) => {
           this.bankStatements = response.data.items;
           this.setPagination(response.data)
-          // this.$router.push({
-          //   query: { page: this.pageParams.page },
-          // })
         })
         .catch((err) => {
           Flash.setError("Error occurred fetching Bank Statements")

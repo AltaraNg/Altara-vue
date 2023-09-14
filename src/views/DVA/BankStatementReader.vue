@@ -11,7 +11,7 @@
                     :title="'New Customer'"
                     @click.native="selectType('newCustomer')"
                     :style="!formMode.newCustomer ? 'opacity: 0.2; cursor:pointer;' : 'cursor:pointer; '"
-                    style="margin-left: -10px"
+                    style="margin-left: -10px; pointer-events: none;"
                 />
             </div>
 

@@ -1,37 +1,34 @@
 <template>
-  <input ref="inputRef" :value="formattedValue" />
+  <div>
+    <input
+      :value="formattedValue"
+      @input="$emit('input', $event.target.value)"
+      placeholder="NGN 0.00"
+    />
+  </div>
 </template>
 
 <script>
-import { watch } from '@vue/composition-api'
-import useCurrencyInput from 'vue-currency-input'
+import { ref, watch, onMounted } from "vue"
 
 export default {
-  name: 'CurrencyInput',
+  name: "FormatCurrency",
   props: {
-    value: Number, // Vue 2: value
-    options: Object,
+    value: Number,
   },
   setup(props) {
-    const { inputRef, formattedValue, setOptions, setValue } = useCurrencyInput(
-      props.options
-    )
-
-    watch(
-      () => props.value, // Vue 2: props.value
-      value => {
-        setValue(value)
-      }
-    )
-
-    watch(
-      () => props.options,
-      options => {
-        setOptions(options)
-      }
-    )
+    const formattedValue = ref("")
+    const inputRef = ref(null)
 
     return { inputRef, formattedValue }
   },
 }
 </script>
+
+<style scoped>
+/* Remove the border */
+input {
+  border: none;
+  outline: none; /* Remove the blue outline on focus */
+}
+</style>

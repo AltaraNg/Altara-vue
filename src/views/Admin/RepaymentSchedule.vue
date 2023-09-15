@@ -128,6 +128,20 @@ export default {
 	},
 	data() {
 		return {
+			label:{
+				group_0:'1st Repayment',
+				group_1: '2nd Repayment',
+				group_2: '3rd Repayment',
+				group_3: '4th Repayment',
+				group_4: '5th Repayment',
+				group_5: '6th Repayment',
+				group_6: '7th Repayment',
+				group_7: '8th Repayment',
+				group_8: '9th Repayment',
+				group_9: '10th Repayment',
+				group_10: '11th Repayment',
+				group_11: '12th Repayment',
+			},
 			dateRange: this.getFirstAndLastDayOfCurrentMonth(),
 			locale: "en-US", 
 			dateFormat: "YYYY-MM-DD", 
@@ -221,10 +235,11 @@ export default {
 			this.OId = from;
 		},
 		getBarChartData() {
-
+			console.log(Object.keys(this.reports.groupByMonth))
 
 			this.barData = {
-				labels: Object.keys(this.reports.groupByMonth),
+				
+				labels: Object.keys(this.reports.groupByMonth).map(key => this.label[key]),
 				datasets: [
 					{
 						label: 'Total Repayment Expected',

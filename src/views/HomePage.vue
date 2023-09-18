@@ -48,6 +48,7 @@ export default {
                 { accessName: "CASHLOAN", name: "CASHLOAN", url: "cashloan/home", icon: "fa-id-card" },
                 { accessName: "ALTARAPAY", name: "ALTARAPAY", url: "altarapay/home", icon: "fa-money-bill-alt" },
                 { accessName: "CAG", name: "Admin", url: "admin/home", icon: "fa-user-shield" },
+                { accessName: "CoordinatorOnly", name: "Admin", url: "admin/home", icon: "fa-user-shield" },
                 { accessName: "General", name: "General", url: "gen-utils/home", icon: "fa-user-shield" },
                 {
                     accessName: "CreditCheck",

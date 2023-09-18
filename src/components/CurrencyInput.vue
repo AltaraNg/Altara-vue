@@ -26,9 +26,9 @@ export default {
 </script>
 
 <style scoped>
-/* Remove the border */
 input {
   border: none;
-  outline: none; /* Remove the blue outline on focus */
+  outline: none; 
+  color: black;
 }
 </style>

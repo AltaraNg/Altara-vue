@@ -68,7 +68,7 @@
                 />
               </div>
 
-              <div class="col form-group" v-if="serial">
+              <div class="col form-group" v-if="serial && isCashNCarry">
                 <label for="amount" class="form-control-label w-100"
                   >Serial number
                 </label>
@@ -76,6 +76,17 @@
                   v-model="salesLogForm.serial_number"
                   name="serial number"
                   class="custom-select w-100"
+                />
+              </div>
+              <div class="col form-group" v-if="serial && !isCashNCarry">
+                <label for="amount" class="form-control-label w-100"
+                  >Serial number
+                </label>
+                <input
+                  v-model="salesLogForm.serial_number"
+                  name="serial number"
+                  class="custom-select w-100"
+                  v-validate="'required'"
                 />
               </div>
 

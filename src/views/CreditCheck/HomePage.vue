@@ -33,6 +33,7 @@
                         desc: "View all Credit Checks",
                         aces: this.$store.getters.auth('CreditCheckAccess'),
                     },
+                   
                 ]
             }
         }

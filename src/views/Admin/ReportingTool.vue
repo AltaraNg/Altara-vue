@@ -43,6 +43,7 @@
 					{{ type.name }}
 				</option>
 			</select>
+			
 
 			<select
 				class="custom-select flex-1"
@@ -52,6 +53,16 @@
 				<option value="">All Sectors</option>
 				<option :value="'formal'">Formal</option>
 				<option :value="'informal'">Informal</option>
+			</select>
+			<select
+				name="business_type"
+				class="custom-select flex-1"
+				v-model="branches"
+			>
+				<option :value="''" selected>Branch</option>
+				<option :value="type.branch_id" :key="type.branch_id" v-for="type in branchesInfo">
+					{{ type.branch_name }}
+				</option>
 			</select>
 			<div class="col d-flex align-items-center"   style="font-size: 8.5px;">
 	                <toggle-button v-on:valueChangedEvent="triggerToggleEvent" :switchName="'billboardOrders'" :key="'billboardOrders'"
@@ -399,6 +410,8 @@
 				SalesBySalesCategoryTotal:null,
 				totalSalesByDownPaymentsAndRepaymentDuration:[],
 				TotalByDP_RDTotal:'',
+				branch: {},
+				branches: ''
 			};
 		},
 		async mounted() {
@@ -623,6 +636,7 @@
 				this.getBarChartData();
 				this.getOrderBarChartData();
 				this.drawProductPieChart();
+				this.getBranchLabel()
 				this.loaded = true;
 			},
 

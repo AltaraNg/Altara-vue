@@ -100,7 +100,7 @@
                         <h3 class="text-capitalize mb-0">Filters</h3>
                     </div>
                     <div class="center my-2 pb-5 ml-5 pl-5" style="display: flex; align-items: center">
-                        <div style="width: 70%; display: flex">
+                        <div style="width: 70%; display: flex; font-size: 9px; align-items: center">
                             <div style="width: 16%; margin-right: 1%">
                                 <label style="color: #074a74; font-weight: 800">Date</label>
                                 <date-picker
@@ -117,35 +117,44 @@
                                 <label style="color: #074a74; font-weight: 800">Description</label>
                                 <input type="text" name="account_name" class="customSelect flex-1 w-100" v-model="pageParams.description" />
                             </div>
-                            <div style="width: 16%; margin-right: 1%">
-                                <label style="color: #074a74; font-weight: 800">Minimum Withdrawal</label>
-                                <input type="number" name="account_number" class="custom-select flex-1 w-100" v-model="pageParams.min_withdrawal" />
+                            <div style="display: flex; width: 33%; margin-right: 1%; position: relative">
+                                <div style="width: 49%; margin-right: 2%">
+                                    <label style="color: #074a74; font-weight: 800">Minimum Withdrawal</label>
+                                    <input
+                                        type="number"
+                                        name="account_number"
+                                        class="custom-select flex-1 w-100"
+                                        v-model="pageParams.min_withdrawal"
+                                    />
+                                </div>
+                                <div style="width: 49%; position: relative">
+                                    <label style="color: #074a74; font-weight: 800">Maximum Withdrawal</label>
+                                    <input type="number" name="customer_id" class="custom-select flex-1 w-100" v-model="pageParams.max_withdrawal" />
+                                </div>
                                 <p
                                     class="w-100"
                                     v-if="isButtonDisabled(pageParams.min_withdrawal, pageParams.max_withdrawal)"
-                                    style="color: red; font-size: 9.5px"
+                                    style="color: red; font-size: 9px; position: absolute; bottom: -25px"
                                 >
                                     Enter both minimum and maximum withdrawal together.
                                 </p>
                             </div>
-                            <div style="width: 16%; margin-right: 1%; position: relative">
-                                <label style="color: #074a74; font-weight: 800">Maximum Withdrawal</label>
-                                <input type="number" name="customer_id" class="custom-select flex-1 w-100" v-model="pageParams.max_withdrawal" />
-                            </div>
-                            <div style="width: 16%; margin-right: 1%">
-                                <label style="color: #074a74; font-weight: 800">Minimum Deposit</label>
-                                <input type="number" name="account_number" class="custom-select flex-1 w-100" v-model="pageParams.min_deposit" />
+                            <div style="display: flex; width: 33%; margin-right: 1%; position: relative">
+                                <div style="width: 49%; margin-right: 2%">
+                                    <label style="color: #074a74; font-weight: 800">Minimum Deposit</label>
+                                    <input type="number" name="account_number" class="custom-select flex-1 w-100" v-model="pageParams.min_deposit" />
+                                </div>
+                                <div style="width: 49%; position: relative">
+                                    <label style="color: #074a74; font-weight: 800">Maximum Deposit</label>
+                                    <input type="number" name="customer_id" class="custom-select flex-1 w-100" v-model="pageParams.max_deposit" />
+                                </div>
                                 <p
                                     class="w-100"
                                     v-if="isButtonDisabled(pageParams.min_deposit, pageParams.max_deposit)"
-                                    style="color: red; font-size: 9.5px"
+                                    style="color: red; font-size: 9px; position: absolute; bottom: -25px"
                                 >
                                     Enter both minimum and maximum deposit together.
                                 </p>
-                            </div>
-                            <div style="width: 16%; margin-right: 1%; position: relative">
-                                <label style="color: #074a74; font-weight: 800">Maximum Deposit</label>
-                                <input type="number" name="customer_id" class="custom-select flex-1 w-100" v-model="pageParams.max_deposit" />
                             </div>
                         </div>
                         <div style="width: 30%; display: flex; justify-content: end; padding-right: 43px">

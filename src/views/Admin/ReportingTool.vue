@@ -58,9 +58,10 @@
 				name="business_type"
 				class="custom-select flex-1"
 				v-model="branches"
+				@change="filterByBranch"
 			>
 				<option :value="''" selected>Branch</option>
-				<option :value="type.branch_id" :key="type.branch_id" v-for="type in branchesInfo">
+				<option :value="type.branch_id" :key="type.branch_id" v-for="type in branch">
 					{{ type.branch_name }}
 				</option>
 			</select>
@@ -431,6 +432,8 @@
 			this.getOrderTypes();
 			this.loaded = true;
 			this.getBarchartColors();
+
+			console.log("Branch", this.branch)
 		},
 
 		methods: {
@@ -514,6 +517,7 @@
 				this.query.businessType = this.businessType;
 				this.query.sector = this.sector;
 				this.query.orderType = this.orderType;
+				this.query.branch = this.branches
 				this.billboardOrders ? this.query.billboardOrders = 'true' : delete this.query.billboardOrders ;
 				try {
 					const report = await byMethod(
@@ -547,6 +551,12 @@
 					this.$LIPS(false);
 				}
 			},
+
+			filterByBranch() {
+    this.loaded = false;
+    this.filterByDate(); 
+    this.loaded = true;
+  },
 
 			getSums(dataArray) {
 				this.sums.totalSales = 0;
@@ -583,6 +593,7 @@
 
 			getBranchLabel() {
 				const branches = Object.values(this.reports.meta.groupedDataByBranch);
+				this.branch = branches
 				return branches.map(obj => obj.branch_name) 
 				.sort((a, b) => a.localeCompare(b))
 			},

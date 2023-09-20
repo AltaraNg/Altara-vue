@@ -11,7 +11,7 @@
                     :title="'New Customer'"
                     @click.native="selectType('newCustomer')"
                     :style="!formMode.newCustomer ? 'opacity: 0.2; cursor:pointer;' : 'cursor:pointer; '"
-                    style="margin-left: -10px; pointer-events: none;"
+                    style="margin-left: -10px; pointer-events: none"
                 />
             </div>
 
@@ -182,7 +182,7 @@
 </template>
 <script>
 import AutocompleteSearch from "../../components/AutocompleteSearch/AutocompleteSearch.vue";
-import { get, post, put } from "../../utilities/api";
+import { get, post } from "../../utilities/api";
 import CustomHeader from "../../components/customHeader";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
@@ -233,7 +233,6 @@ export default {
             availableRepaymentPlan: [],
             statementChoices: [],
             bankStatements: [],
-            repaymentPlan: "",
             apiUrls: {
                 getReports: "/api/repayment-schedule/report",
                 repaymentDurations: "/api/repayment_duration",
@@ -284,12 +283,12 @@ export default {
             this.$LIPS(true);
             const form = toMulipartedForm(this.bankStatementData);
             await post(this.apiUrls.bank_statements, form)
-                .then(({ data }) => {
+                .then(() => {
                     Flash.setSuccess("Document Updated Successfully!");
                     this.bankStatementData = {};
                     this.fetchData();
                 })
-                .catch((e) => {
+                .catch(() => {
                     Flash.setError("Bank statement processing failed, unable to process the selected bank statement.");
                 });
             this.$LIPS(false);
@@ -324,13 +323,13 @@ export default {
                     this.bankStatements = response.data.items;
                     this.setPagination(response.data);
                 })
-                .catch((err) => {
+                .catch(() => {
                     Flash.setError("Error occurred fetching Bank Statements");
                 });
             this.$LIPS(false);
         },
         setPagination(response) {
-            const { page, first_page_url, from, pages, last_page_url, data, size, next_page_url, to, total, prev_page_url } = response;
+            const { page, first_page_url, from, pages, last_page_url, size, next_page_url, to, total, prev_page_url } = response;
 
             this.pageParams = Object.assign({}, this.pageParams, {
                 page,

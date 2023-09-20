@@ -54,23 +54,24 @@
 				<option :value="'formal'">Formal</option>
 				<option :value="'informal'">Informal</option>
 			</select>
+			
+			<div class="col d-flex align-items-center"   style="font-size: 8.5px;">
+	                <toggle-button v-on:valueChangedEvent="triggerToggleEvent" :switchName="'billboardOrders'" :key="'billboardOrders'"
+	                  :defaultState="billboardOrders" :label="'Billboard Orders'" />
+	              </div>
+		</div>
+		<div class="flex px-4 mt-4">
 			<select
 				name="business_type"
-				class="custom-select flex-1"
+				class="custom-select"
 				v-model="branches"
-				@change="filterByBranch"
 			>
 				<option :value="''" selected>Branch</option>
 				<option :value="type.branch_id" :key="type.branch_id" v-for="type in branch">
 					{{ type.branch_name }}
 				</option>
 			</select>
-			<div class="col d-flex align-items-center"   style="font-size: 8.5px;">
-	                <toggle-button v-on:valueChangedEvent="triggerToggleEvent" :switchName="'billboardOrders'" :key="'billboardOrders'"
-	                  :defaultState="billboardOrders" :label="'Billboard Orders'" />
-	              </div>
-		</div>
-		<div class="flex mt-3 mb-5 px-4 ">
+		<div class=" mb-5 px-4 ">
 			<button
 				class="bg-default rounded ml-auto py-2 px-4"
 				@click="filterByDate"
@@ -79,6 +80,7 @@
 					Filter
 				</span>
 			</button>
+		</div>
 		</div>
 
 		<div class="row px-4" v-if="reports !== null">
@@ -552,11 +554,7 @@
 				}
 			},
 
-			filterByBranch() {
-    this.loaded = false;
-    this.filterByDate(); 
-    this.loaded = true;
-  },
+			
 
 			getSums(dataArray) {
 				this.sums.totalSales = 0;

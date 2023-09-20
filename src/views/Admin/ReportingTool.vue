@@ -434,8 +434,6 @@
 			this.getOrderTypes();
 			this.loaded = true;
 			this.getBarchartColors();
-
-			console.log("Branch", this.branch)
 		},
 
 		methods: {

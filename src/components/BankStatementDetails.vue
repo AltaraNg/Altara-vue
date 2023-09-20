@@ -99,8 +99,8 @@
                     <div class="space-between mb-5 pl-5 mt-5 ml-5 px-4">
                         <h3 class="text-capitalize mb-0">Filters</h3>
                     </div>
-                    <div class="center my-2 pb-5 ml-5 pl-5" style="display: flex; align-items: center">
-                        <div style="width: 70%; display: flex; font-size: 9px; align-items: center">
+                    <div class="center my-2 pb-5 ml-5 pl-5" style="">
+                        <div style="width: 100%; display: flex; font-size: 11px; align-items: center">
                             <div style="width: 16%; margin-right: 1%">
                                 <label style="color: #074a74; font-weight: 800">Date</label>
                                 <date-picker
@@ -157,7 +157,7 @@
                                 </p>
                             </div>
                         </div>
-                        <div style="width: 30%; display: flex; justify-content: end; padding-right: 43px">
+                        <div style="width: 100%; display: flex; justify-content: end" class="mt-5 mb-5">
                             <button
                                 style="margin-right: 2%"
                                 class="bg-default rounded px-4 py-2"
@@ -169,7 +169,7 @@
                             >
                                 <span class="h5"> Search </span>
                             </button>
-                            <button style="width: 30%; margin-right: 2%" class="bg-default rounded py-2 px-4" @click="resetFilter()">
+                            <button style="margin-right: 2%" class="bg-default rounded py-2 px-4" @click="resetFilter()">
                                 <span class="h5"> Reset </span>
                             </button>
                         </div>

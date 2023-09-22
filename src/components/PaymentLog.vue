@@ -8,22 +8,44 @@
               <h2 class="mb-1">{{ compHeader }}</h2>
             </div>
             <div class="row">
-              <div class="col d-flex align-items-center" v-if="isAltaraPay && flag">
-                <toggle-button v-on:valueChangedEvent="triggerToggleEvent" :switchName="'Bank54'" :key="'Bank54'"
-                  :defaultState="isBank54" :label="'Financed by Bank54'" />
+              <div
+                class="col d-flex align-items-center"
+                v-if="isAltaraPay && flag"
+              >
+                <toggle-button
+                  v-on:valueChangedEvent="triggerToggleEvent"
+                  :switchName="'Bank54'"
+                  :key="'Bank54'"
+                  :defaultState="isBank54"
+                  :label="'Financed by Bank54'"
+                />
               </div>
 
               <div class="col text-right">
-                <button class="btn btn-md " @click="toggleProductType('ap')"
-                  :class="[isAltaraPay ? 'bg-default' : 'btn-default']" type="button" v-if="customer.city !== ''">
+                <button
+                  class="btn btn-md"
+                  @click="toggleProductType('ap')"
+                  :class="[isAltaraPay ? 'bg-default' : 'btn-default']"
+                  type="button"
+                  v-if="customer.city !== ''"
+                >
                   Altara Pay
                 </button>
-                <button class="btn btn-md  mr-0" @click="toggleProductType('ac')"
-                  :class="[isAltaraCredit ? 'bg-default' : 'btn-default']" type="button" v-if="customer.city !== ''">
+                <button
+                  class="btn btn-md mr-0"
+                  @click="toggleProductType('ac')"
+                  :class="[isAltaraCredit ? 'bg-default' : 'btn-default']"
+                  type="button"
+                  v-if="customer.city !== ''"
+                >
                   Altara Credit
                 </button>
-                <button class="btn btn-md  mr-0" @click="toggleProductType('cnc')"
-                  :class="[isCashNCarry ? 'bg-default' : 'btn-default']" type="button">
+                <button
+                  class="btn btn-md mr-0"
+                  @click="toggleProductType('cnc')"
+                  :class="[isCashNCarry ? 'bg-default' : 'btn-default']"
+                  type="button"
+                >
                   Cash N Carry
                 </button>
               </div>
@@ -35,57 +57,122 @@
                   <span class="serial" @click="toggleSerial()">
                     {{ serial === true ? "Remove" : "Add" }} serial number
                   </span>
-                  <span :class="{ renewal: eligible }" v-if="eligible">Entitled to renewal discount!!!</span>
+                  <span :class="{ renewal: eligible }" v-if="eligible"
+                    >Entitled to renewal discount!!!</span
+                  >
                 </label>
-                <AutoComplete v-on:childToParent="selectedItem" :apiUrl="apiUrls.getProduct" ref="clearInputValue" />
+                <AutoComplete
+                  v-on:childToParent="selectedItem"
+                  :apiUrl="apiUrls.getProduct"
+                  ref="clearInputValue"
+                />
               </div>
 
-              <div class="col form-group" v-if="serial">
-                <label for="amount" class="form-control-label w-100">Serial number
+              <div class="col form-group" v-if="serial && isCashNCarry">
+                <label for="amount" class="form-control-label w-100"
+                  >Serial number
                 </label>
-                <input v-model="salesLogForm.serial_number" name="serial number" class="custom-select w-100"
-                  v-validate="'required'" />
+                <input
+                  v-model="salesLogForm.serial_number"
+                  name="serial number"
+                  class="custom-select w-100"
+                />
+              </div>
+              <div class="col form-group" v-if="serial && !isCashNCarry">
+                <label for="amount" class="form-control-label w-100"
+                  >Serial number
+                </label>
+                <input
+                  v-model="salesLogForm.serial_number"
+                  name="serial number"
+                  class="custom-select w-100"
+                  v-validate="'required'"
+                />
               </div>
 
-              <div class="col form-group" v-if="isAltaraPay" :class="commitment.status ? 'disable' : ''">
-                <label for="amount" class="form-control-label">Collection Channel</label>
-                <select class="custom-select w-100" v-model="salesLogForm.payment_gateway_id" v-validate="'required'">
+              <div
+                class="col form-group"
+                v-if="isAltaraPay"
+                :class="commitment.status ? 'disable' : ''"
+              >
+                <label for="amount" class="form-control-label"
+                  >Collection Channel</label
+                >
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.payment_gateway_id"
+                  v-validate="'required'"
+                >
                   <option disabled selected="selected">
                     Collection Channel
                   </option>
-                  <option :value="type.id" :key="type.id" v-for="type in paymentGateways">
+                  <option
+                    :value="type.id"
+                    :key="type.id"
+                    v-for="type in paymentGateways"
+                  >
                     {{ type.name }}
                   </option>
                 </select>
               </div>
               <div class="col form-group" v-if="isCashNCarry">
-                <label for="amount" class="form-control-label w-100">Product Price</label>
-                <currency-input :options="inputOptions" v-model="productPrice" class="form-control w-100" />
+                <label for="amount" class="form-control-label w-100"
+                  >Product Price</label
+                >
+                <currency-input
+                  v-model="productPrice"
+                  class="form-control w-100"
+                />
               </div>
 
               <div class="col form-group">
-                <label for="amount" class="form-control-label">Sales Category</label>
-                <select @change="getUsers(salesLogForm.sales_category_id)" class="custom-select w-100"
-                  v-model="salesLogForm.sales_category_id" v-validate="'required'" :disabled="isCashNCarry">
+                <label for="amount" class="form-control-label"
+                  >Sales Category</label
+                >
+                <select
+                  @change="getUsers(salesLogForm.sales_category_id)"
+                  class="custom-select w-100"
+                  v-model="salesLogForm.sales_category_id"
+                  v-validate="'required'"
+                  :disabled="isCashNCarry"
+                >
                   <option disabled selected="selected">Sales Category</option>
-                  <option :value="type.id" :key="type.id" v-for="type in salesCategories">
+                  <option
+                    :value="type.id"
+                    :key="type.id"
+                    v-for="type in salesCategories"
+                  >
                     {{ type.name }}
                   </option>
                 </select>
               </div>
-                <div class="col form-group" v-if="flag2">
-                  <label for="raffle_code" class="form-control-label">Raffle Code (Optional)</label>
-                  <input @input="ResetInput()" v-model="salesLogForm.raffle_code" name="raffle_code" class="custom-select w-100"
-                    />
-                   
-                </div>
+              <div class="col form-group">
+                <label for="raffle_code" class="form-control-label"
+                  >Raffle Code (Optional)</label
+                >
+                <input
+                  @input="ResetInput()"
+                  v-model="salesLogForm.raffle_code"
+                  name="raffle_code"
+                  class="custom-select w-100"
+                />
+              </div>
               <div class="col form-group" v-if="isBank54">
                 <label for="bvn" class="form-control-label">BVN</label>
-                <input type="text" class="form-control" v-model="salesLogForm.bvn" v-validate="'required'" />
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="salesLogForm.bvn"
+                  v-validate="'required'"
+                />
               </div>
               <div class="col form-group">
                 <label for="amount" class="form-control-label">Owner</label>
-                <select class="custom-select w-100" v-model="salesLogForm.owner_id" v-validate="'required'">
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.owner_id"
+                  v-validate="'required'"
+                >
                   <option disabled selected="selected">Owner</option>
                   <option selected="selected" value="none">None</option>
                   <option :value="user.id" :key="user.id" v-for="user in users">
@@ -96,91 +183,189 @@
             </div>
             <div class="row">
               <div class="col form-group" v-if="!isCashNCarry">
-                <label for="amount" class="form-control-label">Repayment Cycle</label>
-                <select class="custom-select w-100" v-model="salesLogForm.repayment_cycle_id" v-validate="'required'"
-                  @change="customDate($event)" :disabled="isCashNCarry">
+                <label for="amount" class="form-control-label"
+                  >Repayment Cycle</label
+                >
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.repayment_cycle_id"
+                  v-validate="'required'"
+                  @change="customDate($event)"
+                  :disabled="isCashNCarry"
+                >
                   <option disabled selected="selected">Repayment Cycle</option>
-                  <option :value="type" :key="type.id" v-for="type in repaymentCycleFiltered">
+                  <option
+                    :value="type"
+                    :key="type.id"
+                    v-for="type in repaymentCycleFiltered"
+                  >
                     {{ type.name }}
                   </option>
                 </select>
               </div>
               <div v-if="customDateToggle" class="col form-group">
-                <label for="custom-date" class="form-control-label">Custom Date</label>
-                <input class="form-control w-100" type="number" min="1" max="31" v-model="salesLogForm.custom_date"
-                  v-validate="'required'" />
+                <label for="custom-date" class="form-control-label"
+                  >Custom Date</label
+                >
+                <input
+                  class="form-control w-100"
+                  type="number"
+                  min="1"
+                  max="31"
+                  v-model="salesLogForm.custom_date"
+                  v-validate="'required'"
+                />
               </div>
-              <div class="col form-group" v-if="!isCashNCarry" :class="commitment.status && disable ? 'disable' : ''">
-                <label for="amount" class="form-control-label">Repayment Duration</label>
-                <select @change="getCalc()" class="custom-select w-100" v-model="salesLogForm.repayment_duration_id"
-                  v-validate="'required'" :disabled="isCashNCarry || lockRepaymentDuration">
+              <div
+                class="col form-group"
+                v-if="!isCashNCarry"
+                :class="commitment.status && disable ? 'disable' : ''"
+              >
+                <label for="amount" class="form-control-label"
+                  >Repayment Duration</label
+                >
+                <select
+                  @change="getCalc()"
+                  class="custom-select w-100"
+                  v-model="salesLogForm.repayment_duration_id"
+                  v-validate="'required'"
+                  :disabled="isCashNCarry || lockRepaymentDuration"
+                >
                   <option disabled selected="selected">
                     Repayment Duration
                   </option>
-                  <option :value="type" :key="type.id" v-for="type in repaymentDuration">
+                  <option
+                    :value="type"
+                    :key="type.id"
+                    v-for="type in repaymentDuration"
+                  >
                     {{ type.name }}
                   </option>
                 </select>
               </div>
 
-              <div class="col form-group" v-if="!isCashNCarry" :class="commitment.status && disable ? 'disable' : ''">
-                <label for="amount" class="form-control-label">Downpayment Rates</label>
-                <select class="custom-select w-100" v-model="salesLogForm.payment_type_id" v-validate="'required'"
-                  @change="getCalc()" :disabled="isCashNCarry">
+              <div
+                class="col form-group"
+                v-if="!isCashNCarry"
+                :class="commitment.status && disable ? 'disable' : ''"
+              >
+                <label for="amount" class="form-control-label"
+                  >Downpayment Rates</label
+                >
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.payment_type_id"
+                  v-validate="'required'"
+                  @change="getCalc()"
+                  :disabled="isCashNCarry"
+                >
                   <option disabled selected="selected">
                     Downpayment Rates
                   </option>
-                  <option :value="type" :key="type.id" v-for="type in downPaymentRatesFiltered">
+                  <option
+                    :value="type"
+                    :key="type.id"
+                    v-for="type in downPaymentRatesFiltered"
+                  >
                     {{ type.name }}
                   </option>
                 </select>
               </div>
               <div class="col form-group" v-if="!isCashNCarry">
-                <label for="amount" class="form-control-label">Business Type</label>
-                <select class="custom-select w-100" v-model="salesLogForm.business_type_id" v-validate="'required'"
-                  @change="getCalc()" :disabled="isCashNCarry">
+                <label for="amount" class="form-control-label"
+                  >Business Type</label
+                >
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.business_type_id"
+                  v-validate="'required'"
+                  @change="getCalc()"
+                  :disabled="isCashNCarry"
+                >
                   <option disabled selected="selected">Business Type</option>
-                  <option :value="type" :key="type.id" v-for="type in businessTypes">
+                  <option
+                    :value="type"
+                    :key="type.id"
+                    v-for="type in businessTypes"
+                  >
                     {{ type.name }}
                   </option>
                 </select>
               </div>
               <div class="col form-group" v-if="isAltaraPay && showDiscount">
                 <label for="amount" class="form-control-label">Discounts</label>
-                <select @change="getCalc()" class="custom-select w-100" v-model="salesLogForm.discount"
-                  v-validate="'required'">
-                  <option :value="type.slug" :key="type.id" v-for="type in discounts">
+                <select
+                  @change="getCalc()"
+                  class="custom-select w-100"
+                  v-model="salesLogForm.discount"
+                  v-validate="'required'"
+                >
+                  <option
+                    :value="type.slug"
+                    :key="type.id"
+                    v-for="type in discounts"
+                  >
                     {{ type.name }}
                   </option>
                 </select>
               </div>
               <div class="col form-group" v-if="!isAltaraPay">
-                <label for="amount" class="form-control-label">Payment Method</label>
-                <select class="custom-select w-100" v-model="salesLogForm.payment_method_id" v-validate="'required'"
-                  @change="getCalc()">
+                <label for="amount" class="form-control-label"
+                  >Payment Method</label
+                >
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.payment_method_id"
+                  v-validate="'required'"
+                  @change="getCalc()"
+                >
                   <option disabled selected="selected">Payment Method</option>
-                  <option :value="type.id" :key="type.id" v-for="type in getPaymentMethods.filter(
-                    element => element.name !== 'direct-debit'
-                  )">
+                  <option
+                    :value="type.id"
+                    :key="type.id"
+                    v-for="type in getPaymentMethods.filter(
+                      (element) => element.name !== 'direct-debit'
+                    )"
+                  >
                     {{ type.name }}
                   </option>
                 </select>
               </div>
               <div class="col form-group" v-if="!isAltaraPay">
                 <label for="amount" class="form-control-label">Bank</label>
-                <select class="custom-select w-100" v-model="salesLogForm.bank_id" v-validate="'required'"
-                  @change="getCalc()">
+                <select
+                  class="custom-select w-100"
+                  v-model="salesLogForm.bank_id"
+                  v-validate="'required'"
+                  @change="getCalc()"
+                >
                   <option disabled selected="selected">Bank</option>
-                  <option :value="type.id" :key="type.id" v-for="type in getBanks">
+                  <option
+                    :value="type.id"
+                    :key="type.id"
+                    v-for="type in getBanks"
+                  >
                     {{ type.name }}
                   </option>
                 </select>
               </div>
 
-              <div class="col form-group bor" v-if="isAltaraPay && salesLogForm.payment_gateway_id != 2">
-                <label for="amount" class="form-control-label">Card Expiry Date</label>
-                <input class="w-100 custom-select" :class="{ 'border-danger': cardError }" name="amount"
-                  v-model="card_expiry" v-validate="'required'" type="month" placeholder="Card Expiry Date" />
+              <div
+                class="col form-group bor"
+                v-if="isAltaraPay && salesLogForm.payment_gateway_id != 2"
+              >
+                <label for="amount" class="form-control-label"
+                  >Card Expiry Date</label
+                >
+                <input
+                  class="w-100 custom-select"
+                  :class="{ 'border-danger': cardError }"
+                  name="amount"
+                  v-model="card_expiry"
+                  v-validate="'required'"
+                  type="month"
+                  placeholder="Card Expiry Date"
+                />
                 <div v-if="cardError" class="small text-danger">
                   The card cannot be accepted
                 </div>
@@ -188,31 +373,70 @@
             </div>
             <br />
             <div>
-              <div class="d-flex justify-content-left" :style="(addDownpayment && isAltaraPay) || stillShowToggle
-                  ? 'display:flex; '
-                  : ''
-                " style=" width:350px">
-                <div class="col d-flex justify-content-left" style="font-size:8px; " v-if="showRepaymentToggle">
-                  <toggle-button v-on:valueChangedEvent="triggerToggleEvent" :key="'FixedRepayment'"
-                    :switchName="'FixedRepayment'" :defaultState="FixedRepayment" label="Fixed Repayment" />
+              <div
+                class="d-flex justify-content-left"
+                :style="
+                  (addDownpayment && isAltaraPay) || stillShowToggle
+                    ? 'display:flex; '
+                    : ''
+                "
+                style="width: 350px"
+              >
+                <div
+                  class="col d-flex justify-content-left"
+                  style="font-size: 8px"
+                  v-if="showRepaymentToggle"
+                >
+                  <toggle-button
+                    v-on:valueChangedEvent="triggerToggleEvent"
+                    :key="'FixedRepayment'"
+                    :switchName="'FixedRepayment'"
+                    :defaultState="FixedRepayment"
+                    label="Fixed Repayment"
+                  />
                 </div>
                 <div>
-                  <div class="col d-flex align-items-center" style="font-size:8px" :class="this.customer.guarantor_paystack.length > 0 ? '' : ''
-                    " v-if="(addDownpayment && isAltaraPay) || stillShowToggle">
-                    <toggle-button v-on:valueChangedEvent="triggerToggleEvent" switchName="addDownpayment"
-                      key="addDownpayment" :defaultState="addDownpayment" label="Add Repayment" />
+                  <div
+                    class="col d-flex align-items-center"
+                    style="font-size: 8px"
+                    :class="
+                      this.customer.guarantor_paystack.length > 0 ? '' : ''
+                    "
+                    v-if="(addDownpayment && isAltaraPay) || stillShowToggle"
+                  >
+                    <toggle-button
+                      v-on:valueChangedEvent="triggerToggleEvent"
+                      switchName="addDownpayment"
+                      key="addDownpayment"
+                      :defaultState="addDownpayment"
+                      label="Add Repayment"
+                    />
                   </div>
                 </div>
               </div>
-              <div class="text-center " :style="(addDownpayment && isAltaraPay) || stillShowToggle
-                  ? 'position:absolute; left:50%; '
-                  : ''
-                ">
-                <button v-if="isCashNCarry" class="btn bg-default" :disabled="productPrice <= 0 || !selectedProduct.id"
-                  type="submit" v-on:click="getCalc()">
+              <div
+                class="text-center"
+                :style="
+                  (addDownpayment && isAltaraPay) || stillShowToggle
+                    ? 'position:absolute; left:50%; '
+                    : ''
+                "
+              >
+                <button
+                  v-if="isCashNCarry"
+                  class="btn bg-default"
+                  :disabled="productPrice <= 0 || !selectedProduct.id"
+                  type="submit"
+                  v-on:click="getCalc()"
+                >
                   View Summary
                 </button>
-                <button v-else class="btn bg-default" :disabled="canPerformAction || hasBVN || hasNoBs" type="submit">
+                <button
+                  v-else
+                  class="btn bg-default"
+                  :disabled="canPerformAction || hasBVN || hasNoBs"
+                  type="submit"
+                >
                   View Amortization
                 </button>
                 <br />
@@ -221,9 +445,17 @@
                 Kindly update your BVN to view amortization
               </div>
               <div class="d-flex">
-                <small class="text-danger text-center mt-4 error-text" v-if="!allowBSSale">{{ noBSVerbiage }}</small>
+                <small
+                  class="text-danger text-center mt-4 error-text"
+                  v-if="!allowBSSale"
+                  >{{ noBSVerbiage }}</small
+                >
                 <div class="text-right" v-if="isAltaraPay">
-                  <button class="btn bg-default" type="button" @click="showCollectionModal">
+                  <button
+                    class="btn bg-default"
+                    type="button"
+                    @click="showCollectionModal"
+                  >
                     Collection Data
                   </button>
                   <br />
@@ -248,15 +480,28 @@
                   <th>Product Price</th>
                   <td>{{ $formatCurrency(pPrice) }}</td>
                 </tr>
-                <tr class="table-separator" v-if="singleRepayment && addDownpayment">
+                <tr
+                  class="table-separator"
+                  v-if="singleRepayment && addDownpayment"
+                >
                   <th>Estimating Downpayment</th>
                   <td>
                     {{ $formatCurrency(fPayment) }}
-                    <span style="font-size: 12px; text-decoration: underline; font-weight: 900;">
-                      + {{ $formatCurrency(singleRepayment) }}</span>
+                    <span
+                      style="
+                        font-size: 12px;
+                        text-decoration: underline;
+                        font-weight: 900;
+                      "
+                    >
+                      + {{ $formatCurrency(singleRepayment) }}</span
+                    >
                   </td>
                 </tr>
-                <tr class="table-separator" v-if="pPrice > 0 && commitment.status">
+                <tr
+                  class="table-separator"
+                  v-if="pPrice > 0 && commitment.status"
+                >
                   <th>Commitment</th>
                   <td>{{ $formatCurrency(commitment.amount) }}</td>
                 </tr>
@@ -284,9 +529,14 @@
               </tbody>
             </table>
             <div class="cover">
-              <discount class="discount" v-if="salesLogForm.discount !== '0_discount' && rPayment > 0" :percent="discounts.find(item => item.slug === salesLogForm.discount)
-                  .percentage_discount
-                " />
+              <discount
+                class="discount"
+                v-if="salesLogForm.discount !== '0_discount' && rPayment > 0"
+                :percent="
+                  discounts.find((item) => item.slug === salesLogForm.discount)
+                    .percentage_discount
+                "
+              />
               <p v-if="pPrice > 0 && commitment.status" class="commitment">
                 {{ commitment.percentage }}% Commitment
               </p>
@@ -308,7 +558,10 @@
           </div>
           <div class="modal-body">
             <div class="table-responsive">
-              <div v-if="!validateEmail(customer_email)" class=" text-danger mr-5 pr-2 h5 mb-1">
+              <div
+                v-if="!validateEmail(customer_email)"
+                class="text-danger mr-5 pr-2 h5 mb-1"
+              >
                 customer email is invalid
               </div>
               <h5 class="mt-3 mb-0">Order Information</h5>
@@ -338,9 +591,9 @@
                           isCashNCarry
                             ? productPrice
                             : computedPayment(
-                              fPayment + singleRepayment,
-                              fPayment
-                            )
+                                fPayment + singleRepayment,
+                                fPayment
+                              )
                         )
                       }}
                     </th>
@@ -350,18 +603,24 @@
                           isCashNCarry
                             ? 0
                             : computedPayment(
-                              rPayment - singleRepayment,
-                              rPayment
-                            )
+                                rPayment - singleRepayment,
+                                rPayment
+                              )
                         )
                       }}
                       <div class="modal_cover">
-                        <discount class="modal_discount" v-if="salesLogForm.discount !== '0_discount' &&
+                        <discount
+                          class="modal_discount"
+                          v-if="
+                            salesLogForm.discount !== '0_discount' &&
                             rPayment > 0
-                            " :percent="discounts.find(
-      item => item.slug === salesLogForm.discount
-    ).percentage_discount
-      " />
+                          "
+                          :percent="
+                            discounts.find(
+                              (item) => item.slug === salesLogForm.discount
+                            ).percentage_discount
+                          "
+                        />
                       </div>
                     </td>
                     <td>{{ financed_by }}</td>
@@ -397,45 +656,92 @@
               </div>
             </div>
           </div>
-          <div v-if="salesLogForm.raffle_code" :class="{ 'disableRaffleCode': validatedRaffleCode }" >
-            <div class=" form-group  col" style="display:flex; flex-direction: column;">
-                    <label for="raffle_code" class="form-control-label">Raffle Code (Optional)</label>
-                    <div style="display: flex; align-items: center;">
-                      <input @input="ResetInput()" v-model="salesLogForm.raffle_code" name="raffle_code" class="custom-select" style="width: 20%; padding-left: 20px;"
-                        /> 
-                        <img src="../assets/checkCircle.png" v-if="validatedRaffleCode"/>
-                         <button v-else class="btn bg-default" @click="validateRaffleCode()" type="submit">Validate</button>
-                         
-                    </div>
-                    <p v-if="error" class="text-danger" style="text-transform: capitalize;">{{ error }}</p>
-                    
-                  </div>  
-                
-           </div>
+          <div
+            v-if="salesLogForm.raffle_code"
+            :class="{ disableRaffleCode: validatedRaffleCode }"
+          >
+            <div
+              class="form-group col"
+              style="display: flex; flex-direction: column"
+            >
+              <label for="raffle_code" class="form-control-label"
+                >Raffle Code (Optional)</label
+              >
+              <div style="display: flex; align-items: center">
+                <input
+                  @input="ResetInput()"
+                  v-model="salesLogForm.raffle_code"
+                  name="raffle_code"
+                  class="custom-select"
+                  style="width: 20%; padding-left: 20px"
+                />
+                <img
+                  src="../assets/checkCircle.png"
+                  v-if="validatedRaffleCode"
+                />
+                <button
+                  v-else
+                  class="btn bg-default"
+                  @click="validateRaffleCode()"
+                  type="submit"
+                >
+                  Validate
+                </button>
+              </div>
+              <p
+                v-if="error"
+                class="text-danger"
+                style="text-transform: capitalize"
+              >
+                {{ error }}
+              </p>
+            </div>
+          </div>
           <div class="text-center" v-if="isAltaraPay">
             <p class="d-block text-danger">
               {{
                 !transfer
-                ? "Push Button If Customer Transferred Payment"
-                : "Push Button To Pay With Credit Card"
+                  ? "Push Button If Customer Transferred Payment"
+                  : "Push Button To Pay With Credit Card"
               }}
             </p>
-            <div class="col d-flex justify-content-center"
-              :class="salesLogForm.sales_category_id == '9' ? 'disable' : ''">
-              <toggle-button v-on:valueChangedEvent="triggerToggleEvent" :key="'Transfer'" :switchName="'Transfer'"
-                :defaultState="transfer" />
+            <div
+              class="col d-flex justify-content-center"
+              :class="salesLogForm.sales_category_id == '9' ? 'disable' : ''"
+            >
+              <toggle-button
+                v-on:valueChangedEvent="triggerToggleEvent"
+                :key="'Transfer'"
+                :switchName="'Transfer'"
+                :defaultState="transfer"
+              />
             </div>
 
-            <button class="btn bg-default" @click="logSale()" type="submit" v-if="transfer">
+            <button
+              class="btn bg-default"
+              @click="logSale()"
+              type="submit"
+              v-if="transfer"
+            >
               Confirm Transfer
             </button>
-            <paystack :disabled="!validateEmail(customer_email)" :amount="computedPayment(
-              (fPayment + singleRepayment + commitment.amount) * 100,
-              (fPayment + commitment.amount) * 100
-            )
-              " :email="customer_email" :paystackkey="paystackkey" :reference="reference"
-              :callback="processPaymentPayStackPayment" :close="closePayStackModal" class="btn bg-default"
-              v-if="!transfer">Pay</paystack>
+            <paystack
+              :disabled="!validateEmail(customer_email)"
+              :amount="
+                computedPayment(
+                  (fPayment + singleRepayment + commitment.amount) * 100,
+                  (fPayment + commitment.amount) * 100
+                )
+              "
+              :email="customer_email"
+              :paystackkey="paystackkey"
+              :reference="reference"
+              :callback="processPaymentPayStackPayment"
+              :close="closePayStackModal"
+              class="btn bg-default"
+              v-if="!transfer"
+              >Pay</paystack
+            >
           </div>
           <div v-else class="text-center">
             <button class="btn bg-default" @click="logSale()" type="submit">
@@ -446,12 +752,23 @@
       </div>
     </div>
 
-    <modal name="verification-collection-data" :adaptive="true" :height="'auto'" :clickToClose="true" :reset="false">
-      <verification-collection-data v-on:close="closeCollectionModal"
+    <modal
+      name="verification-collection-data"
+      :adaptive="true"
+      :height="'auto'"
+      :clickToClose="true"
+      :reset="false"
+    >
+      <verification-collection-data
+        v-on:close="closeCollectionModal"
         @verificationCollectionDataPassed="collectCollectionVerificationData"
-        :verificationCollectionData="verificationCollectionData" :proof_of_credits="proof_of_credits"
-        :guarantor_signed="guarantor_signed" :address_visited="address_visited"
-        :credit_report_status="credit_report_status" :credit_point_status="credit_point_status" />
+        :verificationCollectionData="verificationCollectionData"
+        :proof_of_credits="proof_of_credits"
+        :guarantor_signed="guarantor_signed"
+        :address_visited="address_visited"
+        :credit_report_status="credit_report_status"
+        :credit_point_status="credit_point_status"
+      />
     </modal>
   </div>
 </template>
@@ -460,7 +777,11 @@
 import { get, post } from "../utilities/api"
 import { mapGetters } from "vuex"
 import AutoComplete from "./AutoComplete.vue"
-import { calculate, cashLoan, decliningRepaymentCalculator } from "../utilities/calculator"
+import {
+  calculate,
+  cashLoan,
+  decliningRepaymentCalculator,
+} from "../utilities/calculator"
 import VerificationCollectionData from "./modals/VerificationCollectionData"
 import Flash from "../utilities/flash"
 import discount from "./discount.vue"
@@ -482,7 +803,6 @@ export default {
   },
   data() {
     return {
-      flag2: localStorage.getItem('flag'),
       dummyDiscount: {
         created_at: "2021-11-02 07:48:42",
         description: "7% discount on renewals",
@@ -495,16 +815,6 @@ export default {
       },
       noBSVerbiage: "",
       allowBSSale: false,
-      inputOptions: {
-        currency: "NGN",
-        currencyDisplay: "symbol",
-        hideCurrencySymbolOnFocus: false,
-        hideGroupingSeparatorOnFocus: false,
-        hideNegligibleDecimalDigitsOnFocus: true,
-        autoDecimalDigits: false,
-        useGrouping: true,
-        accountingSign: false,
-      },
       productPlans: [
         "ac_products",
         "ap_products",
@@ -540,7 +850,7 @@ export default {
       hasNoBs: false,
 
       apiUrls: {
-        raffle_code:`/api/validate-raffle-draw`,
+        raffle_code: `/api/validate-raffle-draw`,
         repaymentDuration: `/api/repayment_duration`,
         orderType: `/api/order-types`,
         repaymentCycles: `/api/repayment_cycle`,
@@ -635,8 +945,8 @@ export default {
       salesCategories: null,
       showDiscount: null,
       salesCatName: null,
-      validatedRaffleCode:null,
-      error:null
+      validatedRaffleCode: null,
+      error: null,
     }
   },
   async beforeMount() {
@@ -694,9 +1004,9 @@ export default {
       let result = []
       this.isAltaraPay
         ? (result = this.downPaymentRates)
-        : (result = this.downPaymentRates.filter(item => {
-          return !item.name.includes("plus")
-        }))
+        : (result = this.downPaymentRates.filter((item) => {
+            return !item.name.includes("plus")
+          }))
       return result
     },
     reference() {
@@ -716,13 +1026,12 @@ export default {
       )
     },
 
-
     repaymentCycleFiltered() {
       let newArray = []
       this.isAltaraPay
-        ? (newArray = this.repaymentCyclesopt.filter(item => {
-          return item.name !== "monthly"
-        }))
+        ? (newArray = this.repaymentCyclesopt.filter((item) => {
+            return item.name !== "monthly"
+          }))
         : (newArray = this.repaymentCyclesopt)
       return newArray
     },
@@ -731,32 +1040,32 @@ export default {
       return this.isAltaraPay
         ? "Altara Pay"
         : this.isAltaraCredit
-          ? "Altara Credit"
-          : "Cash N Carry"
+        ? "Altara Credit"
+        : "Cash N Carry"
     },
   },
   methods: {
-    ResetInput(){
-      this.validatedRaffleCode = false;
-      this.error= null
+    ResetInput() {
+      this.validatedRaffleCode = false
+      this.error = null
     },
-    async validateRaffleCode(){
+    async validateRaffleCode() {
       await post(this.apiUrls.raffle_code, {
-           "phone_number": this.customer.telephone,
-            "code": this.salesLogForm.raffle_code
-        }).then(res=>{
-           Flash.setSuccess('Raffle Code Validated')
+        phone_number: this.customer.telephone,
+        code: this.salesLogForm.raffle_code,
+      })
+        .then((res) => {
+          Flash.setSuccess("Raffle Code Validated")
           this.validatedRaffleCode = true
-        }).catch(error =>{
-           this.error = error?.response?.data?.message
         })
-       
+        .catch((error) => {
+          this.error = error?.response?.data?.message
+        })
     },
     computedPayment(firstvalue, secondvalue) {
       if (this.singleRepayment && this.addDownpayment) {
         return firstvalue
       } else {
-
         return secondvalue
       }
     },
@@ -765,7 +1074,7 @@ export default {
       this.watchSalesLogForm()
       this.showDiscount =
         this.salesLogForm?.business_type_id?.slug == "ap_products" ||
-          this.salesLogForm?.business_type_id?.slug.includes("bs_product")
+        this.salesLogForm?.business_type_id?.slug.includes("bs_product")
           ? true
           : false
       if (!this.showDiscount && this.isAltaraPay) {
@@ -789,27 +1098,32 @@ export default {
             "ap_cash_loan-no_collateral",
           ].includes(this.salesLogForm.business_type_id?.slug) &&
             this.selectedProduct.price > 110000) ||
-            ((this.salesLogForm?.business_type_id?.slug ==
-              "ap_starter_cash_loan-no_collateral" ||
-              this.salesLogForm?.business_type_id?.slug ==
+          ((this.salesLogForm?.business_type_id?.slug ==
+            "ap_starter_cash_loan-no_collateral" ||
+            this.salesLogForm?.business_type_id?.slug ==
               "ap_starter_cash_loan") &&
-              this.selectedProduct.price > 80000) ||
-            (this.salesLogForm.business_type_id?.slug ==
-              "ap_no_bs_product_verve" &&
-              this.salesLogForm?.product?.product?.category !== "cash loan")
+            this.selectedProduct.price > 80000) ||
+          (this.salesLogForm.business_type_id?.slug ==
+            "ap_no_bs_product_verve" &&
+            this.salesLogForm?.product?.product?.category !== "cash loan")
             ? true
             : false
       } else this.addDownpayment = false
       this.stillShowToggle = this.addDownpayment
 
-      if (this.selectedProduct.price < 100000 && this.productPlans.includes(this.salesLogForm?.business_type_id?.slug) && process.env.VUE_APP_SANDBOX === 'true') {
-        this.salesLogForm.repayment_duration_id = this.repaymentDuration.find(item => {
-          return item.name == "three_months"
-        });
-        this.lockRepaymentDuration = true;
+      if (
+        this.selectedProduct.price < 100000 &&
+        this.productPlans.includes(this.salesLogForm?.business_type_id?.slug) &&
+        process.env.VUE_APP_SANDBOX === "true"
+      ) {
+        this.salesLogForm.repayment_duration_id = this.repaymentDuration.find(
+          (item) => {
+            return item.name == "three_months"
+          }
+        )
+        this.lockRepaymentDuration = true
       } else {
-        this.lockRepaymentDuration = false;
-
+        this.lockRepaymentDuration = false
       }
     },
     watchSalesLogForm() {
@@ -845,7 +1159,7 @@ export default {
       }
     },
     selectItem(itemArray, matchName) {
-      return itemArray.find(object => {
+      return itemArray.find((object) => {
         return object.name == matchName
       })
     },
@@ -853,7 +1167,7 @@ export default {
     watchSalesCategory() {
       if (this.isAltaraPay) {
         if (this.salesLogForm.sales_category_id == 9) {
-          this.businessTypes = this.biz_type.filter(business_type => {
+          this.businessTypes = this.biz_type.filter((business_type) => {
             //return only this business type,
             return business_type?.slug.includes("bs")
           })
@@ -867,7 +1181,7 @@ export default {
           //if sales-category is "NoBS"
         } else {
           this.commitment.status = false
-          this.businessTypes = this.biz_type.filter(business_type => {
+          this.businessTypes = this.biz_type.filter((business_type) => {
             //else return the rest
             return (
               !business_type?.slug.includes("bs") &&
@@ -879,7 +1193,7 @@ export default {
     },
     setSalesCategory() {
       if (this.isAltaraCredit) {
-        this.salesCategories = this.salesCategories2.filter(obj => {
+        this.salesCategories = this.salesCategories2.filter((obj) => {
           return obj.name !== "No BS"
         })
       } else {
@@ -891,8 +1205,8 @@ export default {
         this.salesLogForm?.business_type_id?.slug?.includes("ap_products") ||
         this.salesLogForm?.business_type_id?.slug?.includes("ac_products")
 
-      if (this.salesLogForm?.business_type_id?.slug === 'ap_products') {
-        this.FixedRepayment = true;
+      if (this.salesLogForm?.business_type_id?.slug === "ap_products") {
+        this.FixedRepayment = true
       }
     },
     customDate(event) {
@@ -906,19 +1220,19 @@ export default {
       this.salesLogForm.customer_id = this.customerId
       let renewal = ""
       this.eligible
-        ? (renewal = this.discounts.find(item => {
-          return item.name === "renewal"
-        })?.id)
+        ? (renewal = this.discounts.find((item) => {
+            return item.name === "renewal"
+          })?.id)
         : (renewal = "")
       let orderType = ""
-      orderType = this.orderTypes.find(item => {
+      orderType = this.orderTypes.find((item) => {
         return (
           item.name ===
           (this.isAltaraPay
             ? "Altara Pay"
             : this.isCashNCarry
-              ? "Cash n Carry"
-              : "Altara Credit")
+            ? "Cash n Carry"
+            : "Altara Credit")
         )
       })
 
@@ -956,20 +1270,26 @@ export default {
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.isAltaraPay
           ? this.transfer
-            ? this.getPaymentMethods.find(el => (el.name = "transfer")).id
-            : this.getPaymentMethods.find(el => (el.name = "direct-debit")).id
+            ? this.getPaymentMethods.find((el) => (el.name = "transfer")).id
+            : this.getPaymentMethods.find((el) => (el.name = "direct-debit")).id
           : this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
         discount_id: this.discounts.find(
-          item => item.slug === this.salesLogForm.discount
+          (item) => item.slug === this.salesLogForm.discount
         )?.id,
         owner_id: this.salesLogForm.owner_id,
         serial_number: this.salesLogForm.serial_number,
         collection_verification_data: this.CollectionVerificationData,
       }
-      this.salesLogForm.raffle_code && this.validatedRaffleCode ? data.raffle_code = this.salesLogForm.raffle_code : null;
+      this.salesLogForm.raffle_code && this.validatedRaffleCode
+        ? (data.raffle_code = this.salesLogForm.raffle_code)
+        : null
 
-      data.fixed_repayment = this.salesLogForm.business_type_id?.slug.includes("bs") ? false : data.fixed_repayment;
+      data.fixed_repayment = this.salesLogForm.business_type_id?.slug.includes(
+        "bs"
+      )
+        ? false
+        : data.fixed_repayment
 
       if (this.isBank54) {
         this.financed_by = "bank54"
@@ -986,11 +1306,11 @@ export default {
       this.salesLogForm.repayment_cycle_id?.id == 3
         ? (data.custom_date = parseInt(this.salesLogForm.custom_date))
         : ""
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           this.$LIPS(true)
           post(this.apiUrls.createOrder, data)
-            .then(res => {
+            .then((res) => {
               this.newOrderId = res.data.data.id
               this.$LIPS(false)
               $(`#amortizationPreview`).modal("toggle")
@@ -1002,7 +1322,7 @@ export default {
               this.$emit("done")
               return res
             })
-            .catch(err => {
+            .catch((err) => {
               this.$LIPS(false)
               Flash.setError("Error: " + err.message)
             })
@@ -1017,7 +1337,7 @@ export default {
           this.customer.first_name,
           this.customer.last_name,
           this.customer.telephone
-        ).then(data => {
+        ).then((data) => {
           return data
         })
         await this.paystackCustomer(
@@ -1058,14 +1378,18 @@ export default {
         ),
         payment_type_id: this.salesLogForm.payment_type_id.id,
         payment_method_id: this.isAltaraPay
-          ? this.getPaymentMethods.find(el => (el.name = "direct-debit")).id
+          ? this.getPaymentMethods.find((el) => (el.name = "direct-debit")).id
           : this.salesLogForm.payment_method_id,
         sales_category_id: this.salesLogForm.sales_category_id,
         discount_id: this.selected_discount?.id,
         owner_id: this.salesLogForm.owner_id,
       }
 
-      data.fixed_repayment = this.salesLogForm.business_type_id?.slug.includes("bs") ? false : data.fixed_repayment;
+      data.fixed_repayment = this.salesLogForm.business_type_id?.slug.includes(
+        "bs"
+      )
+        ? false
+        : data.fixed_repayment
 
       if (this.isBank54) {
         this.financed_by = "bank54"
@@ -1090,16 +1414,16 @@ export default {
           return
         }
       }
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           this.$LIPS(true)
           post(this.apiUrls.previewAmortization, data)
-            .then(res => {
+            .then((res) => {
               this.$LIPS(false)
               this.amortization = res.data.data
               $(`#amortizationPreview`).modal("toggle")
             })
-            .catch(err => {
+            .catch((err) => {
               this.$LIPS(false)
               let errors = err.response?.data?.data?.errors
               for (const key in errors) {
@@ -1147,7 +1471,7 @@ export default {
         }
         const caly = this.calculation
         const data = caly.filter(
-          x =>
+          (x) =>
             x.business_type_id === data0.business_type_id?.id &&
             x.down_payment_rate_id === data0.payment_type_id.id &&
             x.repayment_duration_id === data0.repayment_duration_id.id
@@ -1163,36 +1487,34 @@ export default {
         ) {
           this.selected_discount = this.dummyDiscount
         } else {
-          this.selected_discount = this.discounts?.find(item => {
+          this.selected_discount = this.discounts?.find((item) => {
             return item.slug == this.salesLogForm?.discount
           })
         }
 
         const { total, actualDownpayment, rePayment } =
-          (this.salesLogForm?.repayment_duration_id?.name === "six_months" && this.FixedRepayment === false && this.salesLogForm?.business_type_id?.slug.includes('ap'))
+          this.salesLogForm?.repayment_duration_id?.name === "six_months" &&
+          this.FixedRepayment === false &&
+          this.salesLogForm?.business_type_id?.slug.includes("ap")
             ? decliningRepaymentCalculator(
-              this.selectedProduct.price,
-              data0,
-              data,
-              this.selected_discount?.percentage_discount
-            )
-            :
-            !(this.productPlans.includes(data0.business_type_id.slug))
-              ?
-
-              cashLoan(
-                this.selectedProduct.price,
-                data0,
-                data,
-                this.selected_discount?.percentage_discount,
-              ) :
-              calculate(
                 this.selectedProduct.price,
                 data0,
                 data,
                 this.selected_discount?.percentage_discount
               )
-
+            : !this.productPlans.includes(data0.business_type_id.slug)
+            ? cashLoan(
+                this.selectedProduct.price,
+                data0,
+                data,
+                this.selected_discount?.percentage_discount
+              )
+            : calculate(
+                this.selectedProduct.price,
+                data0,
+                data,
+                this.selected_discount?.percentage_discount
+              )
 
         this.repaymentCircle = data0.repayment_cycle_id?.value
         this.rDuration = data0.repayment_duration_id.value
@@ -1204,7 +1526,7 @@ export default {
         //gray out button if not verified for NoBS
         if (this.salesLogForm.sales_category_id) {
           let salesCatName = this.salesCategories.find(
-            item => item.id === this.salesLogForm.sales_category_id
+            (item) => item.id === this.salesLogForm.sales_category_id
           ).name
           if (salesCatName === "No BS" && !this.allowBSSale) {
             throw new Error("Not Verified")
@@ -1215,7 +1537,7 @@ export default {
         const cycle = Math.ceil(28 / this.repaymentCircle)
         const additionalRepayment = this.rPayment / (months * cycle)
         let salesCatName = this.salesCategories.find(
-          item => item.id === this.salesLogForm.sales_category_id
+          (item) => item.id === this.salesLogForm.sales_category_id
         )
 
         if (this.isAltaraPay && salesCatName.name == "No BS") {
@@ -1224,9 +1546,9 @@ export default {
           if (
             this.salesLogForm.business_type_id.slug.includes("ap_no_bs_new") ||
             this.salesLogForm.business_type_id.slug ==
-            "ap_no_bs_product_verve" ||
+              "ap_no_bs_product_verve" ||
             this.salesLogForm.business_type_id.slug ==
-            "ap_no_bs_product_non_verve"
+              "ap_no_bs_product_non_verve"
           ) {
             //if biz-type is BS-new customer
             this.commitment.percentage = 6
@@ -1246,8 +1568,16 @@ export default {
             this.commitment.amount = this.selectedProduct.price * (3 / 100)
           }
         }
-        this.hasBVN = this.isAltaraPay && !(this.productPlans.includes(this.salesLogForm.business_type_id.slug)) && !this.customer.bvn
-        this.hasNoBs = this.isAltaraPay && salesCatName.name === "No BS" && this.checkVerified()
+        this.hasBVN =
+          this.isAltaraPay &&
+          !this.productPlans.includes(
+            this.salesLogForm.business_type_id.slug
+          ) &&
+          !this.customer.bvn
+        this.hasNoBs =
+          this.isAltaraPay &&
+          salesCatName.name === "No BS" &&
+          this.checkVerified()
         if (
           (this.selectedProduct.price > 80000 &&
             this.selectedProduct.price <= 110000 &&
@@ -1315,7 +1645,7 @@ export default {
         const unwrapped = fetchGetCalclations.data.data
         this.calculation = unwrapped
 
-        const filter = this.calculation.filter(obj => {
+        const filter = this.calculation.filter((obj) => {
           return obj.business_type_id >= 15
         })
         const unwrapped0 = JSON.stringify(unwrapped)
@@ -1375,7 +1705,7 @@ export default {
         const fetchSalesCategory = await get(this.apiUrls.salesCategoryUrl)
         this.salesCategories2 = fetchSalesCategory?.data?.data?.data
         this.salesCategories = fetchSalesCategory?.data?.data?.data
-        this.salesCategories = this.salesCategories2.filter(obj => {
+        this.salesCategories = this.salesCategories2.filter((obj) => {
           return obj.name !== "No BS"
         })
       } catch (err) {
@@ -1385,11 +1715,12 @@ export default {
 
     async getUsers(salesCat = 1) {
       this.$LIPS(true)
-      await get(`/api/sales-category/${salesCat}/roles`).then(res => {
+      await get(`/api/sales-category/${salesCat}/roles`).then((res) => {
         this.users = this.mergeArrays(res?.data?.data)
       })
-      let salesCatName = this.salesCategories.find(item => item.id === salesCat)
-        .name
+      let salesCatName = this.salesCategories.find(
+        (item) => item.id === salesCat
+      ).name
       if (salesCatName === "No BS") {
         this.checkVerified()
       } else {
@@ -1407,9 +1738,7 @@ export default {
 
         return
       }
-      if (
-        this.verificationList.length > 0
-      ) {
+      if (this.verificationList.length > 0) {
         this.allowBSSale = true
       } else {
         this.allowBSSale = false
@@ -1419,7 +1748,7 @@ export default {
     },
     mergeArrays(parent) {
       let result = []
-      parent.forEach(elem => {
+      parent.forEach((elem) => {
         result = result.concat(elem.active_users)
       })
       return result
@@ -1429,15 +1758,22 @@ export default {
         this.$LIPS(true)
         const fetchBusinessTypes = await get(this.apiUrls.businessTypes)
         this.biz_type = fetchBusinessTypes?.data?.data?.data
-        this.biz_type = this.biz_type.filter(item => {
-          return !['ap_bnpl', 'ap_super_loan-new', 'ap_super_loan-renewal'].includes(item.slug)
+        this.biz_type = this.biz_type.filter((item) => {
+          return ![
+            "ap_bnpl",
+            "ap_super_loan-new",
+            "ap_super_loan-renewal",
+          ].includes(item.slug)
         })
         this.businessTypes = fetchBusinessTypes?.data?.data?.data
-        this.businessTypes = this.businessTypes.filter(item => {
-          return !['ap_bnpl', 'ap_super_loan-new', 'ap_super_loan-renewal'].includes(item.slug)
-
+        this.businessTypes = this.businessTypes.filter((item) => {
+          return ![
+            "ap_bnpl",
+            "ap_super_loan-new",
+            "ap_super_loan-renewal",
+          ].includes(item.slug)
         })
-        this.businessTypes = this.businessTypes.filter(item => {
+        this.businessTypes = this.businessTypes.filter((item) => {
           if (this.isAltaraCredit) {
             return item.slug.includes("ac_")
           } else {
@@ -1452,7 +1788,7 @@ export default {
     },
     mergeArrays(parent) {
       let result = []
-      parent.forEach(elem => {
+      parent.forEach((elem) => {
         result = result.concat(elem.users)
       })
       return result.sort((a, b) => a["full_name"].localeCompare(b["full_name"]))
@@ -1472,7 +1808,7 @@ export default {
     calcDebt(amortization) {
       // I assumed that all repayments are uniform and are not varied
       if (amortization[0] !== undefined) {
-        let res = amortization.filter(amor => {
+        let res = amortization.filter((amor) => {
           return amor.actual_amount === 0
         })
         return res.length * amortization[0].expected_amount
@@ -1514,16 +1850,16 @@ export default {
         await this.getBusinessTypes()
 
         this.salesLogForm.payment_type_id = this.downPaymentRates.filter(
-          item => item.name === "Hundred"
+          (item) => item.name === "Hundred"
         )[0]
         this.salesLogForm.repayment_duration_id = this.repaymentDuration.filter(
-          item => item.name === "six_months"
+          (item) => item.name === "six_months"
         )[0]
         this.salesLogForm.repayment_cycle_id = this.repaymentCyclesopt.filter(
-          item => item.name === "monthly"
+          (item) => item.name === "monthly"
         )[0]
         this.salesLogForm.business_type_id = this.businessTypes.filter(
-          item => item.name === "Cash n Carry"
+          (item) => item.name === "Cash n Carry"
         )[0]
         this.getUsers(8)
         // this.salesLogForm.sales_category_id = this.salesCategories.filter(item => item.name === )
@@ -1533,26 +1869,29 @@ export default {
       this.paystackReference = resp.reference
       if (resp.status == "success" && resp.message == "Approved") {
         this.salesLogForm.payment_gateway_id = this.paymentGateways.find(
-          item => item.name === "paystack"
+          (item) => item.name === "paystack"
         ).id
         await this.verifyPaystackPayment()
-          .then(data => {
+          .then((data) => {
             if (data.status && data.message == "Verification successful") {
               this.salesLogForm.authorization_code =
                 data.data.authorization.authorization_code
               this.salesLogForm.account_number =
                 data?.data?.authorization?.last4
-              this.salesLogForm.account_name = data?.data?.authorization?.account_name === null ? 'test_acount' : data?.data?.authorization?.account_name
+              this.salesLogForm.account_name =
+                data?.data?.authorization?.account_name === null
+                  ? "test_acount"
+                  : data?.data?.authorization?.account_name
               this.salesLogForm.bank_name = data?.data?.authorization?.bank
             }
           })
-          .catch(error => {
+          .catch((error) => {
             this.$displayErrorMessage(error)
           })
         this.logSale()
       }
     },
-    closePayStackModal: () => { },
+    closePayStackModal: () => {},
     showCollectionModal() {
       this.$modal.show("verification-collection-data")
     },
@@ -1592,10 +1931,10 @@ export default {
           Authorization: `Bearer ${process.env.VUE_APP_PAYSTACK_SECRET_KEY}`,
         },
       }) // Converting to JSON
-        .then(response => response.json())
+        .then((response) => response.json())
         // Displaying results to console
-        .then(json => json)
-        .catch(err => {
+        .then((json) => json)
+        .catch((err) => {
           this.$LIPS(false)
           Flash.setError("Error: " + err.message)
         })
@@ -1605,10 +1944,10 @@ export default {
         id: id,
         customer_code: customer_code,
       })
-        .then(res => {
+        .then((res) => {
           return res
         })
-        .catch(err => {
+        .catch((err) => {
           this.$LIPS(false)
           Flash.setError("Error: " + err.message)
         })
@@ -1639,7 +1978,7 @@ export default {
     },
     triggerToggleEventFixedRepayment() {
       this.FixedRepayment = !this.FixedRepayment
-      this.getCalc();
+      this.getCalc()
     },
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value)
@@ -1751,7 +2090,7 @@ export default {
 .hidden {
   display: hidden;
 }
-.disableRaffleCode{
+.disableRaffleCode {
   pointer-events: none;
   opacity: 0.5;
 }

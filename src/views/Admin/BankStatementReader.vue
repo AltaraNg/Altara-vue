@@ -11,79 +11,152 @@
                     :title="'New Customer'"
                     @click.native="selectType('newCustomer')"
                     :style="!formMode.newCustomer ? 'opacity: 0.2; cursor:pointer;' : 'cursor:pointer; '"
-                    style="margin-left: -10px; pointer-events: none"
+                    style="margin-left: -10px"
                 />
             </div>
 
             <form enctype="multipart/form-data" @submit.prevent="uploadBankStatement" class="pb-5" style="background-color: #d7e2d861">
-                <div style="width: 100%" v-if="formMode.existingCustomer">
-                    <AutocompleteSearch title="customer lookup" @customer-selected="processForm" :url="'/api/customer/autocomplete'" />
-                </div>
-
-                <div style="padding-bottom: 14px; display: flex; flex-wrap: wrap" class="pl-5 ml-5 mt-5">
-                    <div v-if="formMode.newCustomer" style="width: 23%; margin-right: 2%" class="mt-5">
-                        <label style="color: #074a74; font-weight: 800">First Name</label>
-                        <input type="text" name="first_name" class="customSelect flex-1 w-100" v-model="bankStatementData.first_name" />
+                <div v-if="formMode.existingCustomer">
+                    <div style="width: 100%">
+                        <AutocompleteSearch title="customer lookup" @customer-selected="processForm" :url="'/api/customer/autocomplete'" />
                     </div>
-                    <div v-if="formMode.newCustomer" style="width: 23%; margin-right: 2%" class="mt-5">
-                        <label style="color: #074a74; font-weight: 800">Middle Name</label>
-                        <input type="text" name="middle_name" class="customSelect flex-1 w-100" v-model="bankStatementData.middle_name" />
-                    </div>
-                    <div v-if="formMode.newCustomer" style="width: 23%; margin-right: 2%" class="mt-5">
-                        <label style="color: #074a74; font-weight: 800">Last Name</label>
-                        <input type="text" name="last_name" class="customSelect flex-1 w-100" v-model="bankStatementData.last_name" />
-                    </div>
-                    <div v-if="formMode.newCustomer" style="width: 23%; margin-right: 2%" class="mt-5">
-                        <label style="color: #074a74; font-weight: 800">Phone Number</label>
-                        <input type="number" name="phone_number" class="customSelect flex-1 w-100" v-model="bankStatementData.phone_number" />
-                    </div>
-                    <div v-if="formMode.newCustomer" style="width: 23%; margin-right: 2%" class="mt-5">
-                        <label style="color: #074a74; font-weight: 800">Address</label>
-                        <input type="text" name="address" class="customSelect flex-1 w-100" v-model="bankStatementData.address" />
-                    </div>
-
-                    <div style="width: 23%; margin-right: 2%" class="mt-5">
-                        <label style="color: #074a74; font-weight: 800">Minimum Salary (Optional)</label>
-                        <input type="number" name="repayment_duration" class="custom-select flex-1 w-100" v-model="bankStatementData.min_salary" />
-                    </div>
-                    <div style="width: 23%; margin-right: 2%" class="mt-5">
-                        <label style="color: #074a74; font-weight: 800">Maximum Salary (Optional)</label>
-                        <input type="number" name="repayment_duration" class="custom-select flex-1 w-100" v-model="bankStatementData.max_salary" />
-                    </div>
-                    <div style="width: 23%; margin-right: 2%" class="mt-5">
-                        <div style="position: relative">
-                            <label style="color: #074a74; font-weight: 800">Bank Name</label>
-                            <select name="bank_statement_choice" class="customSelect flex-1 w-100" v-model="bankStatementData.bank_statement_choice">
-                                <option selected>Select bank</option>
-                                <option v-for="option in statementChoices" :value="option.key" :key="option.key">{{ option.name }}</option>
-                            </select>
-                            <input type="file" ref="pdfInput" accept="application/pdf" style="display: none" @change="handlePDFChange" />
-                            <pdf style="position: absolute; right: 10px; bottom: 5px; cursor: pointer" @click.native="uploadPDF()" />
+                    <div style="padding-bottom: 14px; display: flex; flex-wrap: wrap" class="pl-5 ml-5 mt-5">
+                        <div style="width: 23%; margin-right: 2%" class="mt-5">
+                            <label style="color: #074a74; font-weight: 800">Minimum Salary (Optional)</label>
+                            <input
+                                type="number"
+                                name="repayment_duration"
+                                class="custom-select flex-1 w-100"
+                                v-model="bankStatementData.min_salary"
+                            />
                         </div>
-                        <div v-if="bankStatementData.bank_statement_pdf">Selected PDF: {{ bankStatementData.bank_statement_pdf.name }}</div>
+                        <div style="width: 23%; margin-right: 2%" class="mt-5">
+                            <label style="color: #074a74; font-weight: 800">Maximum Salary (Optional)</label>
+                            <input
+                                type="number"
+                                name="repayment_duration"
+                                class="custom-select flex-1 w-100"
+                                v-model="bankStatementData.max_salary"
+                            />
+                        </div>
+                        <div style="width: 23%; margin-right: 2%" class="mt-5">
+                            <div style="position: relative">
+                                <label style="color: #074a74; font-weight: 800">Bank Name</label>
+                                <select
+                                    name="bank_statement_choice"
+                                    class="customSelect flex-1 w-100"
+                                    v-model="bankStatementData.bank_statement_choice"
+                                >
+                                    <option selected>Select bank</option>
+                                    <option v-for="option in statementChoices" :value="option.key" :key="option.key">{{ option.name }}</option>
+                                </select>
+                                <input type="file" ref="pdfInput" accept="application/pdf" style="display: none" @change="handlePDFChange" />
+                                <pdf style="position: absolute; right: 10px; bottom: 5px; cursor: pointer" @click.native="uploadPDF()" />
+                            </div>
+                            <div v-if="bankStatementData.bank_statement_pdf">Selected PDF: {{ bankStatementData.bank_statement_pdf.name }}</div>
+                        </div>
+                        <button
+                            :disabled="isButtonDisabled"
+                            class="btn bg-default"
+                            style="display: flex; align-items: center; justify-content: center; width: 21%"
+                            type="submit"
+                        >
+                            <i class="fas fa-cloud-upload-alt pr-2" style="font-size: large"></i>Upload Document
+                        </button>
                     </div>
-                    <button
-                        :disabled="isButtonDisabled"
-                        class="btn bg-default"
-                        v-if="formMode.existingCustomer"
-                        style="display: flex; align-items: center; justify-content: center; width: 21%"
-                        type="submit"
-                    >
-                        <i class="fas fa-cloud-upload-alt pr-2" style="font-size: large"></i>Upload Document
-                    </button>
-                </div>
-                <div class="mt-4" style="display: flex; width: 100%; justify-content: center">
-                    <button
-                        :disabled="isButtonDisabled"
-                        class="btn bg-default"
-                        v-if="formMode.newCustomer"
-                        style="display: flex; align-items: center; justify-content: center; width: 21%"
-                        type="submit"
-                    >
-                        <i class="fas fa-cloud-upload-alt pr-2" style="font-size: large"></i>Upload Document
-                    </button>
                 </div>
             </form>
+            <div v-if="formMode.newCustomer">
+                <div
+                    style="padding-bottom: 14px; display: flex; flex-wrap: wrap; background-color: #d7e2d861"
+                    class="pl-5 pb-5 w-100"
+                    v-if="!customerCreated"
+                >
+                    <div style="width: 30%; margin-right: 2%" class="mt-5">
+                        <label style="color: #074a74; font-weight: 800">First Name</label>
+                        <input type="text" name="first_name" class="customSelect flex-1 w-100" v-model="CreateCustomer.first_name" />
+                    </div>
+                    <div style="width: 30%; margin-right: 2%" class="mt-5">
+                        <label style="color: #074a74; font-weight: 800">Middle Name</label>
+                        <input type="text" name="middle_name" class="customSelect flex-1 w-100" v-model="CreateCustomer.middle_name" />
+                    </div>
+                    <div style="width: 30%; margin-right: 2%" class="mt-5">
+                        <label style="color: #074a74; font-weight: 800">Last Name</label>
+                        <input type="text" name="last_name" class="customSelect flex-1 w-100" v-model="CreateCustomer.last_name" />
+                    </div>
+                    <div style="width: 30%; margin-right: 2%" class="mt-5">
+                        <label style="color: #074a74; font-weight: 800">Phone Number</label>
+                        <input type="number" name="phone_number" class="customSelect flex-1 w-100" v-model="CreateCustomer.telephone" />
+                    </div>
+                    <div style="width: 30%; margin-right: 2%" class="mt-5">
+                        <label style="color: #074a74; font-weight: 800">Address</label>
+                        <input type="text" name="address" class="customSelect flex-1 w-100" v-model="CreateCustomer.add_street" />
+                    </div>
+                    <div class="" style="display: flex; width: 30%; align-items: end">
+                        <button
+                            :disabled="!Object.values(CreateCustomer).every((value) => value)"
+                            class="btn bg-default"
+                            @click="registerCNC"
+                            style="display: flex; align-items: center; justify-content: center; width: 100%; height: 30px"
+                            type="submit"
+                        >
+                            <i class="fas fa-cloud-upload-alt pr-2" style="font-size: large"></i>Create Customer
+                        </button>
+                    </div>
+                </div>
+                <div v-else>
+                    <div style="padding-bottom: 14px; display: flex; flex-wrap: wrap; background-color: #d7e2d861" class="pl-5 w-100">
+                        <div style="width: 30%; margin-right: 2%" class="mt-5">
+                            <label style="color: #074a74; font-weight: 800">Customer ID</label>
+                            <div type="number" name="customer_id" class="custom-select flex-1 w-100">{{ bankStatementData.customer_id }}</div>
+                        </div>
+                        <div style="width: 30%; margin-right: 2%" class="mt-5">
+                            <label style="color: #074a74; font-weight: 800">Minimum Salary (Optional)</label>
+                            <input
+                                type="number"
+                                name="repayment_duration"
+                                class="custom-select flex-1 w-100"
+                                v-model="bankStatementData.min_salary"
+                            />
+                        </div>
+                        <div style="width: 30%; margin-right: 2%" class="mt-5">
+                            <label style="color: #074a74; font-weight: 800">Maximum Salary (Optional)</label>
+                            <input
+                                type="number"
+                                name="repayment_duration"
+                                class="custom-select flex-1 w-100"
+                                v-model="bankStatementData.max_salary"
+                            />
+                        </div>
+                        <div style="width: 30%; margin-right: 2%" class="mt-5">
+                            <div style="position: relative">
+                                <label style="color: #074a74; font-weight: 800">Bank Name</label>
+                                <select
+                                    name="bank_statement_choice"
+                                    class="customSelect flex-1 w-100"
+                                    v-model="bankStatementData.bank_statement_choice"
+                                >
+                                    <option selected>Select bank</option>
+                                    <option v-for="option in statementChoices" :value="option.key" :key="option.key">{{ option.name }}</option>
+                                </select>
+                                <input type="file" ref="pdfInput" accept="application/pdf" style="display: none" @change="handlePDFChange" />
+                                <pdf style="position: absolute; right: 10px; bottom: 5px; cursor: pointer" @click.native="uploadPDF()" />
+                            </div>
+                            <div v-if="bankStatementData.bank_statement_pdf">Selected PDF: {{ bankStatementData.bank_statement_pdf.name }}</div>
+                        </div>
+                        <div style="width: 30%; display: flex; align-items: end">
+                            <button
+                                :disabled="isButtonDisabled"
+                                class="btn bg-default"
+                                style="display: flex; align-items: center; justify-content: center; width: 100%; height: 30px"
+                                @click="uploadBankStatement"
+                            >
+                                <i class="fas fa-cloud-upload-alt pr-2" style="font-size: large"></i>Upload Document
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="space-between mb-5 pl-5 mt-5 ml-5 px-4">
             <h3 class="text-capitalize mb-0">Filters</h3>
@@ -202,6 +275,14 @@ export default {
     },
     data() {
         return {
+            customerCreated: false,
+            CreateCustomer: {
+                first_name: "",
+                middle_name: "",
+                last_name: "",
+                add_street: "",
+                telephone: "",
+            },
             formMode: {
                 newCustomer: false,
                 existingCustomer: true,
@@ -251,6 +332,43 @@ export default {
         };
     },
     methods: {
+        async registerCNC() {
+            this.$LIPS(true);
+            try {
+                // this.vendorCustomer.branch_id = this.staff.branch_id
+                // this.vendorCustomer.employee_id = this.staff.id
+                // this.vendorCustomer.employee_name = this.staff.full_name
+                // this.vendorCustomer.date_of_registration = this.formData?.newCustomer?.date_of_registration
+                // this.vendorCustomer.user_id = this.formData?.newCustomer?.user_id
+
+                let res = await post("/api/customer", this.CreateCustomer);
+                if (res.status === 200) {
+                    this.$swal({
+                        icon: "success",
+                        title: "Customer Registered Successfully",
+                        text: `Customer ID: ${res.data.customer.id}`,
+                        html: `<div class="h3">Customer ID: <b class="text-success">${res.data.customer.id}</b></div>`,
+                    });
+                    this.CreateCustomer = {};
+                    this.bankStatementData.customer_id = res.data.customer.id;
+                    this.customerCreated = true;
+                } else {
+                    this.$swal({
+                        icon: "error",
+                        title: "Unable to Complete",
+                        message: res.data.message,
+                    });
+                }
+                this.$LIPS(false);
+            } catch (err) {
+                this.$swal({
+                    icon: "error",
+                    title: "Unable to Complete",
+                    text: err.response?.data?.data?.errors?.telephone,
+                });
+                this.$LIPS(false);
+            }
+        },
         selectType(type) {
             selectType(type, this.formMode);
         },
@@ -286,6 +404,7 @@ export default {
                 .then(() => {
                     Flash.setSuccess("Document Updated Successfully!");
                     this.bankStatementData = {};
+                    this.customerCreated = false;
                     this.fetchData();
                 })
                 .catch(() => {

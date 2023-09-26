@@ -924,6 +924,7 @@ export default {
         "ap_cash_loan-no_collateral",
         "ap_cash_loan",
         "ac_cash_loan",
+        "ac_products",
         "ap_employee_cash_loan",
         "ap_starter_cash_loan",
         "ap_starter_cash_loan-no_collateral",
@@ -1019,7 +1020,6 @@ export default {
     },
     showRepaymentToggle() {
       return (
-        this.isAltaraPay &&
         this.showRepaymentToggleList.includes(
           this.salesLogForm?.business_type_id?.slug
         )

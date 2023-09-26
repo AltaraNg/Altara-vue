@@ -1049,10 +1049,6 @@ export default {
 
     
   },
-  mounted() {
-    console.log("Customer Verificatioon", this.customer.verification)
-    console.log("Verificatioon", this.$getCustomerApprovalStatus(this.customer.verification))
-  },
   methods: {
     ResetInput() {
       this.validatedRaffleCode = false

@@ -434,7 +434,7 @@
                 <button
                   v-else
                   class="btn bg-default"
-                  :disabled="canPerformAction || hasBVN || hasNoBs"
+                  :disabled="canPerformAction || hasBVN || hasNoBs || !$getCustomerApprovalStatus(this.customer.verification)"
                   type="submit"
                 >
                   View Amortization
@@ -848,6 +848,7 @@ export default {
       canPerformAction: false,
       hasBVN: false,
       hasNoBs: false,
+      // isApproved: false,
 
       apiUrls: {
         raffle_code: `/api/validate-raffle-draw`,
@@ -998,6 +999,8 @@ export default {
     },
   },
 
+  
+
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
     downPaymentRatesFiltered() {
@@ -1043,12 +1046,19 @@ export default {
         ? "Altara Credit"
         : "Cash N Carry"
     },
+
+    
+  },
+  mounted() {
+    console.log("Customer Verificatioon", this.customer.verification)
+    console.log("Verificatioon", this.$getCustomerApprovalStatus(this.customer.verification))
   },
   methods: {
     ResetInput() {
       this.validatedRaffleCode = false
       this.error = null
     },
+
     async validateRaffleCode() {
       await post(this.apiUrls.raffle_code, {
         phone_number: this.customer.telephone,

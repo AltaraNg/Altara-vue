@@ -1,83 +1,95 @@
 <template>
-    <div class="position-relative d-flex align-items-stretch">
-        <router-link
-                :tag="link ? 'a' : 'span'"
-                :class="buttonClass + ' text-uppercase'"
-                :to="getLink" data-function="display">
-            {{status.split('-').join(' ')}}
-            <i :class="`ml-3 fas fa-${isApproved ? 'check' : 'times'}`"></i>
-        </router-link>
-        <span :class="buttonClass + ' dropdown-toggle dropdown-toggle-split d-flex align-items-center'"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        </span>
-        <div class="dropdown-menu">
-            <a v-for="option in filteredOptions"
-                class="dropdown-item"
-                href="javascript:"
-                :key="option.modal"
-                @click="toggleModal(option.modal)">
-                {{option.caption}}
-            </a>
-        </div>
+  <div class="position-relative d-flex align-items-stretch">
+    <router-link
+      :tag="link ? 'a' : 'span'"
+      :class="buttonClass + ' text-uppercase'"
+      :to="getLink"
+      data-function="display"
+    >
+      {{ status.split('-').join(' ') }}
+      <i :class="`ml-3 fas fa-${isApproved ? 'check' : 'times'}`"></i>
+    </router-link>
+    <span
+      :class="buttonClass + ' dropdown-toggle dropdown-toggle-split d-flex align-items-center'"
+      data-toggle="dropdown"
+      aria-haspopup="true"
+      aria-expanded="false"
+    ></span>
+    <div class="dropdown-menu" v-for="option in filteredOptions" :key="option.modal">
+      <a class="dropdown-item" href="javascript:" @click="toggleModal(option.modal)">
+        {{ option.caption }}
+      </a>
+      <a class="dropdown-item" href="javascript:" @click="specialApproval">
+        {{ option.approval }}
+      </a>
     </div>
+  </div>
 </template>
 
 <script>
-    import {mapGetters} from "vuex";
-    import {EventBus} from "../utilities/event-bus";
+import { mapGetters } from "vuex";
+import { EventBus } from "../utilities/event-bus";
 
-    export default {
-        props: ['link', 'size', 'customer'],
+export default {
+  props: ["link", "size", "customer"],
 
-        data() {
-            return {
-                status: null,
-                unfilteredOptions: [
-                    {
-                        caption: 'Change sales agent',
-                        modal: 'toggleChangeCustomerManagerModal',
-                        authAccess: 'DSACaptain'
-                    }
-                ]
-            }
+  data() {
+    return {
+      status: null,
+      unfilteredOptions: [
+        {
+          caption: "Change sales agent",
+          modal: "toggleChangeCustomerManagerModal",
+          authAccess: "DSACaptain",
+          approval: "Special approval",
         },
-
-        methods: {
-            toggleModal(modalName) {
-                EventBus.$emit(modalName, this.customer);
-            }
-        },
-
-        computed: {
-            ...mapGetters(['auth']),
-
-            filteredOptions() {
-                return this.unfilteredOptions.filter(option => this.auth(option.authAccess))
-            },
-
-            isApproved() {
-                return this.$getCustomerApprovalStatus(this.customer.verification);
-            },
-
-            buttonClass() {
-                return this.size &&
-                    (this.link ? `status status-sm ${this.status}` : `status mt-md-5 my-sm-2 mt-0 ${this.status}`);
-            },
-
-            getLink(){
-                if(this.link){
-                    if(this.auth('DVAAccess')) return 'dva/' + this.link;
-                    if(this.auth('ALTARAPAYAccess')) return 'altarapay/' + this.link;
-                }
-                return '#';
-            }
-        },
-
-        created() {
-            this.status = this.isApproved ? 'approved' : 'not-approved';
-        }
+      ],
     };
+  },
+
+  methods: {
+    toggleModal(modalName) {
+      EventBus.$emit(modalName, this.customer);
+    },
+    
+  },
+
+  computed: {
+    ...mapGetters(["auth"]),
+
+    filteredOptions() {
+      return this.unfilteredOptions.filter((option) =>
+        this.auth(option.authAccess)
+      );
+    },
+
+    isApproved() {
+      // Use the global function to get the customer's approval status
+      return this.$getCustomerApprovalStatus(this.customer.verification);
+    },
+
+    buttonClass() {
+      return this.size &&
+        (this.link
+          ? `status status-sm ${this.status}`
+          : `status mt-md-5 my-sm-2 mt-0 ${this.status}`);
+    },
+
+    getLink() {
+      if (this.link) {
+        if (this.auth("DVAAccess")) return "dva/" + this.link;
+        if (this.auth("ALTARAPAYAccess")) return "altarapay/" + this.link;
+      }
+      return "#";
+    },
+  },
+
+  created() {
+    this.status = this.isApproved ? "approved" : "not-approved";
+  },
+};
 </script>
+
 
 
 <style scoped>

@@ -19,7 +19,7 @@
       <a class="dropdown-item" href="javascript:" @click="toggleModal(option.modal)">
         {{ option.caption }}
       </a>
-      <a class="dropdown-item" href="javascript:" @click="specialApproval">
+      <a class="dropdown-item" @click="specialApproval">
         {{ option.approval }}
       </a>
     </div>

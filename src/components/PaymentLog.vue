@@ -434,7 +434,7 @@
                 <button
                   v-else
                   class="btn bg-default"
-                  :disabled="canPerformAction || hasBVN || hasNoBs || !$getCustomerApprovalStatus(this.customer.verification)"
+                  :disabled="canPerformAction || hasBVN || hasNoBs || !$getCustomerApprovalStatus(customer.verification)"
                   type="submit"
                 >
                   View Amortization

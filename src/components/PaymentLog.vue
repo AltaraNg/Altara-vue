@@ -431,14 +431,26 @@
                 >
                   View Summary
                 </button>
-                <button
-                  v-else
-                  class="btn bg-default"
-                  :disabled="canPerformAction || hasBVN || hasNoBs || !$getCustomerApprovalStatus(customer.verification)"
-                  type="submit"
-                >
-                  View Amortization
-                </button>
+                <div v-else>
+                  <div v-if="approve===1">
+                    <button
+                      class="btn bg-default"
+                      :disabled="canPerformAction || hasBVN || hasNoBs"
+                      type="submit"
+                    >
+                      View Amortization
+                    </button>
+                  </div>
+                  <div v-else>
+                    <button
+                      class="btn bg-default"
+                      :disabled="canPerformAction || hasBVN || hasNoBs || approve"
+                      type="submit"
+                    >
+                      View Amortization
+                    </button>
+                  </div>
+                </div>
                 <br />
               </div>
               <div v-if="hasBVN" class="large text-danger">
@@ -790,6 +802,7 @@ import moment from "moment"
 import roles from "../utilities/roles"
 import ToggleButton from "./ToggleButton.vue"
 import CurrencyInput from "./CurrencyInput.vue"
+import { EventBus } from "../utilities/event-bus"
 
 export default {
   props: { customerId: null, customer: null, verificationList: null },
@@ -813,6 +826,7 @@ export default {
         status: 1,
         updated_at: "2021-11-02 07:48:42",
       },
+      approve: this.$getCustomerApprovalStatus(this.customer.verification),
       noBSVerbiage: "",
       allowBSSale: false,
       productPlans: [
@@ -848,8 +862,6 @@ export default {
       canPerformAction: false,
       hasBVN: false,
       hasNoBs: false,
-      // isApproved: false,
-
       apiUrls: {
         raffle_code: `/api/validate-raffle-draw`,
         repaymentDuration: `/api/repayment_duration`,
@@ -1989,7 +2001,13 @@ export default {
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value)
     },
+    handleSpecialApproval() {
+      this.approve=false
+    }
   },
+  created() {
+    EventBus.$on("specialApproval", this.handleSpecialApproval)
+  }
 }
 </script>
 

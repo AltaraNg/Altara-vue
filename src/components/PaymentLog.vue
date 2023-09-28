@@ -449,6 +449,7 @@
                     >
                       View Amortization
                     </button>
+                    <p v-if="approve === 0" class="errorText mt-5">You are not approved or request for special approval</p>
                   </div>
                 </div>
                 <br />
@@ -2117,5 +2118,8 @@ export default {
 .disableRaffleCode {
   pointer-events: none;
   opacity: 0.5;
+}
+.errorText {
+  color: red;
 }
 </style>

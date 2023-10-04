@@ -94,7 +94,7 @@
                     </div>
                     <div class="" style="display: flex; width: 30%; align-items: end">
                         <button
-                            :disabled="!Object.values(CreateCustomer).every((value) => value)"
+                            :disabled="!Object.values(CreateCustomer).every((value) => value) || CreateCustomer.telephone.length !== 11"
                             class="btn bg-default"
                             @click="registerCNC"
                             style="display: flex; align-items: center; justify-content: center; width: 100%; height: 30px"
@@ -335,12 +335,11 @@ export default {
         async registerCNC() {
             this.$LIPS(true);
             try {
-                // this.vendorCustomer.branch_id = this.staff.branch_id
-                // this.vendorCustomer.employee_id = this.staff.id
-                // this.vendorCustomer.employee_name = this.staff.full_name
-                // this.vendorCustomer.date_of_registration = this.formData?.newCustomer?.date_of_registration
-                // this.vendorCustomer.user_id = this.formData?.newCustomer?.user_id
-
+                this.CreateCustomer.branch_id = this.staff.branch_id;
+                this.CreateCustomer.employee_id = this.staff.id;
+                this.CreateCustomer.employee_name = this.staff.full_name;
+                this.CreateCustomer.date_of_registration = new Date().toISOString().slice(0, 10);
+                console.log(this.CreateCustomer);
                 let res = await post("/api/customer", this.CreateCustomer);
                 if (res.status === 200) {
                     this.$swal({
@@ -368,6 +367,11 @@ export default {
                 });
                 this.$LIPS(false);
             }
+        },
+        prepareForm(data) {
+            this.staff = data.user;
+            this.states = data.states;
+            this.branches = data.branches;
         },
         selectType(type) {
             selectType(type, this.formMode);
@@ -481,6 +485,11 @@ export default {
         this.pageParams.size = this.$route?.query?.size;
         this.pageParams.page = this.$route?.query?.page;
         this.fetchData({ ...this.pageParams });
+        get("/api/customer/create").then(({ data }) => {
+            this.prepareForm(data);
+        });
+        /*on create of the component fetch the data required to prepare the form
+         * states, branches and the currently logged in dsa details*/
     },
     mounted() {
         this.getStatementChoices();

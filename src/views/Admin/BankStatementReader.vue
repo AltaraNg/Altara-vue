@@ -86,7 +86,14 @@
                     </div>
                     <div style="width: 30%; margin-right: 2%" class="mt-5">
                         <label style="color: #074a74; font-weight: 800">Phone Number</label>
-                        <input type="number" name="phone_number" class="customSelect flex-1 w-100" v-model="CreateCustomer.telephone" />
+                        <input
+                            @input="validatePhoneNumber"
+                            type="number"
+                            name="phone_number"
+                            class="customSelect flex-1 w-100"
+                            v-model="CreateCustomer.telephone"
+                            max.length="11"
+                        />
                     </div>
                     <div style="width: 30%; margin-right: 2%" class="mt-5">
                         <label style="color: #074a74; font-weight: 800">Address</label>
@@ -149,7 +156,7 @@
                                 :disabled="isButtonDisabled"
                                 class="btn bg-default"
                                 style="display: flex; align-items: center; justify-content: center; width: 100%; height: 30px"
-                                @click="uploadBankStatement"
+                                @click.prevent="uploadBankStatement"
                             >
                                 <i class="fas fa-cloud-upload-alt pr-2" style="font-size: large"></i>Upload Document
                             </button>
@@ -332,6 +339,11 @@ export default {
         };
     },
     methods: {
+        validatePhoneNumber() {
+            if (this.CreateCustomer.telephone.length > 11) {
+                this.CreateCustomer.telephone = this.CreateCustomer.telephone.slice(0, 11);
+            }
+        },
         async registerCNC() {
             this.$LIPS(true);
             try {
@@ -339,7 +351,6 @@ export default {
                 this.CreateCustomer.employee_id = this.staff.id;
                 this.CreateCustomer.employee_name = this.staff.full_name;
                 this.CreateCustomer.date_of_registration = new Date().toISOString().slice(0, 10);
-                console.log(this.CreateCustomer);
                 let res = await post("/api/customer", this.CreateCustomer);
                 if (res.status === 200) {
                     this.$swal({
@@ -348,7 +359,13 @@ export default {
                         text: `Customer ID: ${res.data.customer.id}`,
                         html: `<div class="h3">Customer ID: <b class="text-success">${res.data.customer.id}</b></div>`,
                     });
-                    this.CreateCustomer = {};
+                    this.CreateCustomer = {
+                        first_name: "",
+                        middle_name: "",
+                        last_name: "",
+                        add_street: "",
+                        telephone: "",
+                    };
                     this.bankStatementData.customer_id = res.data.customer.id;
                     this.customerCreated = true;
                 } else {
@@ -406,9 +423,11 @@ export default {
             const form = toMulipartedForm(this.bankStatementData);
             await post(this.apiUrls.bank_statements, form)
                 .then(() => {
+                    this.customerCreated = false;
                     Flash.setSuccess("Document Updated Successfully!");
                     this.bankStatementData = {};
-                    this.customerCreated = false;
+                    this.selectType("existingCustomer");
+
                     this.fetchData();
                 })
                 .catch(() => {

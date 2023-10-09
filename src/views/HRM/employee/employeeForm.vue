@@ -276,7 +276,7 @@
                                     v-validate="'required'"
                                 >
                                     <option selected value="select tenant">select tenant</option>
-                                    <option :value="name" v-for="{ name } in tenants" :key="name">
+                                    <option :value="id" v-for="{ name, id } in tenants" :key="id">
                                         {{ name | capitalize }}
                                     </option>
                                 </select>

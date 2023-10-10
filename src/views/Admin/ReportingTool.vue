@@ -43,6 +43,7 @@
 					{{ type.name }}
 				</option>
 			</select>
+			
 
 			<select
 				class="custom-select flex-1"
@@ -53,12 +54,24 @@
 				<option :value="'formal'">Formal</option>
 				<option :value="'informal'">Informal</option>
 			</select>
+			
 			<div class="col d-flex align-items-center"   style="font-size: 8.5px;">
 	                <toggle-button v-on:valueChangedEvent="triggerToggleEvent" :switchName="'billboardOrders'" :key="'billboardOrders'"
 	                  :defaultState="billboardOrders" :label="'Billboard Orders'" />
 	              </div>
 		</div>
-		<div class="flex mt-3 mb-5 px-4 ">
+		<div class="flex px-4 mt-4">
+			<select
+				name="business_type"
+				class="custom-select"
+				v-model="branches"
+			>
+				<option :value="''" selected>Branch</option>
+				<option :value="type.branch_id" :key="type.branch_id" v-for="type in branch">
+					{{ type.branch_name }}
+				</option>
+			</select>
+		<div class=" mb-5 px-4 ">
 			<button
 				class="bg-default rounded ml-auto py-2 px-4"
 				@click="filterByDate"
@@ -67,6 +80,7 @@
 					Filter
 				</span>
 			</button>
+		</div>
 		</div>
 
 		<div class="row px-4" v-if="reports !== null">
@@ -399,6 +413,8 @@
 				SalesBySalesCategoryTotal:null,
 				totalSalesByDownPaymentsAndRepaymentDuration:[],
 				TotalByDP_RDTotal:'',
+				branch: {},
+				branches: ''
 			};
 		},
 		async mounted() {
@@ -501,6 +517,7 @@
 				this.query.businessType = this.businessType;
 				this.query.sector = this.sector;
 				this.query.orderType = this.orderType;
+				this.query.branch = this.branches
 				this.billboardOrders ? this.query.billboardOrders = 'true' : delete this.query.billboardOrders ;
 				try {
 					const report = await byMethod(
@@ -534,6 +551,8 @@
 					this.$LIPS(false);
 				}
 			},
+
+			
 
 			getSums(dataArray) {
 				this.sums.totalSales = 0;
@@ -570,6 +589,7 @@
 
 			getBranchLabel() {
 				const branches = Object.values(this.reports.meta.groupedDataByBranch);
+				this.branch = branches
 				return branches.map(obj => obj.branch_name) 
 				.sort((a, b) => a.localeCompare(b))
 			},
@@ -623,6 +643,7 @@
 				this.getBarChartData();
 				this.getOrderBarChartData();
 				this.drawProductPieChart();
+				this.getBranchLabel()
 				this.loaded = true;
 			},
 

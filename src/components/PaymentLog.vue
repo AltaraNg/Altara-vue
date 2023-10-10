@@ -274,6 +274,21 @@
                                         />
                                     </div>
                                 </div>
+                                <div>
+                                    <div
+                                        class="col d-flex align-items-center"
+                                        style="font-size: 8px"
+                                        v-if="(lostLoanBusinessType && isAltaraPay) || stillShowToggle2"
+                                    >
+                                        <toggle-button
+                                            v-on:valueChangedEvent="triggerToggleEvent"
+                                            switchName="addCommission"
+                                            key="addCommission"
+                                            :defaultState="addCommission"
+                                            label="Add Commission"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                             <div
                                 class="text-center"
@@ -554,7 +569,9 @@ export default {
             productPrice: 0,
             currentValue: "",
             stillShowToggle: null,
+            stillShowToggle2: null,
             addDownpayment: null,
+            addCommission: true,
             FixedRepayment: false,
             productOrder: false,
             card_expiry: null,
@@ -720,6 +737,9 @@ export default {
     },
 
     computed: {
+        lostLoanBusinessType() {
+            return this.salesLogForm?.business_type_id?.slug.includes("ap_lost");
+        },
         ...mapGetters(["getPaymentMethods", "getBanks"]),
         downPaymentRatesFiltered() {
             let result = [];
@@ -863,6 +883,8 @@ export default {
                     this.salesLogForm.payment_gateway_id = this.selectItem(this.paymentGateways, "paystack")?.id;
 
                     //if sales-category is "NoBS"
+                } else if (this.salesLogForm?.business_type_id?.slug.includes("ap_lost") && this.addCommission) {
+                    this.commitment.status = true;
                 } else {
                     this.commitment.status = false;
                     this.businessTypes = this.biz_type.filter((business_type) => {
@@ -1163,6 +1185,10 @@ export default {
                         this.commitment.percentage = 3;
                         this.commitment.amount = this.selectedProduct.price * (3 / 100);
                     }
+                }
+                if (this.salesLogForm?.business_type_id?.slug.includes("ap_lost")) {
+                    this.commitment.percentage = 6;
+                    this.commitment.amount = this.selectedProduct.price * (6 / 100);
                 }
                 this.hasBVN = this.isAltaraPay && !this.productPlans.includes(this.salesLogForm.business_type_id.slug) && !this.customer.bvn;
                 this.hasNoBs = this.isAltaraPay && salesCatName.name === "No BS" && this.checkVerified();
@@ -1518,6 +1544,12 @@ export default {
             this.addDownpayment = value;
             this.stillShowToggle = true;
         },
+        triggerToggleEventaddCommission(value) {
+            this.addCommission = !this.addCommission;
+            this.addCommission = value;
+            this.stillShowToggle2 = true;
+            this.getCalc();
+        },
         triggerToggleEventFixedRepayment() {
             this.FixedRepayment = !this.FixedRepayment;
             this.getCalc();
@@ -1632,6 +1664,7 @@ export default {
 .hidden {
     display: hidden;
 }
+
 .disableRaffleCode {
     pointer-events: none;
     opacity: 0.5;

@@ -1,34 +1,20 @@
 <template>
-  <div>
-    <input
-      :value="formattedValue"
-      @input="$emit('input', $event.target.value)"
-      placeholder="NGN 0.00"
-    />
-  </div>
+    <input ref="inputRef" type="text" />
 </template>
 
 <script>
-import { ref, watch, onMounted } from "vue"
+import { useCurrencyInput } from "vue-currency-input";
 
 export default {
-  name: "FormatCurrency",
-  props: {
-    value: Number,
-  },
-  setup(props) {
-    const formattedValue = ref("")
-    const inputRef = ref(null)
+    name: "CurrencyInput",
+    props: {
+        modelValue: Number, // Vue 2: value
+        options: Object,
+    },
+    setup(props) {
+        const { inputRef } = useCurrencyInput(props.options);
 
-    return { inputRef, formattedValue }
-  },
-}
+        return { inputRef };
+    },
+};
 </script>
-
-<style scoped>
-input {
-  border: none;
-  outline: none; 
-  color: black;
-}
-</style>

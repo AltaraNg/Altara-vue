@@ -738,7 +738,7 @@ export default {
 
     computed: {
         lostLoanBusinessType() {
-            return this.salesLogForm?.business_type_id?.slug.includes("ap_lost");
+            return this.salesLogForm?.business_type_id?.slug == "ap_lost_product" || this.salesLogForm?.business_type_id?.slug == "ap_lost_loan";
         },
         ...mapGetters(["getPaymentMethods", "getBanks"]),
         downPaymentRatesFiltered() {

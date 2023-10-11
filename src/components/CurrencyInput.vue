@@ -1,20 +1,22 @@
 <template>
-    <input ref="inputRef" type="text" />
+    <input type="number" v-bind="$attrs" :value="value" @input="updateValue" />
 </template>
 
 <script>
-import { useCurrencyInput } from "vue-currency-input";
-
 export default {
-    name: "CurrencyInput",
-    props: {
-        modelValue: Number, // Vue 2: value
-        options: Object,
+    model: {
+        prop: "value",
+        event: "input",
     },
-    setup(props) {
-        const { inputRef } = useCurrencyInput(props.options);
-
-        return { inputRef };
+    props: {
+        value: {
+            default: 0,
+        },
+    },
+    methods: {
+        updateValue(event) {
+            this.$emit("input", event.target.value);
+        },
     },
 };
 </script>

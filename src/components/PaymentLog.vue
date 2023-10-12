@@ -892,6 +892,7 @@ export default {
                     this.commitment.status = true;
                 } else {
                     this.commitment.status = false;
+                    this.stillShowToggle2 = false;
                     this.businessTypes = this.biz_type.filter((business_type) => {
                         //else return the rest
                         return !business_type?.slug.includes("bs") && business_type.slug.includes("ap_");

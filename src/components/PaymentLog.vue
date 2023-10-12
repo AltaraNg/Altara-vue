@@ -888,7 +888,7 @@ export default {
                     this.salesLogForm.payment_gateway_id = this.selectItem(this.paymentGateways, "paystack")?.id;
 
                     //if sales-category is "NoBS"
-                } else if (this.salesLogForm?.business_type_id?.slug.includes("ap_lost") && this.addCommission) {
+                } else if (this.lostLoanBusinessType && this.addCommission) {
                     this.commitment.status = true;
                 } else {
                     this.commitment.status = false;

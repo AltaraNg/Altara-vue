@@ -487,7 +487,7 @@
                         <button class="btn bg-default" @click="logSale()" type="submit" v-if="transfer">Confirm Transfer</button>
                         <paystack
                             :disabled="!validateEmail(customer_email)"
-                            :amount="computedPayment((fPayment + singleRepayment + commitment.amount) * 100, (fPayment + commitment.amount) * 100)"
+                            :amount="totalDownpayment(fPayment, singleRepayment)"
                             :email="customer_email"
                             :paystackkey="paystackkey"
                             :reference="reference"
@@ -798,6 +798,11 @@ export default {
             } else {
                 return secondvalue;
             }
+        },
+        totalDownpayment(fPayment, singleRepayment) {
+            return this.commitment.status
+                ? this.computedPayment((fPayment + singleRepayment + this.commitment.amount) * 100, (fPayment + this.commitment.amount) * 100)
+                : this.computedPayment((fPayment + singleRepayment) * 100, fPayment * 100);
         },
         watchCashPrice() {
             this.watchSalesCategory();

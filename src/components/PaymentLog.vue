@@ -431,14 +431,27 @@
                 >
                   View Summary
                 </button>
-                <button
-                  v-else
-                  class="btn bg-default"
-                  :disabled="canPerformAction || hasBVN || hasNoBs"
-                  type="submit"
-                >
-                  View Amortization
-                </button>
+                <div v-else>
+                  <div v-if="approve===1">
+                    <button
+                      class="btn bg-default"
+                      :disabled="canPerformAction || hasBVN || hasNoBs"
+                      type="submit"
+                    >
+                      View Amortization
+                    </button>
+                  </div>
+                  <div v-else>
+                    <button
+                      class="btn bg-default"
+                      :disabled="canPerformAction || hasBVN || hasNoBs || approve"
+                      type="submit"
+                    >
+                      View Amortization
+                    </button>
+                    <p v-if="approve === 0" class="errorText mt-5">You are not approved or request for special approval</p>
+                  </div>
+                </div>
                 <br />
               </div>
               <div v-if="hasBVN" class="large text-danger">
@@ -790,6 +803,7 @@ import moment from "moment"
 import roles from "../utilities/roles"
 import ToggleButton from "./ToggleButton.vue"
 import CurrencyInput from "./CurrencyInput.vue"
+import { EventBus } from "../utilities/event-bus"
 
 export default {
   props: { customerId: null, customer: null, verificationList: null },
@@ -813,6 +827,7 @@ export default {
         status: 1,
         updated_at: "2021-11-02 07:48:42",
       },
+      approve: this.$getCustomerApprovalStatus(this.customer.verification),
       noBSVerbiage: "",
       allowBSSale: false,
       productPlans: [
@@ -848,7 +863,6 @@ export default {
       canPerformAction: false,
       hasBVN: false,
       hasNoBs: false,
-
       apiUrls: {
         raffle_code: `/api/validate-raffle-draw`,
         repaymentDuration: `/api/repayment_duration`,
@@ -998,6 +1012,8 @@ export default {
     },
   },
 
+  
+
   computed: {
     ...mapGetters(["getPaymentMethods", "getBanks"]),
     downPaymentRatesFiltered() {
@@ -1043,12 +1059,15 @@ export default {
         ? "Altara Credit"
         : "Cash N Carry"
     },
+
+    
   },
   methods: {
     ResetInput() {
       this.validatedRaffleCode = false
       this.error = null
     },
+
     async validateRaffleCode() {
       await post(this.apiUrls.raffle_code, {
         phone_number: this.customer.telephone,
@@ -1983,7 +2002,13 @@ export default {
     triggerToggleEvent(value, switchName) {
       this[`triggerToggleEvent${switchName}`](value)
     },
+    handleSpecialApproval() {
+      this.approve=false
+    }
   },
+  created() {
+    EventBus.$on("specialApproval", this.handleSpecialApproval)
+  }
 }
 </script>
 
@@ -2093,5 +2118,8 @@ export default {
 .disableRaffleCode {
   pointer-events: none;
   opacity: 0.5;
+}
+.errorText {
+  color: red;
 }
 </style>

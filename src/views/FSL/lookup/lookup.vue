@@ -2161,10 +2161,11 @@ export default {
     },
     showDirectDebit(order) {
       
-      return order.payment_gateway === 'Paystack' &&
-                          order.paystack_auth_code != null &&
-                          this.canLogDD && this.manualDD && (order.status === 'Active' ||
-    order.status === 'Approved')
+    //   return order.payment_gateway === 'Paystack' &&
+    //                       order.paystack_auth_code != null &&
+    //                       this.canLogDD && this.manualDD && (order.status === 'Active' ||
+    // order.status === 'Approved')
+    return order.payment_gateway === 'Paystack' && order.paystack_auth_code != null;
     }
   },
 

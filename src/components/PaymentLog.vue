@@ -61,7 +61,7 @@
                                 <label for="amount" class="form-control-label w-100">Serial number </label>
                                 <input v-model="salesLogForm.serial_number" name="serial number" class="custom-select w-100" />
                             </div>
-                            <div class="col form-group" v-if="(serial && !isCashNCarry) || lostLoanBusinessType">
+                            <div class="col form-group" v-if="(serial && !isCashNCarry) || salesLogForm?.business_type_id?.slug == 'ap_lost_product'">
                                 <label for="amount" class="form-control-label w-100">Serial number </label>
                                 <input
                                     v-model="salesLogForm.serial_number"

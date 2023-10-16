@@ -61,7 +61,10 @@
                                 <label for="amount" class="form-control-label w-100">Serial number </label>
                                 <input v-model="salesLogForm.serial_number" name="serial number" class="custom-select w-100" />
                             </div>
-                            <div class="col form-group" v-if="(serial && !isCashNCarry) || salesLogForm?.business_type_id?.slug == 'ap_lost_product'">
+                            <div
+                                class="col form-group"
+                                v-if="(serial && !isCashNCarry) || salesLogForm?.business_type_id?.slug == 'ap_lost_loan_product'"
+                            >
                                 <label for="amount" class="form-control-label w-100">Serial number </label>
                                 <input
                                     v-model="salesLogForm.serial_number"
@@ -659,7 +662,7 @@ export default {
             guarantor_signed: ["2 - Yes", "1 - Yes", "No"],
             showRepaymentToggleList: [
                 "ap_cash_loan-collateral",
-                "ap_lost_product",
+                "ap_lost_loan_product",
                 "ap_lost_loan",
                 "ap_cash_loan-no_collateral",
                 "ap_cash_loan",
@@ -738,7 +741,7 @@ export default {
 
     computed: {
         lostLoanBusinessType() {
-            return this.salesLogForm?.business_type_id?.slug == "ap_lost_product" || this.salesLogForm?.business_type_id?.slug == "ap_lost_loan";
+            return this.salesLogForm?.business_type_id?.slug == "ap_lost_loan_product" || this.salesLogForm?.business_type_id?.slug == "ap_lost_loan";
         },
         ...mapGetters(["getPaymentMethods", "getBanks"]),
         downPaymentRatesFiltered() {
@@ -888,6 +891,14 @@ export default {
                     this.salesLogForm.payment_gateway_id = this.selectItem(this.paymentGateways, "paystack")?.id;
 
                     //if sales-category is "NoBS"
+                } else if (this.salesLogForm.sales_category_id !== 1 && this.salesLogForm.sales_category_id !== 2) {
+                    //if salesCategory is new or renewal
+                    this.businessTypes = this.biz_type.filter((business_type) => {
+                        return (
+                            !business_type?.slug.includes("ap_lost_loan") && !business_type?.slug.includes("bs") && business_type.slug.includes("ap_")
+                        );
+                    });
+                    this.watchSalesLogForm();
                 } else if (this.lostLoanBusinessType && this.addCommission) {
                     this.commitment.status = true;
                 } else {

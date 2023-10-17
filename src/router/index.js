@@ -5,7 +5,7 @@ import { store } from "../store/store";
 import { routerHistory, writeHistory } from "vue-router-back-button";
 
 const Home = () => import("../views/HomePage.vue");
-const Login = () => import("../views/auth/Login.vue");
+const Login = () => import("../views/auth/LoginPage.vue");
 const ResetPassword = () => import("../views/auth/ResetPassword.vue");
 const ForgotPassword = () => import("../views/auth/ForgotPassword.vue");
 const NotFound = () => import("../views/NotFound.vue");

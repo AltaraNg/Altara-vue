@@ -1,34 +1,22 @@
 <template>
-  <div>
-    <input
-      :value="formattedValue"
-      @input="$emit('input', $event.target.value)"
-      placeholder="NGN 0.00"
-    />
-  </div>
+    <input type="number" v-bind="$attrs" :value="value" @input="updateValue" />
 </template>
 
 <script>
-import { ref, watch, onMounted } from "vue"
-
 export default {
-  name: "FormatCurrency",
-  props: {
-    value: Number,
-  },
-  setup(props) {
-    const formattedValue = ref("")
-    const inputRef = ref(null)
-
-    return { inputRef, formattedValue }
-  },
-}
+    model: {
+        prop: "value",
+        event: "input",
+    },
+    props: {
+        value: {
+            default: 0,
+        },
+    },
+    methods: {
+        updateValue(event) {
+            this.$emit("input", event.target.value);
+        },
+    },
+};
 </script>
-
-<style scoped>
-input {
-  border: none;
-  outline: none; 
-  color: black;
-}
-</style>

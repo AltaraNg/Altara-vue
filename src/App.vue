@@ -89,7 +89,7 @@
                         </div>
                     </div>
                 </transition>
-                <router-view></router-view>
+                <router-view v-if="inHouse"></router-view>
             </div>
             <SMSModal v-if="showSMSModal" />
             <ShowPaystack v-if="showPaystackModal" />
@@ -158,8 +158,12 @@ export default {
                 }
             );
     },
-    beforeCreate() {
+    async beforeCreate() {
         Auth.initialize();
+        const in_house = this.$store.state.in_house;
+        if (this.$route.fullPath !== "/login" && !in_house) {
+            await this.$store.dispatch("refreshUser");
+        }
     },
     created() {
         interceptors((err) => {
@@ -177,6 +181,9 @@ export default {
         });
     },
     computed: {
+        inHouse() {
+            return this.$route.meta.requiresAuth ? this.$store.state?.inHouse : true;
+        },
         ...mapGetters("ModalAccess", [
             "showCustomerManagerModal",
             "showSMSModal",

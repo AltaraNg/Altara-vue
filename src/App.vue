@@ -182,7 +182,7 @@ export default {
     },
     computed: {
         inHouse() {
-            return this.$route.fullPath !== "/login" ? this.$store.state?.inHouse : true;
+            return this.$route.meta.requiresAuth ? this.$store.state?.inHouse : true;
         },
         ...mapGetters("ModalAccess", [
             "showCustomerManagerModal",

@@ -628,7 +628,6 @@ export default {
     methods: {
         async getTenants() {
             get("/api/tenants").then((res) => {
-                console.log(res.data.data.tenants);
                 this.tenants = res.data.data.tenants;
             });
         },
@@ -643,6 +642,7 @@ export default {
             this.error = {};
             this.errors.clear();
             this.form = data.form;
+            this.form.tenant_id = 1;
             this.roles = data.roles;
             this.branches = data.branches;
             this.categories = data.categories;

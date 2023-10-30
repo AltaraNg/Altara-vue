@@ -96,9 +96,7 @@
                         class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start justify-content-left pointer"
                         v-if="searchQuery.ctype == 'mobile-loan'"
                     >
-                        <p class="mr-2">
-                            {{ Altara }}
-                        </p>
+                        <p class="mr-2">Altara</p>
                         <p class="h6">altara</p>
                     </div>
                     <div
@@ -225,7 +223,7 @@ export default {
             creditChecks: [],
             selectedCreditCheck: {},
             selectedStatus: "",
-            searchQuery: { status: "pending", searchTerm: "", ctype: "bnlp" },
+            searchQuery: { status: "pending", searchTerm: "", ctype: "mobile-loan" },
             show: false,
             repaymentDuration: null,
             downPaymentRates: null,
@@ -273,11 +271,8 @@ export default {
                     ...this.searchQuery,
                 }),
             });
-            this.pageParams.page = 1;
-            this.$router.push({
-                query: { page: 1 },
-            });
-            debounce(this.fetchData({ ...this.searchQuery }), 500);
+            this.fetchData({ ...this.searchQuery });
+            // debounce(this.fetchData({ ...this.searchQuery }), 500);
         },
     },
     methods: {
@@ -328,8 +323,7 @@ export default {
         async resetFilter() {
             this.searchQuery.status = "";
             this.searchQuery.searchTerm = "";
-
-            Object.assign({}, this.$route.query);
+            this.searchQuery.ctype = "mobile-loan";
 
             this.fetchData();
         },
@@ -342,7 +336,11 @@ export default {
             if (this.reason !== null) {
                 data.reason = this.reason;
             }
-            patch(`api/update/credit/checker/status/${this.selectedCreditCheck.id}`, data)
+            var url = `api/update/credit/checker/status/${this.selectedCreditCheck.id}`;
+            if (this.searchQuery.ctype == "mobile-loan") {
+                url = `api/update/credit/checker/status/${this.selectedCreditCheck.id}/loan`;
+            }
+            patch(url, data)
                 .then(({ data }) => {
                     flash.setSuccess(data?.message);
                     this.selectedCreditCheck.status = this.selectedStatus;
@@ -442,8 +440,9 @@ export default {
         this.getDownPaymentRates();
         this.getRepaymentCycles();
         this.getRepaymentDuration();
-        this.searchQuery.status = this.$route?.query?.status;
-        this.searchQuery.searchTerm = this.$route?.query?.searchTerm;
+        this.searchQuery.status = this.$route?.query?.status != null ? this.$route?.query?.status : this.searchQuery.status;
+        this.searchQuery.searchTerm = this.$route?.query?.searchTerm != null ? this.$route?.query?.searchTerm : this.searchQuery.searchTerm;
+        this.searchQuery.ctype = this.$route?.query?.ctype != null ? this.$route?.query?.ctype : this.searchQuery.ctype;
         this.fetchData({ ...this.searchQuery });
     },
     mounted() {},

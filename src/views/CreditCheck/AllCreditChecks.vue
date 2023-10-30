@@ -85,7 +85,7 @@
                     <div
                         class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start justify-content-left pointer"
                         @click="displayVendorInfo(creditCheck.vendor)"
-                        v-if="searchQuery.ctype == 'bnlp'"
+                        v-if="searchQuery.ctype == 'bnpl'"
                     >
                         <p class="mr-2">
                             {{ creditCheck.vendor.full_name }}
@@ -102,7 +102,7 @@
                     <div
                         class="col-12 col-xs-3 col-md col-lg d-flex flex-column align-items-start pointer"
                         @click="displayProductInfo(creditCheck)"
-                        v-if="searchQuery.ctype == 'bnlp'"
+                        v-if="searchQuery.ctype == 'bnpl'"
                     >
                         <p class="mr-2">
                             {{ creditCheck.bnpl_product.name }}
@@ -235,7 +235,7 @@ export default {
             },
             headings: ["Customer ID", "Customer Info Summary", "Vendor Info Summary", "Product Info Summary", "status", "Action"],
             statuses: ["pending", "passed", "failed"],
-            creditCheckTypes: ["bnlp", "mobile-loan"],
+            creditCheckTypes: ["bnpl", "mobile-loan"],
             pageParams: {
                 page: 1,
                 limit: 15,

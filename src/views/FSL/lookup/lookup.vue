@@ -2196,9 +2196,12 @@ export default {
 
     canEditPayment() {
       if (this.auth("EditPayment")) return true
+      return false
     },
     canLogDD() {
       if (this.auth("LogDirectDebit")) return true
+      return false
+
     },
 
     manualDD(){

@@ -64,7 +64,7 @@
                                     <tbody>
                                     <tr v-for="model in model.data">
                                         <td v-for="(value,key) in model">
-                                            <span v-if="!['verification'].includes(key)">{{value}}</span>
+                                            <span v-show="key !== 'tenant' && key !== 'tenant_id'" v-if="!['verification'].includes(key)">{{value}}</span>
                                             <ApprovalStatusButton
                                                 v-else
                                                 size="small"

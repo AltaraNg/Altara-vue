@@ -238,7 +238,8 @@
       <div class="
         col-2 col-xs-2 col-md col-lg-2
         d-flex
-        ">
+        "
+        v-if="canSelectStatus()">
         <label class="text-danger">Change Order Status</label>
         <select class="custom-select w-50 " data-vv-as="order_status" data-vv-validate-on="blur" :name="'order_status_'"
           v-model="selectedStatus" @change="updateOrderStatus(selectedStatus)">
@@ -442,7 +443,7 @@ export default {
       this.$emit('preparePayments')
     },
     canSelectStatus() {
-      return this.auth('CoordinatorAccess') || this.auth('DVACaptain')
+      return this.auth('AuditorAccess')
     },
 
     updateAmmo(armo, index) {

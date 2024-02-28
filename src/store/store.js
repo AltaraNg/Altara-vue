@@ -12,7 +12,7 @@ const getYears = () => {
     return years;
 };
 
-const admin = [1, 2, 8, 9];
+const admin = [1, 2, 8, 9, 30, 40];
 
 Vue.use(Vuex);
 const debug = process.env.NODE_ENV !== "production";
@@ -58,6 +58,7 @@ export const store = new Vuex.Store({
         LOGAccess: [...admin, 11, 14, 32],
         CAGAccess: [...admin, 30],
         LogDirectDebit: [...admin, 22],
+        AuditorAccess: [...admin],
         EditPayment: [...admin, 8, 32, 14],
         ACCAccess: [...admin, 26, 31],
         ALTARAPAYAccess: [...admin, 33],

@@ -4,30 +4,15 @@
       <Lookup :logger="'cash'" />
     </div>
     <div class="mb-3 attendance-head">
-      <resueable-search
-        :url="url"
-        @childToParent="prepareList"
-        :showBranch="false"
-        :showDate="true"
-        :defaultBranch="branchId"
-        v-if="tab === 'View Payments' || tab === 'Reconcile'"
-      >
+      <resueable-search :url="url" @childToParent="prepareList" :showBranch="false" :showDate="true"
+        :defaultBranch="branchId" v-if="tab === 'View Payments' || tab === 'Reconcile'">
         <template #default="{ searchQuery }">
           <div class="col-md">
             <div>
               <label class="form-control-label">Payment Method: </label>
             </div>
-            <select
-              name="category"
-              id="category"
-              class="custom-select"
-              v-model="searchQuery.method"
-            >
-              <option
-                :value="type.id"
-                :key="type.id"
-                v-for="type in getPaymentMethods"
-              >
+            <select name="category" id="category" class="custom-select" v-model="searchQuery.method">
+              <option :value="type.id" :key="type.id" v-for="type in getPaymentMethods">
                 {{ type.name }}
               </option>
             </select>
@@ -36,50 +21,42 @@
             <div>
               <label class="form-control-label">Bank: </label>
             </div>
-            <select
-              name="bank"
-              id="bank"
-              class="custom-select"
-              v-model="searchQuery.bank"
-            >
+            <select name="bank" id="bank" class="custom-select" v-model="searchQuery.bank">
               <option :value="type.id" :key="type.id" v-for="type in getBanks">
                 {{ type.name }}
               </option>
             </select>
           </div>
+
+          <div class="col-md">
+            <div>
+              <label class="form-control-label">Customer: </label>
+            </div>
+            <input v-model="searchQuery.customer" class="custom-select">
+          </div>
         </template>
       </resueable-search>
     </div>
-    <div
-      class="mt-5 mb-3 attendance-head"
-      v-if="tab === 'View Payments' || tab === 'Reconcile'"
-    >
+    <div class="mt-5 mb-3 attendance-head" v-if="tab === 'View Payments' || tab === 'Reconcile'">
       <div class="row px-4 pt-3 pb-4 text-center">
-        <div
-          class="col light-heading"
-          :key="index"
-          v-for="(header, index) in details.headings"
-        >
+        <div class="col light-heading" :key="index" v-for="(header, index) in details.headings">
           {{ header }}
         </div>
       </div>
     </div>
     <div class="tab-content mt-1 attendance-body">
       <div v-if="tab === 'View Payments'">
-        <div
-          class="mb-3 row attendance-item"
-          :key="index"
-          v-for="(payment, index) in renderedList"
-        >
+        <div class="mb-3 row attendance-item" :key="index" v-for="(payment, index) in renderedList" v-if="renderedList.length > 0">
           <div class="col d-flex align-items-center" style="max-width: 120px">
             <span class="user mx-auto" :class="tab">{{ index + OId }}</span>
           </div>
-          <div
-            class="col d-flex align-items-center justify-content-center"
-            v-if="payment.customer"
-          >
+          <div class="col d-flex align-items-center justify-content-center">
+            {{ payment.staff_id ? payment.staff_id : "Not Available" }}
+          </div>
+          <div class="col d-flex align-items-center justify-content-center" v-if="payment.customer">
             {{ payment.customer ? payment.customer.id : "Not Available" }}
           </div>
+
           <div class="col d-flex align-items-center justify-content-center">
             {{ payment.date.split(" ")[0] }}
           </div>
@@ -99,11 +76,8 @@
             {{ payment.bank !== null ? payment.bank : "Not Available" }}
           </div>
 
-          <div
-            class="col d-flex align-items-center justify-content-center"
-            @click="updateModal(payment)"
-            data-hoverable="true"
-          >
+          <div class="col d-flex align-items-center justify-content-center" @click="updateModal(payment)"
+            data-hoverable="true">
             <p :class="payment.comment ? 'green' : 'red'" class="overflow">
               <i class="fas fa-info-circle"></i>
             </p>
@@ -111,18 +85,9 @@
         </div>
       </div>
       <div v-if="tab === 'Reconcile'">
-        <div
-          class="mb-3 row attendance-item"
-          v-for="(item, index) in renderedList"
-          :key="item.index"
-        >
+        <div class="mb-3 row attendance-item" v-for="(item, index) in renderedList" :key="item.index">
           <div class="col d-flex align-items-center" style="max-width: 120px">
-            <span
-              class="user mx-auto"
-              :class="tab"
-              @click="updateReconciledPayment(item)"
-              >{{ index + OId }}</span
-            >
+            <span class="user mx-auto" :class="tab" @click="updateReconciledPayment(item)">{{ index + OId }}</span>
           </div>
 
           <div class="col d-flex align-items-center justify-content-center">
@@ -133,65 +98,36 @@
           </div>
           <div class="col d-flex align-items-center justify-content-center">
             <span v-if="item.user">{{
-              item.cash_at_hand | currency("₦")
-            }}</span>
-            <input
-              @keyup="onUpKey"
-              v-model="item.cash_at_hand"
-              type="number"
-              class="form-control"
-              rows="1"
-              v-else
-            />
+      item.cash_at_hand | currency("₦")
+    }}</span>
+            <input @keyup="onUpKey" v-model="item.cash_at_hand" type="number" class="form-control" rows="1" v-else />
           </div>
           <div class="col d-flex align-items-center justify-content-center">
             {{ item.total | currency("₦") }}
           </div>
           <div class="col d-flex align-items-center justify-content-center">
             <span v-if="item.user">{{ item.deposited | currency("₦") }}</span>
-            <input
-              @keyup="onUpKey"
-              v-model="item.deposited"
-              type="number"
-              class="form-control"
-              rows="1"
-              v-else
-            />
+            <input @keyup="onUpKey" v-model="item.deposited" type="number" class="form-control" rows="1" v-else />
             <!-- </input> -->
           </div>
-          <div
-            class="col d-flex align-items-center justify-content-center"
-            :class="[item.total - item.deposited === 0 ? 'green' : 'red']"
-          >
+          <div class="col d-flex align-items-center justify-content-center"
+            :class="[item.total - item.deposited === 0 ? 'green' : 'red']">
             {{ (item.total - item.deposited) | currency("₦") }}
           </div>
           <div class="col d-flex align-items-center justify-content-center">
-            <span class="overflow green text-center" v-if="item.user"
-              ><i class="fas fa-info-circle"></i
-            ></span>
+            <span class="overflow green text-center" v-if="item.user"><i class="fas fa-info-circle"></i></span>
 
-            <textarea
-              v-model="item.comment"
-              v-else
-              class="form-control"
-              rows="1"
-            >
-            </textarea>
+            <textarea v-model="item.comment" v-else class="form-control" rows="1">
+        </textarea>
           </div>
-          <div
-            class="
+          <div class="
               col
               d-flex
               align-items-center
               justify-content-center
               text-center
-            "
-            @click="updateModal(item)"
-            data-hoverable="true"
-          >
-            <span :class="item.user ? 'green' : 'red'" class="overflow"
-              ><i class="fas fa-info-circle"></i
-            ></span>
+            " @click="updateModal(item)" data-hoverable="true">
+            <span :class="item.user ? 'green' : 'red'" class="overflow"><i class="fas fa-info-circle"></i></span>
           </div>
         </div>
       </div>
@@ -220,40 +156,40 @@
                         <th>Comment</th>
                         <td>
                           {{
-                            !paymentItem.comment
-                              ? "Not Available"
-                              : paymentItem.comment.comment
-                          }}
+      !paymentItem.comment
+        ? "Not Available"
+        : paymentItem.comment.comment
+    }}
                         </td>
                       </tr>
                       <tr>
                         <th>Reconciler</th>
                         <td>
                           {{
-                            !paymentItem.user
-                              ? "Not Available"
-                              : paymentItem.user
-                          }}
+        !paymentItem.user
+          ? "Not Available"
+          : paymentItem.user
+      }}
                         </td>
                       </tr>
                       <tr>
                         <th>Date</th>
                         <td>
                           {{
-                            paymentItem.date
-                              ? paymentItem.date.split(" ")[0]
-                              : "Not Available"
-                          }}
+        paymentItem.date
+          ? paymentItem.date.split(" ")[0]
+          : "Not Available"
+      }}
                         </td>
                       </tr>
                       <tr>
                         <th>Time</th>
                         <td>
                           {{
-                            paymentItem.date
-                              ? paymentItem.date.split(" ")[1]
-                              : "Not Available"
-                          }}
+        paymentItem.date
+          ? paymentItem.date.split(" ")[1]
+          : "Not Available"
+      }}
                         </td>
                       </tr>
                     </tbody>
@@ -287,9 +223,9 @@
                         <th>Comment</th>
                         <td>
                           {{
-                            !paymentItem.comment
-                              ? "Not Available"
-                              : paymentItem.comment.comment
+      !paymentItem.comment
+        ? "Not Available"
+        : paymentItem.comment.comment
                           }}
                         </td>
                       </tr>
@@ -298,9 +234,9 @@
                         <th>Date</th>
                         <td>
                           {{
-                            paymentItem.date
-                              ? paymentItem.date.split(" ")[0]
-                              : "Not Available"
+                          paymentItem.date
+                          ? paymentItem.date.split(" ")[0]
+                          : "Not Available"
                           }}
                         </td>
                       </tr>
@@ -308,9 +244,9 @@
                         <th>Time</th>
                         <td>
                           {{
-                            paymentItem.date
-                              ? paymentItem.date.split(" ")[1]
-                              : "Not Available"
+                          paymentItem.date
+                          ? paymentItem.date.split(" ")[1]
+                          : "Not Available"
                           }}
                         </td>
                       </tr>
@@ -320,13 +256,8 @@
               </div>
             </div>
             <div class="modal-footer">
-              <a
-                class="text-link mt-3 w-100"
-                data-dismiss="modal"
-                href="javascript:"
-                style="text-align: right"
-                >close dialogue</a
-              >
+              <a class="text-link mt-3 w-100" data-dismiss="modal" href="javascript:" style="text-align: right">close
+                dialogue</a>
             </div>
           </div>
         </div>
@@ -344,7 +275,7 @@
 <script>
 import Vue from "vue";
 import { mapGetters } from "vuex";
-import { get, post, put } from "../utilities/api";
+import { get, put } from "../utilities/api";
 import Lookup from "../views/FSL/lookup/lookup";
 import Flash from "../utilities/flash";
 import Vue2Filters from "vue2-filters";
@@ -436,7 +367,7 @@ export default {
   },
 
   computed: {
-      
+
     details() {
       let list = 1;
       const tabs = ["Log Payment", "View Payments", "Reconcile"];
@@ -453,6 +384,7 @@ export default {
       ];
       const headings1 = [
         "index",
+        'Staff ID',
         "Customer ID",
         "Date of Payment",
         "Time of Payment",
@@ -466,8 +398,8 @@ export default {
         this.tab === "View Payments"
           ? headings1
           : this.tab === "Reconcile"
-          ? headings2
-          : "";
+            ? headings2
+            : "";
       return { tabs, headings, list };
     },
     ...mapGetters([
@@ -489,8 +421,8 @@ export default {
       list === "View Payments"
         ? this.getPaymentList()
         : list === "Reconcile"
-        ? this.getPaymentReconciliationList()
-        : this.$LIPS(false);
+          ? this.getPaymentReconciliationList()
+          : this.$LIPS(false);
     },
     prepareList(response) {
       let {
@@ -526,22 +458,22 @@ export default {
     },
 
     async getPaymentList() {
-         this.$LIPS(true);
+      this.$LIPS(true);
       try {
-       
+
         let param = {
           page: this.pageParams.page ? this.pageParams.page : "",
           limit: this.pageParams.limit ? this.pageParams.limit : "",
           branch: localStorage.getItem("branch_id"),
           ...this.searchQuery,
         };
-        if(this.$route.query){
-          param = {...param, ...this.$route.query};
+        if (this.$route.query) {
+          param = { ...param, ...this.$route.query };
         }
         const fetchPaymentList = await get(this.url + queryParam(param));
         this.prepareList(fetchPaymentList.data);
 
-        
+
 
       } catch (err) {
         this.$displayErrorMessage(err);
@@ -559,7 +491,7 @@ export default {
       let to = yesterday.slice(0, 10);
 
       try {
-          let param = {
+        let param = {
           page: this.pageParams.page ? this.pageParams.page : "",
           limit: this.pageParams.limit ? this.pageParams.limit : "",
           branch: localStorage.getItem("branch_id"),
@@ -567,11 +499,11 @@ export default {
           from: from,
           ...this.searchQuery,
         };
-        if(this.$route.query){
-          param = {...param, ...this.$route.query};
+        if (this.$route.query) {
+          param = { ...param, ...this.$route.query };
         }
         const fetchPaymentReconciliation = await get(
-         this.url + queryParam(param)
+          this.url + queryParam(param)
         );
         this.prepareList(fetchPaymentReconciliation.data);
         this.totalCashAtHand = this.renderedList
@@ -654,24 +586,30 @@ export default {
 .table-separator {
   border-top: 2px solid #dee1e4;
 }
+
 .overflow {
   width: 80px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .green {
   color: #00a368;
 }
+
 .red {
   color: #e30000;
 }
+
 .blue {
   background-color: #2975a5;
 }
+
 .Current {
   background: #edeef2;
 }
+
 .Successful {
   background-color: rgba(0, 163, 104, 0.09);
   color: #00a368;

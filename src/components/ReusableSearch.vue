@@ -142,7 +142,7 @@ export default {
           
         }
         else{
-          this.$emit("childToParent", {data : response,
+          this.$emit("childToParent", {data : response.data.data,
           queryParams: this.searchQuery
           });        
         }    

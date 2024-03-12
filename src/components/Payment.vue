@@ -5,7 +5,7 @@
     </div>
     <div class="mb-3 attendance-head">
       <resueable-search :url="url" @childToParent="prepareList" :showBranch="false" :showDate="true"
-        :defaultBranch="branchId" v-if="tab === 'View Payments' || tab === 'Reconcile'">
+         v-if="tab === 'View Payments' || tab === 'Reconcile'">
         <template #default="{ searchQuery }">
           <div class="col-md">
             <div>

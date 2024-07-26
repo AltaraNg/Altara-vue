@@ -164,6 +164,7 @@ export default {
             this.$LIPS(true);
 
             try {
+                this.errorMessages = [];
                 let data = toMulipartedForm({
                     client_id: this.form.tenant_id,
                     file: this.file

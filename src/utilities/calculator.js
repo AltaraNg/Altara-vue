@@ -22,7 +22,7 @@ const calculate = (productPrice, data, params, percentage_discount) => {
     var rePayment =
       actualRepayment - (actualRepayment * percentage_discount) / 100
   } else {
-    var rePayment = actualRepayment
+    rePayment = actualRepayment
   }
   total = actualRepayment + actualDownpayment
 

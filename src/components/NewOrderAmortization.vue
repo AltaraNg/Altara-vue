@@ -28,6 +28,7 @@
               <th>Business Type</th>
               <th>Downpayment</th>
               <th>Collection Channel</th>
+              <th>Collection Client</th>
               <th>Branch</th>
               <th>Financed By</th>
               <th>Status</th>
@@ -46,6 +47,7 @@
                   order.down_payment_rate }} percent
               </th>
               <th>{{ order.payment_gateway }}</th>
+              <th>{{ order.bnpl_vendor_product ? order.bnpl_vendor_product.vendor.full_name : '' }}</th>
               <td class="font-weight-bold">{{ order.branch }}</td>
               <td class="font-weight-bold">{{ order.financed_by }}</td>
               <td class="font-weight-bold td-back">ok</td>
@@ -87,23 +89,23 @@
                     armo.actual_amount >= armo.expected_amount &&
                     Date.parse(armo.actual_payment_date) <=
                     Date.parse(armo.expected_payment_date)
-                    " class="green status-sign">
+                  " class="green status-sign">
                     <i class="fa fa-check"></i>
                   </div>
                   <div v-else-if="armo.actual_payment_date &&
                     armo.actual_amount >= armo.expected_amount &&
                     Date.parse(armo.actual_payment_date) >
                     Date.parse(armo.expected_payment_date)
-                    " class="magenta status-sign">
+                  " class="magenta status-sign">
                     <i class="fa fa-check"></i>
                   </div>
                   <div v-else-if="armo.actual_payment_date &&
                     armo.actual_amount < armo.expected_amount
-                    " class="pending status-sign">
+                  " class="pending status-sign">
                     <i class="fa fa-hourglass-start"></i>
                   </div>
                   <div v-else-if="Date.parse(armo.expected_payment_date) < Date.now()
-                    " class="red status-sign">
+                  " class="red status-sign">
                     <i class="fa fa-times"></i>
                   </div>
                 </td>
@@ -168,8 +170,8 @@
                   <td style="font-weight: 800;" v-for="(latefee) in lateFEES" :key="latefee.id">
                     {{
                       latefee.date_paid !== null
-                      ? new Date(latefee.date_paid).toLocaleDateString()
-                      : 'N/A'
+                        ? new Date(latefee.date_paid).toLocaleDateString()
+                        : 'N/A'
                     }}
                   </td>
                 </tr>
@@ -186,8 +188,8 @@
               <th>
                 {{
                   order.discount[0]
-                  ? order.discount[0].name
-                  : 'Null' | capitalize
+                    ? order.discount[0].name
+                    : 'Null' | capitalize
                 }}
               </th>
               <td>Total Before Discount</td>
@@ -226,8 +228,8 @@
         </table>
         <div v-if="standAlone === false">
           <div v-if="completed === false">
-            <LogForm :amortizationData="amortizationData" :customerId="customer.id" :orderId="order.id" @done="this.done"
-              :order="order" />
+            <LogForm :amortizationData="amortizationData" :customerId="customer.id" :orderId="order.id"
+              @done="this.done" :order="order" />
           </div>
         </div>
       </div>
@@ -238,8 +240,7 @@
       <div class="
         col-2 col-xs-2 col-md col-lg-2
         d-flex
-        "
-        v-if="canSelectStatus()">
+        " v-if="canSelectStatus()">
         <label class="text-danger">Change Order Status</label>
         <select class="custom-select w-50 " data-vv-as="order_status" data-vv-validate-on="blur" :name="'order_status_'"
           v-model="selectedStatus" @change="updateOrderStatus(selectedStatus)">
@@ -313,7 +314,8 @@
                   <div class="col form-group">
                     <label for="amount" class="form-control-label">Actual Amount</label>
                     <br />
-                    <input name="ammo" class="custom-select" v-model="lateFeeItem.amount_paid" v-validate="'required'" />
+                    <input name="ammo" class="custom-select" v-model="lateFeeItem.amount_paid"
+                      v-validate="'required'" />
                   </div>
                   <div class="col form-group">
                     <label for="amount" class="form-control-label">Date Paid</label>
@@ -346,7 +348,7 @@
 import Flash from '../utilities/flash'
 import { mapGetters } from 'vuex'
 import Auth from '../utilities/auth'
-import {log} from '../utilities/log'
+import { log } from '../utilities/log'
 import LogForm from './LogForm'
 import { get, patch, put, post } from '../utilities/api'
 import DatePicker from 'vue2-datepicker'

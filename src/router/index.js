@@ -97,6 +97,7 @@ const CreditCheckHome = () => import("../views/CreditCheck/HomePage.vue");
 const AllCreditChecks = () => import("../views/CreditCheck/AllCreditChecks.vue");
 const BankStatementReader = () => import("../views/Admin/BankStatementReader.vue");
 const BankStatementDetails = () => import("../components/BankStatementDetails.vue");
+const UploadClients = () => import("../views/DVA/UploadClients.vue");
 
 Vue.use(VueRouter);
 Vue.use(routerHistory);
@@ -352,6 +353,12 @@ const router = new VueRouter({
                     component: DVAVerification,
                     name: "verification",
                     meta: { mode: "verification" },
+                },
+
+                {
+                    path: "tenant-clients",
+                    component: UploadClients,
+                    name: "tenant-clients",
                 },
                 {
                     path: "verification-new",

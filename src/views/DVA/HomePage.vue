@@ -28,6 +28,12 @@ export default {
                     desc: "For Verification of registered customers",
                 },
                 {
+                    url: "tenant-clients",
+                    title: "Upload clients for Collection",
+                    url_c: "Upload clients for Collection",
+                    desc: "Upload customers for clients",
+                },
+                {
                     url: "customer/update",
                     title: "Customer Update",
                     url_c: "Update customers details!",
@@ -130,6 +136,8 @@ export default {
                     url_c: "Check suitable plan for informal",
                     desc: "Recommendation Service Informal",
                 },
+
+
 
                 // TODO:: cleanup
             ],

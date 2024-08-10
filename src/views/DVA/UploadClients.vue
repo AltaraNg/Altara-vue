@@ -434,7 +434,7 @@ export default {
                 if (res.data.status === 'success' && !this.isValidated) {
                     this.isValidated = true;
                 }
-                else{
+                else {
                     this.isValidated = false;
                     this.file = null;
                     this.form.tenant_id = null;
@@ -453,7 +453,6 @@ export default {
             }
         },
         getFile(e) {
-            console.log(e);
             this.file = e.target.files[0];
         },
 

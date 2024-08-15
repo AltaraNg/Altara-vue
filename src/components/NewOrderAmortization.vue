@@ -429,7 +429,7 @@ export default {
           ).amortization
           this.$emit('childToParent', res.data)
         })
-        .catch(e => {
+        .catch(() => {
           this.$LIPS(false)
           Flash.setError('Error Fetching customer detail')
         })
@@ -524,7 +524,7 @@ export default {
           this.$LIPS(false)
           return $(`#viewEdit`).modal('toggle')
         })
-        .catch(err => {
+        .catch(() => {
           this.$LIPS(false)
 
           Flash.setError('Unable to update payment')

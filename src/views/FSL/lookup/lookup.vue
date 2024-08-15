@@ -1,60 +1,33 @@
 <template>
   <transition name="fade">
     <div id="reminder">
-      <AutocompleteSearch
-        title="customer lookup"
-        @customer-selected="processForm"
-        :url="'/api/customer/autocomplete'"
-      />
+      <AutocompleteSearch title="customer lookup" @customer-selected="processForm"
+        :url="'/api/customer/autocomplete'" />
       <transition name="fade">
         <div v-if="customer && show">
           <!--                    <div class="attendance-hea TODO:: cleanup d">-->
           <customer-profile :view-customer="customer" :verification-list="verificationList" />
           <!--             // TODO:: cleanup       </div>-->
-          
-          <div style="display: flex; ">
-            <custom-header
-              :title="'All order(s)'"
-              @click.native="selectType('order')"
-              :style="
-                !states.order
-                  ? 'opacity: 0.2; cursor:pointer;'
-                  : 'cursor:pointer;'
-              "
-            />
-            <custom-header
-              :title="'Recommendations'"
-              @click.native="selectType('recommendation')"
-              :style="
-                !states.recommendation
-                  ? 'opacity: 0.2; cursor:pointer;'
-                  : 'cursor:pointer; '
-              "
-              style="margin-left:-10px"
-            />
-            <custom-header
-              :title="'Verifications'"
-              v-if="forDVA"
-              @click.native="selectType('verification')"
-              :style="
-                !states.verification
-                  ? 'opacity: 0.2; cursor:pointer;'
-                  : 'cursor:pointer; '
-              "
-              style="margin-left:-10px"
-            />
 
-            <custom-header
-              :title="'Credit Report'"
-              v-if="forCreditChecker"
-              @click.native="selectType('credit_report')"
-              :style="
-                !states.credit_report
+          <div style="display: flex; ">
+            <custom-header :title="'All order(s)'" @click.native="selectType('order')" :style="!states.order
+                ? 'opacity: 0.2; cursor:pointer;'
+                : 'cursor:pointer;'
+              " />
+            <custom-header :title="'Recommendations'" @click.native="selectType('recommendation')" :style="!states.recommendation
+                ? 'opacity: 0.2; cursor:pointer;'
+                : 'cursor:pointer; '
+              " style="margin-left:-10px" />
+            <custom-header :title="'Verifications'" v-if="forDVA" @click.native="selectType('verification')" :style="!states.verification
+                ? 'opacity: 0.2; cursor:pointer;'
+                : 'cursor:pointer; '
+              " style="margin-left:-10px" />
+
+            <custom-header :title="'Credit Report'" v-if="forCreditChecker" @click.native="selectType('credit_report')"
+              :style="!states.credit_report
                   ? 'opacity: 0.2; cursor:pointer;'
                   : 'cursor:pointer; '
-              "
-              style="margin-left:-10px"
-            />
+                " style="margin-left:-10px" />
           </div>
           <hr />
           <div v-if="states.order">
@@ -63,310 +36,214 @@
                 <div class="col light-heading" style="max-width: 100px">
                   S/No.
                 </div>
-                <div
-                  class="col light-heading"
-                  v-for="(header, index) in headers"
-                  :key="index"
-                >
+                <div class="col light-heading" v-for="(header, index) in headers" :key="index">
                   {{ header }}
                 </div>
               </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
-              <div
-                class="tab-pane active text-center"
-                v-if="
-                  (show && customer.orders.length > 0) ||
-                    customer.new_orders.length > 0
-                "
-              >
-                <div
-                  class="mb-3 row attendance-item"
-                  v-for="(order, index) in customer.orders"
-                  :key="order.index"
-                >
-                  <div
-                    class="
+              <div class="tab-pane active text-center" v-if="
+                (show && customer.orders.length > 0) ||
+                customer.new_orders.length > 0
+              ">
+                <div class="mb-3 row attendance-item" v-for="(order, index) in customer.orders" :key="order.index">
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
-                  "
-                  >
+                  ">
                     <span class="user mx-auto">{{ index + 1 }}</span>
                     <span v-if="$route.meta.customSMS">
-                      <CustomSMSButton
-                        :order="order"
-                        :customer="customer"
-                        :key="order.order.id"
-                      />
+                      <CustomSMSButton :order="order" :customer="customer" :key="order.order.id" />
                     </span>
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     user-name
                     align-items-center
                     justify-content-center
-                  "
-                  >
+                  ">
                     {{ formatDate(order.order.order_date) }}
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     user-name
                     align-items-center
                     justify-content-center
-                  "
-                  >
+                  ">
                     {{ order.order.id }}
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-3 col-md col-lg
                     d-flex
                     align-items-center
                     justify-content-center
-                  "
-                  >
+                  ">
                     {{ order.order.store_product.product_name }}
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
                     justify-content-center
-                  "
-                  >
+                  ">
                     {{ $formatCurrency(order.order.product_price) }}
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
                     justify-content-center
-                  "
-                  >
+                  ">
                     {{ order.order.sales_category.name }}
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
                     justify-content-center
-                  "
-                  >
+                  ">
                     {{ customer.employment_status }}
                   </div>
 
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
                     justify-content-center
-                  "
-                  >
-                    <button
-                      :class="
-                        order.count === order.repaymentLevel
-                          ? 'approved'
-                          : 'pending'
-                      "
-                      @click="displayAmortization(order)"
-                      class="btn status my-sm-2"
-                    >
+                  ">
+                    <button :class="order.count === order.repaymentLevel
+                        ? 'approved'
+                        : 'pending'
+                      " @click="displayAmortization(order)" class="btn status my-sm-2">
                       View Plan
-                      <i
-                        :class="
-                          order.count === order.repaymentLevel
-                            ? 'fa-check-circle'
-                            : 'fa-hourglass-half'
-                        "
-                        class="fas ml-3"
-                        style="font-size: 1.4rem"
-                      ></i>
+                      <i :class="order.count === order.repaymentLevel
+                          ? 'fa-check-circle'
+                          : 'fa-hourglass-half'
+                        " class="fas ml-3" style="font-size: 1.4rem"></i>
                       <!--                                        // TODO:: cleanup-->
                     </button>
                   </div>
                 </div>
-                <div
-                  class="mb-3 row attendance-item"
-                  v-for="(order, index) in customer.new_orders"
-                  :key="index"
-                >
-                  <div
-                    class="
+                <div class="mb-3 row attendance-item" v-for="(order, index) in customer.new_orders" :key="index">
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
-                  "
-                    style="max-width: 100px"
-                  >
-                    <span
-                      class="user mx-auto pointer"
-                      @click="updateOrder(order)"
-                      >{{ customer.orders.length + index + 1 }}</span
-                    >
+                  " style="max-width: 100px">
+                    <span class="user mx-auto pointer" @click="updateOrder(order)">{{ customer.orders.length + index + 1
+                      }}</span>
                     <span v-if="$route.meta.customSMS">
-                      <CustomSMSButton
-                        :order="order"
-                        :customer="customer"
-                        :key="
-                          order.amortization[0]
-                            ? order.amortization[0].new_order_id
-                            : index
-                        "
-                      />
+                      <CustomSMSButton :order="order" :customer="customer" :key="order.amortization[0]
+                          ? order.amortization[0].new_order_id
+                          : index
+                        " />
                     </span>
                     <span>
                       <!-- <img src="../../../../svg/download.svg" /> -->
                     </span>
                   </div>
 
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
                     justify-content-center
-                  "
-                  >
+                  ">
                     {{ formatDate(order.order_date) }}
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     user-name
                     align-items-center
                     justify-content-center
-                  "
-                  >
-                    <span
-                      v-if="
-                        order.order_type === 'Altara Pay' &&
-                          order.payment_gateway === 'Paystack'
-                      "
-                    >
-                      <PaystackModal
-                        :order="order"
-                        :customer="customer"
-                        :key="
-                          order.amortization[0]
-                            ? order.amortization[0].new_order_id
-                            : index
-                        "
-                      ></PaystackModal>
+                  ">
+                    <span v-if="
+                      order.order_type === 'Altara Pay' &&
+                      order.payment_gateway === 'Paystack'
+                    ">
+                      <PaystackModal :order="order" :customer="customer" :key="order.amortization[0]
+                          ? order.amortization[0].new_order_id
+                          : index
+                        "></PaystackModal>
                     </span>
                     <div>
-                    <span
-                      v-if="showDirectDebit(order)"
-                    >
-                      <CustomDirectDebitModalButton 
-                        :order="order"
-                        :key="order.id"
-                        :customer="customer"
-                      ></CustomDirectDebitModalButton>
-                    </span>
-                  
+                      <span v-if="showDirectDebit(order)">
+                        <CustomDirectDebitModalButton :order="order" :key="order.id" :customer="customer">
+                        </CustomDirectDebitModalButton>
+                      </span>
+
                     </div>
                     {{ order.order_number }}
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-3 col-md col-lg
                     d-flex
                     align-items-center
                     justify-content-center
-                  "
-                  >
-                  
-                    {{ order.financed_by === 'altara-bnpl'? order.bnpl_vendor_product.name : order.product.name | truncate(50) }}
-                    <span v-if="order.missMatchedPayments.length > 0" data-toggle="tooltip" data-placement="top" title="The debit account does not correspond to the account recorded on the bank statement." class="badge badge-secondary pointer">
-                    <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>      
-                  </span>
+                  ">
+
+                    {{ order.financed_by === 'altara-bnpl' ? order.bnpl_vendor_product.name : order.product.name |
+                    truncate(50) }}
+                    <span v-if="order.missMatchedPayments.length > 0" data-toggle="tooltip" data-placement="top"
+                      title="The debit account does not correspond to the account recorded on the bank statement."
+                      class="badge badge-secondary pointer">
+                      <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>
+                    </span>
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
                     justify-content-center
-                  "
-                  >
+                  ">
                     {{ $formatCurrency(order.product_price) }}
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
                     justify-content-center
-                  "
-                  >
+                  ">
                     {{ order.sales_type.name }}
-                    <discount
-                      v-if="showDiscount(order)"
-                      class="discount_badge"
-                      :percent="percentage(order)"
-                    />
+                    <discount v-if="showDiscount(order)" class="discount_badge" :percent="percentage(order)" />
                   </div>
-                  
 
-<div
-    class="
+
+                  <div class="
         col-12 col-xs-2 col-md col-lg
         d-flex
         align-items-center
-        justify-content-center"
->
-    <button
-        :disabled="order.business_type === 'Cash n Carry'"
-        :class="statusOrder(order.status)"
-        @click="displayAmortization(order)"
-        class="btn status my-sm-2"
-    >
-        View Plan
-        <i
-            :class="statusOrderIcon(order.status)"
-            class="fas ml-3"
-            style="font-size: 1.4rem"
-        ></i>
-    </button>
-</div>
+        justify-content-center">
+                    <button :disabled="order.business_type === 'Cash n Carry'" :class="statusOrder(order.status)"
+                      @click="displayAmortization(order)" class="btn status my-sm-2">
+                      View Plan
+                      <i :class="statusOrderIcon(order.status)" class="fas ml-3" style="font-size: 1.4rem"></i>
+                    </button>
+                  </div>
 
                 </div>
               </div>
 
               <div class="tab-pane active text-center" v-else>
                 <div class="mb-3 row attendance-item">
-                  <div
-                    class="
+                  <div class="
                     col
                     d-flex
                     light-heading
                     align-items-center
                     justify-content-center
-                  "
-                  >
+                  ">
                     No records found!
                   </div>
                 </div>
               </div>
             </div>
-            <PaymentLog
-              :verificationList="verificationList"
-              :customerId="customer.id"
-              @done="this.done"
-              v-if="logger === 'payment'"
-              :customer="customer"
-            />
+            <PaymentLog :verificationList="verificationList" :customerId="customer.id" @done="this.done"
+              v-if="logger === 'payment'" :customer="customer" />
             <div class="mt-5 mb-3 attendance-head">
               <div class="w-100 my-5 mx-0 hr"></div>
             </div>
@@ -377,132 +254,96 @@
                 <div class="col light-heading" style="max-width: 150px">
                   S/No.
                 </div>
-                <div
-                  class="col light-heading"
-                  v-for="(header, index) in recommendationHeaders"
-                  :key="index"
-                  style="text-align: left; "
-                >
+                <div class="col light-heading" v-for="(header, index) in recommendationHeaders" :key="index"
+                  style="text-align: left; ">
                   {{ header }}
                 </div>
               </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
-              <div
-                class="tab-pane active "
-                v-if="recommendationList.length > 0"
-              >
-                <div
-                  class="mb-3 row attendance-item"
-                  v-for="(recommendation, index) in recommendationList"
-                  :key="index"
-                >
-                  <div
-                    class="
+              <div class="tab-pane active " v-if="recommendationList.length > 0">
+                <div class="mb-3 row attendance-item" v-for="(recommendation, index) in recommendationList"
+                  :key="index">
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
 
-                  "
-                    style="max-width: 150px; margin-left: -15px;"
-                  >
+                  " style="max-width: 150px; margin-left: -15px;">
                     <span class="user mx-auto">{{ index + 1 }}</span>
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     user-name
                     align-items-center
 
-                  "
-                    style="padding-left:30px"
-                  >
+                  " style="padding-left:30px">
                     {{ formatDate(recommendation.created_at) }}
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     user-name
                     align-items-center
 
-                  "
-                  >
+                  ">
                     {{ recommendation.type }}
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-3 col-md col-lg
                     d-flex
                     align-items-center
 
-                  "
-                  >
+                  ">
                     {{
                       $formatCurrency(
                         JSON.parse(recommendation.input_data).total_price
                       )
                     }}
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
 
-                  "
-                  >
+                  ">
                     {{ JSON.parse(recommendation.input_data).duration }}
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
 
-                  "
-                  >
+                  ">
                     {{ computeDownpayment(recommendation) }}
                   </div>
 
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
 
-                  "
-                  >
-                    <button
-                      @click="displayActiveRecommendation(recommendation)"
-                      class="btn status"
-                      :class="
-                        computeDownpayment(recommendation) ==
+                  ">
+                    <button @click="displayActiveRecommendation(recommendation)" class="btn status" :class="computeDownpayment(recommendation) ==
                         'There is no suitable plan'
-                          ? 'not-approved'
-                          : 'approved'
-                      "
-                    >
+                        ? 'not-approved'
+                        : 'approved'
+                      ">
                       View
                     </button>
                   </div>
                 </div>
               </div>
 
-              <div
-                class="tab-pane active text-center"
-                v-if="recommendationList.length == 0"
-              >
+              <div class="tab-pane active text-center" v-if="recommendationList.length == 0">
                 <div class="mb-3 row attendance-item">
-                  <div
-                    class="
+                  <div class="
                     col
                     d-flex
                     light-heading
                     align-items-center
                     justify-content-center
-                  "
-                  >
+                  ">
                     No records found!
                   </div>
                 </div>
@@ -516,99 +357,72 @@
                 <div class="col light-heading" style="max-width: 150px">
                   S/No.
                 </div>
-                <div
-                  class="col light-heading"
-                  v-for="(header, index) in verificationHeaders"
-                  :key="index"
-                  style="text-align: left; "
-                >
+                <div class="col light-heading" v-for="(header, index) in verificationHeaders" :key="index"
+                  style="text-align: left; ">
                   {{ header }}
                 </div>
               </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
               <div class="tab-pane active " v-if="verificationList.length > 0">
-                <div
-                  class="mb-3 row attendance-item text-center"
-                  v-for="(verification, index) in verificationList"
-                  :key="index"
-                >
-                  <div
-                    class="
+                <div class="mb-3 row attendance-item text-center" v-for="(verification, index) in verificationList"
+                  :key="index">
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
 
-                  "
-                    style="max-width: 150px; margin-left: -15px;"
-                  >
+                  " style="max-width: 150px; margin-left: -15px;">
                     <span class="user mx-auto">{{ index + 1 }}</span>
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     user-name
                     align-items-center
 
-                  "
-                    style="padding-left:30px"
-                  >
+                  " style="padding-left:30px">
                     {{ formatDate(verification.created_at) }}
                   </div>
 
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-3 col-md col-lg
                     d-flex
                     align-items-center
 
-                  "
-                  >
+                  ">
                     {{ JSON.parse(verification.input_data).verifiedBy }}
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-3 col-md col-lg
                     d-flex
                     align-items-center
 
-                  "
-                  >
+                  ">
                     {{ JSON.parse(verification.input_data).status }}
                   </div>
 
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
 
-                  "
-                  >
-                    <button
-                      @click="displayActiveVerification(verification)"
-                      class="btn status approved"
-                    >
+                  ">
+                    <button @click="displayActiveVerification(verification)" class="btn status approved">
                       View
                     </button>
                   </div>
                 </div>
               </div>
 
-              <div
-                class="tab-pane active text-center"
-                v-if="verificationList.length == 0"
-              >
+              <div class="tab-pane active text-center" v-if="verificationList.length == 0">
                 <div class="mb-3 row attendance-item">
-                  <div
-                    class="
+                  <div class="
                     col
                     d-flex
                     light-heading
                     align-items-center
                     justify-content-center
-                  "
-                  >
+                  ">
                     No records found!
                   </div>
                 </div>
@@ -623,111 +437,84 @@
                 <div class="col light-heading" style="max-width: 150px">
                   S/No.
                 </div>
-                <div
-                  class="col light-heading"
-                  v-for="(header, index) in creditReportHeaders"
-                  :key="index"
-                  style="text-align: left; "
-                >
+                <div class="col light-heading" v-for="(header, index) in creditReportHeaders" :key="index"
+                  style="text-align: left; ">
                   {{ header }}
                 </div>
               </div>
             </div>
             <div class="tab-content mt-1 attendance-body">
               <div class="tab-pane active " v-if="creditReportList.length > 0">
-                <div
-                  class="mb-3 row attendance-item text-center"
-                  v-for="(creditReport, index) in creditReportList"
-                  :key="index"
-                >
-                  <div
-                    class="
+                <div class="mb-3 row attendance-item text-center" v-for="(creditReport, index) in creditReportList"
+                  :key="index">
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
 
-                  "
-                    style="max-width: 150px; margin-left: -15px;"
-                  >
-                    <span class="user mx-auto text-white" :class="[JSON.parse(creditReport.input_data).status === 'declined' ? 'bg-danger' : 'bg-success']">{{ index + 1 }}</span>
+                  " style="max-width: 150px; margin-left: -15px;">
+                    <span class="user mx-auto text-white"
+                      :class="[JSON.parse(creditReport.input_data).status === 'declined' ? 'bg-danger' : 'bg-success']">{{
+                      index + 1 }}</span>
                   </div>
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     user-name
                     align-items-center
 
-                  "
-                    style="padding-left:30px"
-                  >
+                  " style="padding-left:30px">
                     {{ formatDate(creditReport.created_at) }}
                   </div>
 
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-3 col-md col-lg
                     d-flex
                     align-items-center
 
-                  "
-                  >
+                  ">
                     {{ JSON.parse(creditReport.input_data).verifiedBy }}
                   </div>
 
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-3 col-md col-lg
                     d-flex
                     align-items-center
 
-                  "
-                  >
+                  ">
                     {{ JSON.parse(creditReport.input_data).customer_type }}
                   </div>
 
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-3 col-md col-lg
                     d-flex
                     align-items-center
 
-                  "
-                  >
+                  ">
                     {{ JSON.parse(creditReport.input_data).status || 'upper' }}
                   </div>
 
-                  <div
-                    class="
+                  <div class="
                     col-12 col-xs-2 col-md col-lg
                     d-flex
                     align-items-center
 
-                  "
-                  >
-                    <button
-                      @click="displayActiveCreditReport(creditReport)"
-                      class="btn status approved"
-                    >
+                  ">
+                    <button @click="displayActiveCreditReport(creditReport)" class="btn status approved">
                       View
                     </button>
                   </div>
                 </div>
               </div>
 
-              <div
-                class="tab-pane active text-center"
-                v-if="creditReportList.length == 0"
-              >
+              <div class="tab-pane active text-center" v-if="creditReportList.length == 0">
                 <div class="mb-3 row attendance-item">
-                  <div
-                    class="
+                  <div class="
                     col
                     d-flex
                     light-heading
                     align-items-center
                     justify-content-center
-                  "
-                  >
+                  ">
                     No records found!
                   </div>
                 </div>
@@ -747,63 +534,31 @@
                 <form class="card-body" @submit.prevent="submitForm">
                   <div class="row">
                     <div class="col form-group">
-                      <label for="amount" class="form-control-label"
-                        >Name</label
-                      >
-                      <AutoComplete
-                        v-on:childToParent="selectedItem"
-                        :apiUrl="apiURL.product"
-                        :currentValue="currentOrder.product_name"
-                      />
+                      <label for="amount" class="form-control-label">Name</label>
+                      <AutoComplete v-on:childToParent="selectedItem" :apiUrl="apiURL.product"
+                        :currentValue="currentOrder.product_name" />
                     </div>
                     <div class="col form-group">
-                      <label for="amount" class="form-control-label"
-                        >Repayment</label
-                      >
-                      <input
-                        class="w-100 custom-select"
-                        name="amount"
-                        v-model="currentOrder.repayment"
-                        v-validate="'required'"
-                        type="number"
-                      />
+                      <label for="amount" class="form-control-label">Repayment</label>
+                      <input class="w-100 custom-select" name="amount" v-model="currentOrder.repayment"
+                        v-validate="'required'" type="number" />
                     </div>
                     <div class="col form-group">
-                      <label for="amount" class="form-control-label"
-                        >Down Payment</label
-                      >
-                      <input
-                        class="w-100 custom-select"
-                        name="amount"
-                        v-model="currentOrder.down_payment"
-                        v-validate="'required'"
-                        type="number"
-                      />
+                      <label for="amount" class="form-control-label">Down Payment</label>
+                      <input class="w-100 custom-select" name="amount" v-model="currentOrder.down_payment"
+                        v-validate="'required'" type="number" />
                     </div>
                   </div>
                   <div class="row">
                     <div class="col form-group">
-                      <label for="amount" class="form-control-label"
-                        >Product Price</label
-                      >
-                      <input
-                        class="w-100 custom-select"
-                        name="amount"
-                        v-model="currentOrder.product_price"
-                        v-validate="'required'"
-                        type="number"
-                      />
+                      <label for="amount" class="form-control-label">Product Price</label>
+                      <input class="w-100 custom-select" name="amount" v-model="currentOrder.product_price"
+                        v-validate="'required'" type="number" />
                     </div>
                     <div class="col form-group">
-                      <label for="amount" class="form-control-label"
-                        >Order Date</label
-                      >
-                      <date-picker
-                        class="w-100"
-                        v-model="currentOrder.order_date"
-                        valueType="format"
-                        placeholder="Date"
-                      ></date-picker>
+                      <label for="amount" class="form-control-label">Order Date</label>
+                      <date-picker class="w-100" v-model="currentOrder.order_date" valueType="format"
+                        placeholder="Date"></date-picker>
                       <!-- <input
                         class="w-100 custom-select"
                         name="amount"
@@ -862,12 +617,8 @@
                         <td class="font-weight-bold">
                           {{ activeOrder.branch.name }}
                         </td>
-                        <td
-                          :class="
-                            getOrderStatusClass(getOrderStatus(activeOrder))
-                          "
-                          class="font-weight-bold"
-                        >
+                        <td :class="getOrderStatusClass(getOrderStatus(activeOrder))
+                          " class="font-weight-bold">
                           {{ getOrderStatus(activeOrder) }}
                         </td>
                       </tr>
@@ -880,71 +631,46 @@
                       <tbody class="text-center">
                         <tr>
                           <th>Repayment</th>
-                          <td
-                            v-for="(caption,
-                            index) in activeOrder.repaymentCaptions"
-                            v-html="caption"
-                            :key="index"
-                          ></td>
+                          <td v-for="(caption,
+                            index) in activeOrder.repaymentCaptions" v-html="caption" :key="index"></td>
                         </tr>
                         <tr class="table-separator">
                           <th>Due Date</th>
-                          <td
-                            v-for="(date, index) in activeOrder.dueDates"
-                            :key="index"
-                          >
+                          <td v-for="(date, index) in activeOrder.dueDates" :key="index">
                             {{ date }}
                           </td>
                         </tr>
                         <tr>
                           <th>Actual Pay Day</th>
-                          <td
-                            v-for="(date, index) in activeOrder.actualPayDates"
-                            :key="index"
-                          >
+                          <td v-for="(date, index) in activeOrder.actualPayDates" :key="index">
                             {{ date }}
                           </td>
                         </tr>
                         <tr class="table-separator">
                           <th>Status</th>
-                          <td
-                            :class="status.class"
-                            v-for="(status,
-                            index) in activeOrder.paymentStatusClasses"
-                            :key="index"
-                          >
+                          <td :class="status.class" v-for="(status,
+                            index) in activeOrder.paymentStatusClasses" :key="index">
                             <i :class="status.icon" class="fas"></i>
                           </td>
                         </tr>
                         <tr class="table-separator">
                           <th>Repayment Amount</th>
-                          <td
-                            v-for="(payment,
-                            index) in activeOrder.amountsToBePaid"
-                            :key="index"
-                          >
+                          <td v-for="(payment,
+                            index) in activeOrder.amountsToBePaid" :key="index">
                             {{ $formatCurrency(payment) }}
                           </td>
                         </tr>
                         <tr>
                           <th>Actual Amount Paid</th>
-                          <td
-                            v-for="(payment,
-                            index) in activeOrder.actualAmountsPaid"
-                            :key="index"
-                            @click="updateAmmo(armo)"
-                          >
+                          <td v-for="(payment,
+                            index) in activeOrder.actualAmountsPaid" :key="index" @click="updateAmmo(armo)">
                             {{ $formatCurrency(payment) }}
                           </td>
                         </tr>
                         <tr class="table-separator">
                           <th>Payment Method</th>
-                          <td
-                            class="text-capitalize"
-                            v-for="(repaymentMethod,
-                            index) in activeOrder.paymentMethods"
-                            :key="index"
-                          >
+                          <td class="text-capitalize" v-for="(repaymentMethod,
+                            index) in activeOrder.paymentMethods" :key="index">
                             {{
                               Order.convertToName(
                                 repaymentMethod,
@@ -955,12 +681,8 @@
                         </tr>
                         <tr>
                           <th>Bank</th>
-                          <td
-                            class="text-capitalize"
-                            v-for="(repaymentBank,
-                            key) in activeOrder.paymentBanks"
-                            :key="key"
-                          >
+                          <td class="text-capitalize" v-for="(repaymentBank,
+                            key) in activeOrder.paymentBanks" :key="key">
                             {{ Order.convertToName(repaymentBank, "banks") }}
                           </td>
                         </tr>
@@ -1026,116 +748,61 @@
                           <th>Collected By</th>
                           <th>Action</th>
                         </tr>
-                        <tr
-                          v-for="(payment, index) in paymentForm.payments"
-                          :key="index"
-                        >
+                        <tr v-for="(payment, index) in paymentForm.payments" :key="index">
                           <th>{{ index + 1 }}</th>
                           <th>
-                            <div
-                              class="form-group mb-0"
-                              v-if="paymentFormType === 'add'"
-                            >
-                              <input
-                                class="form-control"
-                                disabled
-                                name="date"
-                                type="text"
-                                v-model="paymentForm.payments[index].column"
-                              />
+                            <div class="form-group mb-0" v-if="paymentFormType === 'add'">
+                              <input class="form-control" disabled name="date" type="text"
+                                v-model="paymentForm.payments[index].column" />
                             </div>
-                            <select
-                              class="custom-select w-100"
-                              v-else
-                              v-model="paymentForm.payments[index]._col"
-                            >
-                              <option
-                                :value="i"
-                                v-for="(i, index) in activeOrder.repaymentLevel"
-                                :key="index"
-                              >
+                            <select class="custom-select w-100" v-else v-model="paymentForm.payments[index]._col">
+                              <option :value="i" v-for="(i, index) in activeOrder.repaymentLevel" :key="index">
                                 {{ $getColumn(i) }} Repayment
                               </option>
                             </select>
                           </th>
                           <th>
                             <div class="form-group mb-0">
-                              <input
-                                class="form-control"
-                                name="date"
-                                type="text"
-                                v-model="paymentForm.payments[index]._pay"
-                              />
+                              <input class="form-control" name="date" type="text"
+                                v-model="paymentForm.payments[index]._pay" />
                             </div>
                           </th>
                           <th>
-                            <select
-                              :disabled="paymentFormType === 'edit'"
-                              class="custom-select w-100"
-                              v-model="
-                                paymentForm.payments[index]._payment_method
-                              "
-                            >
-                              <option
-                                :value="id"
-                                v-for="{ name, id } in paymentMeths"
-                                :key="name.id"
-                              >
+                            <select :disabled="paymentFormType === 'edit'" class="custom-select w-100" v-model="paymentForm.payments[index]._payment_method
+                              ">
+                              <option :value="id" v-for="{ name, id } in paymentMeths" :key="name.id">
                                 {{ name | capitalize }}
                               </option>
                             </select>
                           </th>
                           <th>
-                            <select
-                              :disabled="paymentFormType === 'edit'"
-                              class="custom-select w-100"
-                              v-model="
-                                paymentForm.payments[index]._payment_bank
-                              "
-                            >
-                              <option
-                                :value="id"
-                                v-for="(name, id) in getBanks"
-                                :key="id"
-                              >
+                            <select :disabled="paymentFormType === 'edit'" class="custom-select w-100" v-model="paymentForm.payments[index]._payment_bank
+                              ">
+                              <option :value="id" v-for="(name, id) in getBanks" :key="id">
                                 {{ name }}
                               </option>
                             </select>
                           </th>
                           <th>
                             <div class="form-group mb-0">
-                              <input
-                                :disabled="paymentFormType === 'edit'"
-                                class="form-control"
-                                name="date"
-                                type="date"
-                                v-model="paymentForm.payments[index]._date"
-                              />
+                              <input :disabled="paymentFormType === 'edit'" class="form-control" name="date" type="date"
+                                v-model="paymentForm.payments[index]._date" />
                             </div>
                           </th>
                           <th>
                             <div class="form-group mb-0">
-                              <input
-                                :value="user.name"
-                                class="form-control"
-                                data-vv-as="date"
-                                disabled
-                                name="date"
-                                type="text"
-                              />
+                              <input :value="user.name" class="form-control" data-vv-as="date" disabled name="date"
+                                type="text" />
                             </div>
                           </th>
                           <th>
-                            <button
-                              @click="deletePayment(index)"
-                              class="
+                            <button @click="deletePayment(index)" class="
                                 ml-2
                                 btn
                                 status status-sm
                                 my-sm-2
                                 not-approved
-                              "
-                            >
+                              ">
                               <i class="fas fa-times"></i>
                             </button>
                           </th>
@@ -1146,49 +813,25 @@
                 </div>
               </div>
               <div class="d-flex modal-footer">
-                <button
-                  @click="addPaymentForm('add')"
-                  class="btn status my-sm-2"
-                >
+                <button @click="addPaymentForm('add')" class="btn status my-sm-2">
                   Add Payment
                 </button>
-                <button
-                  @click="addPaymentForm('edit')"
-                  class="btn status my-sm-2"
-                >
+                <button @click="addPaymentForm('edit')" class="btn status my-sm-2">
                   Edit Payment
                 </button>
-                <button
-                  @click="preparePayments(index)"
-                  class="btn status my-sm-2 approved ml-4"
-                >
+                <button @click="preparePayments(index)" class="btn status my-sm-2 approved ml-4">
                   Click here to Submit Payment(s)!
                 </button>
-                <a
-                  class="text-link mt-3"
-                  data-dismiss="modal"
-                  href="javascript:"
-                  style="text-align: right"
-                  >close dialogue</a
-                >
+                <a class="text-link mt-3" data-dismiss="modal" href="javascript:" style="text-align: right">close
+                  dialogue</a>
               </div>
             </div>
             <div v-else>
-              <new-order-amortization
-              :key="bootx_out"
-              @close="destroyModal"
-              :status="order.status"
-                :lateFEES="lateFEES"
-                :order="order"
-                :customer="customer"
-                :paymentForm="paymentForm"
-                :paymentFormType="paymentFormType"
-                @addPayment="addPaymentForm"
-                @deletePayment="deletePayment"
-                @preparePayments="preparePayments"
+              <new-order-amortization :key="bootx_out" @close="destroyModal" :status="order.status" :lateFEES="lateFEES"
+                :order="order" :customer="customer" :paymentForm="paymentForm" :paymentFormType="paymentFormType"
+                @addPayment="addPaymentForm" @deletePayment="deletePayment" @preparePayments="preparePayments"
                 v-on:childToParent="newOrderItem"
-                :isBNPL="order.financed_by === 'altara-bnpl'"
-              ></new-order-amortization>
+                :isBNPL="order.financed_by === 'altara-bnpl'"></new-order-amortization>
             </div>
           </div>
 
@@ -1204,12 +847,8 @@
                   </a>
                 </div>
                 <div class="modal-body px-5">
-                  <input
-                    name="ammo"
-                    class="custom-select"
-                    v-model="actual_amount"
-                    :placeholder="ammo_item.actual_amount"
-                  />
+                  <input name="ammo" class="custom-select" v-model="actual_amount"
+                    :placeholder="ammo_item.actual_amount" />
                 </div>
                 <div class="modal-footer justify-content-center">
                   <button class="text-center btn bg-default" @click="save">
@@ -1223,11 +862,7 @@
       </div>
 
       <div class="modal fade repayment" id="recommendation">
-        <div
-          class="modal-dialog modal-md"
-          role="document"
-          style="margin-top: 10%;"
-        >
+        <div class="modal-dialog modal-md" role="document" style="margin-top: 10%;">
           <div class="modal-content" v-if="displayMore">
             <div class="modal-header py-2">
               <h6 class="modal-title py-1">
@@ -1245,49 +880,32 @@
                 <h6 class="modal-title py-1">
                   Account Balance
                 </h6>
-                <table
-                  class="styled-table"
-                  style="margin-bottom: 25px; width:100%"
-                >
+                <table class="styled-table" style="margin-bottom: 25px; width:100%">
                   <thead>
                     <tr style="width:100%">
-                      <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
-                      >
+                      <th style="width:20%; border: 1px lightgray solid; text-align: center;">
                         Month
                       </th>
-                      <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
-                      >
+                      <th style="width:20%; border: 1px lightgray solid; text-align: center;">
                         First Week
                       </th>
-                      <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
-                      >
+                      <th style="width:20%; border: 1px lightgray solid; text-align: center;">
                         Second Week
                       </th>
-                      <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
-                      >
+                      <th style="width:20%; border: 1px lightgray solid; text-align: center;">
                         Third Week
                       </th>
-                      <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
-                      >
+                      <th style="width:20%; border: 1px lightgray solid; text-align: center;">
                         Fourth Week
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         Month 1
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           $formatCurrency(
                             JSON.parse(activeRecommendation.input_data)
@@ -1295,9 +913,7 @@
                           )
                         }}
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           $formatCurrency(
                             JSON.parse(activeRecommendation.input_data)
@@ -1305,9 +921,7 @@
                           )
                         }}
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           $formatCurrency(
                             JSON.parse(activeRecommendation.input_data)
@@ -1315,9 +929,7 @@
                           )
                         }}
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           $formatCurrency(
                             JSON.parse(activeRecommendation.input_data)
@@ -1327,14 +939,10 @@
                       </td>
                     </tr>
                     <tr>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         Month 2
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           $formatCurrency(
                             JSON.parse(activeRecommendation.input_data)
@@ -1342,9 +950,7 @@
                           )
                         }}
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           $formatCurrency(
                             JSON.parse(activeRecommendation.input_data)
@@ -1352,9 +958,7 @@
                           )
                         }}
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           $formatCurrency(
                             JSON.parse(activeRecommendation.input_data)
@@ -1362,9 +966,7 @@
                           )
                         }}
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           $formatCurrency(
                             JSON.parse(activeRecommendation.input_data)
@@ -1374,14 +976,10 @@
                       </td>
                     </tr>
                     <tr>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         Month 3
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           $formatCurrency(
                             JSON.parse(activeRecommendation.input_data)
@@ -1389,9 +987,7 @@
                           )
                         }}
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           $formatCurrency(
                             JSON.parse(activeRecommendation.input_data)
@@ -1399,9 +995,7 @@
                           )
                         }}
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           $formatCurrency(
                             JSON.parse(activeRecommendation.input_data)
@@ -1409,9 +1003,7 @@
                           )
                         }}
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           $formatCurrency(
                             JSON.parse(activeRecommendation.input_data)
@@ -1435,49 +1027,33 @@
                   }}
                 </div>
               </div>
-              <div
-                :style="
-                  activeRecommendation.type == 'formal'
-                    ? 'margin-top:5px'
-                    : 'margin-top:25px'
-                "
-              >
+              <div :style="activeRecommendation.type == 'formal'
+                  ? 'margin-top:5px'
+                  : 'margin-top:25px'
+                ">
                 <h6 class="modal-title py-1">
                   Preferred Plan
                 </h6>
-                <table
-                  class="styled-table"
-                  style="margin-bottom: 15px; width:100%"
-                >
+                <table class="styled-table" style="margin-bottom: 15px; width:100%">
                   <thead>
                     <tr style="width:100%">
-                      <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
-                      >
+                      <th style="width:20%; border: 1px lightgray solid; text-align: center;">
                         Total Price
                       </th>
-                      <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
-                      >
+                      <th style="width:20%; border: 1px lightgray solid; text-align: center;">
                         Plan
                       </th>
-                      <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
-                      >
+                      <th style="width:20%; border: 1px lightgray solid; text-align: center;">
                         Duration
                       </th>
-                      <th
-                        style="width:20%; border: 1px lightgray solid; text-align: center;"
-                      >
+                      <th style="width:20%; border: 1px lightgray solid; text-align: center;">
                         Cycle
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           $formatCurrency(
                             JSON.parse(activeRecommendation.input_data)
@@ -1485,21 +1061,15 @@
                           )
                         }}
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{ JSON.parse(activeRecommendation.input_data).plan }}
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{
                           JSON.parse(activeRecommendation.input_data).duration
                         }}
                       </td>
-                      <td
-                        style=" border:1px lightgray solid; text-align: center;"
-                      >
+                      <td style=" border:1px lightgray solid; text-align: center;">
                         {{ JSON.parse(activeRecommendation.input_data).cycle }}
                       </td>
                     </tr>
@@ -1510,26 +1080,18 @@
               </div>
               <div style="display:flex; align-items: center;  ">
                 <h6 class="modal-title  pr-4">Recommended Plan:</h6>
-                <div
-                  :style="
-                    computeDownpayment(activeRecommendation) ==
+                <div :style="computeDownpayment(activeRecommendation) ==
                     'There is no suitable plan'
-                      ? 'color:red'
-                      : 'color:green'
-                  "
-                  style="font-size: 16px;"
-                >
+                    ? 'color:red'
+                    : 'color:green'
+                  " style="font-size: 16px;">
                   {{ computeDownpayment(activeRecommendation) }}
                 </div>
               </div>
             </div>
             <div class="px-5 pb-4" style="display:flex; justify-content:end">
-              <button
-                class=" mt-3 px-5 py-3"
-                data-dismiss="modal"
-                href="javascript:"
-                style="text-align: right; border:none; border-radius: 3px; background-color: #074A74; color: white; font-weight: 700;"
-              >
+              <button class=" mt-3 px-5 py-3" data-dismiss="modal" href="javascript:"
+                style="text-align: right; border:none; border-radius: 3px; background-color: #074A74; color: white; font-weight: 700;">
                 Cancel
               </button>
             </div>
@@ -1549,12 +1111,7 @@
               </a>
             </div>
             <div class="modal-body px-5">
-              <input
-                name="ammo"
-                class="custom-select"
-                v-model="actual_amount"
-                :placeholder="ammo_item.actual_amount"
-              />
+              <input name="ammo" class="custom-select" v-model="actual_amount" :placeholder="ammo_item.actual_amount" />
             </div>
             <div class="modal-footer justify-content-center">
               <button class="text-center btn bg-default" @click="save">
@@ -1587,12 +1144,10 @@ import {
 } from "../../../components/order/orderStatusCssClass"
 import ViewVerificationCheckList from "../../../components/modals/ViewVerificationCheckList.vue"
 import ViewCreditReportModal from "../../../components/modals/ViewCreditReportModal.vue"
-import LogForm from "../../../components/LogForm"
 import PaymentLog from "../../../components/PaymentLog"
 import DatePicker from "vue2-datepicker"
 import "vue2-datepicker/index.css"
 import Discount from "../../../components/discount.vue"
-import paystack from "vue-paystack"
 import PaystackModal from "../../../components/Paystack/PaystackModal"
 import CustomDirectDebitModalButton from "../../../components/Paystack/CustomDirectDebitModalButton.vue"
 import { EventBus } from "../../../utilities/event-bus"
@@ -1605,12 +1160,10 @@ export default {
     CustomSMSButton,
     AutoComplete,
     AutocompleteSearch,
-    LogForm,
     PaymentLog,
     NewOrderAmortization,
     DatePicker,
     Discount,
-    paystack,
     PaystackModal,
     CustomDirectDebitModalButton,
   },
@@ -1691,7 +1244,7 @@ export default {
   },
 
   methods: {
-    destroyModal(){
+    destroyModal() {
       this.showModalContent = false
       this.bootx_out += '1'
 
@@ -1703,10 +1256,10 @@ export default {
     },
     getClickedOrder(order) {
       this.clickedOrder = order
-      
+
     },
 
-    statusOrder (status) {
+    statusOrder(status) {
       if (status === 'Completed' || status === 'Closed') {
         return 'approved'
       } else if (status === 'Active' || status === 'Pending') {
@@ -1714,10 +1267,10 @@ export default {
       } else {
         return 'not-approved'
       }
-       
+
     },
 
-    statusOrderIcon (status)  {
+    statusOrderIcon(status) {
       if (status === 'Completed' || status === 'Closed') {
         return 'fa-check-circle'
       } else if (status === 'Active' || status === 'Pending') {
@@ -1774,13 +1327,13 @@ export default {
         this.customer = customer
         this.customer.orders = customer.orders
           ? customer.orders.map(order => {
-              let orderWithCustomer = order
-              orderWithCustomer.customer = this.customer
-              return new OrderWithPromiseCall(
-                orderWithCustomer,
-                this.getAuthUserDetails.userId
-              )
-            })
+            let orderWithCustomer = order
+            orderWithCustomer.customer = this.customer
+            return new OrderWithPromiseCall(
+              orderWithCustomer,
+              this.getAuthUserDetails.userId
+            )
+          })
           : []
         this.show = true
       } else Flash.setError("Customer not found.", 5000)
@@ -1867,7 +1420,7 @@ export default {
         },
       )
     },
-    displayActiveCreditReport(creditReport){
+    displayActiveCreditReport(creditReport) {
       this.$modal.show(
         ViewCreditReportModal,
         { creditReport: JSON.parse(creditReport.input_data) },
@@ -2106,8 +1659,8 @@ export default {
 
     logAddedPayment(data) {
       let paymentsMade = this.paymentForm.payments
-          .map(pmt => pmt.column.replace(/ /g, "_"))
-          .join(" "),
+        .map(pmt => pmt.column.replace(/ /g, "_"))
+        .join(" "),
         desc = `${paymentsMade}. Order: ID: ${data.repayment_id}. Customer ID: ${this.customer_id}`
       return log(`Payment(s) added`, desc)
     },
@@ -2135,7 +1688,7 @@ export default {
       let element = this.customer.new_orders.find(item => {
         return item.id === data.order
       })
-      
+
       element.paystack_auth_code = data.auth_code
       let index = this.customer.new_orders.indexOf(element)
       Vue.set(this.$data.customer.new_orders, index, element)
@@ -2154,18 +1707,17 @@ export default {
         JSON.parse(result.result).ans[1] == 0
         ? `${JSON.parse(result.result).ans[0]}% downpayment`
         : typeof JSON.parse(result.result).ans == "string"
-        ? JSON.parse(result.result).ans
-        : `${JSON.parse(result.result).ans[0]}% downpayment and ${
-            JSON.parse(result.result).ans[1]
+          ? JSON.parse(result.result).ans
+          : `${JSON.parse(result.result).ans[0]}% downpayment and ${JSON.parse(result.result).ans[1]
           } repayment`
     },
     showDirectDebit(order) {
-      
-    //   return order.payment_gateway === 'Paystack' &&
-    //                       order.paystack_auth_code != null &&
-    //                       this.canLogDD && this.manualDD && (order.status === 'Active' ||
-    // order.status === 'Approved')
-    return order.payment_gateway === 'Paystack' && order.paystack_auth_code != null;
+
+      //   return order.payment_gateway === 'Paystack' &&
+      //                       order.paystack_auth_code != null &&
+      //                       this.canLogDD && this.manualDD && (order.status === 'Active' ||
+      // order.status === 'Approved')
+      return order.payment_gateway === 'Paystack' && order.paystack_auth_code != null;
     }
   },
 
@@ -2201,10 +1753,10 @@ export default {
       if (this.auth("LogDirectDebit")) return true
     },
 
-    manualDD(){
-      
-        return process.env.VUE_APP_MANUAL_DD === 'true';
-      
+    manualDD() {
+
+      return process.env.VUE_APP_MANUAL_DD === 'true';
+
     },
     forDVA() {
       return this.auth("DVAAccess")
@@ -2235,16 +1787,20 @@ export default {
 .attendance-item {
   cursor: auto;
 }
+
 .amor-table {
   width: 1092px;
   overflow: scroll;
 }
+
 .pointer {
   cursor: pointer;
 }
+
 .discount_badge {
   margin-left: 10px;
 }
+
 .col2 {
   -ms-flex-preferred-size: 0;
   flex-basis: 0;

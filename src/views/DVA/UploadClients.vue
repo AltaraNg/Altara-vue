@@ -16,6 +16,12 @@
                     :style="!states.viewUploaded ? 'opacity: 0.2; cursor:pointer;' : 'cursor:pointer; '"
                     style="margin-left: -10px"
                 />
+                <custom-header
+                    :title="'View Customers'"
+                    @click.native="selectType('viewCustomers')"
+                    :style="!states.viewCustomers ? 'opacity: 0.2; cursor:pointer;' : 'cursor:pointer; '"
+                    style="margin-left: -10px"
+                />
             </div>
 
             <div class="mt-1 attendance-body mx-5" v-if="states.upload">
@@ -107,7 +113,7 @@
                         <div class="clearfix d-flex justify-content-end w-100">
                             <router-link to="/log/products" class="mx-5 text-link mt-4 pt-2"> Cancel </router-link>
                             <button :disabled="$isProcessing" class="btn bg-default" type="submit" @click="submit">
-                                {{ isValidated ? "Submit" : "Validate" }} <i class="far fa-paper-plane ml-1"></i>
+                                {{ "Validate" }} <i class="far fa-paper-plane ml-1"></i>
                             </button>
                         </div>
                     </div>
@@ -126,6 +132,59 @@
                 <div class="tab-content mt-1 attendance-body">
                     <div class="tab-pane active text-center" v-if="(show && uploadedCustomers.length > 0) || uploadedCustomers.length > 0">
                         <div class="mb-3 row attendance-item" v-for="(item, index) in uploadedCustomers" :key="item.id">
+                            <div class="col-12 col-xs-2 col-md col-lg d-flex align-items-center">
+                                <span class="user mx-auto">{{ index + 1 }}</span>
+                            </div>
+                            <div class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center">
+                                {{ $humanizeDate(item.created_at) }}
+                            </div>
+                            <div class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center">
+                                {{ item.total_rows }}
+                            </div>
+                            <div class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center">
+                                {{ item.number_of_rows_processed }}
+                            </div>
+                            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center">
+                                {{ item.number_of_rows_failed }}
+                            </div>
+
+                            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center">
+                                {{ item.status }}
+                            </div>
+
+                            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center">
+                                {{ item.uploaded_by.full_name }}
+                            </div>
+
+                            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center">
+                                {{ item.client.name }}
+                            </div>
+                            <div class="col-12 col-xs-3 col-md col-lg d-flex align-items-center justify-content-center">
+                                <a :href="item.uploaded_file_url" target="_blank">link</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane active text-center" v-else>
+                        <div class="mb-3 row attendance-item">
+                            <div class="col d-flex light-heading align-items-center justify-content-center">No records found!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-1 mx-5" v-if="states.viewCustomers">
+                <div class="mt-5 mb-3 attendance-head">
+                    <div class="row px-4 pt-3 pb-4 text-center">
+                        <div class="col light-heading" style="max-width: 100px">S/No.</div>
+                        <div class="col light-heading" v-for="(header, index) in headers" :key="index">
+                            {{ header }}
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content mt-1 attendance-body">
+                    <div class="tab-pane active text-center" v-if="(show && customers.length > 0) || customers.length > 0">
+                        <div class="mb-3 row attendance-item" v-for="(item, index) in customers" :key="item.id">
                             <div class="col-12 col-xs-2 col-md col-lg d-flex align-items-center">
                                 <span class="user mx-auto">{{ index + 1 }}</span>
                             </div>
@@ -188,6 +247,7 @@ export default {
             states: {
                 upload: true,
                 viewUploaded: false,
+                viewCustomers: false,
             },
             loading: false,
             branch_id: "",
@@ -211,8 +271,10 @@ export default {
                 tenants: `/api/tenants`,
                 uploadClients: "/api/upload/client/customer",
                 uploadedCustomers: "/api/uploaded/client/customer/collection/data",
+                customers: "/api/uploaded/client/customers",
             },
-            headers: ["Date", "Total Records", "Successfull", "Failed", "Status", "Uploaded By", "Client", "View File"],
+            headers: ["Date", "Total Records", "Successful", "Failed", "Status", "Uploaded By", "Client", "View File"],
+            customerHeaders: ["Date", "Total Records", "Successful", "Failed", "Status", "Uploaded By", "Client", "View File"],
         };
     },
 
@@ -235,6 +297,9 @@ export default {
             if (type === "viewUploaded") {
                 this.fetchUploadedCustomers();
             }
+            if (type === "viewCustomers") {
+                this.fetchCustomers();
+            }
         },
 
         async submit() {
@@ -255,7 +320,7 @@ export default {
 
                 let res = await post(this.apiUrls.uploadClients, data);
                 if (res.data.status === "success" && !this.isValidated) {
-                    this.isValidated = true;
+                    // this.isValidated = true;
                 } else {
                     this.isValidated = false;
                     this.file = null;
@@ -282,6 +347,18 @@ export default {
             try {
                 const tenantList = await get(this.apiUrls.uploadedCustomers);
                 this.uploadedCustomers = tenantList?.data?.data?.clientCustomerCollections.data;
+            } catch (err) {
+                this.$displayErrorMessage(err);
+            } finally {
+                this.$LIPS(false);
+            }
+        },
+
+        async fetchCustomers() {
+            this.$LIPS(true);
+            try {
+                const tenantList = await get(this.apiUrls.customers);
+                this.customers = tenantList?.data?.data?.customers.data;
             } catch (err) {
                 this.$displayErrorMessage(err);
             } finally {

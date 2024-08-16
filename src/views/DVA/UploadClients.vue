@@ -48,7 +48,7 @@
                             <input type="file" @change="getFile" class="" :disabled="isValidated" />
                             <div class="pointer text-link">
                                 <a
-                                    href="https://docs.google.com/spreadsheets/d/1GkMgXrnJhBhQQRcIm7NLkg0GfVBf9FwDUveiCncUSLU/edit?usp=sharing"
+                                    href="https://docs.google.com/spreadsheets/d/1auDz6NJMWphEU0aV08SWAq2KhA81Tb1Q_oTegonbEqA/edit?usp=sharing"
                                     target="_blank"
                                     >sample document</a
                                 >

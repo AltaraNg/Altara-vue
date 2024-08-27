@@ -1,5 +1,8 @@
 <template>
     <div class="">
+        <div class="mt-5 mb-3 attendance-head card-header-tabs">
+            <client-customer-filter :tenants="tenants" :branches="getBranches" @applyFilter="submitFilter" @resetFilter="resetFilter" />
+        </div>
         <div class="mt-5 mb-3 attendance-head">
             <div class="row px-5 mx-5 pt-3 pb-4 text-center">
                 <div class="col light-heading align-items-center justify-content-center" style="max-width: 100px">S/No.</div>
@@ -44,12 +47,14 @@
 </template>
 <script>
 import { get } from "../utilities/api";
+import queryParam from "../utilities/queryParam";
+import ClientCustomerFilter from "./Filters/ClientCustomerFilter.vue";
 import Pagination from "./Pagination/pagination.vue";
 import { mapGetters } from "vuex";
 
 export default {
     name: "ClientCustomers",
-    components: { "custom-pagination": Pagination },
+    components: { "custom-pagination": Pagination, "client-customer-filter": ClientCustomerFilter },
 
     props: {
         show: {
@@ -92,6 +97,23 @@ export default {
 
         getBranchName(id) {
             return this.getBranches.find((i) => i.id === id).name;
+        },
+
+        async submitFilter(load) {
+            this.$LIPS(true);
+            try {
+                let res = await get(this.apiUrls.customers + queryParam(load));
+                this.customers = res?.data?.data?.customers.data;
+
+                console.log(res);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.$LIPS(false);
+            }
+        },
+        async resetFilter() {
+            this.fetchCustomers();
         },
     },
     async mounted() {

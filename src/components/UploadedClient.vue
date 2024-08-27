@@ -1,5 +1,8 @@
 <template>
-    <div class="mt-1 mx-5">
+    <div class="">
+        <div class="mt-5 mb-3 attendance-head card-header-tabs">
+            <upload-filter :tenants="tenants" @applyFilter="submitFilter" @resetFilter="resetFilter" />
+        </div>
         <div class="mt-5 mb-3 attendance-head">
             <div class="row px-5 pt-3 pb-4 text-center">
                 <div class="col light-heading" style="max-width: 100px">S/No.</div>
@@ -42,6 +45,7 @@
                         <a :href="item.uploaded_file_url" target="_blank">link</a>
                     </div>
                 </div>
+                <!-- <custom-pagination :pageParam="pageData"></custom-pagination> -->
             </div>
 
             <div class="tab-pane active text-center" v-else>
@@ -54,6 +58,9 @@
 </template>
 <script>
 import { get } from "../utilities/api";
+import queryParam from "../utilities/queryParam";
+import UploadFilter from "./Filters/UploadFilter.vue";
+// import Pagination from "./Pagination/pagination.vue";
 
 export default {
     name: "UploadedClient",
@@ -61,7 +68,14 @@ export default {
         show: {
             type: Boolean,
         },
+        tenants: {
+            type: Array,
+            required: true,
+        },
     },
+
+    components: { "upload-filter": UploadFilter },
+
     data() {
         return {
             headers: ["Date", "Total Records", "Successful", "Failed", "Status", "Uploaded By", "Client", "View File"],
@@ -82,6 +96,24 @@ export default {
             } finally {
                 this.$LIPS(false);
             }
+        },
+
+        async submitFilter(load) {
+            this.$LIPS(true);
+            try {
+                let res = await get(this.apiUrls.uploadedCustomers + queryParam(load));
+                this.uploadedCustomers = res?.data?.data?.clientCustomerCollections.data;
+
+                console.log(res);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.$LIPS(false);
+            }
+        },
+
+        async resetFilter() {
+            this.fetchUploadedCustomers();
         },
     },
     async mounted() {

@@ -121,7 +121,7 @@
             </div>
 
             <div class="mt-1 mx-5" v-if="states.viewUploaded">
-                <uploaded-clients :show="show" />
+                <uploaded-clients :show="show" :tenants="tenants" />
             </div>
 
             <div class="mt-1 mx-5" v-if="states.viewCustomers">
@@ -176,8 +176,6 @@ export default {
             apiUrls: {
                 tenants: `/api/tenants`,
                 uploadClients: "/api/upload/client/customer",
-                uploadedCustomers: "/api/uploaded/client/customer/collection/data",
-                customers: "/api/uploaded/client/customers",
             },
         };
     },

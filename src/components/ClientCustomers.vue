@@ -20,7 +20,10 @@
                     <div class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center">
                         {{ `${item.first_name} ${item.last_name}` }}
                     </div>
-                    <div class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center">
+                    <div
+                        class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center"
+                        @click="viewAmortization(item)"
+                    >
                         {{ item.id }}
                     </div>
                     <div class="col-12 col-xs-2 col-md col-lg d-flex user-name align-items-center justify-content-center">
@@ -43,6 +46,16 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade repayment" id="viewStuffs">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content" v-if="showModalContent">
+                    <div>
+                        <new-order-amortization :standAlone="true" :order="modalItem" :customer="modalItem.customer"></new-order-amortization>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -50,11 +63,13 @@ import { get } from "../utilities/api";
 import queryParam from "../utilities/queryParam";
 import ClientCustomerFilter from "./Filters/ClientCustomerFilter.vue";
 import Pagination from "./Pagination/pagination.vue";
+import NewOrderAmortization from "./NewOrderAmortization.vue";
+
 import { mapGetters } from "vuex";
 
 export default {
     name: "ClientCustomers",
-    components: { "custom-pagination": Pagination, "client-customer-filter": ClientCustomerFilter },
+    components: { "custom-pagination": Pagination, "client-customer-filter": ClientCustomerFilter, "new-order-amortization": NewOrderAmortization },
 
     props: {
         show: {
@@ -70,8 +85,11 @@ export default {
             customerHeaders: ["Full Name", "Customer ID", "Branch", "Tenant", "Status"],
             pageData: null,
             customers: [],
+            modalItem: null,
+            showModalContent: false,
             apiUrls: {
                 customers: "/api/uploaded/client/customers",
+                new_order: "/api/new_order",
             },
         };
     },
@@ -111,6 +129,25 @@ export default {
             } finally {
                 this.$LIPS(false);
             }
+        },
+        async viewAmortization(item) {
+            try {
+                this.$LIPS(true);
+                let res = await get(this.apiUrls.new_order + queryParam({ customer_id: item.id }));
+                console.log(res);
+                this.modalItem = res.data.data.data[0];
+                this.showModalContent = true;
+                return $(`#viewStuffs`).modal("toggle");
+                
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.$LIPS(false);
+            }
+
+            // this.modalItem = item;
+            // this.showModalContent = true;
+            // return $(`#viewStuffs`).modal("toggle");
         },
         async resetFilter() {
             this.fetchCustomers();

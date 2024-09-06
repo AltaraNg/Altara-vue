@@ -1,7 +1,7 @@
 <template>
     <div class="">
         <div class="mt-5 mb-3 attendance-head card-header-tabs">
-            <client-customer-filter :tenants="tenants" :branches="getBranches" @applyFilter="submitFilter" @resetFilter="resetFilter" />
+            <client-customer-filter :tenants="tenants" :branches="getBranches" :states=states @applyFilter="submitFilter" @resetFilter="resetFilter" />
         </div>
         <div class="mt-5 mb-3 attendance-head">
             <div class="row px-5 mx-5 pt-3 pb-4 text-center">
@@ -91,6 +91,7 @@ export default {
                 customers: "/api/uploaded/client/customers",
                 new_order: "/api/new_order",
             },
+            states: [],
         };
     },
     computed: {
@@ -138,7 +139,6 @@ export default {
                 this.modalItem = res.data.data.data[0];
                 this.showModalContent = true;
                 return $(`#viewStuffs`).modal("toggle");
-                
             } catch (error) {
                 console.log(error);
             } finally {
@@ -152,9 +152,23 @@ export default {
         async resetFilter() {
             this.fetchCustomers();
         },
+
+        async fetchStates() {
+            this.$LIPS(true);
+            try {
+                const states = await get("/api/state");
+                this.states = states.data.states;
+                console.log(states);
+            } catch (err) {
+                this.$displayErrorMessage(err);
+            } finally {
+                this.$LIPS(false);
+            }
+        },
     },
     async mounted() {
         await this.fetchCustomers();
+        await this.fetchStates();
     },
 };
 </script>

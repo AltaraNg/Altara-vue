@@ -3,41 +3,48 @@
         <div class="card-header">
             <h3 class="card-title">Filter</h3>
         </div>
-        <div class="d-flex card-body justify-content-around">
-            <div class="w-100">
+        <div class="d-flex card-body flex-wrap">
+            <div class="w-25 mr-3 mb-2">
                 <!-- ?Customer ID        </div> -->
                 <input type="text" v-model="customerId" placeholder="Customer ID" class="mx-input w-100" />
             </div>
 
-            <div class="w-100">
+            <div class="w-25 mr-3 mb-2">
                 <!-- ?Customer ID        </div> -->
                 <input type="text" v-model="name" placeholder="Customer Name" class="mx-input w-100" />
             </div>
 
-            <div class="w-100">
+            <div class="w-25 mr-3 mb-2">
                 <!-- ?Customer ID        </div> -->
                 <input type="text" v-model="telephone" placeholder="Customer Phone" class="mx-input w-100" />
             </div>
-            <div class="w-100">
+            <div class="w-25 mr-3 mb-2">
                 <!-- ?Tenant ID        </div> -->
                 <select name="" id="" class="custom-select w-100" v-model="tenantId">
                     <option value="" disabled selected>--Select Tenant--</option>
                     <option :value="tenant.id" v-for="tenant in tenants" :key="tenant.id">{{ tenant.name }}</option>
                 </select>
             </div>
-            <div class="w-100">
+            <div class="w-25 mr-3 mb-2">
                 <!-- ?Date       </div> -->
                 <date-picker placeholder="From date" v-model="fromDate" class="w-100"></date-picker>
             </div>
-            <div class="w-100">
+            <div class="w-25 mr-3 mb-2">
                 <!-- ?Name         </div> -->
                 <date-picker placeholder="To date" v-model="toDate" class="w-100"></date-picker>
             </div>
-            <div class="w-100">
+            <div class="w-25 mr-3 mb-2">
+                <!-- ?State ID        </div> -->
+                <select name="" id="" class="custom-select w-100" v-model="stateId" @change="filterBranch()">
+                    <option value="" selected disabled>--Select Branch State--</option>
+                    <option :value="state.id" v-for="state in states" :key="state.id">{{ state.name }}</option>
+                </select>
+            </div>
+            <div class="w-25 mr-3 mb-2">
                 <!-- ?Branch ID        </div> -->
-                <select name="" id="" class="custom-select w-100" v-model="branchId">
+                <select name="" id="" class="custom-select w-100" v-model="branchId" :disabled="stateId === ''">
                     <option value="" selected disabled>--Select Branch--</option>
-                    <option :value="branch.id" v-for="branch in branches" :key="branch.id">{{ branch.name }}</option>
+                    <option :value="branch.id" v-for="branch in filteredBranches" :key="branch.id">{{ branch.name }}</option>
                 </select>
             </div>
         </div>
@@ -65,6 +72,10 @@ export default {
             type: Array,
             required: true,
         },
+        states: {
+            type: Array,
+            required: true,
+        },
     },
     data() {
         return {
@@ -75,6 +86,9 @@ export default {
             tenantId: "",
             name: "",
             telephone: "",
+            stateId: "",
+            lga: "",
+            filteredBranches: [],
         };
     },
 
@@ -88,7 +102,6 @@ export default {
             this.tenantId != "" ? (data.tenant = this.tenantId) : "";
             this.name != "" ? (data.name = this.name) : "";
             this.telephone != "" ? (data.telephone = this.telephone) : "";
-
             this.$emit("applyFilter", data);
         },
 
@@ -100,7 +113,15 @@ export default {
             this.tenantId = "";
             this.name = "";
             this.telephone = "";
+            this.stateId = "";
             this.$emit("resetFilter");
+        },
+
+        filterBranch() {
+            let items = this.branches.filter((item) => {
+                return item.state_id === this.stateId;
+            });
+            this.filteredBranches = items;
         },
     },
 };

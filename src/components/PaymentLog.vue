@@ -63,7 +63,7 @@
                             </div>
                             <div
                                 class="col form-group"
-                                v-if="(serial && !isCashNCarry) || salesLogForm?.business_type_id?.slug == 'ap_lost_loan_product'"
+                                v-if="(serial && !isCashNCarry) || isLostLoan"
                             >
                                 <label for="amount" class="form-control-label w-100">Serial number </label>
                                 <input
@@ -760,7 +760,15 @@ export default {
             return text;
         },
         showRepaymentToggle() {
-            return this.isAltaraPay && this.showRepaymentToggleList.includes(this.salesLogForm?.business_type_id?.slug);
+            let monthsConditions = ['three_months', 'six_months'];
+            let percentConditions = ['twenty', 'forty']
+            let altaraPayCondition = this.isAltaraPay && this.showRepaymentToggleList.includes(this.salesLogForm?.business_type_id?.slug);
+            let altaraCreditCondition = this.isAltaraCredit && monthsConditions.includes(this.salesLogForm?.repayment_duration_id?.name) && percentConditions.includes(this.salesLogForm?.payment_type_id?.name);
+            return altaraCreditCondition || altaraPayCondition;
+        },
+
+        isLostLoan(){
+            return this.salesLogForm?.business_type_id?.slug == 'ap_lost_loan_product'
         },
 
         repaymentCycleFiltered() {
